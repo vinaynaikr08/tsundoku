@@ -1,5 +1,3 @@
-# TheBookTrackerThatSharesAndStuff
-
-Obviously placeholder name
+# tsundoku
 
 WIP
