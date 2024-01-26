@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
-import * as Constants from './constants';
+import Colors from './Constants/Colors';
 
 export default function App() {
   return (
@@ -24,7 +24,7 @@ function launchStart() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.ONBOARDING_BG_PINK,
+    backgroundColor: Colors.ONBOARDING_BG_PINK,
     alignItems: 'center',
     justifyContent: 'center',
   },
