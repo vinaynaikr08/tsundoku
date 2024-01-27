@@ -13,7 +13,7 @@ export const InitialLaunchScreen = () => {
             <Text style={styles.text}>1. The practice of buying books and not reading them, letting them pile up with other unread books</Text>
 
             <Pressable onPress={launchStart}>
-                <Icon name={"arrow-forward"} size={Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_SIZE} color={Colors.ONBOARDING_ARROW_WHITE} />
+                <Icon name={"arrow-forward"} size={Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_SIZE} color={Colors.INITIAL_LAUNCH_SCREEN_ARROW_WHITE} />
             </Pressable>
             <StatusBar style="auto" />
         </View>
@@ -28,17 +28,17 @@ function launchStart() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.ONBOARDING_BG_PINK,
+        backgroundColor: Colors.INITIAL_LAUNCH_SCREEN_BG_PINK,
         alignItems: 'center',
         justifyContent: 'center',
     },
     title: {
         fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE,
-        color: Colors.ONBOARDING_TEXT_WHITE,
+        color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     },
     text: {
         margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
         fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
-        color: Colors.ONBOARDING_TEXT_WHITE,
+        color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     }
 });
