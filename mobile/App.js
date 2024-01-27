@@ -1,8 +1,5 @@
-import { InitialLaunchScreen } from './Screens/InitialLaunchScreen';
+import { InitialLaunchScreen } from "./Screens/InitialLaunchScreen";
 
 export default function App() {
-  return (
-    <InitialLaunchScreen />
-  );
+  return <InitialLaunchScreen />;
 }
-
