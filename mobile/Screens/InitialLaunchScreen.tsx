@@ -21,7 +21,7 @@ export const InitialLaunchScreen = () => {
 }
 
 function launchStart() {
-    // TODO: ImpDlement
+    // TODO: Implement
     console.log("Open setup");
 }
 
