@@ -13,7 +13,7 @@ export const InitialLaunchScreen = () => {
             <Text style={styles.text}>1. The practice of buying books and not reading them, letting them pile up with other unread books</Text>
 
             <Pressable onPress={launchStart}>
-                <Icon name={"arrow-forward"} size={90} color="#ffffff" />
+                <Icon name={"arrow-forward"} size={90} color={Colors.ONBOARDING_ARROW_WHITE} />
             </Pressable>
             <StatusBar style="auto" />
         </View>
@@ -34,11 +34,11 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE,
-        color: '#ffffff',
+        color: Colors.ONBOARDING_TEXT_WHITE,
     },
     text: {
         margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
         fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
-        color: '#ffffff',
+        color: Colors.ONBOARDING_TEXT_WHITE,
     }
 });
