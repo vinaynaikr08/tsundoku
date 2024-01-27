@@ -13,7 +13,7 @@ export const InitialLaunchScreen = () => {
             <Text style={styles.text}>1. The practice of buying books and not reading them, letting them pile up with other unread books</Text>
 
             <Pressable onPress={launchStart}>
-                <Icon name={"arrow-forward"} size={90} color={Colors.ONBOARDING_ARROW_WHITE} />
+                <Icon name={"arrow-forward"} size={Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_SIZE} color={Colors.ONBOARDING_ARROW_WHITE} />
             </Pressable>
             <StatusBar style="auto" />
         </View>
