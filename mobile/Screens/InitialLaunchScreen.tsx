@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Pressable } from 'react-native';
 import Colors from '../Constants/Colors';
 import { Icon } from '@rneui/themed';
 import { white } from "material-ui/styles/colors";
+import Dimensions from "../Constants/Dimensions";
 
 export const InitialLaunchScreen = () => {
     return (
@@ -21,12 +22,11 @@ export const InitialLaunchScreen = () => {
 }
 
 function launchStart() {
-    // TODO: Implement
+    // TODO: ImpDlement
     console.log("Open setup");
 }
 
 const styles = StyleSheet.create({
-    // TODO: create a constants file to track margin, font size, color, etc.
     container: {
         flex: 1,
         backgroundColor: Colors.ONBOARDING_BG_PINK,
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        fontSize: 40,
+        fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE,
         color: '#ffffff',
     },
     text: {
-        margin: 30,
-        fontSize: 20,
+        margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
+        fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
         color: '#ffffff',
     }
 });
