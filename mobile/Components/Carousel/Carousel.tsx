@@ -4,7 +4,6 @@ import * as React from "react";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -23,11 +22,12 @@ const styles = StyleSheet.create({
   },
 });
 
-
 function Carousel() {
-  return (<View>
-  <Text style={styles.title}>Carousel</Text>
-</View>);
+  return (
+    <View>
+      <Text style={styles.title}>Carousel</Text>
+    </View>
+  );
 }
 
 export default Carousel;
