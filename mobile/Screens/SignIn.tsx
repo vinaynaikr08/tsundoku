@@ -9,9 +9,12 @@ import Dimensions from "../Constants/Dimensions";
 export const SignIn = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.title}>Sign in</Text>
       <Text style={styles.text}>
-        name
+        email
+      </Text>
+      <Text style={styles.text}>
+        password
       </Text>
       <Pressable onPress={launchStart}>
         <Icon style={styles.icon}
@@ -40,17 +43,18 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 350,
-    textAlign: 'center',
+    textAlign: 'left',
+    marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE,
-    color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
+    color: Colors.SIGN_IN_TEXT_BLACK,
   },
   text: {
     margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
     color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     textAlign: 'left',
-    marginLeft: 50,
-    marginRight: 50,
+    marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
+    marginRight: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
   },
   icon: {
     // marginBottom: -40,
