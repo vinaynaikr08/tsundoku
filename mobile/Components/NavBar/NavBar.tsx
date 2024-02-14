@@ -7,6 +7,9 @@ import { SignIn } from "../../Screens/SignIn";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Home from "react-native-vector-icons/Entypo";
+import Book from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const Stack = createNativeStackNavigator();
 const BottomBar = createBottomTabNavigator();
@@ -38,9 +41,6 @@ function TrackScreen() {
 function SocialScreen() {
   return (
     <View style={{ flex: 1 }}>
-      {
-        // insert social screen here
-      }
       <Text>social!</Text>
     </View>
   );
@@ -49,16 +49,11 @@ function SocialScreen() {
 function ProfileScreen() {
   return (
     <View style={{ flex: 1 }}>
-      {
-        // insert profile screen here
-        /* <Library /> */
-      }
       <Text>Profile!</Text>
     </View>
   );
 }
 
-// add review
 function NavBar() {
   return (
     <NavigationContainer>
@@ -67,11 +62,48 @@ function NavBar() {
           // currently is sign-in screen for testing
           name="home"
           component={HomeScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Home name="home" size={size} color={color} />
+            ),
+          }}
         />
-        <BottomBar.Screen name="library" component={LibraryScreen} />
-        <BottomBar.Screen name="+" component={TrackScreen} />
-        <BottomBar.Screen name="social" component={SocialScreen} />
-        <BottomBar.Screen name="profile" component={ProfileScreen} />
+        <BottomBar.Screen
+          name="library"
+          component={LibraryScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Book name="book" size={size} color={color} />
+            ),
+          }}
+        />
+        <BottomBar.Screen
+          name="+"
+          component={TrackScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="add-circle" size={size} color={color} />
+            ),
+          }}
+        />
+        <BottomBar.Screen
+          name="social"
+          component={SocialScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="share-social-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <BottomBar.Screen
+          name="profile"
+          component={ProfileScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="person-circle" size={size} color={color} />
+            ),
+          }}
+        />
       </BottomBar.Navigator>
     </NavigationContainer>
   );
