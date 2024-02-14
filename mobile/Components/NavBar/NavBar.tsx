@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { View, Text, Button, TouchableOpacity } from "react-native";
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Colors from "../../Constants/Colors";
+import Dimensions from "../../Constants/Dimensions";
 import { Library } from "../../Screens/Library";
 import { SignIn } from "../../Screens/SignIn";
 import { NavigationContainer } from "@react-navigation/native";
@@ -10,6 +11,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "react-native-vector-icons/Entypo";
 import Book from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
+import Modal from "react-native-modal";
 
 const Stack = createNativeStackNavigator();
 const BottomBar = createBottomTabNavigator();
@@ -30,12 +32,48 @@ function LibraryScreen() {
   );
 }
 
-function TrackScreen() {
+function TrackModal({ isVisible, onClose }) {
   return (
-    <View style={{ flex: 1 }}>
-      <Text>track!</Text>
-    </View>
+    <Modal
+      isVisible={isVisible}
+      onSwipeComplete={onClose}
+      swipeDirection={["down"]}
+      style={{ marginBottom: 0 }}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+          width: "100%",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          marginTop: 150,
+        }}
+      >
+        <View style={{ alignItems: "center" }}>
+          <View
+            style={{
+              backgroundColor: "#D3D3D3",
+              height: 7,
+              width: 70,
+              borderRadius: 5,
+              marginTop: -350,
+            }}
+          />
+        </View>
+        <Text>Text</Text>
+        <TouchableOpacity onPress={onClose}>
+          <Text>Here</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
   );
+}
+
+function TrackScreen() {
+  return null;
 }
 
 function SocialScreen() {
@@ -54,17 +92,56 @@ function ProfileScreen() {
   );
 }
 
+function PlusIcon() {
+  return (
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          backgroundColor: "white",
+          borderRadius: 50,
+          width: 80,
+          height: 80,
+          marginBottom: 20,
+        }}
+      >
+        <Icon name="add-circle" size={80} color="purple" />
+      </View>
+    </View>
+  );
+}
+
 function NavBar() {
+  const [isTrackModalVisible, setIsTrackModalVisible] = useState(false);
+  const toggleTrackModal = () => {
+    setIsTrackModalVisible(!isTrackModalVisible);
+  };
+
   return (
     <NavigationContainer>
-      <BottomBar.Navigator>
+      <BottomBar.Navigator
+        screenOptions={() => ({
+          tabBarLabel: () => null,
+          headerShown: false,
+          tabBarActiveTintColor: "purple",
+          tabBarStyle: {
+            height: 90,
+          },
+          tabBarIconStyle: {
+            marginTop: 10,
+          },
+        })}
+      >
         <BottomBar.Screen
           // currently is sign-in screen for testing
           name="home"
           component={HomeScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Home name="home" size={size} color={color} />
+              <Home
+                name="home"
+                size={Dimensions.NAVBAR_ICON_SIZE}
+                color={color}
+              />
             ),
           }}
         />
@@ -73,17 +150,25 @@ function NavBar() {
           component={LibraryScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Book name="book" size={size} color={color} />
+              <Book
+                name="book"
+                size={Dimensions.NAVBAR_ICON_SIZE}
+                color={color}
+              />
             ),
           }}
         />
         <BottomBar.Screen
           name="+"
           component={TrackScreen}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              toggleTrackModal();
+            },
+          })}
           options={{
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="add-circle" size={size} color={color} />
-            ),
+            tabBarIcon: ({ color, size }) => <PlusIcon />,
           }}
         />
         <BottomBar.Screen
@@ -91,7 +176,11 @@ function NavBar() {
           component={SocialScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="share-social-outline" size={size} color={color} />
+              <Icon
+                name="share-social-outline"
+                size={Dimensions.NAVBAR_ICON_SIZE}
+                color={color}
+              />
             ),
           }}
         />
@@ -100,11 +189,16 @@ function NavBar() {
           component={ProfileScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Icon name="person-circle" size={size} color={color} />
+              <Icon
+                name="person-circle"
+                size={Dimensions.NAVBAR_ICON_SIZE}
+                color={color}
+              />
             ),
           }}
         />
       </BottomBar.Navigator>
+      <TrackModal isVisible={isTrackModalVisible} onClose={toggleTrackModal} />
     </NavigationContainer>
   );
 }
