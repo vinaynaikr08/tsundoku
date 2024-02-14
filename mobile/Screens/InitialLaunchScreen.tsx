@@ -54,11 +54,10 @@ const styles = StyleSheet.create({
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
     color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     textAlign: 'left',
-    marginLeft: 50,
-    marginRight: 50,
+    marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
+    marginRight: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
   },
   icon: {
-    // marginBottom: -40,
-    marginTop: 40,
+    marginTop: Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_TOP_MARGIN,
   }
 });
