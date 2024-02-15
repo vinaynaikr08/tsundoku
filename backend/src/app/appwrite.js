@@ -1,10 +1,10 @@
-import { Client, Account } from 'appwrite';
+const sdk = require('node-appwrite');
 
-export const client = new Client();
+export const client = new sdk.Client();
 
 client
-    .setEndpoint('https://tsundoku-server.ericswpark.com/v1')
-    .setProject('65ccf0b6d76765229231');
+    .setEndpoint(process.env.appwriteEndpoint)
+    .setProject(process.env.appwriteProjectID)
+    .setKey(process.env.appwriteAPIKey)
+    .setSelfSigned();
 
-export const account = new Account(client);
-export { ID } from 'appwrite';
