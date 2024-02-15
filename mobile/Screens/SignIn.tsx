@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -11,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from "react-native";
 import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
@@ -19,9 +19,25 @@ import Dimensions from "../Constants/Dimensions";
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
+  const handleSignIn = () => {
+    // TODO: sign-in logic
+    // check if email/pw is correct
+    // if incorrect, set error msg and display error modal
+    if (password !== "correct") {
+      setErrorMessage("Incorrect password. Please try again.");
+      setErrorModalVisible(true);
+      return;
+    }
+
+    // if sign-in successful, nav to next screen
+    // navigation.navigate('screen');
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -30,7 +46,6 @@ export const SignIn = () => {
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.container}>
-          {/* <View style={styles.inner}> */}
           <Text style={styles.title}>Sign in</Text>
           <View style={styles.inputContainer}>
             <TextInput
@@ -40,6 +55,8 @@ export const SignIn = () => {
               placeholder="email"
               placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
               keyboardType="email-address"
+              returnKeyType="done"
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.inputContainer}>
@@ -50,9 +67,11 @@ export const SignIn = () => {
               placeholder="password"
               placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
               secureTextEntry={true}
+              returnKeyType="done"
+              autoCapitalize="none"
             />
           </View>
-          <Pressable onPress={launchStart}>
+          <Pressable onPress={handleSignIn}>
             <Icon
               style={styles.icon}
               name={"arrow-forward"}
@@ -63,14 +82,24 @@ export const SignIn = () => {
           <StatusBar style="auto" />
         </View>
       </TouchableWithoutFeedback>
+      <Modal
+        // animationType="slide"
+        transparent={true}
+        visible={errorModalVisible}
+        onRequestClose={() => setErrorModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{errorMessage}</Text>
+            <Pressable onPress={() => setErrorModalVisible(false)}>
+              <Text style={styles.modalButton}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
-
-function launchStart() {
-  // TODO: Implement
-  console.log("Open setup");
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -80,11 +109,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: -100,
   },
-  //   inner: {
-  //     flex: 1,
-  //     justifyContent: "center",
-  //     paddingHorizontal: 20,
-  //   },
   title: {
     marginTop: 350,
     marginBottom: 30,
@@ -120,5 +144,26 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     paddingVertical: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  modalButton: {
+    fontSize: 16,
+    color: "blue",
+    textAlign: "center",
   },
 });
