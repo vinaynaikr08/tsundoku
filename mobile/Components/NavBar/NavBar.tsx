@@ -5,6 +5,8 @@ import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 import { Library } from "../../Screens/Library";
 import { SignIn } from "../../Screens/SignIn";
+import { Profile } from "../../Screens/ProfileScreen";
+import TrackModal from "../../Components/TrackModal";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -32,48 +34,6 @@ function LibraryScreen() {
   );
 }
 
-function TrackModal({ isVisible, onClose }) {
-  return (
-    <Modal
-      isVisible={isVisible}
-      onSwipeComplete={onClose}
-      swipeDirection={["down"]}
-      style={{ marginBottom: 0 }}
-    >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-          width: "107%",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          marginTop: 150,
-          marginLeft: -14,
-          marginRight: -25,
-        }}
-      >
-        <View style={{ alignItems: "center" }}>
-          <View
-            style={{
-              backgroundColor: "#D3D3D3",
-              height: 7,
-              width: 70,
-              borderRadius: 5,
-              marginTop: -350,
-            }}
-          />
-        </View>
-        <Text>Text</Text>
-        <TouchableOpacity onPress={onClose}>
-          <Text>Here</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
-  );
-}
-
 function TrackScreen() {
   return null;
 }
@@ -88,27 +48,9 @@ function SocialScreen() {
 
 function ProfileScreen() {
   return (
-    <View style={{ flex: 1 }}>
-      <Text>Profile!</Text>
-    </View>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <View style={{ justifyContent: "center", alignItems: "center" }}>
-      <View
-        style={{
-          backgroundColor: "white",
-          borderRadius: 50,
-          width: 80,
-          height: 80,
-          marginBottom: 20,
-        }}
-      >
-        <Icon name="add-circle" size={80} color="purple" />
-      </View>
-    </View>
+    // <View style={{ flex: 1, justifyContent: "center" }}>
+    <Profile />
+    // </View>
   );
 }
 
@@ -202,6 +144,24 @@ function NavBar() {
       </BottomBar.Navigator>
       <TrackModal isVisible={isTrackModalVisible} onClose={toggleTrackModal} />
     </NavigationContainer>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          backgroundColor: "white",
+          borderRadius: 50,
+          width: 80,
+          height: 80,
+          marginBottom: 20,
+        }}
+      >
+        <Icon name="add-circle" size={80} color="purple" />
+      </View>
+    </View>
   );
 }
 

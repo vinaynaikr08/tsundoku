@@ -41,6 +41,7 @@ export const SignIn = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
+      //   behavior="padding"
       behavior={Platform.OS === "ios" ? "padding" : null}
       keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
