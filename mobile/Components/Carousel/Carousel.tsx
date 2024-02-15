@@ -10,6 +10,15 @@ import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 import Colors from "../../Constants/Colors";
+import ShelfModal from "../ShelfModal";
+
+function ShowModal() {
+  return (
+    <View style={{ flex: 1 }}>
+      <ShelfModal />
+    </View>
+  );
+}
 
 const books = [
   { id: "1", title: "The Poppy War", author: "R. F. Kuang" },
@@ -104,6 +113,9 @@ export const Carousel = () => {
           );
         }}
       />
+      <View style={{ backgroundColor: "white", height: 40, width: "33%", alignSelf: "center"}}>
+        <ShelfModal />
+      </View>
     </View>
   );
 };

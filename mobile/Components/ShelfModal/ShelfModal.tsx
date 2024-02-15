@@ -27,16 +27,16 @@ function ShelfModal() {
     setSearch(search);
   };
   
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1, height: 5 }}></View>
-      <Button title="Show modal" onPress={toggleShelfModal} />
+      <Button title="Show modal" onPress={toggleShelfModal} color="#000000" />
       <Modal 
       isVisible={isShelfModalVisible}
       onSwipeComplete={(e) => { setShelfModalVisible(false); }}
       swipeDirection={["down"]}
-      style={{ marginBottom: 0,
+      style={{ 
+        marginBottom: 0,
         marginRight: 0,
         marginLeft: 0
       }}>
