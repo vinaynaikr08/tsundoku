@@ -36,6 +36,14 @@ async function createEdition({
   return id;
 }
 
+async function createAuthor({ name }: { name: any }) {
+  const id = ID.unique();
+  await databases.createDocument(MAIN_DB_ID, AUTHOR_COL_ID, id, {
+    name,
+  });
+  return id;
+}
+
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
@@ -65,10 +73,7 @@ export async function GET(request: NextRequest) {
 
       if (gbook_api_author_query.total == 0) {
         // Create new entry and assign author ID
-        author_id = ID.unique();
-        databases.createDocument(MAIN_DB_ID, AUTHOR_COL_ID, author_id, {
-          name: author_name,
-        });
+        author_id = createAuthor({ name: author_name });
       } else {
         author_id = gbook_api_author_query.documents[0].$id;
       }
@@ -82,7 +87,6 @@ export async function GET(request: NextRequest) {
 
       if (gbook_api_existing_query.total == 0) {
         // Create new entry
-
         const edition_id = await createEdition({
           isbn_13: gbooks_target_book.volumeInfo.industryIdentifiers.find(
             (e: any) => e.type === "ISBN_13",
