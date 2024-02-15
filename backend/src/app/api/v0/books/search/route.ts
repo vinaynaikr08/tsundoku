@@ -26,7 +26,7 @@ async function createEdition({
   page_count: any;
 }) {
   const id = ID.unique();
-  let res = await databases.createDocument(MAIN_DB_ID, EDITION_COL_ID, id, {
+  await databases.createDocument(MAIN_DB_ID, EDITION_COL_ID, id, {
     isbn_13,
     isbn_10,
     publisher,
