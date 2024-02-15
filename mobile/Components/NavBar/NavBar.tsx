@@ -46,10 +46,12 @@ function TrackModal({ isVisible, onClose }) {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "white",
-          width: "100%",
+          width: "107%",
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           marginTop: 150,
+          marginLeft: -14,
+          marginRight: -25,
         }}
       >
         <View style={{ alignItems: "center" }}>
