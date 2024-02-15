@@ -25,23 +25,21 @@ async function createEdition({
   publish_date: any;
   page_count: any;
 }) {
-  const id = ID.unique();
-  await databases.createDocument(MAIN_DB_ID, EDITION_COL_ID, id, {
+  let res = await databases.createDocument(MAIN_DB_ID, EDITION_COL_ID, ID.unique(), {
     isbn_13,
     isbn_10,
     publisher,
     publish_date,
     page_count,
   });
-  return id;
+  return res.$id;
 }
 
 async function createAuthor({ name }: { name: any }) {
-  const id = ID.unique();
-  await databases.createDocument(MAIN_DB_ID, AUTHOR_COL_ID, id, {
+  let res = await databases.createDocument(MAIN_DB_ID, AUTHOR_COL_ID, ID.unique(), {
     name,
   });
-  return id;
+  return res.$id;
 }
 
 export async function GET(request: NextRequest) {
