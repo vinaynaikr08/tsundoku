@@ -8,14 +8,14 @@ import { client } from "@/app/appwrite";
 const databases = new sdk.Databases(client);
 
 const MAIN_DB_ID = process.env.mainDBID;
-const BOOK_DB_ID = process.env.bookCollectionID;
-const AUTHOR_DB_ID = process.env.authorCollectionID;
-const EDITION_DB_ID = process.env.editionCollectionID;
+const BOOK_COL_ID = process.env.bookCollectionID;
+const AUTHOR_COL_ID = process.env.authorCollectionID;
+const EDITION_COL_ID = process.env.editionCollectionID;
 
 export async function GET(request: NextRequest) {
     const title = request.nextUrl.searchParams.get("title") as string;
 
-    let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_DB_ID,
+    let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID,
         [Query.equal('title', title)]
     );
 
@@ -31,14 +31,14 @@ export async function GET(request: NextRequest) {
 
             // Check if author exists
             const author_name = gbooks_target_book.volumeInfo.authors[0];
-            let gbook_api_author_query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_DB_ID,
+            let gbook_api_author_query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_COL_ID,
                 [Query.equal('name', author_name)]
             );
 
             if (gbook_api_author_query.total == 0) {
                 // Create new entry and assign author ID
                 author_id = ID.unique();
-                databases.createDocument(MAIN_DB_ID, AUTHOR_DB_ID, author_id, {
+                databases.createDocument(MAIN_DB_ID, AUTHOR_COL_ID, author_id, {
                     name: author_name,
                 });
             } else {
@@ -46,21 +46,21 @@ export async function GET(request: NextRequest) {
             }
 
             // Check if book already exists in the database
-            let gbook_api_existing_query = await databases.listDocuments(MAIN_DB_ID, BOOK_DB_ID,
+            let gbook_api_existing_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID,
                 [Query.equal('google_books_id', gbooks_target_book.id)]
             );
 
             if (gbook_api_existing_query.total == 0) {
                 // Create new entry
                 const edition_id = ID.unique();
-                await databases.createDocument(MAIN_DB_ID, EDITION_DB_ID, edition_id, {
+                await databases.createDocument(MAIN_DB_ID, EDITION_COL_ID, edition_id, {
                     isbn_13: gbooks_target_book.volumeInfo.industryIdentifiers.find((e: any) => e.type === "ISBN_13").identifier,
                     isbn_10: gbooks_target_book.volumeInfo.industryIdentifiers.find((e: any) => e.type === "ISBN_10").identifier,
                     publisher: gbooks_target_book.volumeInfo.publisher,
                     publish_date: gbooks_target_book.volumeInfo.published_date,
                     page_count: gbooks_target_book.volumeInfo.pageCount,
                 })
-                await databases.createDocument(MAIN_DB_ID, BOOK_DB_ID, ID.unique(), {
+                await databases.createDocument(MAIN_DB_ID, BOOK_COL_ID, ID.unique(), {
                     title: gbooks_target_book.volumeInfo.title,
                     authors: [author_id],
                     editions: [edition_id],
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Requery DB to return to user
-        db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_DB_ID,
+        db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID,
             [Query.equal('title', title)]
         );
     }
