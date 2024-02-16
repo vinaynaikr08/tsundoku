@@ -52,9 +52,9 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible} ) => {
             width:'95%',
             position: "absolute",
             borderRadius: 10,
-            bottom: 680,
+            bottom: 700,
           }}>
-          <BookSearchBar/>
+          <BookSearchBar searchingFrom="temp"/>
         </View>
       </View>
     </Modal>
