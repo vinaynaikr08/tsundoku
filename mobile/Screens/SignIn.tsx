@@ -15,25 +15,46 @@ import {
 import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
+import { Account } from "appwrite";
+import type { Models } from "appwrite";
+
+// TODO: make this root import
+import { client } from "../appwrite";
+
+const account = new Account(client);
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [session, setSession] = useState(null);
+  const [loggedInUser, setLoggedInUser] =
+    useState<Models.User<Models.Preferences> | null>(null);
+
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
   const handleSignIn = () => {
-    // TODO: sign-in logic
-    // check if email/pw is correct
-    // if incorrect, set error msg and display error modal
-    if (password !== "correct") {
-      setErrorMessage("Incorrect password. Please try again.");
-      setErrorModalVisible(true);
-      return;
-    }
-
+    setSession(
+      account
+        .createEmailSession(email, password)
+        .then(() => {
+          account
+            .get()
+            .then((user) => {
+              setLoggedInUser(user);
+            })
+            .catch((e) => {
+              // TODO: handle error
+              setErrorMessage(`An error occurred: ${e}`);
+              setErrorModalVisible(true);
+            });
+        })
+        .catch(() => {
+          // TODO: handle error
+        }),
+    );
     // if sign-in successful, nav to next screen
     // navigation.navigate('screen');
   };
