@@ -48,7 +48,6 @@ export const Carousel = () => {
 
   return (
     <View>
-      <Text style={styles.title}>Carousel</Text>
       <FlatList
         horizontal
         data={books}
@@ -120,7 +119,7 @@ export const Carousel = () => {
 
 const styles = StyleSheet.create({
   card: {
-    paddingVertical: 50,
+    paddingVertical: 70,
     marginVertical: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -137,6 +136,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "white"
   },
   title: {
     fontSize: 30,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   text: {
-    margin: 40,
+    margin: 30,
     fontSize: 16,
   },
 });
