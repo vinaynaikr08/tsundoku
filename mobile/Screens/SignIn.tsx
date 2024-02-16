@@ -76,7 +76,7 @@ export const SignIn = () => {
               value={email}
               onChangeText={setEmail}
               placeholder="email"
-              placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
+              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR}
               keyboardType="email-address"
               returnKeyType="done"
               autoCapitalize="none"
@@ -88,7 +88,7 @@ export const SignIn = () => {
               value={password}
               onChangeText={setPassword}
               placeholder="password"
-              placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
+              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR}
               secureTextEntry={true}
               returnKeyType="done"
               autoCapitalize="none"

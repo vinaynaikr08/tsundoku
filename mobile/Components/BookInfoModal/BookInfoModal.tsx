@@ -68,7 +68,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
             width: Dimensions.BOOK_INFO_MODAL_COVER_WIDTH,
             height: Dimensions.BOOK_INFO_MODAL_COVER_HEIGHT,
             marginTop: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_TOP,
-            backgroundColor: "purple",
+            backgroundColor: Colors.BUTTON_PURPLE,
             borderRadius: Dimensions.BOOK_INFO_MODAL_COVER_RADIUS,
             marginBottom: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_BOTTOM,
           }}
@@ -93,7 +93,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
         <TouchableOpacity
           onPress={onClose}
           style={{
-            backgroundColor: "purple",
+            backgroundColor: Colors.BUTTON_PURPLE,
             paddingHorizontal: 20,
             paddingVertical: 10,
             borderRadius: 5,

@@ -47,11 +47,7 @@ function SocialScreen() {
 }
 
 function ProfileScreen() {
-  return (
-    // <View style={{ flex: 1, justifyContent: "center" }}>
-    <Profile />
-    // </View>
-  );
+  return <Profile />;
 }
 
 function NavBar() {
@@ -66,7 +62,7 @@ function NavBar() {
         screenOptions={() => ({
           tabBarLabel: () => null,
           headerShown: false,
-          tabBarActiveTintColor: "purple",
+          tabBarActiveTintColor: Colors.BUTTON_PURPLE,
           tabBarStyle: {
             height: 90,
           },
@@ -159,7 +155,7 @@ function PlusIcon() {
           marginBottom: 20,
         }}
       >
-        <Icon name="add-circle" size={80} color="purple" />
+        <Icon name="add-circle" size={80} color={Colors.BUTTON_PURPLE} />
       </View>
     </View>
   );
