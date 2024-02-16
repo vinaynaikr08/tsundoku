@@ -44,6 +44,7 @@ export const SignIn = () => {
             .get()
             .then((user) => {
               setLoggedInUser(user);
+              console.log(user);
             })
             .catch((e) => {
               // TODO: handle error
