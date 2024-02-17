@@ -1,8 +1,9 @@
-import { View, } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { useState, } from "react";
 import Modal from "react-native-modal";
 import BookSearchBar from "../BookSearchBar";
+import { Divider } from "@rneui/base";
 
 
 const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible} ) => {
@@ -47,14 +48,23 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible} ) => {
             }}
           />
         </View>
+        <View style={{
+          position: "absolute",
+          top: 35,
+          left: 20,
+        }}>
+          <Text style={{fontWeight: 'bold', fontSize: 24}}>Currently Reading</Text>
+        </View>
         <View
           style={{
-            width:'95%',
+            width:'93%',
             position: "absolute",
             borderRadius: 10,
-            bottom: 700,
+            top: 75,
+            left: 20,
           }}>
           <BookSearchBar searchingFrom="temp"/>
+          <Divider style={{marginTop: 11}}/>
         </View>
       </View>
     </Modal>

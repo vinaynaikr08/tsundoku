@@ -40,24 +40,24 @@ const BookSearchBar = ({ searchingFrom } ) => {
             <View style={{ backgroundColor: "white", flexDirection: "row" }} >
                 <View style={{ flex: 10 }}>
                     <SearchBar
-                    placeholder={"Searching " + searchingFrom + "..."}
+                    placeholder={"Search list"}
                     lightTheme
                     round
                     onChangeText={updateSearch}
                     value={search}
                     autoCorrect={false}
                     containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
-                    inputContainerStyle={{borderRadius: 50, backgroundColor: "#dccae8"}}
+                    inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
                     style={{position: "relative", }}
                     />
                 </View>
                 <View style={{ flex: 2, alignItems:"center"}}>
-                    <Button type="clear" onPress={ toggleOverlay } icon={<Icon name="filter" color={"#dccae8"} size={30} /> } />
+                    <Button type="clear" onPress={ toggleOverlay } icon={<Icon name="filter" color={"#5B2FA3"} size={30} /> } />
                 </View>
 
-                <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{backgroundColor: "white", width: '89%', height: '70%', borderRadius: 20, marginTop: 60 }}>
-                    <View style={{backgroundColor: "white"}}>
-                        <Text style={{marginLeft: 0, marginTop: 0, paddingRight: 10, fontSize: 20, alignSelf: 'center'}}>Filter by Genre</Text>
+                <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{ backgroundColor: "white", width: '89%', height: '70%', borderRadius: 20, marginTop: 60 }}>
+                    <View style={{ backgroundColor: "white" }}>
+                        <Text style={{marginLeft: 0, marginTop: 5, marginBottom: 5, fontWeight: 'bold', fontSize: 20, alignSelf: 'center'}}>Filter by Genre</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 8 }}>
                         <View style={{ flex: 1, }}>
@@ -101,11 +101,12 @@ const BookSearchBar = ({ searchingFrom } ) => {
                             />
                         </View>
                     </View>
-                    <View style={{ position: 'absolute', bottom: 20, alignSelf: 'center' }} >
-                        <Button color={"#dccae8"} onPress={clearFilter} >Clear all</Button>
+                    <View style={{ position: 'absolute', bottom: 20, alignSelf: 'center', borderRadius: 20 }} >
+                        <Button buttonStyle={{ borderRadius: 10 }} color={"#5B2FA3"} onPress={clearFilter} >Clear all</Button>
                     </View>
                 </Overlay>
             </View>
+            {/*}
             <View style={{position: "absolute", bottom: -40, flexDirection: "row"}}>
                 <Text style={{marginLeft: 0, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
                     Search by:  
@@ -135,7 +136,8 @@ const BookSearchBar = ({ searchingFrom } ) => {
                 <Text style={{marginLeft: -4, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
                     ISBN 
                 </Text> 
-            </View>
+                
+    </View>*/}
         </View>
     );
 }
