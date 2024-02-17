@@ -16,7 +16,7 @@ services:
       - --providers.file.watch=true
       - --providers.docker=true
       - --providers.docker.exposedByDefault=false
-      - --providers.docker.constraints=Label(`traefik.constraint-label-stack`,`a                                                                                                                                   ppwrite`)
+      - --providers.docker.constraints=Label(`traefik.constraint-label-stack`,`appwrite`)
       - --entrypoints.appwrite_web.address=:80
       - --entrypoints.appwrite_websecure.address=:443
     restart: unless-stopped
@@ -174,11 +174,11 @@ services:
       - "traefik.http.services.appwrite_realtime.loadbalancer.server.port=80"
       #ws
       - traefik.http.routers.appwrite_realtime_ws.entrypoints=appwrite_web
-      - traefik.http.routers.appwrite_realtime_ws.rule=PathPrefix(`/v1/realtime`                                                                                                                                   )
+      - traefik.http.routers.appwrite_realtime_ws.rule=PathPrefix(`/v1/realtime`)
       - traefik.http.routers.appwrite_realtime_ws.service=appwrite_realtime
       # wss
-      - traefik.http.routers.appwrite_realtime_wss.entrypoints=appwrite_websecur                                                                                                                                   e
-      - traefik.http.routers.appwrite_realtime_wss.rule=PathPrefix(`/v1/realtime                                                                                                                                   `)
+      - traefik.http.routers.appwrite_realtime_wss.entrypoints=appwrite_websecure
+      - traefik.http.routers.appwrite_realtime_wss.rule=PathPrefix(`/v1/realtime`)
       - traefik.http.routers.appwrite_realtime_wss.service=appwrite_realtime
       - traefik.http.routers.appwrite_realtime_wss.tls=true
     networks:
@@ -266,7 +266,7 @@ services:
     depends_on:
       - redis
       - mariadb
-    volumes:
+    volumes: 
       - appwrite-uploads:/storage/uploads:rw
       - appwrite-cache:/storage/cache:rw
       - appwrite-functions:/storage/functions:rw
@@ -413,7 +413,7 @@ services:
     depends_on:
       - redis
       - mariadb
-    volumes:
+    volumes: 
       - appwrite-config:/storage/config:rw
       - appwrite-certificates:/storage/certificates:rw
     environment:
@@ -669,7 +669,7 @@ services:
       - appwrite-builds:/storage/builds:rw
       - appwrite-functions:/storage/functions:rw
       # Host mount nessessary to share files between executor and runtimes.
-      # It's not possible to share mount file between 2 containers without host                                                                                                                                    mount (copying is too slow)
+      # It's not possible to share mount file between 2 containers without host mount (copying is too slow)
       - /tmp:/tmp:rw
     environment:
       - OPR_EXECUTOR_INACTIVE_TRESHOLD=$_APP_FUNCTIONS_INACTIVE_THRESHOLD
@@ -687,11 +687,11 @@ services:
       - OPR_EXECUTOR_STORAGE_S3_SECRET=$_APP_STORAGE_S3_SECRET
       - OPR_EXECUTOR_STORAGE_S3_REGION=$_APP_STORAGE_S3_REGION
       - OPR_EXECUTOR_STORAGE_S3_BUCKET=$_APP_STORAGE_S3_BUCKET
-      - OPR_EXECUTOR_STORAGE_DO_SPACES_ACCESS_KEY=$_APP_STORAGE_DO_SPACES_ACCESS                                                                                                                                   _KEY
+      - OPR_EXECUTOR_STORAGE_DO_SPACES_ACCESS_KEY=$_APP_STORAGE_DO_SPACES_ACCESS_KEY
       - OPR_EXECUTOR_STORAGE_DO_SPACES_SECRET=$_APP_STORAGE_DO_SPACES_SECRET
       - OPR_EXECUTOR_STORAGE_DO_SPACES_REGION=$_APP_STORAGE_DO_SPACES_REGION
       - OPR_EXECUTOR_STORAGE_DO_SPACES_BUCKET=$_APP_STORAGE_DO_SPACES_BUCKET
-      - OPR_EXECUTOR_STORAGE_BACKBLAZE_ACCESS_KEY=$_APP_STORAGE_BACKBLAZE_ACCESS                                                                                                                                   _KEY
+      - OPR_EXECUTOR_STORAGE_BACKBLAZE_ACCESS_KEY=$_APP_STORAGE_BACKBLAZE_ACCESS_KEY
       - OPR_EXECUTOR_STORAGE_BACKBLAZE_SECRET=$_APP_STORAGE_BACKBLAZE_SECRET
       - OPR_EXECUTOR_STORAGE_BACKBLAZE_REGION=$_APP_STORAGE_BACKBLAZE_REGION
       - OPR_EXECUTOR_STORAGE_BACKBLAZE_BUCKET=$_APP_STORAGE_BACKBLAZE_BUCKET
@@ -705,7 +705,7 @@ services:
       - OPR_EXECUTOR_STORAGE_WASABI_BUCKET=$_APP_STORAGE_WASABI_BUCKET
 
   mariadb:
-    image: mariadb:10.7 # fix issues when upgrading using: mysql_upgrade -u root                                                                                                                                    -p
+    image: mariadb:10.7 # fix issues when upgrading using: mysql_upgrade -u root -p
     container_name: appwrite-mariadb
     <<: *x-logging
     restart: unless-stopped
