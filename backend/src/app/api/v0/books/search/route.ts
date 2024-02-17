@@ -90,6 +90,20 @@ async function searchGoogleBooksAPI(title: string) {
   return gbooks_api_data.items;
 }
 
+async function get_or_create_author_id(name: string) {
+  let query = await databases.listDocuments(
+    MAIN_DB_ID,
+    AUTHOR_COL_ID,
+    [Query.equal("name", name)],
+  );
+
+  if (query.total == 0) {
+    return createAuthor({ name: name });
+  } else {
+    return query.documents[0].$id;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
@@ -104,22 +118,7 @@ export async function GET(request: NextRequest) {
     // Only check the first item (for now)
     if (gbooks_books.length >= 1) {
       const gbooks_target_book = gbooks_books[0];
-      let author_id = null;
-
-      // Check if author exists
-      const author_name = gbooks_target_book.volumeInfo.authors[0];
-      let gbook_api_author_query = await databases.listDocuments(
-        MAIN_DB_ID,
-        AUTHOR_COL_ID,
-        [Query.equal("name", author_name)],
-      );
-
-      if (gbook_api_author_query.total == 0) {
-        // Create new entry and assign author ID
-        author_id = createAuthor({ name: author_name });
-      } else {
-        author_id = gbook_api_author_query.documents[0].$id;
-      }
+      let author_id = get_or_create_author_id(gbooks_target_book.volumeInfo.authors[0]);
 
       // Check if book already exists in the database
       let gbook_api_existing_query = await databases.listDocuments(
