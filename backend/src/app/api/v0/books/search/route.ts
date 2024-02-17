@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
   let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-    Query.equal("title", title),
+    Query.search("title", title),
   ]);
 
   if (db_query.total == 0) {
