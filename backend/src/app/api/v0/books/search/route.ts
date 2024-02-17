@@ -91,17 +91,31 @@ async function searchGoogleBooksAPI(title: string) {
 }
 
 async function get_or_create_author_id(name: string) {
-  let query = await databases.listDocuments(
-    MAIN_DB_ID,
-    AUTHOR_COL_ID,
-    [Query.equal("name", name)],
-  );
+  let query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_COL_ID, [
+    Query.equal("name", name),
+  ]);
 
   if (query.total == 0) {
     return createAuthor({ name: name });
   } else {
     return query.documents[0].$id;
   }
+}
+
+function construct_development_api_response(
+  message: string,
+  response_name: string,
+  response_data: any,
+) {
+  return NextResponse.json(
+    {
+      message,
+      warning:
+        "You are calling a development API! The schema may change without warning.",
+      [response_name]: response_data,
+    },
+    { status: 200 },
+  );
 }
 
 export async function GET(request: NextRequest) {
@@ -118,7 +132,9 @@ export async function GET(request: NextRequest) {
     // Only check the first item (for now)
     if (gbooks_books.length >= 1) {
       const gbooks_target_book = gbooks_books[0];
-      let author_id = get_or_create_author_id(gbooks_target_book.volumeInfo.authors[0]);
+      let author_id = get_or_create_author_id(
+        gbooks_target_book.volumeInfo.authors[0],
+      );
 
       // Check if book already exists in the database
       let gbook_api_existing_query = await databases.listDocuments(
@@ -155,17 +171,19 @@ export async function GET(request: NextRequest) {
               Query.equal("title", title),
             ])
             .then((db_query: any) => {
-              return NextResponse.json(
-                { message: `DB search results for: ${title}`, db_query },
-                { status: 200 },
+              return construct_development_api_response(
+                `DB search results for: ${title}`,
+                "results",
+                db_query,
               );
             });
         });
       }
     }
   }
-  return NextResponse.json(
-    { message: `DB search results for: ${title}`, db_query },
-    { status: 200 },
+  return construct_development_api_response(
+    `DB search results for: ${title}`,
+    "results",
+    db_query,
   );
 }
