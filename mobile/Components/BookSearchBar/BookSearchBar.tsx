@@ -1,10 +1,9 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { useState, } from "react";
-import { Button, SearchBar } from "@rneui/base";
+import { Button, SearchBar, Overlay, CheckBox } from "@rneui/base";
 import Icon from "react-native-vector-icons/Ionicons";
 import { RadioButton } from 'react-native-paper';
-import { DarkTheme } from "@react-navigation/native";
 
 type BookSearchBarProps = {
     searchingFrom: string; 
@@ -13,6 +12,11 @@ type BookSearchBarProps = {
 const BookSearchBar = ({ searchingFrom } ) => {
     const [search, setSearch] = useState("");
     const [checked, setChecked] = React.useState('title');
+    const [isOverlayVisible, setOverlayVisible] = useState(false);
+
+    const toggleOverlay = () => {
+        setOverlayVisible(!isOverlayVisible);
+    };
 
     const updateSearch = (search) => {
         setSearch(search);
@@ -35,8 +39,37 @@ const BookSearchBar = ({ searchingFrom } ) => {
                     />
                 </View>
                 <View style={{ flex: 2, alignItems:"center"}}>
-                    <Button type="clear" icon={<Icon onPress={ () => null } name="filter" color={"#dccae8"} size={30} /> } />
+                    <Button type="clear" onPress={ toggleOverlay } icon={<Icon name="filter" color={"#dccae8"} size={30} /> } />
                 </View>
+                <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{backgroundColor: "white", width: '75%', height: '60%', borderRadius: 20,}}>
+                    <View style={{backgroundColor: "white"}}>
+                        <Text style={{marginLeft: 0, marginTop: 0, paddingRight: 10, fontSize: 16, alignSelf: 'center'}}>Filter by Genre</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                        <View style={{ flex: 1, }}>
+                            <CheckBox 
+                                checked={false}
+                                title="temp genre 1"
+                                onPress={() => {}}
+                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                            />
+                            <CheckBox 
+                                checked={false}
+                                title="temp genre 3"
+                                onPress={() => {}}
+                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                            />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <CheckBox 
+                                checked={false}
+                                title="temp genre 2"
+                                onPress={() => {}}
+                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                            />
+                        </View>
+                    </View>
+                </Overlay>
             </View>
             <View style={{position: "absolute", bottom: -40, flexDirection: "row"}}>
                 <Text style={{marginLeft: 0, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
