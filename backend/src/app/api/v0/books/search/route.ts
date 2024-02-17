@@ -54,11 +54,15 @@ async function createAuthor({ name }: { name: any }) {
 
 async function createBook({
   title,
+  description,
+  genre,
   authors,
   editions,
   google_books_id,
 }: {
   title: any;
+  description: any;
+  genre: any;
   authors: any;
   editions: any;
   google_books_id: any;
@@ -68,10 +72,12 @@ async function createBook({
     BOOK_COL_ID,
     ID.unique(),
     {
-      title: title,
-      authors: authors,
-      editions: editions,
-      google_books_id: google_books_id,
+      title,
+      description,
+      genre,
+      authors,
+      editions,
+      google_books_id,
     },
   );
 }
@@ -133,6 +139,8 @@ export async function GET(request: NextRequest) {
 
         createBook({
           title: gbooks_target_book.volumeInfo.title,
+          description: gbooks_target_book.volumeInfo.description,
+          genre: gbooks_target_book.volumeInfo.categories[0],
           authors: [author_id],
           editions: [edition_id],
           google_books_id: gbooks_target_book.id,
