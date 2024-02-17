@@ -131,23 +131,30 @@ export async function GET(request: NextRequest) {
           page_count: gbooks_target_book.volumeInfo.pageCount,
         });
 
-        await createBook({
+        createBook({
           title: gbooks_target_book.volumeInfo.title,
           authors: [author_id],
           editions: [edition_id],
           google_books_id: gbooks_target_book.id,
+        }).then(() => {
+          // Requery DB to return to user
+          databases
+            .listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
+              Query.equal("title", title),
+            ])
+            .then((db_query: any) => {
+              return NextResponse.json(
+                { message: `DB search results for: ${title}`, db_query },
+                { status: 200 },
+              );
+            });
         });
       }
     }
-
-    // Requery DB to return to user
-    db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-      Query.equal("title", title),
-    ]);
+  } else {
+    return NextResponse.json(
+      { message: `DB search results for: ${title}`, db_query },
+      { status: 200 },
+    );
   }
-
-  return NextResponse.json(
-    { message: `DB search results for: ${title}`, db_query },
-    { status: 200 },
-  );
 }
