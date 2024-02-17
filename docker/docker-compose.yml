@@ -775,29 +775,20 @@ networks:
 
 volumes:
   appwrite-mariadb:
-    name: "docker_appwrite-mariadb"
     external: true
   appwrite-redis:
-  name: "docker_appwrite-redis"
     external: true
   appwrite-cache:
-    name: "docker_appwrite-cache"
     external: true
   appwrite-uploads:
-    name: "docker_appwrite-uploads"
     external: true
   appwrite-certificates:
-    name: "docker_appwrite-certificates"
     external: true
   appwrite-functions:
-    name: "docker_appwrite-functions"
     external: true
   appwrite-builds:
-    name: "docker_appwrite-builds"
     external: true
   appwrite-influxdb:
-    name: "docker_appwrite-influxdb"
     external: true
   appwrite-config:
-    name: "docker_appwrite-config"
     external: true
