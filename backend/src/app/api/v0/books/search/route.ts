@@ -25,20 +25,30 @@ async function createEdition({
   publish_date: any;
   page_count: any;
 }) {
-  let res = await databases.createDocument(MAIN_DB_ID, EDITION_COL_ID, ID.unique(), {
-    isbn_13,
-    isbn_10,
-    publisher,
-    publish_date,
-    page_count,
-  });
+  let res = await databases.createDocument(
+    MAIN_DB_ID,
+    EDITION_COL_ID,
+    ID.unique(),
+    {
+      isbn_13,
+      isbn_10,
+      publisher,
+      publish_date,
+      page_count,
+    },
+  );
   return res.$id;
 }
 
 async function createAuthor({ name }: { name: any }) {
-  let res = await databases.createDocument(MAIN_DB_ID, AUTHOR_COL_ID, ID.unique(), {
-    name,
-  });
+  let res = await databases.createDocument(
+    MAIN_DB_ID,
+    AUTHOR_COL_ID,
+    ID.unique(),
+    {
+      name,
+    },
+  );
   return res.$id;
 }
 
