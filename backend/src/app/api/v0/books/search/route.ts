@@ -82,6 +82,14 @@ async function createBook({
   );
 }
 
+async function searchGoogleBooksAPI(title: string) {
+  const gbooks_api_res = await fetch(
+    `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}`,
+  );
+  const gbooks_api_data = await gbooks_api_res.json();
+  return gbooks_api_data.items;
+}
+
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
@@ -91,14 +99,11 @@ export async function GET(request: NextRequest) {
 
   if (db_query.total == 0) {
     // Fetch some results from the Google Books API and populate the DB
-    const gbooks_api_res = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}`,
-    );
-    const gbooks_api_data = await gbooks_api_res.json();
+    const gbooks_books = await searchGoogleBooksAPI(title);
 
     // Only check the first item (for now)
-    if (gbooks_api_data.items.length >= 1) {
-      const gbooks_target_book = gbooks_api_data.items[0];
+    if (gbooks_books.length >= 1) {
+      const gbooks_target_book = gbooks_books[0];
       let author_id = null;
 
       // Check if author exists
