@@ -159,10 +159,9 @@ export async function GET(request: NextRequest) {
         });
       }
     }
-  } else {
-    return NextResponse.json(
-      { message: `DB search results for: ${title}`, db_query },
-      { status: 200 },
-    );
   }
+  return NextResponse.json(
+    { message: `DB search results for: ${title}`, db_query },
+    { status: 200 },
+  );
 }
