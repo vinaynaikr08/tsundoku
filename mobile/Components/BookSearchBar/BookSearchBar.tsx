@@ -1,8 +1,9 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { useState, } from "react";
-import { Button, SearchBar, Overlay, CheckBox } from "@rneui/base";
+import { Button, SearchBar, Overlay, CheckBox, } from "@rneui/base";
 import Icon from "react-native-vector-icons/Ionicons";
+import {} from "react-native-vector-icons"
 import { RadioButton } from 'react-native-paper';
 
 type BookSearchBarProps = {
@@ -14,8 +15,20 @@ const BookSearchBar = ({ searchingFrom } ) => {
     const [checked, setChecked] = React.useState('title');
     const [isOverlayVisible, setOverlayVisible] = useState(false);
 
+    const [fantasy, setFantasy] = useState(false);
+    const [romance, setRomance] = useState(false);
+    const [scienceFiction, setScienceFiction] = useState(false);
+    const [mystery, setMystery] = useState(false);
+
     const toggleOverlay = () => {
         setOverlayVisible(!isOverlayVisible);
+    };
+
+    const clearFilter = () => {
+        setFantasy(false);
+        setRomance(false);
+        setScienceFiction(false);
+        setMystery(false);
     };
 
     const updateSearch = (search) => {
@@ -41,33 +54,55 @@ const BookSearchBar = ({ searchingFrom } ) => {
                 <View style={{ flex: 2, alignItems:"center"}}>
                     <Button type="clear" onPress={ toggleOverlay } icon={<Icon name="filter" color={"#dccae8"} size={30} /> } />
                 </View>
-                <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{backgroundColor: "white", width: '75%', height: '60%', borderRadius: 20,}}>
+
+                <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{backgroundColor: "white", width: '89%', height: '70%', borderRadius: 20, marginTop: 60 }}>
                     <View style={{backgroundColor: "white"}}>
-                        <Text style={{marginLeft: 0, marginTop: 0, paddingRight: 10, fontSize: 16, alignSelf: 'center'}}>Filter by Genre</Text>
+                        <Text style={{marginLeft: 0, marginTop: 0, paddingRight: 10, fontSize: 20, alignSelf: 'center'}}>Filter by Genre</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 8 }}>
                         <View style={{ flex: 1, }}>
                             <CheckBox 
-                                checked={false}
-                                title="temp genre 1"
-                                onPress={() => {}}
-                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                                checked={fantasy}
+                                uncheckedIcon={<Icon name="square-outline" size={20} />}
+                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
+                                title="Fantasy"
+                                onPress={() => {setFantasy(!fantasy)}}
+                                containerStyle={{ paddingLeft: 0, paddingTop: 0, }}
+                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
                             />
                             <CheckBox 
-                                checked={false}
-                                title="temp genre 3"
-                                onPress={() => {}}
+                                checked={scienceFiction}
+                                uncheckedIcon={<Icon name="square-outline" size={20} />}
+                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
+                                title="Science Fiction"
+                                onPress={() => {setScienceFiction(!scienceFiction)}}
                                 containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
                             />
                         </View>
                         <View style={{ flex: 1 }}>
                             <CheckBox 
-                                checked={false}
-                                title="temp genre 2"
-                                onPress={() => {}}
+                                checked={romance}
+                                uncheckedIcon={<Icon name="square-outline" size={20} />}
+                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
+                                title="Romance"
+                                onPress={() => {setRomance(!romance)}}
                                 containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
+                            />
+                            <CheckBox 
+                                checked={mystery}
+                                uncheckedIcon={<Icon name="square-outline" size={20} />}
+                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
+                                title="Mystery"
+                                onPress={() => {setMystery(!mystery)}}
+                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
+                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
                             />
                         </View>
+                    </View>
+                    <View style={{ position: 'absolute', bottom: 20, alignSelf: 'center' }} >
+                        <Button color={"#dccae8"} onPress={clearFilter} >Clear all</Button>
                     </View>
                 </Overlay>
             </View>
