@@ -52,6 +52,30 @@ async function createAuthor({ name }: { name: any }) {
   return res.$id;
 }
 
+async function createBook({
+  title,
+  authors,
+  editions,
+  google_books_id,
+}: {
+  title: any;
+  authors: any;
+  editions: any;
+  google_books_id: any;
+}) {
+  let res = await databases.createDocument(
+    MAIN_DB_ID,
+    BOOK_COL_ID,
+    ID.unique(),
+    {
+      title: title,
+      authors: authors,
+      editions: editions,
+      google_books_id: google_books_id,
+    },
+  );
+}
+
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
@@ -107,7 +131,7 @@ export async function GET(request: NextRequest) {
           page_count: gbooks_target_book.volumeInfo.pageCount,
         });
 
-        await databases.createDocument(MAIN_DB_ID, BOOK_COL_ID, ID.unique(), {
+        await createBook({
           title: gbooks_target_book.volumeInfo.title,
           authors: [author_id],
           editions: [edition_id],
