@@ -13,10 +13,35 @@ function CurrentlyReadingCarousel() {
   );
 }
 
+function WantToReadCarousel() {
+  return (
+    <View style={{ flex: 1 }}>
+      <Carousel />
+    </View>
+  );
+}
+
+function ReadCarousel() {
+  return (
+    <View style={{ flex: 1 }}>
+      <Carousel />
+    </View>
+  );
+}
+
+function DNFCarousel() {
+  return (
+    <View style={{ flex: 1 }}>
+      <Carousel />
+    </View>
+  );
+}
+
 function CarouselTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
+        swipeEnabled: false,
         tabBarScrollEnabled: true,
         tabBarIndicator: () => null,
         tabBarStyle: {
@@ -29,7 +54,6 @@ function CarouselTabs() {
           marginHorizontal: 5,
           marginVertical: 10,
           borderRadius: 25,
-          paddingHorizontal: 10,
         },
         tabBarLabelStyle: {
           fontSize: 13,
@@ -43,9 +67,9 @@ function CarouselTabs() {
         name="Currently Reading"
         component={CurrentlyReadingCarousel}
       />
-      <Tab.Screen name="Want To Read" component={Carousel} />
-      <Tab.Screen name="Read" component={Carousel} />
-      <Tab.Screen name="Did Not Finish" component={Carousel} />
+      <Tab.Screen name="Want To Read" component={WantToReadCarousel} />
+      <Tab.Screen name="Read" component={ReadCarousel} />
+      <Tab.Screen name="Did Not Finish" component={DNFCarousel} />
     </Tab.Navigator>
   );
 }

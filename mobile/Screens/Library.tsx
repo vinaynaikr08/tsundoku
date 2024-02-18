@@ -7,7 +7,7 @@ export const Library = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Text style={{ margin: 20, marginLeft: 15, fontWeight: "700", fontSize: 21 }}>Your Library</Text>
-      <CarouselTabs />
+      <CarouselTabs/>
     </SafeAreaView>
   );
 };
