@@ -70,6 +70,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
               height: 7,
               width: 70,
               borderRadius: 5,
+              marginTop: Dimensions.BOOK_INFO_MODAL_GREY_LINE_MARGIN_TOP,
               // top: -265,
               //   marginTop: -250,
               //   marginTop: "-200%",
@@ -98,7 +99,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
           style={{
             fontSize: Dimensions.BOOK_INFO_MODAL_TITLE_FONT_SIZE,
             fontWeight: "bold",
-            marginBottom: 6,
+            marginBottom: Dimensions.BOOK_INFO_MODAL_TITLE_MARGIN_BOT,
           }}
         >
           {bookInfo.title}
@@ -125,7 +126,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
             paddingHorizontal: 10,
             paddingVertical: 5,
             borderRadius: 13,
-            width: "35%",
+            width: "38%",
             height: "5%",
             marginBottom: 10,
           }}

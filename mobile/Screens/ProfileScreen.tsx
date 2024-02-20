@@ -38,7 +38,7 @@ export const Profile = () => {
         bookInfo={{
           coverImage: "",
           title: "The Poppy War",
-          author: "R Kuang",
+          author: "RF Kuang",
           summary:
             "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
         }}
