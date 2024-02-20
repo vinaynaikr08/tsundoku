@@ -126,6 +126,7 @@ export const Carousel = ( {currentShelf} ) => {
         isShelfModalVisible={isShelfModalVisible}
         setShelfModalVisible={setShelfModalVisible}
         currentShelf={currentShelf}
+        books={books}
       />
     </View>
   );
