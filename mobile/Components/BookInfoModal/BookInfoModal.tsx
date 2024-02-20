@@ -1,8 +1,15 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import Modal from "react-native-modal";
 import Dimensions from "../../Constants/Dimensions";
 import Colors from "../../Constants/Colors";
+import BookInfoTabs from "../BookInfoTabs";
+import SelectDropdown from "react-native-select-dropdown";
 
 interface BookInfoModalProps {
   isVisible: boolean;
@@ -20,6 +27,20 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
   onClose,
   bookInfo,
 }) => {
+  const [selectedOption, setSelectedOption] = useState("Mark book as read");
+
+  const dropdownOptions = [
+    "Mark as read",
+    "Read",
+    "Currently reading",
+    "Want to read",
+    "Did not finish",
+  ];
+
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option);
+  };
+
   return (
     <Modal
       isVisible={isVisible}
@@ -49,7 +70,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
               height: 7,
               width: 70,
               borderRadius: 5,
-              top: -265,
+              // top: -265,
               //   marginTop: -250,
               //   marginTop: "-200%",
             }}
@@ -90,21 +111,36 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
         >
           {bookInfo.author}
         </Text>
-        <TouchableOpacity
-          onPress={onClose}
-          style={{
+        <SelectDropdown
+          data={dropdownOptions}
+          onSelect={(selectedItem, index) =>
+            handleOptionSelect(dropdownOptions[index])
+          }
+          buttonTextAfterSelection={(selectedItem: string) => {
+            return selectedItem;
+          }}
+          defaultButtonText={selectedOption}
+          buttonStyle={{
             backgroundColor: Colors.BUTTON_PURPLE,
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            borderRadius: 5,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 13,
+            width: "35%",
+            height: "5%",
             marginBottom: 10,
           }}
-        >
-          <Text style={{ color: "white" }}>Mark book as read</Text>
-        </TouchableOpacity>
-        <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
+          buttonTextStyle={{
+            color: "white",
+            fontWeight: "500",
+            fontSize: 16,
+          }}
+          dropdownStyle={{ backgroundColor: "white" }}
+          rowTextStyle={{ fontSize: 14 }}
+        />
+        <BookInfoTabs />
+        {/* <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
           {bookInfo.summary}
-        </Text>
+        </Text> */}
       </View>
     </Modal>
   );
