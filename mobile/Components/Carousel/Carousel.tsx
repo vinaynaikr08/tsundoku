@@ -36,7 +36,7 @@ const BookCard = ({ title, author, index }: bookInfo) => (
   </View>
 );
 
-export const Carousel = () => {
+export const Carousel = ( {currentShelf} ) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
@@ -125,6 +125,7 @@ export const Carousel = () => {
       <ShelfModal
         isShelfModalVisible={isShelfModalVisible}
         setShelfModalVisible={setShelfModalVisible}
+        currentShelf={currentShelf}
       />
     </View>
   );

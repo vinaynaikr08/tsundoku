@@ -73,7 +73,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 function CurrentlyReadingCarousel() {
   return (
     <View style={{ flex: 1 }}>
-      <Carousel />
+      <Carousel currentShelf={"Currently Reading"} />
     </View>
   );
 }
@@ -81,7 +81,7 @@ function CurrentlyReadingCarousel() {
 function WantToReadCarousel() {
   return (
     <View style={{ flex: 1 }}>
-      <Carousel />
+      <Carousel currentShelf={"Want To Read"} />
     </View>
   );
 }
@@ -89,7 +89,7 @@ function WantToReadCarousel() {
 function ReadCarousel() {
   return (
     <View style={{ flex: 1 }}>
-      <Carousel />
+      <Carousel currentShelf={"Read"} />
     </View>
   );
 }
@@ -97,7 +97,7 @@ function ReadCarousel() {
 function DNFCarousel() {
   return (
     <View style={{ flex: 1 }}>
-      <Carousel />
+      <Carousel currentShelf={"Did Not Finish"} />
     </View>
   );
 }

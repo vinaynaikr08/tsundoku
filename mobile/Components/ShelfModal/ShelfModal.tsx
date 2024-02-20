@@ -6,7 +6,7 @@ import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
 
 
-const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible} ) => {
+const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf} ) => {
 
   type SearchBarComponentProps = {};
 
@@ -53,7 +53,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible} ) => {
           top: 35,
           left: 20,
         }}>
-          <Text style={{fontWeight: 'bold', fontSize: 24}}>Currently Reading</Text>
+          <Text style={{fontWeight: 'bold', fontSize: 24}}>{currentShelf}</Text>
         </View>
         <View
           style={{
