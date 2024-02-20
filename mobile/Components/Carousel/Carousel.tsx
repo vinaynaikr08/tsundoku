@@ -6,6 +6,7 @@ import {
   Text,
   View,
   Button,
+  Pressable,
 } from "react-native";
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -47,7 +48,7 @@ export const Carousel = () => {
   const snapWidth = boxWidth;
 
   return (
-    <View>
+    <View style={styles.container}>
       <FlatList
         horizontal
         data={books}
@@ -95,7 +96,7 @@ export const Carousel = () => {
                 ],
               }}
             >
-              <View style={{width: boxWidth}}>
+              <View style={{ width: boxWidth }}>
                 <BookCard
                   title={item.title}
                   author={item.author}
@@ -106,13 +107,25 @@ export const Carousel = () => {
           );
         }}
       />
-      <View style={{ backgroundColor: "white", height: 40, width: "33%", alignSelf: "center"}}>
-        <Button title="Show modal" 
-          onPress={() => setShelfModalVisible(true)} 
-          color="#000000" 
-        />
+      <View
+        style={{
+          backgroundColor: "white",
+          height: 40,
+          width: "33%",
+          alignSelf: "center",
+        }}
+      >
+        <Pressable
+          onPress={() => setShelfModalVisible(true)}
+          style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
+        >
+          <Text>View All</Text>
+        </Pressable>
       </View>
-      <ShelfModal isShelfModalVisible={isShelfModalVisible} setShelfModalVisible={setShelfModalVisible}/>
+      <ShelfModal
+        isShelfModalVisible={isShelfModalVisible}
+        setShelfModalVisible={setShelfModalVisible}
+      />
     </View>
   );
 };
@@ -134,9 +147,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   container: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   title: {
     fontSize: 30,

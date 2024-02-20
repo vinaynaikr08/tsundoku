@@ -11,5 +11,6 @@ export default {
   // modal attributes
   BOOK_INFO_MODAL_GREY_LINE_COLOR: "#D3D3D3",
 
-  BUTTON_PURPLE: "purple",
+  BUTTON_PURPLE: "#5B2FA3",
+  BUTTON_GRAY: "#F7F7F7"
 };

@@ -1,9 +1,74 @@
 import * as React from "react";
-import { Button, FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Pressable,
+} from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Carousel from "../Carousel/Carousel";
+import Colors from "../../Constants/Colors";
 
 const Tab = createMaterialTopTabNavigator();
+
+function MyTabBar({ state, descriptors, navigation, position }) {
+  return (
+    <View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 15 }}
+      >
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const label =
+            options.tabBarLabel !== undefined
+              ? options.tabBarLabel
+              : options.title !== undefined
+                ? options.title
+                : route.name;
+          const isFocused = state.index === index;
+          const onPress = () => {
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+            });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+          return (
+            <Pressable
+              onPress={onPress}
+              style={{
+                flex: 1,
+                marginHorizontal: 5,
+                backgroundColor: isFocused
+                  ? Colors.BUTTON_PURPLE
+                  : Colors.BUTTON_GRAY,
+                borderRadius: 25,
+                padding: 10,
+                paddingHorizontal: 15,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "600",
+                  color: isFocused ? "white" : "#777777",
+                }}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+}
 
 function CurrentlyReadingCarousel() {
   return (
@@ -40,28 +105,7 @@ function DNFCarousel() {
 function CarouselTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        swipeEnabled: false,
-        tabBarScrollEnabled: true,
-        tabBarIndicator: () => null,
-        tabBarStyle: {
-          backgroundColor: "white",
-        },
-        tabBarItemStyle: {
-          width: "auto",
-          alignItems: "flex-start",
-          backgroundColor: "#5B2FA3",
-          marginHorizontal: 5,
-          marginVertical: 10,
-          borderRadius: 25,
-        },
-        tabBarLabelStyle: {
-          fontSize: 13,
-          textTransform: "capitalize",
-          fontWeight: "500",
-          color: "white"
-        },
-      }}
+      tabBar={(props) => <MyTabBar {...props} />}
     >
       <Tab.Screen
         name="Currently Reading"
