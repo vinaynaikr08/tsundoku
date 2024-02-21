@@ -43,9 +43,10 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
               backgroundColor: "#D3D3D3",
               height: 7,
               width: 70,
+              position: 'absolute',
               borderRadius: 5,
               alignSelf: "center",
-              marginTop: "-175%",
+              top: 5,
             }}
           />
         <View style={{
