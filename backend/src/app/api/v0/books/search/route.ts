@@ -83,6 +83,8 @@ async function createBook({
       google_books_id,
     },
   );
+
+  return res.$id;
 }
 
 async function searchGoogleBooksAPI(title: string) {
