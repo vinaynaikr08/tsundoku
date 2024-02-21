@@ -14,6 +14,8 @@ import Home from "react-native-vector-icons/Entypo";
 import Book from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
+import StarRating from "../StarRating/StarRating";
+import TextReview from "../TextReview/TextReview";
 
 const Stack = createNativeStackNavigator();
 const BottomBar = createBottomTabNavigator();

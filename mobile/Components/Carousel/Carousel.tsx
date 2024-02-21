@@ -28,7 +28,7 @@ type bookInfo = {
   index: number;
 };
 
-const BookCard = ({ title, author, index }: bookInfo) => (
+const BookCard = ({ title, author, index }: bookInfo, navigation) => (
   <View style={styles.card}>
     <Text>{index}</Text>
     <Text style={styles.text}>{title}</Text>
@@ -110,8 +110,6 @@ export const Carousel = ( {currentShelf} ) => {
       <View
         style={{
           backgroundColor: "white",
-          height: 40,
-          width: "33%",
           alignSelf: "center",
         }}
       >

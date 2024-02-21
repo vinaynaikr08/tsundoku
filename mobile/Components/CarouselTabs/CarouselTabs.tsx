@@ -57,6 +57,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
               <Text
                 style={{
                   fontWeight: "600",
+                  fontSize: 14,
                   color: isFocused ? "white" : "#777777",
                 }}
               >
