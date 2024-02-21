@@ -15,15 +15,6 @@ import Dimensions from "../../Constants/Dimensions";
 
 const Tab = createMaterialTopTabNavigator();
 
-interface BookInfoTabsProps {
-  bookInfo: {
-    coverImage: string;
-    title: string;
-    author: string;
-    summary: string;
-  };
-}
-
 function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
   return (
     <View>
@@ -81,12 +72,12 @@ function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
   );
 }
 
-function DescriptionTab() {
+function DescriptionTab(bookInfo) {
   return (
     <View style={{ flex: 1 }}>
       <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
-        {/* {bookInfo.summary} */}
-        hello guys
+        {bookInfo.summary}
+        {/* hello guys */}
       </Text>
     </View>
   );
@@ -112,12 +103,14 @@ function MyNotesTab() {
   );
 }
 
-function BookInfoTabs() {
+function BookInfoTabs(bookInfo) {
   return (
     <Tab.Navigator
-      tabBar={(props) => <MyTabBar bookInfo={undefined} {...props} />}
+      tabBar={(props) => <MyTabBar bookInfo={bookInfo} {...props} />}
     >
-      <Tab.Screen name="Description" component={DescriptionTab} />
+      <Tab.Screen name="Description">
+        {(props) => <DescriptionTab {...props} bookInfo={bookInfo} />}
+      </Tab.Screen>
       <Tab.Screen name="Reviews" component={BookReviewsTab} />
       <Tab.Screen name="My Notes" component={MyNotesTab} />
     </Tab.Navigator>
