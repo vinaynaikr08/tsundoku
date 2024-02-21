@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import Modal from "react-native-modal";
 import Dimensions from "../../Constants/Dimensions";
@@ -89,7 +90,9 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
           }}
           dropdownIconPosition={"right"}
         />
-        <BookInfoTabs bookInfo={bookInfo} />
+        <SafeAreaView>
+          <BookInfoTabs bookInfo={bookInfo} />
+        </SafeAreaView>
         {/* <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
           {bookInfo.summary}
         </Text> */}

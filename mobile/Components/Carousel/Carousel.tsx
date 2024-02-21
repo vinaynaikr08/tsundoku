@@ -16,8 +16,8 @@ import ShelfModal from "../ShelfModal";
 
 const books = [
   { id: "1", title: "The Poppy War", author: "R. F. Kuang" },
-  { id: "2", title: "The Poppy War", author: "R. F. Kuang" },
-  { id: "3", title: "The Poppy War", author: "R. F. Kuang" },
+  { id: "2", title: "The Fifth Season", author: "N. K. Jemisin" },
+  { id: "3", title: "Six of Crows", author: "R. F. Kuang" },
   { id: "4", title: "The Poppy War", author: "R. F. Kuang" },
   { id: "5", title: "The Poppy War", author: "R. F. Kuang" },
 ];
