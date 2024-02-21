@@ -8,6 +8,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
+import Colors from "../Constants/Colors";
 
 export const Profile = () => {
   const [isBookInfoModalVisible, setIsBookInfoModalVisible] = useState(false);
@@ -23,7 +24,7 @@ export const Profile = () => {
       <TouchableOpacity
         onPress={toggleBookInfoModal}
         style={{
-          backgroundColor: "purple",
+          backgroundColor: Colors.BUTTON_PURPLE,
           paddingHorizontal: 20,
           paddingVertical: 10,
           borderRadius: 5,
