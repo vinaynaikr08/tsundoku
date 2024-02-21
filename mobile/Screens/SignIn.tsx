@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.INITIAL_LAUNCH_SCREEN_BG_PINK,
     // alignItems: "center",
     justifyContent: "center",
-    marginBottom: -100,
+    marginBottom: "-20%",
   },
   title: {
     marginTop: 350,

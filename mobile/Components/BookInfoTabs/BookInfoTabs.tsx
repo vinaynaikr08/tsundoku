@@ -22,6 +22,7 @@ function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        bounces={false}
         contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 15 }}
       >
         {state.routes.map((route, index) => {
@@ -76,12 +77,21 @@ function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
 function DescriptionTab(bookInfo: any) {
   return (
     <View style={{ flex: 1 }}>
-      <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
-        <ScrollView>
-          {bookInfo.summary}
-          {/* hello guys */}
-        </ScrollView>
-      </Text>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          paddingBottom: 330,
+          marginBottom: 100,
+          paddingHorizontal: 5,
+        }}
+      >
+        <TouchableOpacity>
+          <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
+            {bookInfo.summary}
+            {/* hello guys */}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
@@ -98,7 +108,6 @@ function BookReviewsTab() {
           //   flexGrow: 1,
         }}
       >
-        {/* <View style={{ flex: 1 }}> */}
         <TouchableOpacity>
           <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
             An epic historical military fantasy, inspired by the bloody history
@@ -132,7 +141,6 @@ function BookReviewsTab() {
             already be too late.
           </Text>
         </TouchableOpacity>
-        {/* </View> */}
       </ScrollView>
     </View>
   );
@@ -141,9 +149,20 @@ function BookReviewsTab() {
 function MyNotesTab() {
   return (
     <View style={{ flex: 1 }}>
-      <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
-        Hello
-      </Text>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          paddingBottom: 330,
+          marginBottom: 100,
+          paddingHorizontal: 5,
+        }}
+      >
+        <TouchableOpacity>
+          <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
+            Hello
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
