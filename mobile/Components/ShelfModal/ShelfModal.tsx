@@ -89,16 +89,24 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
               }}
               renderItem={({item}) => {
                 return (
-                  <TouchableOpacity activeOpacity={1} >
-                    <Text style={{ fontSize: 20}}>{item.title}</Text>
-                    <Text >{item.author}</Text>
-                    <Text style={{ fontSize: 20}}>{item.title}</Text>
-                    <Text >{item.author}</Text>
-                    <Text style={{ fontSize: 20}}>{item.title}</Text>
-                    <Text >{item.author}</Text>
-                    <Text style={{ fontSize: 20}}>{item.title}</Text>
-                    <Text >{item.author}</Text>
-                  </TouchableOpacity>
+                  <View >
+                    <TouchableOpacity activeOpacity={1} style={{flexDirection: "row", paddingTop: 8}} >
+                      <View style={{
+                        backgroundColor: "pink",
+                        width: 45,
+                        height: 60,
+                        
+                      }}/>
+                      <View style={{
+                        paddingLeft: 10
+                      }}>
+                        <Text style={{ fontSize: 20}}>{item.title}</Text>
+                        <Text >{item.author}</Text>
+                        <Text >ISBN: temp</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <Divider style={{paddingTop: 8, paddingBottom: 8}} />
+                  </View>
                 )
               }}
               />
@@ -107,13 +115,4 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
     </Modal>
   );
 }
-/*<ScrollView>
-            <TouchableOpacity activeOpacity={1}>
-              <Text style={{fontSize:100}}>Here</Text>
-              <Text style={{fontSize:100}}>Here</Text>
-              <Text style={{fontSize:100}}>Here</Text>
-              <Text style={{fontSize:100}}>Here</Text>
-
-            </TouchableOpacity>
-          </ScrollView>  */
 export default ShelfModal;
