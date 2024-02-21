@@ -81,7 +81,8 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
             defaultButtonText={selectedOption}
             buttonStyle={styles.markAsReadButton}
             buttonTextStyle={styles.readButtonText}
-            dropdownStyle={{ backgroundColor: "white" }}
+            dropdownStyle={{ backgroundColor: "grey" }}
+            dropdownOverlayColor={"transparent"}
             rowTextStyle={{ fontSize: 14 }}
             renderDropdownIcon={(isOpened) => {
               return (
