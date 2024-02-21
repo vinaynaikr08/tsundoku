@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
+    // This should probably be read from environment variables
+    // TODO: change to environment variable reading!
     googleBooksAPIKey: "AIzaSyDdeix16-v0urpjbY5x9PMDGgxgMKQrHeU",
     appwriteEndpoint: "https://tsundoku-server.ericswpark.com/v1",
     appwriteProjectID: "65ccf0b6d76765229231",
