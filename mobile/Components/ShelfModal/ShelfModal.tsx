@@ -18,7 +18,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
   return (
     <Modal 
       isVisible={isShelfModalVisible}
-      onSwipeComplete={() => { setShelfModalVisible(false); }}
+      onSwipeComplete={() => { setShelfModalVisible(false); setSearch("") }}
       swipeDirection={["down"]}
       style={{ 
         marginBottom: 0,
@@ -79,7 +79,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
             marginTop: -14
           }}>
             <FlatList 
-              data={books.filter((e) => ((e.title).includes(search)))}        
+              data={books.filter((e) => (((e.title).toUpperCase()).includes(search.toUpperCase()) || ((e.author).toUpperCase()).includes(search.toUpperCase())))}        
               scrollEventThrottle={1}
               style={{
                 flex: 1,
