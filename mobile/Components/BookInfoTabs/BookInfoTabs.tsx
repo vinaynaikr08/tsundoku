@@ -79,13 +79,10 @@ function DescriptionTab(bookInfo: any) {
     <View style={{ flex: 1 }}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{
-          paddingBottom: 330,
-          marginBottom: 100,
-          paddingHorizontal: 5,
-        }}
+        bounces={false}
+        contentContainerStyle={styles.scrollViewStyle}
       >
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
             {bookInfo.summary}
             {/* hello guys */}
@@ -101,14 +98,10 @@ function BookReviewsTab() {
     <View style={{ flex: 1 }}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{
-          paddingBottom: 330,
-          marginBottom: 100,
-          paddingHorizontal: 5,
-          //   flexGrow: 1,
-        }}
+        bounces={false}
+        contentContainerStyle={styles.scrollViewStyle}
       >
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
             An epic historical military fantasy, inspired by the bloody history
             of China’s twentieth century and filled with treachery and magic.
@@ -151,13 +144,10 @@ function MyNotesTab() {
     <View style={{ flex: 1 }}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{
-          paddingBottom: 330,
-          marginBottom: 100,
-          paddingHorizontal: 5,
-        }}
+        bounces={false}
+        contentContainerStyle={styles.scrollViewStyle}
       >
-        <TouchableOpacity>
+        <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
             Hello
           </Text>
@@ -188,3 +178,13 @@ function BookInfoTabs(bookInfo: any) {
 }
 
 export default BookInfoTabs;
+
+const styles = StyleSheet.create({
+  scrollViewStyle: {
+    paddingBottom: 330,
+    marginBottom: 100,
+    paddingHorizontal: 5,
+    backgroundColor: "white",
+    //   flexGrow: 1,
+  },
+});
