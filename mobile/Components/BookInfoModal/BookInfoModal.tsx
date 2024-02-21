@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
 import Dimensions from "../../Constants/Dimensions";
@@ -45,12 +46,14 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
   };
 
   return (
+    // <View style={{ flex: 1 }}>
     <Modal
       isVisible={isVisible}
       onSwipeComplete={onClose}
       swipeDirection={["down"]}
       style={{ marginBottom: 0 }}
     >
+      {/* <ScrollView contentContainerStyle={styles.modalScrollContainer}> */}
       <View style={styles.modalStyle}>
         <View style={{ alignItems: "center" }}>
           <View style={styles.modalGreyLine} />
@@ -97,7 +100,9 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
           {bookInfo.summary}
         </Text> */}
       </View>
+      {/* </ScrollView> */}
     </Modal>
+    // </View>
   );
 };
 
@@ -118,8 +123,12 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 13,
   },
+  modalScrollContainer: {
+    // flex: 1,
+  },
   modalStyle: {
     flex: 1,
+    // maxHeight: Dimensions.get('window').height - 50,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",

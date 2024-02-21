@@ -106,6 +106,7 @@ function MyNotesTab() {
 function BookInfoTabs(bookInfo) {
   return (
     <Tab.Navigator
+      screenOptions={{ animationEnabled: false }}
       tabBar={(props) => <MyTabBar bookInfo={bookInfo} {...props} />}
     >
       <Tab.Screen name="Description">
