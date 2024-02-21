@@ -33,23 +33,21 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
         alignItems: "center",
         backgroundColor: "white",
         width: "100%",
-        height: "94%",
+        height: "86%",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        marginTop: 50
+        marginTop: '30%'
       }}>
-        <View style={{ alignItems: "center" }}>
-          <View
+        <View
             style={{
               backgroundColor: "#D3D3D3",
               height: 7,
               width: 70,
               borderRadius: 5,
-              position: "absolute",
-              bottom: 370,
+              alignSelf: "center",
+              marginTop: "-175%",
             }}
           />
-        </View>
         <View style={{
           position: "absolute",
           top: 35,
@@ -66,7 +64,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
             left: 20,
             paddingBottom: 0
           }}>
-          <BookSearchBar />
+          <BookSearchBar search={search} updateSearch={updateSearch} />
           <Divider style={{marginTop: 11, paddingBottom: 0}}/>
         </View>
         <View style={{
@@ -81,7 +79,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
             marginTop: -14
           }}>
             <FlatList 
-              data={books}        
+              data={books.filter((e) => ((e.title).includes(search)))}        
               scrollEventThrottle={1}
               style={{
                 flex: 1,

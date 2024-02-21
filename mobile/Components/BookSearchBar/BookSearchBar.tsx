@@ -6,8 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import {} from "react-native-vector-icons"
 import { RadioButton } from 'react-native-paper';
 
-const BookSearchBar = () => {
-    const [search, setSearch] = useState("");
+const BookSearchBar = ( {search, updateSearch} ) => {
     const [checked, setChecked] = React.useState('title');
     const [isOverlayVisible, setOverlayVisible] = useState(false);
 
@@ -25,10 +24,6 @@ const BookSearchBar = () => {
         setRomance(false);
         setScienceFiction(false);
         setMystery(false);
-    };
-
-    const updateSearch = (search) => {
-        setSearch(search);
     };
 
     return (
