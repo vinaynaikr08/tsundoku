@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   modalStyle: {
     flex: 1,
     // maxHeight: Dimensions.get('window').height - 50,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
     width: "110%",
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     height: 7,
     width: 70,
     borderRadius: 5,
-    marginTop: "75%",
+    marginTop: "3%",
     // marginTop: Dimensions.BOOK_INFO_MODAL_GREY_LINE_MARGIN_TOP,
     // top: -265,
     //   marginTop: -250,
