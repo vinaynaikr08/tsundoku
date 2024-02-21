@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
     // Only check the first item (for now)
     if (gbooks_books.length >= 1) {
       const gbooks_target_book = gbooks_books[0];
-      let author_id = get_or_create_author_id(
+      let author_id = await get_or_create_author_id(
         gbooks_target_book.volumeInfo.authors[0],
       );
 
