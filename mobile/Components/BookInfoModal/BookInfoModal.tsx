@@ -46,19 +46,19 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
   };
 
   return (
-    // <View style={{ flex: 1 }}>
-    <Modal
-      isVisible={isVisible}
-      onSwipeComplete={onClose}
-      swipeDirection={["down"]}
-      style={{ marginBottom: 0 }}
-    >
-      {/* <ScrollView contentContainerStyle={styles.modalScrollContainer}> */}
-      <View style={styles.modalStyle}>
-        <View style={{ alignItems: "center" }}>
-          <View style={styles.modalGreyLine} />
-        </View>
-        {/* <Image
+    <View style={styles.outsideModalContainer}>
+      <Modal
+        isVisible={isVisible}
+        onSwipeComplete={onClose}
+        swipeDirection={["down"]}
+        style={{ marginBottom: 0 }}
+      >
+        {/* <ScrollView contentContainerStyle={styles.modalScrollContainer}> */}
+        <View style={styles.modalStyle}>
+          <View style={{ alignItems: "center" }}>
+            <View style={styles.modalGreyLine} />
+          </View>
+          {/* <Image
             source={{ uri: bookInfo.coverImage }}
             style={{
               width: Dimensions.BOOK_INFO_MODAL_COVER_WIDTH,
@@ -66,43 +66,43 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
               marginBottom: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_BOTTOM,
             }}
           /> */}
-        <View style={styles.bookCoverStyle} />
-        <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
-        <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
-        <SelectDropdown
-          data={dropdownOptions}
-          onSelect={(selectedItem, index) =>
-            handleOptionSelect(dropdownOptions[index])
-          }
-          buttonTextAfterSelection={(selectedItem: string) => {
-            return selectedItem;
-          }}
-          defaultButtonText={selectedOption}
-          buttonStyle={styles.markAsReadButton}
-          buttonTextStyle={styles.readButtonText}
-          dropdownStyle={{ backgroundColor: "white" }}
-          rowTextStyle={{ fontSize: 14 }}
-          renderDropdownIcon={(isOpened) => {
-            return (
-              <FontAwesome
-                name={isOpened ? "chevron-up" : "chevron-down"}
-                color={"white"}
-                size={15}
-              />
-            );
-          }}
-          dropdownIconPosition={"right"}
-        />
-        <SafeAreaView>
-          <BookInfoTabs bookInfo={bookInfo} />
-        </SafeAreaView>
-        {/* <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
+          <View style={styles.bookCoverStyle} />
+          <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
+          <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
+          <SelectDropdown
+            data={dropdownOptions}
+            onSelect={(selectedItem, index) =>
+              handleOptionSelect(dropdownOptions[index])
+            }
+            buttonTextAfterSelection={(selectedItem: string) => {
+              return selectedItem;
+            }}
+            defaultButtonText={selectedOption}
+            buttonStyle={styles.markAsReadButton}
+            buttonTextStyle={styles.readButtonText}
+            dropdownStyle={{ backgroundColor: "white" }}
+            rowTextStyle={{ fontSize: 14 }}
+            renderDropdownIcon={(isOpened) => {
+              return (
+                <FontAwesome
+                  name={isOpened ? "chevron-up" : "chevron-down"}
+                  color={"white"}
+                  size={15}
+                />
+              );
+            }}
+            dropdownIconPosition={"right"}
+          />
+          <SafeAreaView>
+            <BookInfoTabs bookInfo={bookInfo} />
+          </SafeAreaView>
+          {/* <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
           {bookInfo.summary}
         </Text> */}
-      </View>
-      {/* </ScrollView> */}
-    </Modal>
-    // </View>
+        </View>
+        {/* </ScrollView> */}
+      </Modal>
+    </View>
   );
 };
 
@@ -126,6 +126,9 @@ const styles = StyleSheet.create({
   modalScrollContainer: {
     // flex: 1,
   },
+  outsideModalContainer: {
+    flex: 1,
+  },
   modalStyle: {
     flex: 1,
     // maxHeight: Dimensions.get('window').height - 50,
@@ -140,20 +143,22 @@ const styles = StyleSheet.create({
     marginRight: Dimensions.BOOK_INFO_MODAL_MARGIN_RIGHT,
   },
   modalGreyLine: {
-    position: "absolute",
+    position: "relative",
     backgroundColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
     height: 7,
     width: 70,
     borderRadius: 5,
-    marginTop: Dimensions.BOOK_INFO_MODAL_GREY_LINE_MARGIN_TOP,
+    marginTop: "75%",
+    // marginTop: Dimensions.BOOK_INFO_MODAL_GREY_LINE_MARGIN_TOP,
     // top: -265,
     //   marginTop: -250,
     //   marginTop: "-200%",
   },
   bookCoverStyle: {
+    position: "relative",
     width: Dimensions.BOOK_INFO_MODAL_COVER_WIDTH,
     height: Dimensions.BOOK_INFO_MODAL_COVER_HEIGHT,
-    marginTop: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_TOP,
+    marginTop: "5%",
     backgroundColor: Colors.BUTTON_PURPLE,
     borderRadius: Dimensions.BOOK_INFO_MODAL_COVER_RADIUS,
     marginBottom: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_BOTTOM,

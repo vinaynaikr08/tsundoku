@@ -72,7 +72,7 @@ function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
   );
 }
 
-function DescriptionTab(bookInfo) {
+function DescriptionTab(bookInfo: any) {
   return (
     <View style={{ flex: 1 }}>
       <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
@@ -109,9 +109,13 @@ function BookInfoTabs(bookInfo) {
       screenOptions={{ animationEnabled: false }}
       tabBar={(props) => <MyTabBar bookInfo={bookInfo} {...props} />}
     >
-      <Tab.Screen name="Description">
-        {(props) => <DescriptionTab {...props} bookInfo={bookInfo} />}
-      </Tab.Screen>
+      <Tab.Screen
+        name="Description"
+        component={DescriptionTab}
+        initialParams={{ bookInfo: bookInfo }}
+      />
+      {/* {(props) => <DescriptionTab {...props} bookInfo={bookInfo} />} */}
+      {/* </Tab.Screen> */}
       <Tab.Screen name="Reviews" component={BookReviewsTab} />
       <Tab.Screen name="My Notes" component={MyNotesTab} />
     </Tab.Navigator>
