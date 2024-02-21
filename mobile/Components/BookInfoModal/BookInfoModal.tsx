@@ -52,6 +52,7 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
         onSwipeComplete={onClose}
         swipeDirection={["down"]}
         style={{ marginBottom: 0 }}
+        propagateSwipe={true}
       >
         {/* <ScrollView contentContainerStyle={styles.modalScrollContainer}> */}
         <View style={styles.modalStyle}>

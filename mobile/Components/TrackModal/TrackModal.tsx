@@ -20,7 +20,7 @@ const TrackModal: React.FC<TrackModalProps> = ({ isVisible, onClose }) => {
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
+          // justifyContent: "center",
           alignItems: "center",
           backgroundColor: "white",
           width: "110%",
@@ -31,18 +31,20 @@ const TrackModal: React.FC<TrackModalProps> = ({ isVisible, onClose }) => {
           marginRight: Dimensions.BOOK_INFO_MODAL_MARGIN_RIGHT,
         }}
       >
-        <View style={{ alignItems: "center" }}>
+        {/* <View style={{ alignItems: "center" }}> */}
+        <View style={{ alignItems: "flex-start" }}>
           <View
             style={{
               backgroundColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
               height: 7,
               width: 70,
               borderRadius: 5,
-              marginTop: "-86%",
+              marginTop: "3%",
+              // marginTop: "-86%",
             }}
           />
         </View>
-        <Text>Text</Text>
+        <Text style={{ justifyContent: "center", marginTop: "50%" }}>Text</Text>
         <TouchableOpacity onPress={onClose}>
           <Text>Here</Text>
         </TouchableOpacity>
