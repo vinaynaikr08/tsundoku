@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from "react-native";
 import React from "react";
 import { useState, } from "react";
 import Modal from "react-native-modal";
@@ -18,7 +18,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
   return (
     <Modal 
       isVisible={isShelfModalVisible}
-      onSwipeComplete={() => { setShelfModalVisible(false); setSearch("") }}
+      onSwipeComplete={() => { setShelfModalVisible(false); setSearch(""); Keyboard.dismiss }}
       swipeDirection={["down"]}
       style={{ 
         marginBottom: 0,
@@ -26,8 +26,10 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
         marginLeft: 0,
       }}
       propagateSwipe={true}
-      scrollOffset={10000}
+      onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
+      onSwipeCancel={Keyboard.dismiss}
     >
+
       <View style={{
         justifyContent: "center",
         alignItems: "center",
@@ -46,7 +48,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
               position: 'absolute',
               borderRadius: 5,
               alignSelf: "center",
-              top: 5,
+              top: 10,
             }}
           />
         <View style={{
@@ -66,7 +68,6 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
             paddingBottom: 0
           }}>
           <BookSearchBar search={search} updateSearch={updateSearch} />
-          <Divider style={{marginTop: 11, paddingBottom: 0}}/>
         </View>
         <View style={{
             flex: 1,

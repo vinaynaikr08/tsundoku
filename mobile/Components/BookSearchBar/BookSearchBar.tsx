@@ -1,7 +1,7 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableWithoutFeedback, Keyboard, } from "react-native";
 import React from "react";
 import { useState, } from "react";
-import { Button, SearchBar, Overlay, CheckBox, } from "@rneui/base";
+import { Button, SearchBar, Overlay, CheckBox, Divider, } from "@rneui/base";
 import Icon from "react-native-vector-icons/Ionicons";
 import {} from "react-native-vector-icons"
 import { RadioButton } from 'react-native-paper';
@@ -29,19 +29,21 @@ const BookSearchBar = ( {search, updateSearch} ) => {
     return (
         <View>
             <View style={{ backgroundColor: "white", flexDirection: "row" }} >
-                <View style={{ flex: 10 }}>
-                    <SearchBar
-                    placeholder={"Search list"}
-                    lightTheme
-                    round
-                    onChangeText={updateSearch}
-                    value={search}
-                    autoCorrect={false}
-                    containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
-                    inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
-                    style={{position: "relative", }}
-                    />
-                </View>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    <View style={{ flex: 10 }}>
+                        <SearchBar
+                        placeholder={"Search list"}
+                        lightTheme
+                        round
+                        onChangeText={updateSearch}
+                        value={search}
+                        autoCorrect={false}
+                        containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
+                        inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
+                        style={{position: "relative", }}
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
                 <View style={{ flex: 2, alignItems:"center"}}>
                     <Button type="clear" onPress={ toggleOverlay } icon={<Icon name="filter" color={"#5B2FA3"} size={30} /> } />
                 </View>
@@ -97,6 +99,8 @@ const BookSearchBar = ( {search, updateSearch} ) => {
                     </View>
                 </Overlay>
             </View>
+            <Divider style={{marginTop: 11, paddingBottom: 0}}/>
+
             {/*}
             <View style={{position: "absolute", bottom: -40, flexDirection: "row"}}>
                 <Text style={{marginLeft: 0, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
