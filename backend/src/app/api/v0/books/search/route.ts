@@ -18,12 +18,14 @@ async function createEdition({
   publisher,
   publish_date,
   page_count,
+  thumbnail_url,
 }: {
   isbn_13: any;
   isbn_10: any;
   publisher: any;
   publish_date: any;
   page_count: any;
+  thumbnail_url: string;
 }) {
   let res = await databases.createDocument(
     MAIN_DB_ID,
@@ -35,6 +37,7 @@ async function createEdition({
       publisher,
       publish_date,
       page_count,
+      thumbnail_url,
     },
   );
   return res.$id;
@@ -155,6 +158,7 @@ export async function GET(request: NextRequest) {
           publisher: gbooks_target_book.volumeInfo.publisher,
           publish_date: gbooks_target_book.volumeInfo.published_date,
           page_count: gbooks_target_book.volumeInfo.pageCount,
+          thumbnail_url: gbooks_target_book.volumeInfo.imageLinks.thumbnail,
         });
 
         createBook({
