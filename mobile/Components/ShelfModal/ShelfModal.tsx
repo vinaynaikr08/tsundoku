@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Keyboard, } from "react-native";
 import React from "react";
 import { useState, } from "react";
 import Modal from "react-native-modal";
@@ -26,7 +26,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
         marginLeft: 0,
       }}
       propagateSwipe={true}
-      onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
+      onBackdropPress={() => { setShelfModalVisible(false); setSearch("") }}
       onSwipeCancel={Keyboard.dismiss}
     >
 
@@ -78,7 +78,7 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
             top: 150,
             left: 20,
             paddingTop: 0,
-            marginTop: -14
+            marginTop: -14,
           }}>
             <FlatList 
               data={books.filter((e) => (((e.title).toUpperCase()).includes(search.toUpperCase()) || ((e.author).toUpperCase()).includes(search.toUpperCase())))}        
@@ -90,26 +90,27 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
               renderItem={({item}) => {
                 return (
                   <View >
-                    <TouchableOpacity activeOpacity={1} style={{flexDirection: "row", paddingTop: 8}} >
-                      <View style={{
-                        backgroundColor: "pink",
-                        width: 45,
-                        height: 60,
-                        
-                      }}/>
-                      <View style={{
-                        paddingLeft: 10
-                      }}>
-                        <Text style={{ fontSize: 20}}>{item.title}</Text>
-                        <Text >{item.author}</Text>
-                        <Text >ISBN: temp</Text>
-                      </View>
+                    <TouchableOpacity activeOpacity={1} style={{ paddingTop: 8, }} >
+                      <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => alert('temp')}>
+                        <View style={{
+                          backgroundColor: "pink",
+                          width: 65,
+                          height: 90,
+                        }}/>
+                        <View style={{
+                          paddingLeft: 10
+                        }}>
+                          <Text style={{ fontSize: 20}}>{item.title}</Text>
+                          <Text >{item.author}</Text>
+                          <Text >ISBN: temp</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <Divider style={{paddingTop: 8, paddingBottom: 8}} />
                     </TouchableOpacity>
-                    <Divider style={{paddingTop: 8, paddingBottom: 8}} />
                   </View>
                 )
               }}
-              />
+            />
         </View>
       </View>
     </Modal>
