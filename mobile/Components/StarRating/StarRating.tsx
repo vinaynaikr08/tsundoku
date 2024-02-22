@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, Pressable, Button } from "react-native";
 import Modal from "react-native-modal";
 import TextReview from "../TextReview/TextReview";
@@ -10,14 +10,17 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
-function StarRating() {
+function StarRating(props) {
   const [isTextReviewModalVisible, setTextReviewModalVisible] = useState(false);
-  const navigation = useNavigation();
+  const { navigation } = props;
 
-  const nextScreen = () => {
-    // setTextReviewModalVisible(true);
-    // setStarRatingModalVisible(false);
-  };
+  useEffect(() => {
+    if (isTextReviewModalVisible === true) {
+      setTextReviewModalVisible(false);
+      navigation.navigate("textReviewModal");
+    }
+  }, [isTextReviewModalVisible]);
+
   return (
     <View
       style={{
@@ -32,15 +35,11 @@ function StarRating() {
     >
       <Text>I am the modal content!</Text>
       <Pressable
-        onPress={nextScreen}
+        onPress={() => setTextReviewModalVisible(true)}
         style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
       >
-        <Text>Star Rating</Text>
+        <Text>Go to text review</Text>
       </Pressable>
-      <TextReview
-        isTextReviewModalVisible={isTextReviewModalVisible}
-        setTextReviewModalVisible={setTextReviewModalVisible}
-      />
     </View>
   );
 }
@@ -69,7 +68,7 @@ function StarRating() {
 //         marginTop: 50,
 //       }}
 //     >
-        
+
 //     </Modal>
 //   );
 // }

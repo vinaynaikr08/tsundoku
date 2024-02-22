@@ -1,5 +1,11 @@
-import NavBar from "./Components/NavBar";
+import { NavigationContainer } from "@react-navigation/native";
+import NavBar from "./navigation/NavBar";
+import AppNavigation from "./navigation/AppNavigation";
 
 export default function App() {
-  return <NavBar />;
+  return (
+    <NavigationContainer>
+      <AppNavigation />
+    </NavigationContainer>
+  );
 }

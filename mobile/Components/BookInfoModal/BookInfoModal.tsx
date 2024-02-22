@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,9 @@ import Colors from "../../Constants/Colors";
 import BookInfoTabs from "../BookInfoTabs";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { BookInfoContext } from "../../Contexts";
+import { useRoute } from "@react-navigation/native"
+
 
 interface BookInfoModalProps {
   isVisible: boolean;
@@ -26,11 +29,20 @@ interface BookInfoModalProps {
   };
 }
 
+const bookInfo = {
+  coverImage: "",
+  title: "The Poppy War",
+  author: "RF Kuang",
+  summary:
+    "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
+};
+
 const BookInfoModal: React.FC<BookInfoModalProps> = ({
   isVisible,
   onClose,
-  bookInfo,
 }) => {
+  const route = useRoute()
+  //const {bookInfo} = route.params?.bookInfo;
   const [selectedOption, setSelectedOption] = useState("Mark book as read");
 
   const dropdownOptions = [
@@ -47,13 +59,6 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
 
   return (
     <View style={styles.outsideModalContainer}>
-      <Modal
-        isVisible={isVisible}
-        onSwipeComplete={onClose}
-        swipeDirection={["down"]}
-        style={{ marginBottom: 0 }}
-        propagateSwipe={true}
-      >
         {/* <ScrollView contentContainerStyle={styles.modalScrollContainer}> */}
         <View style={styles.modalStyle}>
           <View style={{ alignItems: "center" }}>
@@ -103,7 +108,6 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
         </Text> */}
         </View>
         {/* </ScrollView> */}
-      </Modal>
     </View>
   );
 };
@@ -140,7 +144,6 @@ const styles = StyleSheet.create({
     width: "110%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    marginTop: "30%",
     marginLeft: Dimensions.BOOK_INFO_MODAL_MARGIN_LEFT,
     marginRight: Dimensions.BOOK_INFO_MODAL_MARGIN_RIGHT,
   },

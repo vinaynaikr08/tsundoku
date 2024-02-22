@@ -42,6 +42,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
           };
           return (
             <Pressable
+              key={index}
               onPress={onPress}
               style={{
                 flex: 1,
@@ -74,7 +75,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 function CurrentlyReadingCarousel() {
   return (
     <View style={{ flex: 1 }}>
-      <Carousel currentShelf={"Currently Reading"} />
+      <Carousel />
     </View>
   );
 }
@@ -103,11 +104,9 @@ function DNFCarousel() {
   );
 }
 
-function CarouselTabs() {
+function CarouselTabs({ navigation }) {
   return (
-    <Tab.Navigator
-      tabBar={(props) => <MyTabBar {...props} />}
-    >
+    <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
       <Tab.Screen
         name="Currently Reading"
         component={CurrentlyReadingCarousel}

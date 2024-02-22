@@ -8,11 +8,14 @@ import {
   Button,
   Pressable,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 import Colors from "../../Constants/Colors";
 import ShelfModal from "../ShelfModal";
+import { useNavigation } from "@react-navigation/native";
+
+import { NavigationContext } from "../../Contexts";
 
 const books = [
   { id: "1", title: "The Poppy War", author: "R. F. Kuang" },
@@ -36,7 +39,8 @@ const BookCard = ({ title, author, index }: bookInfo, navigation) => (
   </View>
 );
 
-export const Carousel = ( {currentShelf} ) => {
+export const Carousel = (props) => {
+  const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;
 
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
@@ -114,18 +118,18 @@ export const Carousel = ( {currentShelf} ) => {
         }}
       >
         <Pressable
-          onPress={() => setShelfModalVisible(true)}
+          onPress={() => navigation.navigate("shelfModal")}
           style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
         >
           <Text>View All</Text>
         </Pressable>
       </View>
-      <ShelfModal
+      {/* <ShelfModal
         isShelfModalVisible={isShelfModalVisible}
         setShelfModalVisible={setShelfModalVisible}
         currentShelf={currentShelf}
         books={books}
-      />
+      /> */}
     </View>
   );
 };

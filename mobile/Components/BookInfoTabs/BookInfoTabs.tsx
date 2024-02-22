@@ -45,6 +45,7 @@ function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
           };
           return (
             <Pressable
+              key={index}
               onPress={onPress}
               style={{
                 flex: 1,

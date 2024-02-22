@@ -6,34 +6,38 @@ import StarRating from "../Components/StarRating/StarRating";
 import { createStackNavigator } from "@react-navigation/stack";
 import TextReview from "../Components/TextReview/TextReview";
 import { useNavigation } from "@react-navigation/native";
+import { createContext, useContext } from "react";
+
+import { NavigationContext } from "../Contexts";
 
 const Stack = createStackNavigator();
 
-export const Library = () => {
+export const Library = (props) => {
+  const { navigation } = props;
   const [isReviewModalVisible, setReviewModalVisible] = useState(false);
-  const navigation = useNavigation();
-
   return (
-    <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
-      <Text
-        style={{
-          marginLeft: 20,
-          marginBottom: 15,
-          marginTop: 5,
-          fontWeight: "700",
-          fontSize: 21,
-        }}
-      >
-        Your Library
-      </Text>
-      <CarouselTabs />
-      {/* <Pressable
-          onPress={() => navigation.navigate("StarRating")}
-          style={{ backgroundColor: 'gray', padding: 10 }}
+    <NavigationContext.Provider value={navigation}>
+      <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
+        <Text
+          style={{
+            marginLeft: 20,
+            marginBottom: 15,
+            marginTop: 5,
+            fontWeight: "700",
+            fontSize: 21,
+          }}
+        >
+          Your Library
+        </Text>
+        <CarouselTabs navigation={navigation} />
+        <Pressable
+          onPress={() => navigation.navigate("starRatingModal")}
+          style={{ backgroundColor: "gray", padding: 10 }}
         >
           <Text>Star Rating</Text>
-        </Pressable> */}
-    </SafeAreaView>
+        </Pressable>
+      </SafeAreaView>
+    </NavigationContext.Provider>
   );
 };
 
@@ -48,4 +52,3 @@ export const Library = () => {
 //     </Stack.Navigator>
 //   );
 // };
-

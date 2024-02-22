@@ -4,30 +4,19 @@ import Modal from "react-native-modal";
 
 function TextReview({ isTextReviewModalVisible, setTextReviewModalVisible }) {
   return (
-    <Modal
-      isVisible={isTextReviewModalVisible}
-      onSwipeComplete={() => {
-        setTextReviewModalVisible(false);
-      }}
-      swipeDirection={["down"]}
+    <View
       style={{
-        marginBottom: 0
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+        width: "100%",
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-          width: "100%",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-        }}
-      >
-        <Text>Text Review</Text>
-      </View>
-    </Modal>
+      <Text>Text Review</Text>
+    </View>
   );
 }
 

@@ -1,32 +1,45 @@
-import { View, Text, FlatList, TouchableOpacity, Keyboard, } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from "react-native";
 import React from "react";
 import { useState, } from "react";
 import Modal from "react-native-modal";
 import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
 
-const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, books} ) => {
+import { NavigationContext } from "../../Contexts";
 
+const ShelfModal = ({
+  isShelfModalVisible,
+  setShelfModalVisible,
+  currentShelf,
+}) => {
   type SearchBarComponentProps = {};
-
+  const navigation = useContext(NavigationContext);
   const [search, setSearch] = useState("");
 
   const updateSearch = (search) => {
     setSearch(search);
   };
-   
+
+  const books = [
+    { id: "1", title: "The Poppy War", author: "R. F. Kuang" },
+    { id: "2", title: "The Fifth Season", author: "N. K. Jemisin" },
+    { id: "3", title: "Six of Crows", author: "R. F. Kuang" },
+    { id: "4", title: "The Poppy War", author: "R. F. Kuang" },
+    { id: "5", title: "The Poppy War", author: "R. F. Kuang" },
+  ];
+
   return (
-    <Modal 
+    <Modal
       isVisible={isShelfModalVisible}
       onSwipeComplete={() => { setShelfModalVisible(false); setSearch(""); Keyboard.dismiss }}
       swipeDirection={["down"]}
-      style={{ 
+      style={{
         marginBottom: 0,
         marginRight: 0,
         marginLeft: 0,
       }}
       propagateSwipe={true}
-      onBackdropPress={() => { setShelfModalVisible(false); setSearch("") }}
+      onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
       onSwipeCancel={Keyboard.dismiss}
     >
 
@@ -35,23 +48,24 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
         alignItems: "center",
         backgroundColor: "white",
         width: "100%",
-        height: "86%",
+        height: "95%",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        marginTop: '30%'
-      }}>
-        <View
-            style={{
-              backgroundColor: "#D3D3D3",
-              height: 7,
-              width: 70,
-              position: 'absolute',
-              borderRadius: 5,
-              alignSelf: "center",
-              top: 10,
-            }}
-          />
-        <View style={{
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: "#D3D3D3",
+          height: 7,
+          width: 70,
+          position: "absolute",
+          borderRadius: 5,
+          alignSelf: "center",
+          top: 10,
+        }}
+      />
+      <View
+        style={{
           position: "absolute",
           top: 35,
           left: 20,
@@ -78,10 +92,10 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
             top: 150,
             left: 20,
             paddingTop: 0,
-            marginTop: -14,
+            marginTop: -14
           }}>
-            <FlatList 
-              data={books.filter((e) => (((e.title).toUpperCase()).includes(search.toUpperCase()) || ((e.author).toUpperCase()).includes(search.toUpperCase())))}        
+            <FlatList
+              data={books.filter((e) => (((e.title).toUpperCase()).includes(search.toUpperCase()) || ((e.author).toUpperCase()).includes(search.toUpperCase())))}
               scrollEventThrottle={1}
               style={{
                 flex: 1,
@@ -90,30 +104,29 @@ const ShelfModal = ( {isShelfModalVisible, setShelfModalVisible, currentShelf, b
               renderItem={({item}) => {
                 return (
                   <View >
-                    <TouchableOpacity activeOpacity={1} style={{ paddingTop: 8, }} >
-                      <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => alert('temp')}>
-                        <View style={{
-                          backgroundColor: "pink",
-                          width: 65,
-                          height: 90,
-                        }}/>
-                        <View style={{
-                          paddingLeft: 10
-                        }}>
-                          <Text style={{ fontSize: 20}}>{item.title}</Text>
-                          <Text >{item.author}</Text>
-                          <Text >ISBN: temp</Text>
-                        </View>
-                      </TouchableOpacity>
-                      <Divider style={{paddingTop: 8, paddingBottom: 8}} />
+                    <TouchableOpacity activeOpacity={1} style={{flexDirection: "row", paddingTop: 8}} >
+                      <View style={{
+                        backgroundColor: "pink",
+                        width: 45,
+                        height: 60,
+
+                      }}/>
+                      <View style={{
+                        paddingLeft: 10
+                      }}>
+                        <Text style={{ fontSize: 20}}>{item.title}</Text>
+                        <Text >{item.author}</Text>
+                        <Text >ISBN: temp</Text>
+                      </View>
                     </TouchableOpacity>
+                    <Divider style={{paddingTop: 8, paddingBottom: 8}} />
                   </View>
                 )
               }}
-            />
+              />
         </View>
       </View>
     </Modal>
   );
-}
+};
 export default ShelfModal;
