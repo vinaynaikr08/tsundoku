@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Account, ID } from "appwrite";
+import { Client, Account, ID } from "appwrite";
 import type { Models } from 'appwrite';
 
-import { client } from "@/app/appwrite";
+const client = new Client();
+
+client
+    .setEndpoint(process.env.appwriteEndpoint!)
+    .setProject(process.env.appwriteProjectID!);
 
 const account = new Account(client);
 
