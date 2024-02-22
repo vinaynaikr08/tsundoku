@@ -1,5 +1,5 @@
 services:
   backend:
     image: ghcr.io/purdue-cs307-tsundoku/tsundoku-backend:latest
-    expose:
-      - 3000
+    ports:
+      - 3000:3000
