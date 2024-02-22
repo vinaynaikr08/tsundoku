@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Account, ID } from "appwrite";
 import type { Models } from 'appwrite';
