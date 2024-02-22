@@ -3,5 +3,5 @@ services:
     build:
       context: ../backend
       dockerfile: Dockerfile
-  expose:
-    - 3000
+    expose:
+      - 3000
