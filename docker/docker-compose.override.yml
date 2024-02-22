@@ -1,7 +1,5 @@
 services:
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: ghcr.io/purdue-cs307-tsundoku/tsundoku-backend:latest
     expose:
       - 3000
