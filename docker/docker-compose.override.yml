@@ -3,6 +3,34 @@ services:
     image: ghcr.io/purdue-cs307-tsundoku/tsundoku-backend:latest
     expose:
       - 3000
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.backend.rule=Host("${_TSUNDOKU_BACKEND_HOSTNAME}")
+    networks:
+      - overrides
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - nginx-proxy-manager-data:/data
+      - nginx-proxy-manager-letsencrypt:/etc/letsencrypt
+    networks:
+      - overrides
+  # Override Traefik ports
+  traefik:
+    # Unfortunately there's no way to unset ports, so move them away to some unused ports
+    ports:
+      - "180:80"
+      - "1443:443"
+    networks:
+      - overrides
+
+networks:
+  overrides:
+    name: overrides
+
+
+volumes:
+  - nginx-proxy-manager-data
+  - nginx-proxy-manager-letsencrypt
