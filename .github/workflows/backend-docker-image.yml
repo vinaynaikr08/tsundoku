@@ -28,6 +28,6 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/Purdue-CS307-tsundoku/tsundoku-backend:latest
+          tags: ghcr.io/purdue-cs307-tsundoku/tsundoku-backend:latest
           build-args: |
             BRANCH=latest
