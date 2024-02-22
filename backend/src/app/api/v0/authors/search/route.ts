@@ -13,6 +13,13 @@ const AUTHOR_COLLECTION_ID = process.env.authorCollectionID;
 export async function GET(request: NextRequest) {
     const name = request.nextUrl.searchParams.get("name");
 
+    if (!name) {
+        return NextResponse.json(
+            { message: `Parameters not supplied.` },
+            { status: 400 }
+        );
+    }
+
     let db_query = await databases.listDocuments(
         MAIN_DB_ID, AUTHOR_COLLECTION_ID,
         [

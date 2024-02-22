@@ -126,6 +126,13 @@ function construct_development_api_response(
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
+  if (!title) {
+    return NextResponse.json(
+        { message: `Parameters not supplied.` },
+        { status: 400 }
+    );
+}
+
   let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
     Query.search("title", title),
   ]);
