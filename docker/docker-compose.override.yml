@@ -19,10 +19,7 @@ services:
       - overrides
   # Override Traefik ports
   traefik:
-    # Unfortunately there's no way to unset ports, so move them away to some unused ports
-    ports:
-      - "180:80"
-      - "1443:443"
+    ports: !reset
     networks:
       - overrides
 
