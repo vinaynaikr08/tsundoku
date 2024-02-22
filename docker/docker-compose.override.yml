@@ -1,5 +1,8 @@
 services:
   backend:
     image: ghcr.io/purdue-cs307-tsundoku/tsundoku-backend:latest
-    ports:
-      - 3000:3000
+    expose:
+      - 3000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host("${_TSUNDOKU_BACKEND_HOSTNAME}")
