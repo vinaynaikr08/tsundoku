@@ -170,27 +170,19 @@ export async function GET(request: NextRequest) {
           thumbnail_url: gbooks_target_book.volumeInfo.imageLinks.thumbnail,
         });
 
-        createBook({
+        await createBook({
           title: gbooks_target_book.volumeInfo.title,
           description: gbooks_target_book.volumeInfo.description,
           genre: gbooks_target_book.volumeInfo.categories[0],
           authors: [author_id],
           editions: [edition_id],
           google_books_id: gbooks_target_book.id,
-        }).then(() => {
-          // Requery DB to return to user
-          databases
-            .listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-              Query.equal("title", title),
-            ])
-            .then((db_query: any) => {
-              return construct_development_api_response(
-                `DB search results for: ${title}`,
-                "results",
-                db_query,
-              );
-            });
-        });
+        })
+        
+        // Fetch from DB to refresh
+        db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
+          Query.search("title", title),
+        ]);
       }
     }
   }
