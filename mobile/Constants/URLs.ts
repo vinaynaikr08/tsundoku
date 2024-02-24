@@ -5,3 +5,4 @@ export const BACKEND_API_URL = `${BACKEND_BASE_URL}/api`
 
 
 export const BACKEND_API_BOOK_SEARCH_URL = `${BACKEND_API_URL}/v0/books/search`
+export const BACKEND_API_AUTHOR_SEARCH_URL = `${BACKEND_API_URL}/v0/authors/search`
