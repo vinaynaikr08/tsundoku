@@ -25,6 +25,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 15 }}
+        
       >
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -110,7 +111,7 @@ function DNFCarousel() {
 
 function CarouselTabs({ navigation }) {
   return (
-    <Tab.Navigator tabBar={(props) => <MyTabBar {...props} />}>
+    <Tab.Navigator screenOptions={{swipeEnabled: false}} tabBar={(props) => <MyTabBar {...props} />}>
       <Tab.Screen
         name="Currently Reading"
         component={CurrentlyReadingCarousel}

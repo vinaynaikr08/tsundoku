@@ -18,7 +18,10 @@ import ShelfModal from "../ShelfModal";
 import { useNavigation } from "@react-navigation/native";
 
 import { NavigationContext } from "../../Contexts";
-import { BACKEND_API_AUTHOR_SEARCH_URL, BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
+import {
+  BACKEND_API_AUTHOR_SEARCH_URL,
+  BACKEND_API_BOOK_SEARCH_URL,
+} from "../../Constants/URLs";
 
 type bookInfo = {
   title: string;
@@ -27,12 +30,11 @@ type bookInfo = {
   image_url: string;
 };
 
-
 const BookCard = (
   { title, author, id, image_url }: bookInfo,
   navigation: any,
 ) => (
-  <Image style={styles.card} resizeMode="cover" source={{ uri: image_url }}/>
+  <Image style={styles.card} resizeMode="cover" source={{ uri: image_url }} />
   // <View style={styles.card}>
   // </View>
 );
@@ -50,18 +52,17 @@ export const Carousel = (props: any) => {
   const snapWidth = boxWidth;
 
   // TODO: figure out better way of doing this
-  const [books, setBooks] = useState(null);
+  const [books, setBooks] = useState([]);
 
   React.useEffect(() => {
     fetch(
       `${BACKEND_API_BOOK_SEARCH_URL}?` +
         new URLSearchParams({
-          title: "The Poppy War"
+          title: "Heir of Fire",
         }),
     )
       .then(async (data) => {
         const data_json = await data.json();
-        console.log(JSON.stringify(data_json))
         const parsed_books = data_json.results.documents.map((book) => {
           return {
             id: book.$id,
@@ -70,12 +71,34 @@ export const Carousel = (props: any) => {
             image_url: book.editions[0].thumbnail_url,
           };
         });
-        setBooks(parsed_books);
+        setBooks(books => [...books, parsed_books]);
         return parsed_books; // This is what will be resolved in the chain
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
+      fetch(
+        `${BACKEND_API_BOOK_SEARCH_URL}?` +
+          new URLSearchParams({
+            title: "The Poppy War",
+          }),
+      )
+        .then(async (data) => {
+          const data_json_two = await data.json();
+          const parsed_books_two = data_json_two.results.documents.map((book) => {
+            return {
+              id: book.$id,
+              title: book.title,
+              author: book.authors[0].name,
+              image_url: book.editions[0].thumbnail_url,
+            };
+          });
+          setBooks(books => [...books, parsed_books_two]);
+          return parsed_books_two; // This is what will be resolved in the chain
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
   }, []);
 
   return (
@@ -127,15 +150,32 @@ export const Carousel = (props: any) => {
                 ],
               }}
             >
-              <View style={{ width: boxWidth }}>
-              <Image style={styles.card} resizeMode="cover" source={{ uri: item.image_url }}/>
+              {/* <View style={{ width: boxWidth, backgroundColor: "green"}}> */}
+                <Image
+                  style={{marginVertical: 10,
+                    width: boxWidth,
+                    height: "83%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 15,
+                    backgroundColor: "pink",
+                    shadowColor: "black",
+                    shadowOffset: {
+                      width: 3,
+                      height: 4,
+                    },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 5,}}
+                  resizeMode="contain"
+                  source={{ uri: item.image_url }}
+                />
                 {/* <BookCard
                   title={item.title}
                   author={item.author}
                   id={item.id}
                   image_url={item.image_url}
                 /> */}
-              </View>
+              {/* </View> */}
             </Animated.View>
           );
         }}
@@ -190,7 +230,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     borderRadius: 15,
     width: "100%",
-    height: "90%"
+    height: "90%",
   },
 });
 
