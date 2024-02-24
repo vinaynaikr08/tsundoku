@@ -7,6 +7,8 @@ import {
   View,
   Button,
   Pressable,
+  Image,
+  ImageBackground,
 } from "react-native";
 import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -25,14 +27,17 @@ type bookInfo = {
   image_url: string;
 };
 
+
 const BookCard = (
   { title, author, id, image_url }: bookInfo,
   navigation: any,
 ) => (
   <View style={styles.card}>
-    <Text>{id}</Text>
-    <Text style={styles.text}>{title}</Text>
-    <Text style={styles.text}>{author}</Text>
+    <ImageBackground style={styles.image} resizeMode="cover" source={{ uri: image_url }}>
+      <Text>{id}</Text>
+      <Text style={styles.text}>{title}</Text>
+      <Text style={styles.text}>{author}</Text>
+    </ImageBackground>
   </View>
 );
 
@@ -162,8 +167,8 @@ export const Carousel = (props: any) => {
 
 const styles = StyleSheet.create({
   card: {
-    paddingVertical: 70,
-    marginVertical: 10,
+    // paddingVertical: 70,
+    // marginVertical: 10,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 15,
@@ -187,6 +192,10 @@ const styles = StyleSheet.create({
   text: {
     margin: 30,
     fontSize: 16,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
   },
 });
 
