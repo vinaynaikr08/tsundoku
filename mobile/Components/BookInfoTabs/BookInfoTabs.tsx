@@ -16,7 +16,7 @@ import Dimensions from "../../Constants/Dimensions";
 
 const Tab = createMaterialTopTabNavigator();
 
-function MyTabBar({ state, descriptors, navigation, position, bookInfo }) {
+function MyTabBar({ state, descriptors, navigation, position }) {
   return (
     <View>
       <ScrollView
@@ -162,7 +162,7 @@ function BookInfoTabs(bookInfo: any) {
   return (
     <Tab.Navigator
       screenOptions={{ animationEnabled: false }}
-      tabBar={(props) => <MyTabBar bookInfo={bookInfo} {...props} />}
+      tabBar={(props) => <MyTabBar {...props} />}
     >
       <Tab.Screen
         name="Description"
