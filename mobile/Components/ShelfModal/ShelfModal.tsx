@@ -30,20 +30,6 @@ const ShelfModal = ({
   ];
 
   return (
-    // <Modal
-    //   isVisible={isShelfModalVisible}
-    //   onSwipeComplete={() => { setShelfModalVisible(false); setSearch(""); Keyboard.dismiss }}
-    //   swipeDirection={["down"]}
-    //   style={{
-    //     marginBottom: 0,
-    //     marginRight: 0,
-    //     marginLeft: 0,
-    //   }}
-    //   propagateSwipe={true}
-    //   onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
-    //   onSwipeCancel={Keyboard.dismiss}
-    // >
-
       <View style={{
         justifyContent: "center",
         alignItems: "center",
@@ -65,25 +51,27 @@ const ShelfModal = ({
           top: 10,
         }}
       />
-      <View
-        style={{
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
+
+        <View style={{
           position: "absolute",
           top: 30,
           left: 20,
+          width: '100%'
         }}>
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss}>
             <Text style={{fontWeight: 'bold', fontSize: 30}}>{shelf}</Text>
-          </TouchableWithoutFeedback>
-        </View>
-        <View
-          style={{
-            width:'93%',
-            position: "absolute",
-            borderRadius: 10,
-            top: 75,
-            left: 20,
-            paddingBottom: 0
-          }}>
+        </View>          
+      </TouchableWithoutFeedback>
+
+      <View
+        style={{
+          width:'93%',
+          position: "absolute",
+          borderRadius: 10,
+          top: 75,
+          left: 20,
+          paddingBottom: 0
+        }}>
           <BookSearchBar search={search} updateSearch={updateSearch} />
         </View>
         <View style={{
@@ -133,3 +121,17 @@ const ShelfModal = ({
   );
 };
 export default ShelfModal;
+
+ // <Modal
+    //   isVisible={isShelfModalVisible}
+    //   onSwipeComplete={() => { setShelfModalVisible(false); setSearch(""); Keyboard.dismiss }}
+    //   swipeDirection={["down"]}
+    //   style={{
+    //     marginBottom: 0,
+    //     marginRight: 0,
+    //     marginLeft: 0,
+    //   }}
+    //   propagateSwipe={true}
+    //   onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
+    //   onSwipeCancel={Keyboard.dismiss}
+    // >
