@@ -16,30 +16,27 @@ import ShelfModal from "../ShelfModal";
 import { useNavigation } from "@react-navigation/native";
 
 import { NavigationContext } from "../../Contexts";
-
-const books = [
-  { id: "1", title: "The Poppy War", author: "R. F. Kuang" },
-  { id: "2", title: "The Fifth Season", author: "N. K. Jemisin" },
-  { id: "3", title: "Six of Crows", author: "R. F. Kuang" },
-  { id: "4", title: "The Poppy War", author: "R. F. Kuang" },
-  { id: "5", title: "The Poppy War", author: "R. F. Kuang" },
-];
+import { BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
 
 type bookInfo = {
   title: string;
   author: string;
-  index: number;
+  id: string;
+  image_url: string;
 };
 
-const BookCard = ({ title, author, index }: bookInfo, navigation) => (
+const BookCard = (
+  { title, author, id, image_url }: bookInfo,
+  navigation: any,
+) => (
   <View style={styles.card}>
-    <Text>{index}</Text>
+    <Text>{id}</Text>
     <Text style={styles.text}>{title}</Text>
     <Text style={styles.text}>{author}</Text>
   </View>
 );
 
-export const Carousel = (props) => {
+export const Carousel = (props: any) => {
   const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -50,6 +47,34 @@ export const Carousel = (props) => {
   const boxDistance = scrollViewWidth - boxWidth;
   const halfBoxDistance = boxDistance / 2;
   const snapWidth = boxWidth;
+
+  // TODO: figure out better way of doing this
+  const [books, setBooks] = useState(null);
+
+  React.useEffect(() => {
+    fetch(
+      `${BACKEND_API_BOOK_SEARCH_URL}?` +
+        new URLSearchParams({
+          title: "The Poppy War",
+        }),
+    )
+      .then(async (data) => {
+        const data_json = await data.json();
+        const parsed_books = data_json.results.documents.map((book) => {
+          return {
+            id: book.$id,
+            title: book.title,
+            author: book.authors[0].name,
+            image_url: book.editions[0].thumbnail_url,
+          };
+        });
+        setBooks(parsed_books);
+        return parsed_books; // This is what will be resolved in the chain
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -104,7 +129,8 @@ export const Carousel = (props) => {
                 <BookCard
                   title={item.title}
                   author={item.author}
-                  index={index}
+                  id={item.id}
+                  image_url={item.image_url}
                 />
               </View>
             </Animated.View>
