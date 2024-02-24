@@ -4,27 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
+import { construct_development_api_response } from "../../dev_api_response";
 
 const databases = new sdk.Databases(client);
 
 const MAIN_DB_ID = process.env.mainDBID;
 const AUTHOR_COLLECTION_ID = process.env.authorCollectionID;
-
-function construct_development_api_response(
-  message: string,
-  response_name: string,
-  response_data: any,
-) {
-  return NextResponse.json(
-    {
-      message,
-      warning:
-        "You are calling a development API! The schema may change without warning.",
-      [response_name]: response_data,
-    },
-    { status: 200 },
-  );
-}
 
 export async function GET(request: NextRequest) {
   const name = request.nextUrl.searchParams.get("name");
@@ -42,9 +27,9 @@ export async function GET(request: NextRequest) {
     [Query.equal("name", name as string)],
   );
 
-  return construct_development_api_response(
-    `DB search results for: ${name}`,
-    "results",
-    db_query,
-  );
+  return construct_development_api_response({
+    message: `DB search results for: ${name}`,
+    response_name: "results",
+    response_data: db_query,
+  });
 }

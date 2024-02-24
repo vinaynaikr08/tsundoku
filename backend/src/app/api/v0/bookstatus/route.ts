@@ -67,7 +67,6 @@ export async function GET(request: NextRequest) {
     message: `Book status results for: ${user_id}`,
     response_name: "results",
     response_data: db_query,
-    status_code: 200,
   });
 }
 
@@ -102,14 +101,11 @@ export async function POST(request: NextRequest) {
       {
         status: status,
       },
-      bookStatusPermissions
+      bookStatusPermissions,
     );
   }
 
   return construct_development_api_response({
     message: `The book status item was updated.`,
-    response_name: null,
-    response_data: null,
-    status_code: 200,
   });
 }

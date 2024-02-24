@@ -4,12 +4,12 @@ export function construct_development_api_response({
   message,
   response_name,
   response_data,
-  status_code,
+  status_code = 200,
 }: {
   message: string;
-  response_name: string | null;
-  response_data: any | null;
-  status_code: number;
+  response_name?: string | null;
+  response_data?: any | null;
+  status_code?: number;
 }) {
   if (response_name) {
     return NextResponse.json(

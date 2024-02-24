@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ID, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
+import { construct_development_api_response } from "../../dev_api_response";
 
 const databases = new sdk.Databases(client);
 
@@ -107,31 +108,15 @@ async function get_or_create_author_id(name: string) {
   }
 }
 
-function construct_development_api_response(
-  message: string,
-  response_name: string,
-  response_data: any,
-) {
-  return NextResponse.json(
-    {
-      message,
-      warning:
-        "You are calling a development API! The schema may change without warning.",
-      [response_name]: response_data,
-    },
-    { status: 200 },
-  );
-}
-
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
 
   if (!title) {
-    return NextResponse.json(
-        { message: `Parameters not supplied.` },
-        { status: 400 }
-    );
-}
+    return construct_development_api_response({
+      message: "Parameter `title` not supplied.",
+      status_code: 400,
+    });
+  }
 
   let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
     Query.search("title", title),
@@ -177,8 +162,8 @@ export async function GET(request: NextRequest) {
           authors: [author_id],
           editions: [edition_id],
           google_books_id: gbooks_target_book.id,
-        })
-        
+        });
+
         // Fetch from DB to refresh
         db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
           Query.search("title", title),
@@ -186,9 +171,9 @@ export async function GET(request: NextRequest) {
       }
     }
   }
-  return construct_development_api_response(
-    `DB search results for: ${title}`,
-    "results",
-    db_query,
-  );
+  return construct_development_api_response({
+    message: `DB search results for: ${title}`,
+    response_name: "results",
+    response_data: db_query,
+  });
 }

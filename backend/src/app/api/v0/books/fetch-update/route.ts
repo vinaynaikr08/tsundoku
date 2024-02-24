@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
+import { construct_development_api_response } from "../../dev_api_response";
 
 const databases = new sdk.Databases(client);
 
@@ -17,33 +18,6 @@ async function getBookFromGoogleBooksAPI(id: string) {
   return await gbooks_api_res.json();
 }
 
-function construct_development_api_response(
-  message: string,
-  response_name: string | null,
-  response_data: any | null,
-  status_code: number,
-) {
-  if (response_name) {
-    return NextResponse.json(
-      {
-        message,
-        warning:
-          "You are calling a development API! The schema may change without warning.",
-        [response_name]: response_data,
-      },
-      { status: status_code },
-    );
-  }
-  return NextResponse.json(
-    {
-      message,
-      warning:
-        "You are calling a development API! The schema may change without warning.",
-    },
-    { status: status_code },
-  );
-}
-
 export async function POST(request: NextRequest) {
   const data = await request.json();
   const gbooks_api_id = data.id;
@@ -53,12 +27,12 @@ export async function POST(request: NextRequest) {
   ]);
 
   if (db_query.total == 0) {
-    return construct_development_api_response(
-      `A book with the specified ID ${gbooks_api_id} was not found.`,
-      null,
-      null,
-      404,
-    );
+    return construct_development_api_response({
+      message: `A book with the specified ID ${gbooks_api_id} was not found.`,
+      response_name: null,
+      response_data: null,
+      status_code: 404,
+    });
   }
 
   const target_book_id = db_query.documents[0].$id;
@@ -72,10 +46,9 @@ export async function POST(request: NextRequest) {
     genre: gbooks_book_data.volumeInfo.categories[0],
   });
 
-  return construct_development_api_response(
-    `The book ID ${target_book_id} (Google Books API ID ${gbooks_api_id}) was updated.`,
-    "gbooks_book_data",
-    gbooks_book_data,
-    200,
-  );
+  return construct_development_api_response({
+    message: `The book ID ${target_book_id} (Google Books API ID ${gbooks_api_id}) was updated.`,
+    response_name: "gbooks_book_data",
+    response_data: gbooks_book_data,
+  });
 }
