@@ -70,20 +70,24 @@ export const Carousel = (props: any) => {
           title: book.title,
           author: book.authors[0].name,
           image_url: book.editions[0].thumbnail_url,
-        }
+        };
       });
     }
 
     async function getHardcodedBooks() {
-      let heir_of_fire = await getBooks("Heir of Fire");
-      let the_poppy_war = await getBooks("The Poppy War");
+      const book_titles = ["Heir of Fire", "The Poppy War"];
+      let book_data = [];
 
-      return [...heir_of_fire, ...the_poppy_war]
+      for (const book_title of book_titles) {
+        book_data.push(...(await getBooks(book_title)));
+      }
+
+      return book_data;
     }
 
     getHardcodedBooks().then((data) => {
       setBooks(data);
-    })
+    });
   }, []);
 
   return (
