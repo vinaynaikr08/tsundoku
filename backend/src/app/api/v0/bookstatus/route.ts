@@ -1,7 +1,7 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { ID, Query } from "appwrite";
+import { ID, Permission, Query, Role } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
@@ -16,6 +16,14 @@ enum BookStatus_Status {
   CURRENTLY_READING,
   READ,
   DID_NOT_FINISH,
+}
+
+function bookStatusPermissions(user_id: string) {
+  return [
+    Permission.read(Role.user(user_id)),
+    Permission.update(Role.user(user_id)),
+    Permission.delete(Role.user(user_id)),
+  ];
 }
 
 async function createBookStatus({
@@ -36,6 +44,7 @@ async function createBookStatus({
       edition_id,
       status,
     },
+    bookStatusPermissions,
   );
   return res.$id;
 }
@@ -93,6 +102,7 @@ export async function POST(request: NextRequest) {
       {
         status: status,
       },
+      bookStatusPermissions
     );
   }
 
