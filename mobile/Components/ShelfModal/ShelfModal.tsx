@@ -30,27 +30,34 @@ const ShelfModal = ({
   ];
 
   return (
+    <View style={{
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "white",
+      width: "100%",
+      height: "100%",
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+    }}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
       <View style={{
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
-        width: "100%",
-        height: "100%",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: "#D3D3D3",
-          height: 7,
-          width: 70,
+          width: "100%",
           position: "absolute",
           borderRadius: 5,
           alignSelf: "center",
           top: 10,
-        }}
-      />
+        }}>
+          <View
+            style={{
+              backgroundColor: "#D3D3D3",
+              height: 7,
+              width: 70,
+              borderRadius: 5,
+              alignSelf: "center",
+            }}
+          />
+        </View>
+      </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false} >
 
         <View style={{
