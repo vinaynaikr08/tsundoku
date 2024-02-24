@@ -36,4 +36,4 @@ Example query: `host/api/v0/bookstatus?user_id=a1b2c3d4...`
 
 Method: `POST`
 
-You must supply `user_id`, `edition_id`, and `status` enum in the body. (Not the search queries!)
+You must supply `user_id`, `book_id`, and `status` enum in the body. (Not the search queries!)

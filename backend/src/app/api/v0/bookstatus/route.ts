@@ -28,11 +28,11 @@ function bookStatusPermissions(user_id: string) {
 
 async function createBookStatus({
   user_id,
-  edition_id,
+  book_id,
   status,
 }: {
   user_id: string;
-  edition_id: string;
+  book_id: string;
   status: BookStatus_Status;
 }) {
   let res = await databases.createDocument(
@@ -41,7 +41,7 @@ async function createBookStatus({
     ID.unique(),
     {
       user_id,
-      edition_id,
+      book_id,
       status,
     },
     bookStatusPermissions,
@@ -73,10 +73,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const data = await request.json();
   const user_id = data.user_id;
-  const edition_id = data.edition_id;
+  const book_id = data.book_id;
   const status = data.status;
 
-  if (!user_id || !edition_id || status) {
+  if (!user_id || !book_id || status) {
     return NextResponse.json(
       { message: `Parameters not supplied.` },
       { status: 400 },
@@ -85,12 +85,12 @@ export async function POST(request: NextRequest) {
 
   let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
     Query.equal("user_id", user_id),
-    Query.equal("edition_id", edition_id),
+    Query.equal("book_id", book_id),
   ]);
 
   if (db_query.total == 0) {
     // Create new object
-    createBookStatus({ user_id, edition_id, status });
+    createBookStatus({ user_id, book_id, status });
   } else {
     const book_status_id = db_query.documents[0].$id;
 
