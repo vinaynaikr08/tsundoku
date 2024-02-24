@@ -14,7 +14,11 @@ import Colors from "../../Constants/Colors";
 
 const Tab = createMaterialTopTabNavigator();
 
+let shelf = "Currently Reading";
+export { shelf };
+
 function MyTabBar({ state, descriptors, navigation, position }) {
+  
   return (
     <View>
       <ScrollView
@@ -110,10 +114,22 @@ function CarouselTabs({ navigation }) {
       <Tab.Screen
         name="Currently Reading"
         component={CurrentlyReadingCarousel}
+        listeners={{
+          tabPress: e => { shelf = "Currently Reading"; }
+        }}
       />
-      <Tab.Screen name="Want To Read" component={WantToReadCarousel} />
-      <Tab.Screen name="Read" component={ReadCarousel} />
-      <Tab.Screen name="Did Not Finish" component={DNFCarousel} />
+      <Tab.Screen name="Want To Read" component={WantToReadCarousel} listeners={{
+          tabPress: e => { shelf = "Want To Read" }
+        }}
+      />
+      <Tab.Screen name="Read" component={ReadCarousel} listeners={{
+          tabPress: e => { shelf = "Read" }
+        }} 
+      />
+      <Tab.Screen name="Did Not Finish" component={DNFCarousel} listeners={{
+          tabPress: e => { shelf = "Did Not Finish" }
+        }}
+      />
     </Tab.Navigator>
   );
 }

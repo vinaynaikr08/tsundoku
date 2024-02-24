@@ -6,6 +6,7 @@ import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
 
 import { NavigationContext } from "../../Contexts";
+import { shelf } from "../CarouselTabs";
 
 const ShelfModal = ({
   isShelfModalVisible,
@@ -29,26 +30,26 @@ const ShelfModal = ({
   ];
 
   return (
-    <Modal
-      isVisible={isShelfModalVisible}
-      onSwipeComplete={() => { setShelfModalVisible(false); setSearch(""); Keyboard.dismiss }}
-      swipeDirection={["down"]}
-      style={{
-        marginBottom: 0,
-        marginRight: 0,
-        marginLeft: 0,
-      }}
-      propagateSwipe={true}
-      onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
-      onSwipeCancel={Keyboard.dismiss}
-    >
+    // <Modal
+    //   isVisible={isShelfModalVisible}
+    //   onSwipeComplete={() => { setShelfModalVisible(false); setSearch(""); Keyboard.dismiss }}
+    //   swipeDirection={["down"]}
+    //   style={{
+    //     marginBottom: 0,
+    //     marginRight: 0,
+    //     marginLeft: 0,
+    //   }}
+    //   propagateSwipe={true}
+    //   onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
+    //   onSwipeCancel={Keyboard.dismiss}
+    // >
 
       <View style={{
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "white",
         width: "100%",
-        height: "95%",
+        height: "100%",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
       }}
@@ -67,10 +68,12 @@ const ShelfModal = ({
       <View
         style={{
           position: "absolute",
-          top: 35,
+          top: 30,
           left: 20,
         }}>
-          <Text style={{fontWeight: 'bold', fontSize: 24}}>{currentShelf}</Text>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss}>
+            <Text style={{fontWeight: 'bold', fontSize: 30}}>{shelf}</Text>
+          </TouchableWithoutFeedback>
         </View>
         <View
           style={{
@@ -126,7 +129,7 @@ const ShelfModal = ({
               />
         </View>
       </View>
-    </Modal>
+    //</Modal>
   );
 };
 export default ShelfModal;
