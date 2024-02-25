@@ -35,16 +35,18 @@ export const SignIn = (props) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     try {
-      const session = await account.createEmailSession(email, password);
-      const user = await account.get();
+      account.createEmailSession(email, password).then((session) => {
+        setSession(session);
 
-      setSession(session);
-      setLoggedInUser(user);
+        account.get().then((user) => {
+          setLoggedInUser(user);
 
-      // if sign-in successful, nav to next screen
-      navigation.navigate("navbar");
+          // if sign-in successful, nav to next screen
+          navigation.navigate("navbar");
+        });
+      });
     } catch (error: any) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
