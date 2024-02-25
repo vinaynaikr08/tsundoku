@@ -7,16 +7,17 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Modal,
 } from "react-native";
-import Modal from "react-native-modal";
+import styled from "styled-components/native";
 import Dimensions from "../../Constants/Dimensions";
 import Colors from "../../Constants/Colors";
 import BookInfoTabs from "../BookInfoTabs";
 import SelectDropdown from "react-native-select-dropdown";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { BookInfoContext } from "../../Contexts";
-import { useRoute } from "@react-navigation/native"
-
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useRoute } from "@react-navigation/native";
 
 interface BookInfoModalProps {
   isVisible: boolean;
@@ -37,13 +38,21 @@ const bookInfo = {
     "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
 };
 
-const BookInfoModal: React.FC<BookInfoModalProps> = ({
-  isVisible,
-  onClose,
-}) => {
-  const route = useRoute()
+// const BookInfoModal: React.FC<BookInfoModalProps> = ({
+//   isVisible,
+//   onClose,
+// }) => {
+export const BookInfoModal = (props: any) => {
+  const route = useRoute();
   //const {bookInfo} = route.params?.bookInfo;
   const [selectedOption, setSelectedOption] = useState("Mark book as read");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { navigation } = props;
+  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
+  const toggleReviewModal = () => {
+    setIsReviewModalVisible(!isReviewModalVisible);
+    navigation.navigate("review", { bookInfo: bookInfo });
+  };
 
   const dropdownOptions = [
     "Mark as read",
@@ -55,16 +64,18 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
 
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
+    setIsDropdownOpen(false);
   };
-
+  const toggleDropDown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <View style={styles.outsideModalContainer}>
-        {/* <ScrollView contentContainerStyle={styles.modalScrollContainer}> */}
-        <View style={styles.modalStyle}>
-          <View style={{ alignItems: "center" }}>
-            <View style={styles.modalGreyLine} />
-          </View>
-          {/* <Image
+      <View style={styles.modalStyle}>
+        <View style={{ alignItems: "center" }}>
+          <View style={styles.modalGreyLine} />
+        </View>
+        {/* <Image
             source={{ uri: bookInfo.coverImage }}
             style={{
               width: Dimensions.BOOK_INFO_MODAL_COVER_WIDTH,
@@ -72,42 +83,51 @@ const BookInfoModal: React.FC<BookInfoModalProps> = ({
               marginBottom: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_BOTTOM,
             }}
           /> */}
-          <View style={styles.bookCoverStyle} />
-          <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
-          <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
+        <View style={styles.bookCoverStyle} />
+        <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
+        <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
+        <ButtonContainer padding={0}>
           <SelectDropdown
             data={dropdownOptions}
             onSelect={(selectedItem, index) =>
               handleOptionSelect(dropdownOptions[index])
             }
             buttonTextAfterSelection={(selectedItem: string) => {
-              return selectedItem;
+              return "";
             }}
-            defaultButtonText={selectedOption}
+            defaultButtonText={""}
             buttonStyle={styles.markAsReadButton}
-            buttonTextStyle={styles.readButtonText}
-            dropdownStyle={{ backgroundColor: "grey" }}
+            dropdownStyle={styles.dropdownStyle}
             dropdownOverlayColor={"transparent"}
             rowTextStyle={{ fontSize: 14 }}
             renderDropdownIcon={(isOpened) => {
               return (
-                <FontAwesome
-                  name={isOpened ? "chevron-up" : "chevron-down"}
+                <Icon
+                  name={
+                    isOpened
+                      ? "chevron-up-circle-outline"
+                      : "chevron-down-circle-outline"
+                  }
                   color={"white"}
-                  size={15}
+                  size={25}
                 />
               );
             }}
-            dropdownIconPosition={"right"}
+            dropdownIconPosition={"left"}
           />
-          <SafeAreaView>
-            <BookInfoTabs bookInfo={bookInfo} />
-          </SafeAreaView>
-          {/* <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
-          {bookInfo.summary}
-        </Text> */}
-        </View>
-        {/* </ScrollView> */}
+          <ReadingStatusButton
+            color={Colors.BUTTON_PURPLE}
+            onPress={toggleReviewModal}
+          >
+            <ReadingNowContainer>
+              <ButtonText color={"white"}>{selectedOption}</ButtonText>
+            </ReadingNowContainer>
+          </ReadingStatusButton>
+        </ButtonContainer>
+        <SafeAreaView>
+          <BookInfoTabs bookInfo={bookInfo} />
+        </SafeAreaView>
+      </View>
     </View>
   );
 };
@@ -117,28 +137,28 @@ export default BookInfoModal;
 const styles = StyleSheet.create({
   markAsReadButton: {
     backgroundColor: Colors.BUTTON_PURPLE,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 5,
     paddingVertical: 5,
     borderRadius: 13,
-    width: "38%",
-    height: "5%",
-    marginBottom: 10,
+    width: "25%",
+    height: "100%",
+    // justifyContent: "flex-end",
+    // alignSelf: "flex-end",
   },
   readButtonText: {
     color: "white",
     fontWeight: "500",
     fontSize: 13,
   },
-  modalScrollContainer: {
-    // flex: 1,
-  },
   outsideModalContainer: {
     flex: 1,
   },
+  dropdownStyle: {
+    width: "40%",
+    backgroundColor: "grey",
+  },
   modalStyle: {
     flex: 1,
-    // maxHeight: Dimensions.get('window').height - 50,
-    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
     width: "110%",
@@ -154,10 +174,6 @@ const styles = StyleSheet.create({
     width: 70,
     borderRadius: 5,
     marginTop: "3%",
-    // marginTop: Dimensions.BOOK_INFO_MODAL_GREY_LINE_MARGIN_TOP,
-    // top: -265,
-    //   marginTop: -250,
-    //   marginTop: "-200%",
   },
   bookCoverStyle: {
     position: "relative",
@@ -184,4 +200,47 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 10,
   },
+  buttonGroupContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  dropdownButtonGroup: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
 });
+
+export interface ColorProps {
+  color: string;
+}
+
+const ButtonContainer = styled.View<{ padding: number }>`
+  flex-direction: row;
+  width: 37%;
+  border-radius: 13px;
+  background-color: ${Colors.BUTTON_PURPLE};
+  align-items: center;
+  margin-bottom: 10px;
+  padding: ${({ padding }) => `0 ${padding}px`};
+`;
+
+const ReadingStatusButton = styled.TouchableOpacity<ColorProps>`
+  height: 45px;
+  border-radius: 30px;
+  border: 2px solid ${({ color }) => color};
+  padding: 1px 1px;
+  background-color: ${Colors.BUTTON_PURPLE};
+  align-items: center;
+  justify-content: center;
+`;
+
+const ReadingNowContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  background-color: ${Colors.BUTTON_PURPLE};
+`;
+
+const ButtonText = styled.Text<ColorProps>`
+  color: ${({ color }) => color};
+`;
