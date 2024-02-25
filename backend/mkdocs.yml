@@ -1,1 +1,9 @@
 site_name: Backend Documentation
+
+theme:
+  name: material
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
