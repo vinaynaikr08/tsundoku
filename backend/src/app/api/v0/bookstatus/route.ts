@@ -32,16 +32,25 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const data = await request.json();
-  const user_id = data.user_id;
-  const book_id = data.book_id;
-  const status = data.status;
+
+  let user_id, book_id, status;
+  try {
+    const data = await request.json();
+    user_id = data.user_id;
+    book_id = data.book_id;
+    status = data.status;
+  } catch (error) {
+    return construct_development_api_response({
+      message: "Bad request supplied.",
+      status_code: 400,
+    });
+  }
 
   if (!user_id || !book_id || !status) {
-    return NextResponse.json(
-      { message: `Parameters not supplied.` },
-      { status: 400 },
-    );
+    return construct_development_api_response({
+      message: `Required parameters not supplied.`,
+      status_code: 400,
+    });
   }
 
   let db_query = await database.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
