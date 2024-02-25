@@ -18,8 +18,7 @@ import Dimensions from "../Constants/Dimensions";
 import { Account } from "appwrite";
 import type { Models } from "appwrite";
 
-// TODO: make this root import
-import { client } from "../appwrite";
+import { client } from "@/appwrite";
 
 const account = new Account(client);
 
