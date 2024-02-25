@@ -4,12 +4,8 @@ import {
   View,
   Text,
   Pressable,
-  Button,
-  TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import Modal from "react-native-modal";
-import TextReview from "../TextReview/TextReview";
 import Colors from "../../Constants/Colors";
 import Slider from "@react-native-community/slider";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -29,15 +25,7 @@ function StarRating(props) {
 
   return (
     <View
-      style={{
-        flex: 1,
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: "white",
-        width: "100%",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-      }}
+      style={styles.container}
     >
       <Text style={styles.title}>How would you rate this book?</Text>
       <View style={{ alignItems: "center" }}>
@@ -77,6 +65,15 @@ function StarRating(props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "white",
+    width: "100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
   slider: {
     marginBottom: 50,
   },
@@ -92,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   nextButtonText: {
-    color: Colors.BUTTON_TEXT_GRAY,
+    color: "black",
     fontWeight: "600",
     fontSize: 16,
   },

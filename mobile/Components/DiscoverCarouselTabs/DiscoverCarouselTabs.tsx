@@ -11,6 +11,10 @@ import {
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Carousel from "../Carousel/Carousel";
 import Colors from "../../Constants/Colors";
+import { client } from "../../appwrite";
+import { Account } from "appwrite";
+import { useEffect, useState } from "react";
+import { BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -77,34 +81,59 @@ function MyTabBar({ state, descriptors, navigation, position }) {
   );
 }
 
-function CurrentlyReadingCarousel() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Carousel />
-    </View>
-  );
-}
+const account = new Account(client);
 
-function WantToReadCarousel() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Carousel currentShelf={"Want To Read"} />
-    </View>
-  );
-}
+const promise = account.get();
+let userID;
 
-function ReadCarousel() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Carousel currentShelf={"Read"} />
-    </View>
-  );
-}
+promise.then(function (response) {
+    //console.log(response); // Success
+    userID = response.$id;
+    console.log(userID);
+}, function (error) {
+    console.log(error); // Failure
+});
 
-function DNFCarousel() {
+function RecommendedCarousel() {
+  const [books, setBooks] = useState([]);
+  React.useEffect(() => {
+    async function getBooks(title) {
+      let res = await fetch(
+        `${BACKEND_API_BOOK_SEARCH_URL}?` +
+          new URLSearchParams({
+            title: title,
+          }),
+      );
+
+      const res_json = await res.json();
+      return res_json.results.documents.map((book) => {
+        return {
+          id: book.$id,
+          title: book.title,
+          author: book.authors[0].name,
+          image_url: book.editions[0].thumbnail_url,
+        };
+      });
+    }
+
+    async function getHardcodedBooks() {
+      const book_titles = ["The Poppy War", "The Dragon Republic", "Ordinary Monsters", "Foundryside"];
+      let book_data = [];
+
+      for (const book_title of book_titles) {
+        book_data.push(...(await getBooks(book_title)));
+      }
+
+      return book_data;
+    }
+
+    getHardcodedBooks().then((data) => {
+      setBooks(data);
+    });
+  }, []);
   return (
     <View style={{ flex: 1 }}>
-      <Carousel currentShelf={"Did Not Finish"} />
+      <Carousel books={books}/>
     </View>
   );
 }
@@ -113,22 +142,10 @@ function CarouselTabs({ navigation }) {
   return (
     <Tab.Navigator screenOptions={{swipeEnabled: false}} tabBar={(props) => <MyTabBar {...props} />}>
       <Tab.Screen
-        name="Currently Reading"
-        component={CurrentlyReadingCarousel}
+        name="Recommended"
+        component={RecommendedCarousel}
         listeners={{
           tabPress: e => { shelf = "Currently Reading"; }
-        }}
-      />
-      <Tab.Screen name="Want To Read" component={WantToReadCarousel} listeners={{
-          tabPress: e => { shelf = "Want To Read" }
-        }}
-      />
-      <Tab.Screen name="Read" component={ReadCarousel} listeners={{
-          tabPress: e => { shelf = "Read" }
-        }} 
-      />
-      <Tab.Screen name="Did Not Finish" component={DNFCarousel} listeners={{
-          tabPress: e => { shelf = "Did Not Finish" }
         }}
       />
     </Tab.Navigator>

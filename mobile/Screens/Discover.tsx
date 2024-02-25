@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, SafeAreaView, Pressable, Button } from "react-native";
 import Carousel from "../Components/Carousel/Carousel";
-import CarouselTabs from "../Components/LibraryCarousel/LibraryCarouselTabs";
+import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import StarRating from "../Components/StarRating/StarRating";
 import { createStackNavigator } from "@react-navigation/stack";
 import TextReview from "../Components/TextReview/TextReview";
@@ -12,7 +12,7 @@ import { NavigationContext } from "../Contexts";
 
 const Stack = createStackNavigator();
 
-export const Library = (props) => {
+export const Discover = (props) => {
   const { navigation } = props;
   const [isReviewModalVisible, setReviewModalVisible] = useState(false);
   return (
@@ -27,7 +27,7 @@ export const Library = (props) => {
             fontSize: 21,
           }}
         >
-          Your Library
+          Discover
         </Text>
         <CarouselTabs navigation={navigation} />
         <Pressable
@@ -40,15 +40,3 @@ export const Library = (props) => {
     </NavigationContext.Provider>
   );
 };
-
-// export const LibraryPage = () => {
-//   return (
-//     <Stack.Navigator screenOptions={{ headerShown: false }}>
-//       <Stack.Screen name="Library" component={Library} />
-//       <Stack.Group screenOptions={{ presentation: "modal" }}>
-//         <Stack.Screen name="StarRating" component={StarRating} />
-//         <Stack.Screen name="TextReview" component={TextReview} />
-//       </Stack.Group>
-//     </Stack.Navigator>
-//   );
-// };

@@ -39,7 +39,7 @@ const BookCard = (
   // </View>
 );
 
-export const Carousel = (props: any) => {
+export const Carousel = ({books}) => {
   const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -52,43 +52,43 @@ export const Carousel = (props: any) => {
   const snapWidth = boxWidth;
 
   // TODO: figure out better way of doing this
-  const [books, setBooks] = useState([]);
+  // const [books, setBooks] = useState([]);
 
-  React.useEffect(() => {
-    async function getBooks(title) {
-      let res = await fetch(
-        `${BACKEND_API_BOOK_SEARCH_URL}?` +
-          new URLSearchParams({
-            title: title,
-          }),
-      );
+  // React.useEffect(() => {
+  //   async function getBooks(title) {
+  //     let res = await fetch(
+  //       `${BACKEND_API_BOOK_SEARCH_URL}?` +
+  //         new URLSearchParams({
+  //           title: title,
+  //         }),
+  //     );
 
-      const res_json = await res.json();
-      return res_json.results.documents.map((book) => {
-        return {
-          id: book.$id,
-          title: book.title,
-          author: book.authors[0].name,
-          image_url: book.editions[0].thumbnail_url,
-        };
-      });
-    }
+  //     const res_json = await res.json();
+  //     return res_json.results.documents.map((book) => {
+  //       return {
+  //         id: book.$id,
+  //         title: book.title,
+  //         author: book.authors[0].name,
+  //         image_url: book.editions[0].thumbnail_url,
+  //       };
+  //     });
+  //   }
 
-    async function getHardcodedBooks() {
-      const book_titles = ["Heir of Fire", "The Poppy War", "Six of Crows"];
-      let book_data = [];
+  //   async function getHardcodedBooks() {
+  //     const book_titles = ["The Poppy War", "The Dragon Republic", "Ordinary Monsters", "Foundryside"];
+  //     let book_data = [];
 
-      for (const book_title of book_titles) {
-        book_data.push(...(await getBooks(book_title)));
-      }
+  //     for (const book_title of book_titles) {
+  //       book_data.push(...(await getBooks(book_title)));
+  //     }
 
-      return book_data;
-    }
+  //     return book_data;
+  //   }
 
-    getHardcodedBooks().then((data) => {
-      setBooks(data);
-    });
-  }, []);
+  //   getHardcodedBooks().then((data) => {
+  //     setBooks(data);
+  //   });
+  // }, []);
 
   return (
     <View style={styles.container}>

@@ -17,6 +17,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import StarRating from "../../Components/StarRating/StarRating";
 import TextReview from "../../Components/TextReview/TextReview";
+import { Discover } from "../../Screens/Discover";
 
 const BottomBar = createBottomTabNavigator();
 
@@ -44,10 +45,10 @@ function HomeScreen() {
   );
 }
 
-function LibraryScreen() {
+function DiscoverScreen() {
   return (
     <View style={{ flex: 1 }}>
-      <Library />
+      <Discover />
     </View>
   );
 }
@@ -103,8 +104,8 @@ function NavBar() {
         }}
       />
       <BottomBar.Screen
-        name="library"
-        component={Library}
+        name="discover"
+        component={Discover}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Book
