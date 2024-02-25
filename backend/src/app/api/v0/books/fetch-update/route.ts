@@ -6,10 +6,9 @@ import { Query } from "appwrite";
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 
-const databases = new sdk.Databases(client);
+import { MAIN_DB_ID, BOOK_COL_ID } from "@/app/Constants";
 
-const MAIN_DB_ID = process.env.mainDBID;
-const BOOK_COL_ID = process.env.bookCollectionID;
+const databases = new sdk.Databases(client);
 
 async function getBookFromGoogleBooksAPI(id: string) {
   const gbooks_api_res = await fetch(

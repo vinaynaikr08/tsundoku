@@ -1,7 +1,6 @@
 import { ID, Permission, Role } from "appwrite";
 
-export const MAIN_DB_ID = process.env.mainDBID;
-export const BOOK_STAT_COL_ID = process.env.bookStatusCollectionID;
+import { MAIN_DB_ID, BOOK_STAT_COL_ID } from "@/app/Constants";
 
 export enum BookStatus_Status {
   WANT_TO_READ,
