@@ -63,9 +63,7 @@ export const SignIn = (props) => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      //   behavior="padding"
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.container}>
@@ -128,9 +126,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.INITIAL_LAUNCH_SCREEN_BG_PINK,
-    // alignItems: "center",
     justifyContent: "center",
-    marginBottom: "-20%",
   },
   title: {
     marginTop: 350,
