@@ -1,5 +1,7 @@
 import React from "react";
 import NavBar from "./NavBar/NavBar";
+import { SignIn } from "../Screens/SignIn";
+import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import StarRating from "../Components/StarRating/StarRating";
 import TextReview from "../Components/TextReview/TextReview";
@@ -12,6 +14,8 @@ const Stack = createNativeStackNavigator();
 function AppNavigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="initial_launch" component={InitialLaunchScreen} />
+      <Stack.Screen name="sign_in" component={SignIn} />
       <Stack.Screen name="navbar" component={NavBar} />
       <Stack.Group
         screenOptions={{

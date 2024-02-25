@@ -47,22 +47,30 @@ export const BookInfoModal = (props: any) => {
   //const {bookInfo} = route.params?.bookInfo;
   const [selectedOption, setSelectedOption] = useState("Mark book as read");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(false);
   const { navigation } = props;
   const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
   const toggleReviewModal = () => {
     setIsReviewModalVisible(!isReviewModalVisible);
     navigation.navigate("review", { bookInfo: bookInfo });
   };
+  const toggleNothing = () => {};
+  const readTag = buttonClicked ? "Read" : "Mark book as read";
 
   const dropdownOptions = [
-    "Mark as read",
-    "Read",
+    // { readTag },
+    // "Read",
+    buttonClicked ? "Read" : "Mark book as read",
     "Currently reading",
     "Want to read",
     "Did not finish",
   ];
+  const handlePress = () => {
+    setButtonClicked(true);
+    buttonClicked ? toggleReviewModal : toggleNothing;
+  };
 
-  const handleOptionSelect = (option: string) => {
+  const handleOptionSelect = (option: any) => {
     setSelectedOption(option);
     setIsDropdownOpen(false);
   };
@@ -117,10 +125,12 @@ export const BookInfoModal = (props: any) => {
           />
           <ReadingStatusButton
             color={Colors.BUTTON_PURPLE}
-            onPress={toggleReviewModal}
+            onPress={() => handlePress}
           >
             <ReadingNowContainer>
-              <ButtonText color={"white"}>{selectedOption}</ButtonText>
+              <ButtonText color={"white"}>
+                {buttonClicked ? "Read" : selectedOption}
+              </ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
         </ButtonContainer>

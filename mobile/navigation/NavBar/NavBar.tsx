@@ -20,10 +20,26 @@ import TextReview from "../../Components/TextReview/TextReview";
 
 const BottomBar = createBottomTabNavigator();
 
-function HomeScreen() {
+function InitialLaunchScreen() {
+  return (
+    <View style={{ flex: 1 }}>
+      <InitialLaunchScreen />
+    </View>
+  );
+}
+
+function SignInScreen() {
   return (
     <View style={{ flex: 1 }}>
       <SignIn />
+    </View>
+  );
+}
+
+function HomeScreen() {
+  return (
+    <View style={{ flex: 1 }}>
+      <Library />
     </View>
   );
 }

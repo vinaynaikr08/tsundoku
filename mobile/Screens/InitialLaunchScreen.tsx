@@ -6,7 +6,14 @@ import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
 
-export const InitialLaunchScreen = () => {
+export const InitialLaunchScreen = (props) => {
+  const { navigation } = props;
+  function launchStart() {
+    // TODO: Implement
+    navigation.navigate("sign_in");
+    // console.log("Open setup");
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>tsun•do•ku</Text>
@@ -28,11 +35,6 @@ export const InitialLaunchScreen = () => {
     </View>
   );
 };
-
-function launchStart() {
-  // TODO: Implement
-  console.log("Open setup");
-}
 
 const styles = StyleSheet.create({
   container: {

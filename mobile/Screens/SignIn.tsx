@@ -23,7 +23,7 @@ import { client } from "../appwrite";
 
 const account = new Account(client);
 
-export const SignIn = () => {
+export const SignIn = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -31,7 +31,7 @@ export const SignIn = () => {
   const [session, setSession] = useState(null);
   const [loggedInUser, setLoggedInUser] =
     useState<Models.User<Models.Preferences> | null>(null);
-
+  const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -47,17 +47,18 @@ export const SignIn = () => {
               console.log(user);
             })
             .catch((e) => {
-              // TODO: handle error
               setErrorMessage(`An error occurred: ${e}`);
               setErrorModalVisible(true);
             });
         })
-        .catch(() => {
-          // TODO: handle error
+        .catch((e) => {
+          setErrorMessage(`An error occurred: ${e}`);
+          setErrorModalVisible(true);
         }),
     );
     // if sign-in successful, nav to next screen
     // navigation.navigate('screen');
+    navigation.navigate("navbar");
   };
 
   return (
