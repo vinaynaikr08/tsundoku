@@ -35,35 +35,30 @@ export const SignIn = (props) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const handleSignIn = () => {
-    setSession(
-      account
-        .createEmailSession(email, password)
-        .then(() => {
-          account
-            .get()
-            .then((user) => {
-              setLoggedInUser(user);
-              console.log(user);
-            })
-            .catch((e) => {
-              setErrorMessage(`An error occurred: ${e}`);
-              setErrorModalVisible(true);
-            });
-        })
-        .catch((e) => {
-          setErrorMessage(`An error occurred: ${e}`);
-          setErrorModalVisible(true);
-        }),
-    );
-    // if sign-in successful, nav to next screen
-    navigation.navigate("navbar");
+  const handleSignIn = async () => {
+    try {
+      const session = await account.createEmailSession(email, password);
+      const user = await account.get();
+
+      setSession(session);
+      setLoggedInUser(user);
+
+      // if sign-in successful, nav to next screen
+      navigation.navigate("navbar");
+    } catch (error: any) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        setErrorModalVisible(true);
+      } else {
+        throw error;
+      }
+    }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.container}>
