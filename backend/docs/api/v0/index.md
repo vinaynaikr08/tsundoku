@@ -37,3 +37,13 @@ Example query: `host/api/v0/bookstatus?user_id=a1b2c3d4...`
 Method: `POST`
 
 You must supply `user_id`, `book_id`, and `status` enum in the body. (Not the search queries!)
+
+### Updating by ID
+
+`host/api/v0/bookstatus/[bookstatus_id]`
+
+METHOD: `PATCH`
+
+You must supply the `status` enum in the body.
+
+Returns a 404 if the specified ID does not have correspond to a book status entry.
