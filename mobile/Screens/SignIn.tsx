@@ -57,7 +57,6 @@ export const SignIn = (props) => {
         }),
     );
     // if sign-in successful, nav to next screen
-    // navigation.navigate('screen');
     navigation.navigate("navbar");
   };
 
