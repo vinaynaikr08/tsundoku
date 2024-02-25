@@ -7,6 +7,19 @@ import { Divider } from "@rneui/base";
 
 import { NavigationContext } from "../../Contexts";
 import { shelf } from "../CarouselTabs";
+import { genresSelected } from "../BookSearchBar"
+
+function checkTitle(value, search) {
+  return ((value.title).toUpperCase()).includes(search.toUpperCase());
+}
+
+function checkAuthor(value, search) {
+  return ((value.author).toUpperCase()).includes(search.toUpperCase());
+}
+
+function checkGenres(value) {
+  return genresSelected.includes(value.toUpperCase());
+}
 
 const ShelfModal = ({
   isShelfModalVisible,
@@ -93,7 +106,9 @@ const ShelfModal = ({
             marginTop: -14
           }}>
             <FlatList
-              data={books.filter((e) => (((e.title).toUpperCase()).includes(search.toUpperCase()) || ((e.author).toUpperCase()).includes(search.toUpperCase())))}
+              data={books.filter((e) => ((checkTitle(e, search) || 
+                checkAuthor(e, search)) //&& (checkGenres(e.genre))
+                ))}
               scrollEventThrottle={1}
               style={{
                 flex: 1,

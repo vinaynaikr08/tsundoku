@@ -7,6 +7,35 @@ import {} from "react-native-vector-icons"
 import { RadioButton } from 'react-native-paper';
 import { DATA } from "./Genres";
 
+export const genresSelected: Array<string> = [
+    "YOUNG ADULT FICTION","ANTIQUES & COLLECTIBLES",
+    "LITERARY COLLECTIONS","ARCHITECTURE",
+    "LITERARY CRITICISM","ART",
+    "MATHEMATICS","BIBLES",
+    "MEDICAL","BIOGRAPHY & AUTOBIOGRAPHY",
+    "MUSIC","BODY",
+    "MIND & SPIRIT","NATURE",
+    "BUSINESS & ECONOMICS","PERFORMING ARTS",
+    "COMICS & GRAPHIC NOVELS","PETS",
+    "COMPUTERS","PHILOSOPHY",
+    "COOKING","PHOTOGRAPHY",
+    "CRAFTS & HOBBIES","POETRY","DESIGN",
+    "POLITICAL SCIENCE","DRAMA",
+    "PSYCHOLOGY","EDUCATION",
+    "REFERENCE","FAMILY & RELATIONSHIPS",
+    "RELIGION","FICTION",
+    "SCIENCE","FOREIGN LANGUAGE STUDY",
+    "SELF-HELP","GAMES & ACTIVITIES",
+    "SOCIAL SCIENCE","GARDENING",
+    "SPORTS & RECREATION","HEALTH & FITNESS",
+    "STUDY AIDS","HISTORY",
+    "TECHNOLOGY & ENGINEERING","HOUSE & HOME",
+    "TRANSPORTATION","HUMOR",
+    "TRAVEL","JUVENILE FICTION",
+    "TRUE CRIME","JUVENILE NONFICTION",
+    "LANGUAGE ARTS & DISCIPLINES",
+    "YOUNG ADULT NONFICTION","LAW"];
+
 const BookSearchBar = ( {search, updateSearch} ) => {
     const [checked, setChecked] = React.useState('title');
     const [isOverlayVisible, setOverlayVisible] = useState(false);
@@ -35,20 +64,20 @@ const BookSearchBar = ( {search, updateSearch} ) => {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={{ flex: 10 }}>
                         <SearchBar
-                        placeholder={"Search list"}
-                        lightTheme
-                        round
-                        onChangeText={updateSearch}
-                        value={search}
-                        autoCorrect={false}
-                        containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
-                        inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
-                        style={{position: "relative", }}
+                            placeholder={"Search list"}
+                            lightTheme
+                            round
+                            onChangeText={updateSearch}
+                            value={search}
+                            autoCorrect={false}
+                            containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
+                            inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
+                            style={{position: "relative", }}
                         />
                     </View>
                 </TouchableWithoutFeedback>
                 <View style={{ flex: 2, alignItems:"center"}}>
-                    <Button type="clear" onPress={ toggleOverlay } icon={<Icon name="filter" color={"#5B2FA3"} size={30} /> } />
+                    <Button type="clear" onPress={ toggleOverlay } icon={ <Icon name="filter" color={"#5B2FA3"} size={30} /> } />
                 </View>
 
                 <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{ backgroundColor: "white", width: '89%', height: '70%', borderRadius: 20, marginTop: 60 }}>
@@ -82,6 +111,7 @@ const BookSearchBar = ( {search, updateSearch} ) => {
                                         containerStyle={{ paddingLeft: 0, paddingTop: 0, }}
                                         textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
                                     /> : <View/>}
+
                                 </View>
                             </View>
                             }
