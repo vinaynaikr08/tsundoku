@@ -102,7 +102,7 @@ const ShelfModal = ({
               renderItem={({item}) => {
                 return (
                   <View >
-                    <TouchableOpacity activeOpacity={1} style={{flexDirection: "row", paddingTop: 8}} >
+                    <TouchableOpacity onPress={()=>alert('temp')} style={{flexDirection: "row", paddingTop: 8}} >
                       <View style={{
                         backgroundColor: "pink",
                         width: 45,
