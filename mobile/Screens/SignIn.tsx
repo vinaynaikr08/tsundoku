@@ -36,25 +36,36 @@ export const SignIn = (props) => {
     Keyboard.dismiss();
   };
   const handleSignIn = () => {
-    try {
-      account.createEmailSession(email, password).then((session) => {
+    account
+      .createEmailSession(email, password)
+      .then((session) => {
         setSession(session);
 
-        account.get().then((user) => {
-          setLoggedInUser(user);
+        account
+          .get()
+          .then((user) => {
+            setLoggedInUser(user);
 
-          // if sign-in successful, nav to next screen
-          navigation.navigate("navbar");
-        });
+            // if sign-in successful, nav to next screen
+            navigation.navigate("navbar");
+          })
+          .catch((error: any) => {
+            if (error instanceof Error) {
+              setErrorMessage(error.message);
+              setErrorModalVisible(true);
+            } else {
+              throw error;
+            }
+          });
+      })
+      .catch((error: any) => {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+          setErrorModalVisible(true);
+        } else {
+          throw error;
+        }
       });
-    } catch (error: any) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-        setErrorModalVisible(true);
-      } else {
-        throw error;
-      }
-    }
   };
 
   return (
