@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "appwrite": "^13.0.1",
+    "appwrite": "^13.0.2",
     "next": "14.1.0",
     "node-appwrite": "^11.1.0",
     "react": "^18",
