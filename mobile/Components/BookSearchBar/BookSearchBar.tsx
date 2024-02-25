@@ -77,7 +77,7 @@ const BookSearchBar = ( {search, updateSearch} ) => {
                     </View>
                 </TouchableWithoutFeedback>
                 <View style={{ flex: 2, alignItems:"center"}}>
-                    <Button type="clear" onPress={ toggleOverlay } icon={ <Icon name="filter" color={"#5B2FA3"} size={30} /> } />
+                    <Button type="clear" onPress={ () => {toggleOverlay(); Keyboard.dismiss;} } icon={ <Icon name="filter" color={"#5B2FA3"} size={30} /> } />
                 </View>
 
                 <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{ backgroundColor: "white", width: '89%', height: '70%', borderRadius: 20, marginTop: 60 }}>

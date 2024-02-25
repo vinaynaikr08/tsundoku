@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
+  Image,
 } from "react-native";
 import React from "react";
 import { useState, useContext } from "react";
@@ -28,14 +29,10 @@ function checkGenres(value) {
   return genresSelected.includes(value.toUpperCase());
 }
 
-const ShelfModal = ({
-  isShelfModalVisible,
-  setShelfModalVisible,
-  currentShelf,
-}) => {
-  type SearchBarComponentProps = {};
-  const navigation = useContext(NavigationContext);
+const ShelfModal = ({ route, navigation}) => {
+  const {bookData} = route.params;
   const [search, setSearch] = useState("");
+  console.log(bookData);
 
   const updateSearch = (search) => {
     setSearch(search);
@@ -48,6 +45,14 @@ const ShelfModal = ({
     { id: "4", title: "The Poppy War", author: "R. F. Kuang" },
     { id: "5", title: "The Poppy War", author: "R. F. Kuang" },
   ];
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('gestureCancel', (e) => {
+      Keyboard.dismiss;
+    });
+  
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View
@@ -121,7 +126,7 @@ const ShelfModal = ({
         }}
       >
         <FlatList
-          data={books.filter(
+          data={bookData.filter(
             (e) =>
               checkTitle(e, search) || checkAuthor(e, search), //&& (checkGenres(e.genre))
           )}
@@ -137,12 +142,17 @@ const ShelfModal = ({
                   onPress={() => alert("temp")}
                   style={{ flexDirection: "row", paddingTop: 8 }}
                 >
-                  <View
+                  <Image
                     style={{
-                      backgroundColor: "pink",
-                      width: 45,
-                      height: 60,
+                    width: 53,
+                    height: 80,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "white",
+                    shadowColor: "black",
                     }}
+                    resizeMode="contain"
+                    source={{ uri: item.image_url }}
                   />
                   <View
                     style={{

@@ -18,8 +18,7 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
 
 const Tab = createMaterialTopTabNavigator();
 
-let shelf = "Currently Reading";
-export { shelf };
+let shelf = "Recommended";
 
 function MyTabBar({ state, descriptors, navigation, position }) {
   
@@ -145,11 +144,12 @@ function CarouselTabs({ navigation }) {
         name="Recommended"
         component={RecommendedCarousel}
         listeners={{
-          tabPress: e => { shelf = "Currently Reading"; }
+          tabPress: e => { shelf = "Recommended"; }
         }}
       />
     </Tab.Navigator>
   );
 }
 
+export { shelf };
 export default CarouselTabs;
