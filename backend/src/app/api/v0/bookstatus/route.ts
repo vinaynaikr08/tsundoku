@@ -1,7 +1,7 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { Query } from "appwrite";
+import { AppwriteException, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
@@ -9,6 +9,37 @@ import { bookStatusPermissions, createBookStatus } from "./common";
 import { BOOK_COL_ID, BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
 
 const database = new sdk.Databases(client);
+const users = new sdk.Users(client);
+
+async function checkBookExists(book_id: string): Promise<boolean> {
+  try {
+    await database.getDocument(MAIN_DB_ID, BOOK_COL_ID, book_id);
+    return true;
+  } catch (error: any) {
+    if (
+      error instanceof Error &&
+      (error as AppwriteException).type === "document_not_found"
+    ) {
+      return false;
+    }
+    throw error;
+  }
+}
+
+async function checkUserExists(user_id: string): Promise<boolean> {
+  try {
+    await users.get(user_id);
+    return true;
+  } catch (error: any) {
+    if (
+      error instanceof Error &&
+      (error as AppwriteException).type === "user_not_found"
+    ) {
+      return false;
+    }
+    throw error;
+  }
+}
 
 export async function GET(request: NextRequest) {
   const user_id = request.nextUrl.searchParams.get("user_id");
@@ -32,7 +63,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-
   let user_id, book_id, status;
   try {
     const data = await request.json();
@@ -53,7 +83,21 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  let db_query = await database.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
+  if (!(await checkUserExists(user_id))) {
+    return construct_development_api_response({
+      message: `The specified user does not exist!`,
+      status_code: 400,
+    });
+  }
+
+  if (!(await checkBookExists(book_id))) {
+    return construct_development_api_response({
+      message: `The specified book does not exist!`,
+      status_code: 400,
+    });
+  }
+
+  const db_query = await database.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
     Query.equal("user_id", user_id),
     Query.equal("book_id", book_id),
   ]);
