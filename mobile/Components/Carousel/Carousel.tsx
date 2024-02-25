@@ -55,50 +55,39 @@ export const Carousel = (props: any) => {
   const [books, setBooks] = useState([]);
 
   React.useEffect(() => {
-    fetch(
-      `${BACKEND_API_BOOK_SEARCH_URL}?` +
-        new URLSearchParams({
-          title: "Heir of Fire",
-        }),
-    )
-      .then(async (data) => {
-        const data_json = await data.json();
-        const parsed_books = data_json.results.documents.map((book) => {
-          return {
-            id: book.$id,
-            title: book.title,
-            author: book.authors[0].name,
-            image_url: book.editions[0].thumbnail_url,
-          };
-        });
-        setBooks(books => [...books, parsed_books]);
-        return parsed_books; // This is what will be resolved in the chain
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-      fetch(
+    async function getBooks(title) {
+      let res = await fetch(
         `${BACKEND_API_BOOK_SEARCH_URL}?` +
           new URLSearchParams({
-            title: "The Poppy War",
+            title: title,
           }),
-      )
-        .then(async (data) => {
-          const data_json_two = await data.json();
-          const parsed_books_two = data_json_two.results.documents.map((book) => {
-            return {
-              id: book.$id,
-              title: book.title,
-              author: book.authors[0].name,
-              image_url: book.editions[0].thumbnail_url,
-            };
-          });
-          setBooks(books => [...books, parsed_books_two]);
-          return parsed_books_two; // This is what will be resolved in the chain
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
+      );
+
+      const res_json = await res.json();
+      return res_json.results.documents.map((book) => {
+        return {
+          id: book.$id,
+          title: book.title,
+          author: book.authors[0].name,
+          image_url: book.editions[0].thumbnail_url,
+        };
+      });
+    }
+
+    async function getHardcodedBooks() {
+      const book_titles = ["Heir of Fire", "The Poppy War", "Six of Crows"];
+      let book_data = [];
+
+      for (const book_title of book_titles) {
+        book_data.push(...(await getBooks(book_title)));
+      }
+
+      return book_data;
+    }
+
+    getHardcodedBooks().then((data) => {
+      setBooks(data);
+    });
   }, []);
 
   return (
@@ -151,25 +140,27 @@ export const Carousel = (props: any) => {
               }}
             >
               {/* <View style={{ width: boxWidth, backgroundColor: "green"}}> */}
-                <Image
-                  style={{marginVertical: 10,
-                    width: boxWidth,
-                    height: "83%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 15,
-                    backgroundColor: "pink",
-                    shadowColor: "black",
-                    shadowOffset: {
-                      width: 3,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.15,
-                    shadowRadius: 5,}}
-                  resizeMode="contain"
-                  source={{ uri: item.image_url }}
-                />
-                {/* <BookCard
+              <Image
+                style={{
+                  marginVertical: 10,
+                  width: boxWidth,
+                  height: "83%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 15,
+                  backgroundColor: "pink",
+                  shadowColor: "black",
+                  shadowOffset: {
+                    width: 3,
+                    height: 4,
+                  },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 5,
+                }}
+                resizeMode="contain"
+                source={{ uri: item.image_url }}
+              />
+              {/* <BookCard
                   title={item.title}
                   author={item.author}
                   id={item.id}

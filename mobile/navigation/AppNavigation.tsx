@@ -5,6 +5,7 @@ import StarRating from "../Components/StarRating/StarRating";
 import TextReview from "../Components/TextReview/TextReview";
 import BookInfoModal from "../Components/BookInfoModal/BookInfoModal";
 import ShelfModal from "../Components/ShelfModal/ShelfModal";
+import Review from "../Components/Review/Review";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +19,7 @@ function AppNavigation() {
           animation: "slide_from_bottom",
         }}
       >
-        <Stack.Screen name="starRatingModal" component={StarRating} />
+        <Stack.Screen name="review" component={Review} />
         <Stack.Screen name="bookInfoModal" component={BookInfoModal} />
         <Stack.Screen name="shelfModal" component={ShelfModal} />
       </Stack.Group>
@@ -27,7 +28,6 @@ function AppNavigation() {
         component={TextReview}
         options={{
           presentation: "modal",
-          animation: "slide_from_right",
           gestureDirection: "horizontal",
         }}
       />

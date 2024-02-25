@@ -31,7 +31,7 @@ export const Library = (props) => {
         </Text>
         <CarouselTabs navigation={navigation} />
         <Pressable
-          onPress={() => navigation.navigate("starRatingModal")}
+          onPress={() => navigation.navigate("review")}
           style={{ backgroundColor: "gray", padding: 10 }}
         >
           <Text>Star Rating</Text>

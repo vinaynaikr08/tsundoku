@@ -1,8 +1,10 @@
 import * as React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import Modal from "react-native-modal";
+import Colors from "../../Constants/Colors";
 
-function TextReview({ isTextReviewModalVisible, setTextReviewModalVisible }) {
+function TextReview(props) {
+  const { navigation } = props;
   return (
     <View
       style={{
@@ -16,6 +18,12 @@ function TextReview({ isTextReviewModalVisible, setTextReviewModalVisible }) {
       }}
     >
       <Text>Text Review</Text>
+      <Pressable
+        onPress={() => navigation.pop()}
+        style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
+      >
+        <Text>Go back</Text>
+      </Pressable>
     </View>
   );
 }
