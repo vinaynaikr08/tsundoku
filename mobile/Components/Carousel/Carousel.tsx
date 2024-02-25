@@ -75,7 +75,7 @@ export const Carousel = (props: any) => {
     }
 
     async function getHardcodedBooks() {
-      const book_titles = ["Heir of Fire", "The Poppy War"];
+      const book_titles = ["Heir of Fire", "The Poppy War", "Six of Crows"];
       let book_data = [];
 
       for (const book_title of book_titles) {
