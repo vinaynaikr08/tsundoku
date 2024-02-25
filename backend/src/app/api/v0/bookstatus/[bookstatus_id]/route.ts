@@ -1,16 +1,11 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
-import {
-  MAIN_DB_ID,
-  BOOK_STAT_COL_ID,
-  createBookStatus,
-  bookStatusPermissions,
-} from "../common";
+import { bookStatusPermissions } from "../common";
+import { BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
 
 const database = new sdk.Databases(client);
 
