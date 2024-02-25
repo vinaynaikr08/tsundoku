@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   const book_id = data.book_id;
   const status = data.status;
 
-  if (!user_id || !book_id || status) {
+  if (!user_id || !book_id || !status) {
     return NextResponse.json(
       { message: `Parameters not supplied.` },
       { status: 400 },
