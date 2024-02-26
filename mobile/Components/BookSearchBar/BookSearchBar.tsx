@@ -36,7 +36,7 @@ export const genresSelected: Array<string> = [
     "LANGUAGE ARTS & DISCIPLINES",
     "YOUNG ADULT NONFICTION","LAW"];
 
-const BookSearchBar = ( {search, updateSearch} ) => {
+const BookSearchBar = ( {search, updateSearch, newPlaceholder, loading, showFilter} ) => {
     const [checked, setChecked] = React.useState('title');
     const [isOverlayVisible, setOverlayVisible] = useState(false);
 
@@ -57,28 +57,28 @@ const BookSearchBar = ( {search, updateSearch} ) => {
             value.setter[1](false);
         }
     }
+    
 
     return (
         <View>
             <View style={{ backgroundColor: "white", flexDirection: "row" }} >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-                    <View style={{ flex: 10 }}>
-                        <SearchBar
-                            placeholder={"Search list"}
-                            lightTheme
-                            round
-                            onChangeText={updateSearch}
-                            value={search}
-                            autoCorrect={false}
-                            containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
-                            inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
-                            style={{position: "relative", }}
-                        />
-                    </View>
-                </TouchableWithoutFeedback>
-                <View style={{ flex: 2, alignItems:"center"}}>
-                    <Button type="clear" onPress={ () => {toggleOverlay(); Keyboard.dismiss;} } icon={ <Icon name="filter" color={"#5B2FA3"} size={30} /> } />
+                <View style={{ flex: 10 }}>
+                    <SearchBar
+                        placeholder={newPlaceholder}
+                        lightTheme
+                        showLoading={loading}
+                        round
+                        onChangeText={updateSearch}
+                        value={search}
+                        autoCorrect={false}
+                        containerStyle={{padding: 0, backgroundColor: "transparent", borderBottomColor: "transparent", borderTopColor: "transparent"}}
+                        inputContainerStyle={{borderRadius: 20, backgroundColor: "#F7F7F7"}}
+                        onSubmitEditing={() => alert('temp')}
+                    />
                 </View>
+                { showFilter && <View style={{ flex: 2, alignItems:"center"}}>
+                    <Button type="clear" onPress={ () => {toggleOverlay(); Keyboard.dismiss;} } icon={ <Icon name="filter" color={"#5B2FA3"} size={30} /> } />
+                </View> }
 
                 <Overlay isVisible={isOverlayVisible} onBackdropPress={toggleOverlay} overlayStyle={{ backgroundColor: "white", width: '89%', height: '70%', borderRadius: 20, marginTop: 60 }}>
                     <View style={{ backgroundColor: "white" }}>

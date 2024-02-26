@@ -9,12 +9,9 @@ import {
 } from "react-native";
 import React from "react";
 import { useState, useContext } from "react";
-import Modal from "react-native-modal";
 import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
 
-import { NavigationContext } from "../../Contexts";
-import { shelf } from "../DiscoverCarouselTabs";
 import { genresSelected } from "../BookSearchBar";
 
 function checkTitle(value, search) {
@@ -30,9 +27,8 @@ function checkGenres(value) {
 }
 
 const ShelfModal = ({ route, navigation}) => {
-  const {bookData} = route.params;
+  const {bookData, shelf} = route.params;
   const [search, setSearch] = useState("");
-  console.log(bookData);
 
   const updateSearch = (search) => {
     setSearch(search);
@@ -110,7 +106,7 @@ const ShelfModal = ({ route, navigation}) => {
           paddingBottom: 0,
         }}
       >
-        <BookSearchBar search={search} updateSearch={updateSearch} />
+        <BookSearchBar search={search} updateSearch={updateSearch} newPlaceholder={"Search list"} loading={false} showFilter={true}/>
       </View>
       <View
         style={{

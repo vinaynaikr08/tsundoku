@@ -12,7 +12,6 @@ import { client } from "@/appwrite";
 const Tab = createMaterialTopTabNavigator();
 
 let shelf = "Currently Reading";
-export { shelf };
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -114,7 +113,7 @@ function ReadingStatusCarousel({ status }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <Carousel books={books} />
+      <Carousel books={books} shelf={shelf} />
     </View>
   );
 }
@@ -165,4 +164,5 @@ function LibraryCarouselTabs({ navigation }) {
   );
 }
 
+export { shelf };
 export default LibraryCarouselTabs;

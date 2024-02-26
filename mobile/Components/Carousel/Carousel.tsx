@@ -41,12 +41,11 @@ const BookCard = (
   // </View>
 );
 
-export const Carousel = ({ books }) => {
+export const Carousel = ({ books, shelf }) => {
   const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;
 
   const [scrollViewWidth, setScrollViewWidth] = useState(0);
-  const [isShelfModalVisible, setShelfModalVisible] = useState(false);
 
   const boxWidth = scrollViewWidth * 0.6;
   const boxDistance = scrollViewWidth - boxWidth;
@@ -140,7 +139,7 @@ export const Carousel = ({ books }) => {
         }}
       >
         <Pressable
-          onPress={() => navigation.navigate("shelfModal", { bookData: books })}
+          onPress={() => navigation.navigate("shelfModal", { bookData: books, shelf: shelf })}
           style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
         >
           <Text>View All</Text>

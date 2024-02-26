@@ -139,7 +139,7 @@ function RecommendedCarousel() {
   }, []);
   return (
     <View style={{ flex: 1 }}>
-      <Carousel books={books} />
+      <Carousel books={books} shelf={shelf} />
     </View>
   );
 }
@@ -163,5 +163,4 @@ function CarouselTabs({ navigation }) {
   );
 }
 
-export { shelf };
 export default CarouselTabs;
