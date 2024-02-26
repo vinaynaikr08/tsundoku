@@ -60,7 +60,7 @@ function TrackScreen() {
 function SocialScreen() {
   return (
     <View style={{ flex: 1 }}>
-      <Text>social!</Text>
+      <Text style={{ margin: 100, fontSize: 40 }}>social</Text>
     </View>
   );
 }
