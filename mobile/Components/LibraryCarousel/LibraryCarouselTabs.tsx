@@ -23,6 +23,36 @@ const Tab = createMaterialTopTabNavigator();
 let shelf = "Currently Reading";
 export { shelf };
 
+const account = new Account(client);
+const databases = new Databases(client);
+
+async function getBooksOfStatus(status: string) {
+  let books = [];
+  const user_id = (await account.get()).$id;
+  (
+    await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
+      Query.equal("user_id", user_id),
+      Query.equal("status", status),
+    ])
+  ).documents.forEach((doc) => {
+    (async () => {
+      const book_data = await databases.getDocument(
+        ID.mainDBID,
+        ID.bookCollectionID,
+        doc.book.$id,
+      );
+      books.push({
+        id: book_data.$id,
+        title: book_data.title,
+        author: book_data.authors[0].name,
+        image_url: book_data.editions[0].thumbnail_url,
+      });
+    })();
+  });
+
+  return books;
+}
+
 function MyTabBar({ state, descriptors, navigation, position }) {
   return (
     <View>
@@ -81,95 +111,13 @@ function MyTabBar({ state, descriptors, navigation, position }) {
   );
 }
 
-const account = new Account(client);
-
-const user = account.get();
-let userID;
-
-user.then(
-  function (response) {
-    userID = response.$id;
-  },
-  function (error) {
-    console.log(error); // Failure
-  },
-);
-
-const databases = new Databases(client);
-
 function CurrentlyReadingCarousel() {
   const [books, setBooks] = useState([]);
-  console.log("right before account");
 
   useEffect(() => {
-    async function getStatuses() {
-      let currReadingList = [];
-      account
-        .get()
-        .then((response) => {
-          const user_id = response.$id; // user id in $id ?
-          const databases = new Databases(client);
-          const promise = databases.listDocuments(
-            ID.mainDBID,
-            ID.bookStatusCollectionID,
-            [
-              Query.equal("user_id", user_id),
-              Query.equal("status", "CURRENTLY_READING"),
-            ],
-          );
-
-          promise.then(
-            function (response) {
-              const documents = response.documents;
-              documents.forEach((doc) => {
-                console.log("adding doc: " + doc.book.$id);
-                currReadingList.push(doc);
-              });
-            },
-            function (error) {
-              console.log(error);
-            },
-          );
-        })
-        .catch((error) => {
-          console.error("Error fetching user ID:", error);
-        });
-      return currReadingList;
-    }
-    async function getBooks(id) {
-      let res = await fetch(
-        `${BACKEND_API_BOOK_SEARCH_URL}?` +
-          new URLSearchParams({
-            _id: id,
-          }),
-      );
-      const res_json = await res.json();
-      return res_json.results.documents.map((book) => {
-        return {
-          id: book.$id,
-          title: book.title,
-          author: book.authors[0].name,
-          image_url: book.editions[0].thumbnail_url,
-        };
-      });
-    }
-
-    async function getCurrentlyReadingBooks() {
-      let booklist = [];
-      const currReading = await getStatuses();
-      console.log("currReading hello: " + currReading);
-
-      for (const book of currReading) {
-        booklist.push(...(await getBooks(book.book.$id)));
-      }
-      console.log("booklist: " + booklist);
-      return booklist;
-    }
-
-    getCurrentlyReadingBooks().then((data) => {
-      setBooks(data);
-    });
+    (async () => {setBooks(await getBooksOfStatus("CURRENTLY_READING"))})();
   }, []);
+
   return (
     <View style={{ flex: 1 }}>
       <Carousel books={books} />
