@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Carousel from "../Carousel/Carousel";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 
@@ -115,15 +114,7 @@ function BookReviewsTab() {
             existence. That she got into Sinegard—the most elite military school
             in Nikan—was even more surprising. But surprises aren’t always good.
             Because being a dark-skinned peasant girl from the south is not an
-            easy thing at Sinegard. Targeted from the outset by rival classmates
-            for her color, poverty, and gender, Rin discovers she possesses a
-            lethal, unearthly power—an aptitude for the nearly-mythical art of
-            shamanism. Exploring the depths of her gift with the help of a
-            seemingly insane teacher and psychoactive substances, Rin learns
-            that gods long thought dead are very much alive—and that mastering
-            control over those powers could mean more than just surviving
-            school. For while the Nikara Empire is at peace, the Federation of
-            Mugen still lurks across a narrow sea.
+            easy thing at Sinegard.
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -173,6 +164,5 @@ const styles = StyleSheet.create({
     marginBottom: 100,
     paddingHorizontal: 5,
     backgroundColor: "white",
-    //   flexGrow: 1,
   },
 });

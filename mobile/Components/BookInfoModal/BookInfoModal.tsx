@@ -31,18 +31,10 @@ import { useRoute } from "@react-navigation/native";
 // };
 
 export const BookInfoModal = ({ route, navigation }) => {
-  // const route = useRoute();
   const { bookInfo } = route.params;
   const [selectedOption, setSelectedOption] = useState("Mark book as read");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
-  // const { navigation } = props;
-  const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
-  // const toggleReviewModal = () => {
-  //   setIsReviewModalVisible(!isReviewModalVisible);
-  //   navigation.navigate("review", { bookInfo: bookInfo });
-  // };
-  // const toggleNothing = () => {};
   const readTag = buttonClicked ? "Read" : "Mark book as read";
 
   const dropdownOptions = [

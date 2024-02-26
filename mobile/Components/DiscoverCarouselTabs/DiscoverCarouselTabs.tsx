@@ -21,14 +21,12 @@ const Tab = createMaterialTopTabNavigator();
 let shelf = "Recommended";
 
 function MyTabBar({ state, descriptors, navigation, position }) {
-  
   return (
     <View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 15 }}
-        
       >
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -85,13 +83,16 @@ const account = new Account(client);
 const promise = account.get();
 let userID;
 
-promise.then(function (response) {
+promise.then(
+  function (response) {
     //console.log(response); // Success
     userID = response.$id;
     console.log(userID);
-}, function (error) {
+  },
+  function (error) {
     console.log(error); // Failure
-});
+  },
+);
 
 function RecommendedCarousel() {
   const [books, setBooks] = useState([]);
@@ -110,13 +111,19 @@ function RecommendedCarousel() {
           id: book.$id,
           title: book.title,
           author: book.authors[0].name,
+          summary: book.description,
           image_url: book.editions[0].thumbnail_url,
         };
       });
     }
 
     async function getHardcodedBooks() {
-      const book_titles = ["The Poppy War", "The Dragon Republic", "Ordinary Monsters", "Foundryside"];
+      const book_titles = [
+        "The Poppy War",
+        "The Dragon Republic",
+        "Ordinary Monsters",
+        "Foundryside",
+      ];
       let book_data = [];
 
       for (const book_title of book_titles) {
@@ -132,19 +139,24 @@ function RecommendedCarousel() {
   }, []);
   return (
     <View style={{ flex: 1 }}>
-      <Carousel books={books}/>
+      <Carousel books={books} />
     </View>
   );
 }
 
 function CarouselTabs({ navigation }) {
   return (
-    <Tab.Navigator screenOptions={{swipeEnabled: false}} tabBar={(props) => <MyTabBar {...props} />}>
+    <Tab.Navigator
+      screenOptions={{ swipeEnabled: false }}
+      tabBar={(props) => <MyTabBar {...props} />}
+    >
       <Tab.Screen
         name="Recommended"
         component={RecommendedCarousel}
         listeners={{
-          tabPress: e => { shelf = "Recommended"; }
+          tabPress: (e) => {
+            shelf = "Recommended";
+          },
         }}
       />
     </Tab.Navigator>
