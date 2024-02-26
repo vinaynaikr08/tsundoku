@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Carousel from "../Carousel/Carousel";
