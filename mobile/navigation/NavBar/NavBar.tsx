@@ -92,7 +92,7 @@ function NavBar() {
       <BottomBar.Screen
         // currently is sign-in screen for testing
         name="home"
-        component={HomeScreen}
+        component={Library}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Home
