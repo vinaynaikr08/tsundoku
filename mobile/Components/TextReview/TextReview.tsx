@@ -43,24 +43,33 @@ function TextReview({ route, navigation }) {
         user_id: user_id,
         star_rating: rating,
         description: text,
-        book: bookInfo.id,
+        book: "65da0871ed3dadffe87d",
+      },
+    );
+
+    promise.then(
+      function (response) {
+        navigation.navigate("navbar");
+      },
+      function (error) {
+        console.log(error);
       },
     );
   }
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
-        width: "100%",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-      }}
-    >
-      <Text style={styles.title}>What are your thoughts on this book?</Text>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+          width: "100%",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        }}
+      >
+        <Text style={styles.title}>What are your thoughts on this book?</Text>
         <View style={{ flex: 1, width: "90%" }}>
           <TextInput
             style={styles.reviewInput}
@@ -71,14 +80,14 @@ function TextReview({ route, navigation }) {
             numberOfLines={4}
           />
         </View>
-      </TouchableWithoutFeedback>
-      <Pressable onPress={saveReview} style={styles.saveButton}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </Pressable>
-      <Pressable onPress={() => navigation.pop()} style={styles.backButton}>
-        <Text style={styles.backButtonText}>Back</Text>
-      </Pressable>
-    </View>
+        <Pressable onPress={saveReview} style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </Pressable>
+        <Pressable onPress={() => navigation.pop()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Back</Text>
+        </Pressable>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
