@@ -1,13 +1,5 @@
 import * as React from "react";
-import {
-  Button,
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Carousel from "../Carousel/Carousel";
 import Colors from "../../Constants/Colors";
@@ -15,7 +7,6 @@ import { client } from "../../appwrite";
 import { Databases, Account } from "appwrite";
 import { useEffect, useState } from "react";
 import ID from "../../Constants/ID";
-import { BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
 import { Query } from "appwrite";
 
 const Tab = createMaterialTopTabNavigator();
@@ -111,34 +102,18 @@ function MyTabBar({ state, descriptors, navigation, position }) {
   );
 }
 
-function CurrentlyReadingCarousel() {
+function ReadingStatusCarousel({ status }) {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    (async () => {setBooks(await getBooksOfStatus("CURRENTLY_READING"))})();
+    (async () => {
+      setBooks(await getBooksOfStatus(status));
+    })();
   }, []);
 
   return (
     <View style={{ flex: 1 }}>
       <Carousel books={books} />
-    </View>
-  );
-}
-
-function WantToReadCarousel() {
-  return <View style={{ flex: 1 }}>{/* <Carousel books={books} /> */}</View>;
-}
-
-function ReadCarousel() {
-  return (
-    <View style={{ flex: 1 }}>{/* <Carousel currentShelf={"Read"} /> */}</View>
-  );
-}
-
-function DNFCarousel() {
-  return (
-    <View style={{ flex: 1 }}>
-      {/* <Carousel currentShelf={"Did Not Finish"} /> */}
     </View>
   );
 }
@@ -151,7 +126,7 @@ function LibraryCarouselTabs({ navigation }) {
     >
       <Tab.Screen
         name="Currently Reading"
-        component={CurrentlyReadingCarousel}
+        children={() => <ReadingStatusCarousel status="CURRENTLY_READING" />}
         listeners={{
           tabPress: (e) => {
             shelf = "Currently Reading";
@@ -160,7 +135,7 @@ function LibraryCarouselTabs({ navigation }) {
       />
       <Tab.Screen
         name="Want To Read"
-        component={WantToReadCarousel}
+        children={() => <ReadingStatusCarousel status="WANT_TO_READ" />}
         listeners={{
           tabPress: (e) => {
             shelf = "Want To Read";
@@ -169,7 +144,7 @@ function LibraryCarouselTabs({ navigation }) {
       />
       <Tab.Screen
         name="Read"
-        component={ReadCarousel}
+        children={() => <ReadingStatusCarousel status="READ" />}
         listeners={{
           tabPress: (e) => {
             shelf = "Read";
@@ -178,7 +153,7 @@ function LibraryCarouselTabs({ navigation }) {
       />
       <Tab.Screen
         name="Did Not Finish"
-        component={DNFCarousel}
+        children={() => <ReadingStatusCarousel status="DID_NOT_FINISH" />}
         listeners={{
           tabPress: (e) => {
             shelf = "Did Not Finish";
