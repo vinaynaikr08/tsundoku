@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import { View, Text, Platform, Image, FlatList, TouchableWithoutFeedback, Keyboard, KeyboardEvent, Dimensions, KeyboardAvoidingView } from "react-native";
-import Carousel from "../Components/Carousel/Carousel";
-import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
-import StarRating from "../Components/StarRating/StarRating";
 import { createStackNavigator } from "@react-navigation/stack";
-import TextReview from "../Components/TextReview/TextReview";
-import { useNavigation } from "@react-navigation/native";
-import { createContext, useContext } from "react";
+
 
 import { BACKEND_API_BOOK_SEARCH_URL } from "../Constants/URLs";
+import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchBar from "@/Components/BookSearchBar";
@@ -20,6 +16,7 @@ export const Discover = (props) => {
   const windowHeight = Dimensions.get('window').height; 
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
+
   async function getBooks(title) {
     setLoading(true);
     let res = await fetch(
@@ -36,12 +33,13 @@ export const Discover = (props) => {
         title: book.title,
         author: book.authors[0].name,
         image_url: book.editions[0].thumbnail_url,
+        isbn_10: book.editions[0].isbn_10,
+        isbn_13: book.editions[0].isbn_13,
       };
     });
   }
 
   const { navigation } = props;
-  const [isReviewModalVisible, setReviewModalVisible] = useState(false);
   const [search, setSearch] = useState("");
   const updateSearch = (search) => {
     setSearch(search);
@@ -95,14 +93,12 @@ export const Discover = (props) => {
                       resizeMode="contain"
                       source={{ uri: item.image_url }}
                     />
-                    <View
-                      style={{
-                        paddingLeft: 10,
-                      }}
-                    >
-                      <Text style={{ fontSize: 20 }}>{item.title}</Text>
+                    <View style={{ paddingLeft: 10, width: "90%" }}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ fontSize: 20, flexShrink: 1}}>{item.title}</Text>
+                      </View>
                       <Text>{item.author}</Text>
-                      <Text>ISBN: temp</Text>
+                      <Text >ISBN: {item.isbn_13}</Text>
                     </View>
                   </View>
                   <Divider style={{backgroundColor: "black"}}/>
