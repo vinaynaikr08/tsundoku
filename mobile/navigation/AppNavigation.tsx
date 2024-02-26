@@ -14,8 +14,8 @@ const Stack = createNativeStackNavigator();
 function AppNavigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name="initial_launch" component={InitialLaunchScreen} />
-      <Stack.Screen name="sign_in" component={SignIn} /> */}
+      <Stack.Screen name="initial_launch" component={InitialLaunchScreen} />
+      <Stack.Screen name="sign_in" component={SignIn} />
       <Stack.Screen name="navbar" component={NavBar} />
       <Stack.Group
         screenOptions={{
