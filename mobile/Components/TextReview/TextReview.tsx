@@ -1,12 +1,44 @@
 import * as React from "react";
-import { View, Text, Pressable, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import Modal from "react-native-modal";
 import Colors from "../../Constants/Colors";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Account, Databases, ID } from "appwrite";
+import { client } from "../../appwrite";
+import IDList from "@/Constants/IDList";
+import { BookInfoContext } from "@/Contexts";
 
-function TextReview(props) {
-  const { navigation } = props;
+function TextReview({route, navigation}) {
+  const { rating } = route.params;
+  const {bookInfo} = useContext(BookInfoContext);
   const [text, setText] = useState("");
+
+  function saveReview() {
+    const account = new Account(client);
+    const user = account.get();
+    let user_id;
+    user.then(function (response) {
+      user_id = response.$id;
+  }, function (error) {
+      console.log(error);
+  });
+    const databases = new Databases(client);
+
+    const promise = databases.createDocument(
+      IDList.mainDBID,
+      IDList.reviewCollectionID,
+      ID.unique(),
+      {user_id: user_id, star_rating: rating, description: text, book: bookInfo.id},
+    );
+  }
   return (
     <View
       style={{
@@ -21,7 +53,7 @@ function TextReview(props) {
     >
       <Text style={styles.title}>What are your thoughts on this book?</Text>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{flex: 1, width: "90%"}}>
+        <View style={{ flex: 1, width: "90%" }}>
           <TextInput
             style={styles.reviewInput}
             onChangeText={setText}
@@ -33,7 +65,7 @@ function TextReview(props) {
         </View>
       </TouchableWithoutFeedback>
       <Pressable
-        onPress={() => navigation.navigate("navbar")}
+        onPress={saveReview}
         style={styles.saveButton}
       >
         <Text style={styles.saveButtonText}>Save</Text>

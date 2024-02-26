@@ -54,7 +54,7 @@ function StarRating(props) {
           />
         </View>
         <Pressable
-          onPress={() => navigation.navigate("textReviewModal")}
+          onPress={() => navigation.navigate("textReviewModal", {rating: rating})}
           style={styles.nextButton}
         >
           <Text style={styles.nextButtonText}>Next</Text>
