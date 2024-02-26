@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Image,
   Modal,
 } from "react-native";
 import styled from "styled-components/native";
@@ -19,32 +20,18 @@ import { BookInfoContext } from "../../Contexts";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useRoute } from "@react-navigation/native";
 
-interface BookInfoModalProps {
-  isVisible: boolean;
-  onClose: () => void;
-  bookInfo: {
-    coverImage: string;
-    title: string;
-    author: string;
-    summary: string;
-  };
-}
-
 const bookInfo = {
-  coverImage: "",
+  image_url:
+    "https://books.google.com/books/publisher/content?id=Vg89DwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73rzsvlif61bxrCHpuWhCG9sHcM70_AVRP_WRAKm1WxMWWh-sRLdU7S1_9uvA2ZWuAeAhsxgw9_qKgBysyAHbcDGhH8uHunypkFirMeLbIJEgxQl32g0mNdkE7DAWjqLsM4LK_3",
   title: "The Poppy War",
   author: "RF Kuang",
+  id: "",
   summary:
     "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
 };
 
-// const BookInfoModal: React.FC<BookInfoModalProps> = ({
-//   isVisible,
-//   onClose,
-// }) => {
 export const BookInfoModal = (props: any) => {
   const route = useRoute();
-  //const {bookInfo} = route.params?.bookInfo;
   const [selectedOption, setSelectedOption] = useState("Mark book as read");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -83,15 +70,12 @@ export const BookInfoModal = (props: any) => {
         <View style={{ alignItems: "center" }}>
           <View style={styles.modalGreyLine} />
         </View>
-        {/* <Image
-            source={{ uri: bookInfo.coverImage }}
-            style={{
-              width: Dimensions.BOOK_INFO_MODAL_COVER_WIDTH,
-              height: Dimensions.BOOK_INFO_MODAL_COVER_HEIGHT,
-              marginBottom: Dimensions.BOOK_INFO_MODAL_COVER_MARGIN_BOTTOM,
-            }}
-          /> */}
-        <View style={styles.bookCoverStyle} />
+        <Image
+          style={styles.bookCoverStyle}
+          resizeMode="contain"
+          source={{ uri: bookInfo.image_url }}
+        />
+        {/* <View style={styles.bookCoverStyle} /> */}
         <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
         <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
         <ButtonContainer padding={0}>
