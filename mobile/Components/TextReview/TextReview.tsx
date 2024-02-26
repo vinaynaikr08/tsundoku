@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Pressable, StyleSheet, TextInput } from "react-native";
+import { View, Text, Pressable, StyleSheet, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import Modal from "react-native-modal";
 import Colors from "../../Constants/Colors";
 import { useState } from "react";
@@ -20,14 +20,18 @@ function TextReview(props) {
       }}
     >
       <Text style={styles.title}>What are your thoughts on this book?</Text>
-      <TextInput
-        style={styles.reviewInput}
-        onChangeText={setText}
-        value={text}
-        editable
-        multiline
-        numberOfLines={4}
-      />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{flex: 1, width: "90%"}}>
+          <TextInput
+            style={styles.reviewInput}
+            onChangeText={setText}
+            value={text}
+            editable
+            multiline
+            numberOfLines={4}
+          />
+        </View>
+      </TouchableWithoutFeedback>
       <Pressable
         onPress={() => navigation.navigate("navbar")}
         style={styles.saveButton}
@@ -48,7 +52,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     marginTop: 50,
-    marginVertical: 20,
     fontWeight: "600",
     marginHorizontal: 40,
     textAlign: "center",
@@ -77,11 +80,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BUTTON_GRAY,
     padding: 10,
     paddingHorizontal: 20,
-    marginBottom: 100,
+    marginBottom: 60,
     borderRadius: 10,
   },
   reviewInput: {
+    height: "85%",
     margin: 12,
+    marginTop: 40,
     borderWidth: 1,
     padding: 10,
   },
