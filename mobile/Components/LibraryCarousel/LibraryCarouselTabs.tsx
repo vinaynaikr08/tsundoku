@@ -20,27 +20,27 @@ const databases = new Databases(client);
 async function getBooksOfStatus(status: string) {
   let books = [];
   const user_id = (await account.get()).$id;
-  (
+  let documents = (
     await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
       Query.equal("user_id", user_id),
       Query.equal("status", status),
     ])
-  ).documents.forEach((doc) => {
-    (async () => {
-      const book_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.bookCollectionID,
-        doc.book.$id,
-      );
-      books.push({
-        id: book_data.$id,
-        title: book_data.title,
-        author: book_data.authors[0].name,
-        summary: book_data.description,
-        image_url: book_data.editions[0].thumbnail_url,
-      });
-    })();
-  });
+  ).documents;
+
+  for (const document of documents) {
+    const book_data = await databases.getDocument(
+      ID.mainDBID,
+      ID.bookCollectionID,
+      document.book.$id,
+    );
+    books.push({
+      id: book_data.$id,
+      title: book_data.title,
+      author: book_data.authors[0].name,
+      summary: book_data.description,
+      image_url: book_data.editions[0].thumbnail_url,
+    });
+  }
 
   return books;
 }
