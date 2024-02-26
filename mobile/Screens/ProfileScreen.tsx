@@ -3,7 +3,6 @@ import BookInfoModal from "../Components/BookInfoModal";
 import {
   View,
   Text,
-  SafeAreaView,
   Button,
   StyleSheet,
   Pressable,
@@ -15,6 +14,7 @@ import { Databases, Account } from "appwrite";
 import Colors from "../Constants/Colors";
 import ID from "../Constants/ID";
 import { BookInfoContext, NavigationContext } from "../Contexts";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const databases = new Databases(client);
 

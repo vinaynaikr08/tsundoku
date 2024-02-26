@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, Pressable, Button } from "react-native";
+import { View, Text, Pressable, Button } from "react-native";
 import Carousel from "../Components/Carousel/Carousel";
 import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import StarRating from "../Components/StarRating/StarRating";
@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import { createContext, useContext } from "react";
 
 import { NavigationContext } from "../Contexts";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Stack = createStackNavigator();
 
