@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, Button, FlatList, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, Text, Platform, Image, FlatList, TouchableWithoutFeedback, Keyboard, KeyboardEvent, Dimensions, KeyboardAvoidingView } from "react-native";
 import Carousel from "../Components/Carousel/Carousel";
 import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import StarRating from "../Components/StarRating/StarRating";
@@ -12,12 +12,16 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "../Constants/URLs";
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchBar from "@/Components/BookSearchBar";
+import { Divider } from "react-native-paper";
 
 const Stack = createStackNavigator();
 
 export const Discover = (props) => {
+  const windowHeight = Dimensions.get('window').height; 
+  const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
   async function getBooks(title) {
+    setLoading(true);
     let res = await fetch(
       `${BACKEND_API_BOOK_SEARCH_URL}?` +
         new URLSearchParams({
@@ -39,12 +43,12 @@ export const Discover = (props) => {
   const { navigation } = props;
   const [isReviewModalVisible, setReviewModalVisible] = useState(false);
   const [search, setSearch] = useState("");
-  let loading = false;
   const updateSearch = (search) => {
     setSearch(search);
-    loading = true;
-    getBooks(search);
-    loading = false;
+    getBooks(search).then((data) => {
+      setBooks(data);
+    });
+    setLoading(false);
   };
 
   return (
@@ -70,18 +74,44 @@ export const Discover = (props) => {
         </View>
         <CarouselTabs navigation={navigation} />
         
-        {search.length > 0 && <View style={{ backgroundColor: '#F7F7F7', width: '100%', position: "absolute", top: '21.5%', zIndex: 100, borderColor: 'black', borderWidth: 0, maxHeight: '40%'}}>
+        {search.length > 0 && 
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ backgroundColor: '#F7F7F7', width: '100%', position: "absolute", top: '21.5%', zIndex: 100, borderColor: 'black', borderWidth: 0, maxHeight: windowHeight - 230}}>
           <FlatList data={books} style={{flexGrow: 0}} 
             renderItem={({item}) => {
               return (
-                <View style={{height: 300}}>
-                  <Text>{item.title}</Text>
+                <View>
+                  <View style={{flexDirection: 'row', paddingTop: 10, paddingBottom: 10}}>
+                    <Image
+                      style={{
+                      width: 80,
+                      height: 100,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      shadowColor: "black",
+                      }}
+                      resizeMode="contain"
+                      source={{ uri: item.image_url }}
+                    />
+                    <View
+                      style={{
+                        paddingLeft: 10,
+                      }}
+                    >
+                      <Text style={{ fontSize: 20 }}>{item.title}</Text>
+                      <Text>{item.author}</Text>
+                      <Text>ISBN: temp</Text>
+                    </View>
+                  </View>
+                  <Divider style={{backgroundColor: "black"}}/>
                 </View>
               )
+              
             } 
           }/>
-        </View>}
-
+        </KeyboardAvoidingView>}
       </SafeAreaView>
     </NavigationContext.Provider>
   );
