@@ -20,28 +20,29 @@ import { BookInfoContext } from "../../Contexts";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useRoute } from "@react-navigation/native";
 
-const bookInfo = {
-  image_url:
-    "https://books.google.com/books/publisher/content?id=Vg89DwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73rzsvlif61bxrCHpuWhCG9sHcM70_AVRP_WRAKm1WxMWWh-sRLdU7S1_9uvA2ZWuAeAhsxgw9_qKgBysyAHbcDGhH8uHunypkFirMeLbIJEgxQl32g0mNdkE7DAWjqLsM4LK_3",
-  title: "The Poppy War",
-  author: "RF Kuang",
-  id: "",
-  summary:
-    "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
-};
+// const bookInfo = {
+//   image_url:
+//     "https://books.google.com/books/publisher/content?id=Vg89DwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73rzsvlif61bxrCHpuWhCG9sHcM70_AVRP_WRAKm1WxMWWh-sRLdU7S1_9uvA2ZWuAeAhsxgw9_qKgBysyAHbcDGhH8uHunypkFirMeLbIJEgxQl32g0mNdkE7DAWjqLsM4LK_3",
+//   title: "The Poppy War",
+//   author: "RF Kuang",
+//   id: "",
+//   summary:
+//     "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
+// };
 
-export const BookInfoModal = (props: any) => {
-  const route = useRoute();
+export const BookInfoModal = ({ route, navigation }) => {
+  // const route = useRoute();
+  const { bookInfo } = route.params;
   const [selectedOption, setSelectedOption] = useState("Mark book as read");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
-  const { navigation } = props;
+  // const { navigation } = props;
   const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
-  const toggleReviewModal = () => {
-    setIsReviewModalVisible(!isReviewModalVisible);
-    navigation.navigate("review", { bookInfo: bookInfo });
-  };
-  const toggleNothing = () => {};
+  // const toggleReviewModal = () => {
+  //   setIsReviewModalVisible(!isReviewModalVisible);
+  //   navigation.navigate("review", { bookInfo: bookInfo });
+  // };
+  // const toggleNothing = () => {};
   const readTag = buttonClicked ? "Read" : "Mark book as read";
 
   const dropdownOptions = [
@@ -52,10 +53,10 @@ export const BookInfoModal = (props: any) => {
     "Want to read",
     "Did not finish",
   ];
-  const handlePress = () => {
-    setButtonClicked(true);
-    buttonClicked ? toggleReviewModal : toggleNothing;
-  };
+  // const handlePress = () => {
+  //   setButtonClicked(true);
+  //   buttonClicked ? toggleReviewModal : toggleNothing;
+  // };
 
   const handleOptionSelect = (option: any) => {
     setSelectedOption(option);
@@ -109,7 +110,9 @@ export const BookInfoModal = (props: any) => {
           />
           <ReadingStatusButton
             color={Colors.BUTTON_PURPLE}
-            onPress={() => handlePress}
+            onPress={() =>
+              navigation.navigate("review", { bookInfo: bookInfo })
+            }
           >
             <ReadingNowContainer>
               <ButtonText color={"white"}>

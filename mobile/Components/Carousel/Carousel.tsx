@@ -9,6 +9,7 @@ import {
   Pressable,
   Image,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -27,6 +28,7 @@ type bookInfo = {
   title: string;
   author: string;
   id: string;
+  summary: string;
   image_url: string;
 };
 
@@ -39,7 +41,7 @@ const BookCard = (
   // </View>
 );
 
-export const Carousel = ({books}) => {
+export const Carousel = ({ books }) => {
   const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -50,6 +52,10 @@ export const Carousel = ({books}) => {
   const boxDistance = scrollViewWidth - boxWidth;
   const halfBoxDistance = boxDistance / 2;
   const snapWidth = boxWidth;
+
+  // const toggleBookInfoModal = () => {
+  //   navigation.navigate("bookInfoModal", { bookInfo: books });
+  // };
 
   // TODO: figure out better way of doing this
   // const [books, setBooks] = useState([]);
@@ -140,26 +146,32 @@ export const Carousel = ({books}) => {
               }}
             >
               {/* <View style={{ width: boxWidth, backgroundColor: "green"}}> */}
-              <Image
-                style={{
-                  marginVertical: 10,
-                  width: boxWidth,
-                  height: "83%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 15,
-                  backgroundColor: "pink",
-                  shadowColor: "black",
-                  shadowOffset: {
-                    width: 3,
-                    height: 4,
-                  },
-                  shadowOpacity: 0.15,
-                  shadowRadius: 5,
-                }}
-                resizeMode="contain"
-                source={{ uri: item.image_url }}
-              />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("bookInfoModal", { bookInfo: item })
+                }
+              >
+                <Image
+                  style={{
+                    marginVertical: 10,
+                    width: boxWidth,
+                    height: "83%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 15,
+                    backgroundColor: "pink",
+                    shadowColor: "black",
+                    shadowOffset: {
+                      width: 3,
+                      height: 4,
+                    },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 5,
+                  }}
+                  resizeMode="contain"
+                  source={{ uri: item.image_url }}
+                />
+              </TouchableOpacity>
               {/* <BookCard
                   title={item.title}
                   author={item.author}
@@ -178,7 +190,7 @@ export const Carousel = ({books}) => {
         }}
       >
         <Pressable
-          onPress={() => navigation.navigate("shelfModal", {bookData: books})}
+          onPress={() => navigation.navigate("shelfModal", { bookData: books })}
           style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
         >
           <Text>View All</Text>
