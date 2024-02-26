@@ -23,8 +23,9 @@ import { client } from "@/appwrite";
 const account = new Account(client);
 
 export const SignIn = (props) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // TODO: unset dummy credentials before demo!
+  const [email, setEmail] = useState("bookymcbookface@tsundoku.ericswpark.com");
+  const [password, setPassword] = useState("demoaccount12345");
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [session, setSession] = useState(null);
