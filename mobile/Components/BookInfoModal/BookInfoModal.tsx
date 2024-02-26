@@ -20,43 +20,31 @@ import { BookInfoContext } from "../../Contexts";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useRoute } from "@react-navigation/native";
 
-// const bookInfo = {
-//   image_url:
-//     "https://books.google.com/books/publisher/content?id=Vg89DwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73rzsvlif61bxrCHpuWhCG9sHcM70_AVRP_WRAKm1WxMWWh-sRLdU7S1_9uvA2ZWuAeAhsxgw9_qKgBysyAHbcDGhH8uHunypkFirMeLbIJEgxQl32g0mNdkE7DAWjqLsM4LK_3",
-//   title: "The Poppy War",
-//   author: "RF Kuang",
-//   id: "",
-//   summary:
-//     "The Poppy War is a 2018 novel by R. F. Kuang, published by Harper Voyager. The Poppy War, a grimdark fantasy, draws its plot and politics from mid-20th-century China, with the conflict in the novel based on the Second Sino-Japanese War, and an atmosphere inspired by the Song dynasty.",
-// };
-
 export const BookInfoModal = ({ route, navigation }) => {
   const { bookInfo } = route.params;
-  const [selectedOption, setSelectedOption] = useState("Mark book as read");
+  const [markedRead, setMarkedRead] = useState("Mark book as read");
+  const [selectedOption, setSelectedOption] = useState(markedRead);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [buttonClicked, setButtonClicked] = useState(false);
-  const readTag = buttonClicked ? "Read" : "Mark book as read";
 
   const dropdownOptions = [
-    // { readTag },
-    // "Read",
-    buttonClicked ? "Read" : "Mark book as read",
+    markedRead,
     "Currently reading",
     "Want to read",
     "Did not finish",
   ];
-  // const handlePress = () => {
-  //   setButtonClicked(true);
-  //   buttonClicked ? toggleReviewModal : toggleNothing;
-  // };
+  const handlePress = () => {
+    selectedOption === "Mark book as read"
+      ? navigation.navigate("review", { bookInfo: bookInfo })
+      : null;
+    setSelectedOption("Read");
+    setMarkedRead("Read");
+  };
 
   const handleOptionSelect = (option: any) => {
     setSelectedOption(option);
     setIsDropdownOpen(false);
   };
-  const toggleDropDown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+
   return (
     <View style={styles.outsideModalContainer}>
       <View style={styles.modalStyle}>
@@ -68,7 +56,6 @@ export const BookInfoModal = ({ route, navigation }) => {
           resizeMode="contain"
           source={{ uri: bookInfo.image_url }}
         />
-        {/* <View style={styles.bookCoverStyle} /> */}
         <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
         <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
         <ButtonContainer padding={0}>
@@ -102,14 +89,10 @@ export const BookInfoModal = ({ route, navigation }) => {
           />
           <ReadingStatusButton
             color={Colors.BUTTON_PURPLE}
-            onPress={() =>
-              navigation.navigate("review", { bookInfo: bookInfo })
-            }
+            onPress={handlePress}
           >
             <ReadingNowContainer>
-              <ButtonText color={"white"}>
-                {buttonClicked ? "Read" : selectedOption}
-              </ButtonText>
+              <ButtonText color={"white"}>{selectedOption}</ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
         </ButtonContainer>
@@ -141,7 +124,8 @@ const styles = StyleSheet.create({
   },
   dropdownStyle: {
     width: "40%",
-    backgroundColor: "grey",
+    backgroundColor: "#d6d6d6",
+    borderRadius: 10,
   },
   modalStyle: {
     flex: 1,
@@ -213,10 +197,11 @@ const ButtonContainer = styled.View<{ padding: number }>`
 
 const ReadingStatusButton = styled.TouchableOpacity<ColorProps>`
   height: 45px;
-  border-radius: 30px;
   border: 2px solid ${({ color }) => color};
   padding: 1px 1px;
   background-color: ${Colors.BUTTON_PURPLE};
+  border-radius: 13px;
+  flex: 1;
   align-items: center;
   justify-content: center;
 `;

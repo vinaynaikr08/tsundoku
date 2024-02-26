@@ -81,6 +81,7 @@ function DescriptionTab({ bookInfo }) {
         style={{ flex: 1 }}
         bounces={false}
         contentContainerStyle={styles.scrollViewStyle}
+        showsVerticalScrollIndicator={false}
       >
         <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
@@ -111,10 +112,7 @@ function BookReviewsTab() {
             who believed they’d finally be able to marry her off and further
             their criminal enterprise; and to Rin herself, who realized she was
             finally free of the servitude and despair that had made up her daily
-            existence. That she got into Sinegard—the most elite military school
-            in Nikan—was even more surprising. But surprises aren’t always good.
-            Because being a dark-skinned peasant girl from the south is not an
-            easy thing at Sinegard.
+            existence.
           </Text>
         </TouchableOpacity>
       </ScrollView>
