@@ -1,12 +1,13 @@
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Carousel from "../Carousel/Carousel";
-import Colors from "../../Constants/Colors";
-import { client } from "../../appwrite";
 import { Databases, Account } from "appwrite";
 import { useEffect, useState } from "react";
-import ID from "../../Constants/ID";
 import { Query } from "appwrite";
+
+import Carousel from "@/Components/Carousel/Carousel";
+import ID from "@/Constants/ID";
+import Colors from "@/Constants/Colors";
+import { client } from "@/appwrite";
 
 const Tab = createMaterialTopTabNavigator();
 
