@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Databases, Account } from "appwrite";
-import { useEffect, useState } from "react";
+import React from "react";
 import { Query } from "appwrite";
 
 import Carousel from "@/Components/Carousel/Carousel";
@@ -104,9 +104,9 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 }
 
 function ReadingStatusCarousel({ status }) {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
       setBooks(await getBooksOfStatus(status));
     })();
