@@ -31,12 +31,6 @@ export const Library = (props) => {
           Your Library
         </Text>
         <CarouselTabs navigation={navigation} />
-        <Pressable
-          onPress={() => navigation.navigate("review")}
-          style={{ backgroundColor: "gray", padding: 10 }}
-        >
-          <Text>Star Rating</Text>
-        </Pressable>
       </SafeAreaView>
     </NavigationContext.Provider>
   );

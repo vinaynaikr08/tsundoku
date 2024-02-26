@@ -16,27 +16,35 @@ import { client } from "../../appwrite";
 import IDList from "@/Constants/IDList";
 import { BookInfoContext } from "@/Contexts";
 
-function TextReview({route, navigation}) {
+function TextReview({ route, navigation }) {
   const { rating } = route.params;
-  const {bookInfo} = useContext(BookInfoContext);
+  const { bookInfo } = useContext(BookInfoContext);
   const [text, setText] = useState("");
 
   function saveReview() {
     const account = new Account(client);
     const user = account.get();
     let user_id;
-    user.then(function (response) {
-      user_id = response.$id;
-  }, function (error) {
-      console.log(error);
-  });
+    user.then(
+      function (response) {
+        user_id = response.$id;
+      },
+      function (error) {
+        console.log(error);
+      },
+    );
     const databases = new Databases(client);
 
     const promise = databases.createDocument(
       IDList.mainDBID,
       IDList.reviewCollectionID,
       ID.unique(),
-      {user_id: user_id, star_rating: rating, description: text, book: bookInfo.id},
+      {
+        user_id: user_id,
+        star_rating: rating,
+        description: text,
+        book: bookInfo.id,
+      },
     );
   }
   return (
@@ -64,10 +72,7 @@ function TextReview({route, navigation}) {
           />
         </View>
       </TouchableWithoutFeedback>
-      <Pressable
-        onPress={saveReview}
-        style={styles.saveButton}
-      >
+      <Pressable onPress={saveReview} style={styles.saveButton}>
         <Text style={styles.saveButtonText}>Save</Text>
       </Pressable>
       <Pressable onPress={() => navigation.pop()} style={styles.backButton}>
