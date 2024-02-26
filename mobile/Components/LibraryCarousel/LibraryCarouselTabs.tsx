@@ -27,7 +27,7 @@ async function getBooksOfStatus(status: string) {
     ])
   ).documents;
 
-  for (const document of documents) {
+  await Promise.all(documents.map(async (document) => {
     const book_data = await databases.getDocument(
       ID.mainDBID,
       ID.bookCollectionID,
@@ -40,7 +40,7 @@ async function getBooksOfStatus(status: string) {
       summary: book_data.description,
       image_url: book_data.editions[0].thumbnail_url,
     });
-  }
+  }));
 
   return books;
 }
