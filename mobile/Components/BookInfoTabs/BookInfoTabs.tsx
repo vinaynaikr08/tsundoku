@@ -75,7 +75,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
   );
 }
 
-function DescriptionTab(bookInfo: any) {
+function DescriptionTab({ bookInfo }) {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -86,7 +86,6 @@ function DescriptionTab(bookInfo: any) {
         <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
             {bookInfo.summary}
-            {/* hello guys */}
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -124,15 +123,7 @@ function BookReviewsTab() {
             that gods long thought dead are very much alive—and that mastering
             control over those powers could mean more than just surviving
             school. For while the Nikara Empire is at peace, the Federation of
-            Mugen still lurks across a narrow sea. The militarily advanced
-            Federation occupied Nikan for decades after the First Poppy War, and
-            only barely lost the continent in the Second. And while most of the
-            people are complacent to go about their lives, a few are aware that
-            a Third Poppy War is just a spark away . . . Rin’s shamanic powers
-            may be the only way to save her people. But as she finds out more
-            about the god that has chosen her, the vengeful Phoenix, she fears
-            that winning the war may cost her humanity . . . and that it may
-            already be too late.
+            Mugen still lurks across a narrow sea.
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -158,7 +149,7 @@ function MyNotesTab() {
   );
 }
 
-function BookInfoTabs(bookInfo: any) {
+function BookInfoTabs({ bookInfo }) {
   return (
     <Tab.Navigator
       screenOptions={{ animationEnabled: false }}
@@ -166,12 +157,8 @@ function BookInfoTabs(bookInfo: any) {
     >
       <Tab.Screen
         name="Description"
-        // component={() => <DescriptionTab bookInfo={bookInfo} />}
-        component={DescriptionTab}
-        initialParams={{ bookInfo: bookInfo }}
+        children={(props) => <DescriptionTab bookInfo={bookInfo} {...props} />}
       />
-      {/* {(props) => <DescriptionTab {...props} bookInfo={bookInfo} />} */}
-      {/* </Tab.Screen> */}
       <Tab.Screen name="Reviews" component={BookReviewsTab} />
       <Tab.Screen name="My Notes" component={MyNotesTab} />
     </Tab.Navigator>

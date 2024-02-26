@@ -147,13 +147,10 @@ export default BookInfoModal;
 const styles = StyleSheet.create({
   markAsReadButton: {
     backgroundColor: Colors.BUTTON_PURPLE,
-    // paddingHorizontal: 5,
     paddingVertical: 5,
     borderRadius: 13,
     width: "25%",
     height: "100%",
-    // justifyContent: "flex-end",
-    // alignSelf: "flex-end",
   },
   readButtonText: {
     color: "white",
