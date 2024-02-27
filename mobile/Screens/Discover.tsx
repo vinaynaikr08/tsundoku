@@ -16,7 +16,6 @@ export const Discover = (props) => {
   const windowHeight = Dimensions.get('window').height; 
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
-  const [authors, setAuthors] = useState([]);
   const [search, setSearch] = useState("");
 
   React.useEffect(() => {
@@ -64,9 +63,6 @@ export const Discover = (props) => {
       setBooks(data);
     });
 
-    getAuthors(search).then((data) => {
-      setAuthors(data);
-    });
   
     setLoading(false);
   }, [search]);
