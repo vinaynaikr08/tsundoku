@@ -69,7 +69,6 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const handlePress = () => {
-    console.log("Button pressed");
     switch (status) {
       case BookState.CurrentlyReading: {
         navigation.navigate("review", { bookInfo: bookInfo });
