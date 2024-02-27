@@ -30,7 +30,6 @@ const BOOK_STATE_MAPPING = {
 
 function BookStateLookup(s: string): BookState | null {
   for (const key of Object.keys(BOOK_STATE_MAPPING)) {
-    console.log("Check mapping " + BOOK_STATE_MAPPING[key]);
     if (BOOK_STATE_MAPPING[key] === s) {
       return key as BookState;
     }
