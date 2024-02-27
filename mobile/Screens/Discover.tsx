@@ -3,7 +3,7 @@ import { View, Text, Platform, Image, FlatList, TouchableWithoutFeedback, Keyboa
 import { createStackNavigator } from "@react-navigation/stack";
 
 
-import { BACKEND_API_BOOK_SEARCH_URL } from "../Constants/URLs";
+import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_AUTHOR_SEARCH_URL } from "../Constants/URLs";
 import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,37 +16,66 @@ export const Discover = (props) => {
   const windowHeight = Dimensions.get('window').height; 
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
-
-  async function getBooks(title) {
-    setLoading(true);
-    let res = await fetch(
-      `${BACKEND_API_BOOK_SEARCH_URL}?` +
-        new URLSearchParams({
-          title: title,
-        }),
-    );
-
-    const res_json = await res.json();
-    return res_json.results.documents.map((book) => {
-      return {
-        id: book.$id,
-        title: book.title,
-        author: book.authors[0].name,
-        image_url: book.editions[0].thumbnail_url,
-        isbn_10: book.editions[0].isbn_10,
-        isbn_13: book.editions[0].isbn_13,
-      };
-    });
-  }
-
-  const { navigation } = props;
+  const [authors, setAuthors] = useState([]);
   const [search, setSearch] = useState("");
-  const updateSearch = (search) => {
-    setSearch(search);
+
+  React.useEffect(() => {
+    async function getBooks(param) {
+      setLoading(true);
+      let res = await fetch(
+        `${BACKEND_API_BOOK_SEARCH_URL}?` +
+          new URLSearchParams({
+            title: param,
+          }),
+      );
+      const res_json = await res.json();
+      try {
+        return await res_json.results.documents.map((book) => {
+          return {
+            title: book.title,
+            author: book.authors[0].name,
+            image_url: book.editions[0].thumbnail_url,
+            isbn_10: book.editions[0].isbn_10,
+            isbn_13: book.editions[0].isbn_13,
+          };
+        });
+      } catch (error) {}
+    }
+
+    async function getAuthors(param) {
+      setLoading(true);
+      let res = await fetch(
+        `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
+          new URLSearchParams({
+            name: param,
+          }),
+      );
+      const res_json = await res.json();
+      try {
+        return await res_json.results.documents.map((author) => {
+          return {
+            books: author.books,
+          };
+        });
+      } catch (error) {}
+    }
+    
     getBooks(search).then((data) => {
       setBooks(data);
     });
+
+    getAuthors(search).then((data) => {
+      setAuthors(data);
+    });
+
+    console.log(authors[0].books);
+  
     setLoading(false);
+  }, [search]);
+
+  const { navigation } = props;
+  const updateSearch = (search) => {
+    setSearch(search);
   };
 
   return (
@@ -76,7 +105,8 @@ export const Discover = (props) => {
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ backgroundColor: '#F7F7F7', width: '100%', position: "absolute", top: '21.5%', zIndex: 100, borderColor: 'black', borderWidth: 0, maxHeight: windowHeight - 230}}>
-          <FlatList data={books} style={{flexGrow: 0}} 
+          <FlatList data={books}
+            style={{flexGrow: 0}} 
             renderItem={({item}) => {
               return (
                 <View>
