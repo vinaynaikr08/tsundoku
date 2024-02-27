@@ -82,7 +82,8 @@ export const BookInfoModal = ({ route, navigation }) => {
     selectedOption === "Mark book as read"
       ? navigation.navigate("review", { bookInfo: bookInfo })
       : null;
-    setSelectedOption("Read");
+    selectedOption === "Mark book as read" ? setSelectedOption("Read") : null;
+    // setSelectedOption("Read");
     setMarkedRead("Read");
   };
 
