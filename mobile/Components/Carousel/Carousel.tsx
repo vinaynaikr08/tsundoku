@@ -139,7 +139,9 @@ export const Carousel = ({ books, shelf }) => {
         }}
       >
         <Pressable
-          onPress={() => navigation.navigate("shelfModal", { bookData: books, shelf: shelf })}
+          onPress={() =>
+            navigation.navigate("shelfModal", { bookData: books, shelf: shelf })
+          }
           style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
         >
           <Text>View All</Text>

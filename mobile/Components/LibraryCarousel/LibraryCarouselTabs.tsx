@@ -26,20 +26,22 @@ async function getBooksOfStatus(status: string) {
     ])
   ).documents;
 
-  await Promise.all(documents.map(async (document) => {
-    const book_data = await databases.getDocument(
-      ID.mainDBID,
-      ID.bookCollectionID,
-      document.book.$id,
-    );
-    books.push({
-      id: book_data.$id,
-      title: book_data.title,
-      author: book_data.authors[0].name,
-      summary: book_data.description,
-      image_url: book_data.editions[0].thumbnail_url,
-    });
-  }));
+  await Promise.all(
+    documents.map(async (document) => {
+      const book_data = await databases.getDocument(
+        ID.mainDBID,
+        ID.bookCollectionID,
+        document.book.$id,
+      );
+      books.push({
+        id: book_data.$id,
+        title: book_data.title,
+        author: book_data.authors[0].name,
+        summary: book_data.description,
+        image_url: book_data.editions[0].thumbnail_url,
+      });
+    }),
+  );
 
   return books;
 }

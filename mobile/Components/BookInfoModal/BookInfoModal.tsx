@@ -19,12 +19,58 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { BookInfoContext } from "../../Contexts";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useRoute } from "@react-navigation/native";
+import { Databases, Account } from "appwrite";
+import { Query } from "appwrite";
+import { client } from "@/appwrite";
+import ID from "@/Constants/ID";
+
+const account = new Account(client);
+const databases = new Databases(client);
+
+async function getBookStatus(book_id: string) {
+  let status = "";
+  const user_id = (await account.get()).$id;
+  let documents = (
+    await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
+      Query.equal("user_id", user_id),
+      Query.equal("book_id", book_id),
+    ])
+  ).documents;
+
+  await Promise.all(
+    documents.map(async (document) => {
+      // change book_data to status
+      const book_data = await databases.getDocument(
+        ID.mainDBID,
+        ID.bookStatusCollectionID,
+        document.book.$id,
+      );
+      // retrieve the books current status ?
+      if (documents.length > 0) {
+        const document = documents[0]; // only one status per book
+        status = document.status;
+      } else {
+        status = "Mark book as read";
+      }
+    }),
+  );
+
+  return status;
+}
 
 export const BookInfoModal = ({ route, navigation }) => {
   const { bookInfo } = route.params;
   const [markedRead, setMarkedRead] = useState("Mark book as read");
   const [selectedOption, setSelectedOption] = useState(markedRead);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [status, setStatus] = useState("Mark book as read");
+
+  React.useEffect(() => {
+    (async () => {
+      // setStatus(await getBookStatus(bookInfo.id));
+      setSelectedOption(await getBookStatus(bookInfo.id));
+    })();
+  }, []);
 
   const dropdownOptions = [
     markedRead,

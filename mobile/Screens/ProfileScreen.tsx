@@ -89,44 +89,6 @@ export const Profile = (props) => {
       });
   }, []);
 
-  // promise.then(
-  //   function (response) {
-  //     // console.log(response); // Success
-  //     const documents = response.documents;
-  //     let readCount = 0;
-  //     let currReadingCount = 0;
-  //     let wantToReadCount = 0;
-  //     let didNotFinishCount = 0;
-  //     console.log(documents);
-
-  //     documents.forEach((doc) => {
-  //       switch (doc.status) {
-  //         case "READ":
-  //           readCount++;
-  //           break;
-  //         case "CURRENTLY_READING":
-  //           currReadingCount++;
-  //           break;
-  //         case "WANT_TO_READ":
-  //           wantToReadCount++;
-  //           break;
-  //         case "DID_NOT_FINISH":
-  //           didNotFinishCount++;
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     });
-  //     setBooksReadCount(readCount);
-  //     setBooksCurrReadingCount(currReadingCount);
-  //     setBooksWantToReadCount(wantToReadCount);
-  //     setBooksDidNotFinishCount(didNotFinishCount);
-  //   },
-  //   function (error) {
-  //     console.log(error); // Failure
-  //   },
-  // );
-
   return (
     // <BookInfoContext.Provider value={bookInfo}>
     <SafeAreaView style={{ flex: 1 }}>
