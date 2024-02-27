@@ -1,24 +1,11 @@
-import React, { useContext, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Image,
-  Modal,
-} from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
 import styled from "styled-components/native";
 import Dimensions from "../../Constants/Dimensions";
 import Colors from "../../Constants/Colors";
 import BookInfoTabs from "../BookInfoTabs";
 import SelectDropdown from "react-native-select-dropdown";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { BookInfoContext } from "../../Contexts";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useRoute } from "@react-navigation/native";
 import { Databases, Account } from "appwrite";
 import { Query } from "appwrite";
 import { client } from "@/appwrite";
@@ -27,69 +14,56 @@ import ID from "@/Constants/ID";
 const account = new Account(client);
 const databases = new Databases(client);
 
-async function getBookStatus(book_id: string) {
-  let status = "";
+enum BookState {
+  WANT_TO_READ = "Want to read",
+  CURRENTLY_READING = "Currently reading",
+  READ = "Read",
+  DID_NOT_FINISH = "Did not finish",
+}
+
+async function getBookStatus(book_id: string): Promise<BookState | null> {
   const user_id = (await account.get()).$id;
   let documents = (
     await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
       Query.equal("user_id", user_id),
-      Query.equal("book_id", book_id),
+      Query.equal("book", book_id),
     ])
   ).documents;
 
-  await Promise.all(
-    documents.map(async (document) => {
-      // change book_data to status
-      const book_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.bookStatusCollectionID,
-        document.book.$id,
-      );
-      // retrieve the books current status ?
-      if (documents.length > 0) {
-        const document = documents[0]; // only one status per book
-        status = document.status;
-      } else {
-        status = "Mark book as read";
-      }
-    }),
-  );
-
-  return status;
+  if (documents.length > 0) {
+    return documents[0].status;
+  } else {
+    return null;
+  }
 }
 
 export const BookInfoModal = ({ route, navigation }) => {
   const { bookInfo } = route.params;
-  const [markedRead, setMarkedRead] = useState("Mark book as read");
-  const [selectedOption, setSelectedOption] = useState(markedRead);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [status, setStatus] = useState("Mark book as read");
+  const [status, setStatus] = React.useState<BookState | null>(null);
 
   React.useEffect(() => {
     (async () => {
-      // setStatus(await getBookStatus(bookInfo.id));
-      setSelectedOption(await getBookStatus(bookInfo.id));
+      setStatus(await getBookStatus(bookInfo.id));
     })();
   }, []);
 
-  const dropdownOptions = [
-    markedRead,
-    "Currently reading",
-    "Want to read",
-    "Did not finish",
-  ];
+  React.useEffect(() => {
+    // TODO: call some function to update server document if read state changes
+  }, [status]);
+
   const handlePress = () => {
-    selectedOption === "Mark book as read"
-      ? navigation.navigate("review", { bookInfo: bookInfo })
-      : null;
-    selectedOption === "Mark book as read" ? setSelectedOption("Read") : null;
-    // setSelectedOption("Read");
-    setMarkedRead("Read");
+    switch(BookState[status]) {
+      case BookState.CURRENTLY_READING: {
+        navigation.navigate("review", { bookInfo: bookInfo });
+        setStatus(BookState.READ);
+        break;
+      }
+      // TODO: handle other cases
+    }
   };
 
-  const handleOptionSelect = (option: any) => {
-    setSelectedOption(option);
-    setIsDropdownOpen(false);
+  const handleOptionSelect = (state: BookState) => {
+    setStatus(state);
   };
 
   return (
@@ -107,10 +81,8 @@ export const BookInfoModal = ({ route, navigation }) => {
         <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
         <ButtonContainer padding={0}>
           <SelectDropdown
-            data={dropdownOptions}
-            onSelect={(selectedItem, index) =>
-              handleOptionSelect(dropdownOptions[index])
-            }
+            data={Object.values(BookState)}
+            onSelect={(state) => handleOptionSelect(state)}
             buttonTextAfterSelection={(selectedItem: string) => {
               return "";
             }}
@@ -139,7 +111,9 @@ export const BookInfoModal = ({ route, navigation }) => {
             onPress={handlePress}
           >
             <ReadingNowContainer>
-              <ButtonText color={"white"}>{selectedOption}</ButtonText>
+              <ButtonText color={"white"}>
+                {BookState[status] !== BookState.READ ? "Mark as read" : "Unmark as read"}
+              </ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
         </ButtonContainer>
