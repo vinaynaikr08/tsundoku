@@ -15,10 +15,27 @@ const account = new Account(client);
 const databases = new Databases(client);
 
 enum BookState {
-  WANT_TO_READ = "Want to read",
-  CURRENTLY_READING = "Currently reading",
-  READ = "Read",
-  DID_NOT_FINISH = "Did not finish",
+  WantToRead = "WANT_TO_READ",
+  CurrentlyReading = "CURRENTLY_READING",
+  Read = "READ",
+  DidNotFinish = "DID_NOT_FINISH",
+}
+
+const BOOK_STATE_MAPPING = {
+  WANT_TO_READ: "Want to read",
+  CURRENTLY_READING: "Currently reading",
+  READ: "Read",
+  DID_NOT_FINISH: "Did not finish",
+};
+
+function BookStateLookup(s: string): BookState | null {
+  for (const key of Object.keys(BOOK_STATE_MAPPING)) {
+    console.log("Check mapping " + BOOK_STATE_MAPPING[key]);
+    if (BOOK_STATE_MAPPING[key] === s) {
+      return key as BookState;
+    }
+  }
+  return null;
 }
 
 async function getBookStatus(book_id: string): Promise<BookState | null> {
@@ -52,18 +69,19 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const handlePress = () => {
-    switch(BookState[status]) {
-      case BookState.CURRENTLY_READING: {
+    console.log("Button pressed");
+    switch (status) {
+      case BookState.CurrentlyReading: {
         navigation.navigate("review", { bookInfo: bookInfo });
-        setStatus(BookState.READ);
+        setStatus(BookState.Read);
         break;
       }
       // TODO: handle other cases
     }
   };
 
-  const handleOptionSelect = (state: BookState) => {
-    setStatus(state);
+  const handleOptionSelect = (state: any) => {
+    setStatus(BookStateLookup(state));
   };
 
   return (
@@ -81,7 +99,7 @@ export const BookInfoModal = ({ route, navigation }) => {
         <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
         <ButtonContainer padding={0}>
           <SelectDropdown
-            data={Object.values(BookState)}
+            data={Object.values(BOOK_STATE_MAPPING)}
             onSelect={(state) => handleOptionSelect(state)}
             buttonTextAfterSelection={(selectedItem: string) => {
               return "";
@@ -112,7 +130,9 @@ export const BookInfoModal = ({ route, navigation }) => {
           >
             <ReadingNowContainer>
               <ButtonText color={"white"}>
-                {BookState[status] !== BookState.READ ? "Mark as read" : "Unmark as read"}
+                {status !== BookState.Read
+                  ? "Mark as read"
+                  : "Unmark as read"}
               </ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
