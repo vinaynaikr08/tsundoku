@@ -128,9 +128,9 @@ export const BookInfoModal = ({ route, navigation }) => {
           >
             <ReadingNowContainer>
               <ButtonText color={"white"}>
-                {status !== BookState.Read
+                {status === BookState.CurrentlyReading
                   ? "Mark as read"
-                  : "Unmark as read"}
+                  : BOOK_STATE_MAPPING[status]}
               </ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
