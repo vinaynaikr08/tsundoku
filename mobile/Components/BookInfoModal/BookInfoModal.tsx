@@ -68,14 +68,11 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const handlePress = () => {
-    switch (status) {
-      case BookState.CurrentlyReading: {
-        navigation.navigate("review", { bookInfo: bookInfo });
-        setStatus(BookState.Read);
-        break;
-      }
-      // TODO: handle other cases
+    if (status === BookState.CurrentlyReading) {
+      navigation.navigate("review", { bookInfo: bookInfo });
+      setStatus(BookState.Read);
     }
+    // If any other status, do nothing
   };
 
   const handleOptionSelect = (state: any) => {
