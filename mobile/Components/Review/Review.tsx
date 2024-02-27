@@ -8,8 +8,9 @@ const Stack = createNativeStackNavigator();
 
 function Review({route}) {
   const {bookInfo} = route.params;
+  console.log("review provider: " + bookInfo.id)
   return (
-    <BookInfoContext.Provider value={bookInfo}>
+    <BookInfoContext.Provider value={bookInfo.id}>
     <Stack.Navigator>
       <Stack.Group
         screenOptions={{
