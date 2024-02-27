@@ -67,8 +67,6 @@ export const Discover = (props) => {
     getAuthors(search).then((data) => {
       setAuthors(data);
     });
-
-    console.log(authors[0].books);
   
     setLoading(false);
   }, [search]);
