@@ -19,6 +19,7 @@ enum BookState {
   CurrentlyReading = "CURRENTLY_READING",
   Read = "READ",
   DidNotFinish = "DID_NOT_FINISH",
+  None = "NONE",
 }
 
 const BOOK_STATE_MAPPING = {
@@ -28,13 +29,15 @@ const BOOK_STATE_MAPPING = {
   DID_NOT_FINISH: "Did not finish",
 };
 
-function BookStateLookup(s: string): BookState | null {
+// function BookStateLookup(s: string): BookState | null {
+function BookStateLookup(s: string): BookState {
   for (const key of Object.keys(BOOK_STATE_MAPPING)) {
     if (BOOK_STATE_MAPPING[key] === s) {
       return key as BookState;
     }
   }
-  return null;
+  // return null;
+  return BookState.None;
 }
 
 async function getBookStatus(book_id: string): Promise<BookState | null> {
@@ -49,13 +52,14 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
   if (documents.length > 0) {
     return documents[0].status;
   } else {
-    return null;
+    return BookState.None;
   }
 }
 
 export const BookInfoModal = ({ route, navigation }) => {
   const { bookInfo } = route.params;
-  const [status, setStatus] = React.useState<BookState | null>(null);
+  // const [status, setStatus] = React.useState<BookState | null>(null);
+  const [status, setStatus] = React.useState<BookState>(BookState.None);
 
   React.useEffect(() => {
     (async () => {
@@ -68,7 +72,7 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const handlePress = () => {
-    if (status === null) {
+    if (status === BookState.None) {
       navigation.navigate("review", { bookInfo: bookInfo });
       setStatus(BookState.Read);
     }
@@ -125,7 +129,9 @@ export const BookInfoModal = ({ route, navigation }) => {
           >
             <ReadingNowContainer>
               <ButtonText color={"white"}>
-                {status === null ? "Mark as read" : BOOK_STATE_MAPPING[status]}
+                {status === BookState.None
+                  ? "Mark as read"
+                  : BOOK_STATE_MAPPING[status]}
               </ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
