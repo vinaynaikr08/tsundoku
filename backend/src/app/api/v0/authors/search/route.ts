@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   let db_query = await databases.listDocuments(
     MAIN_DB_ID,
     AUTHOR_COLLECTION_ID,
-    [Query.equal("name", name as string)],
+    [Query.search("name", name as string)],
   );
 
   return construct_development_api_response({
