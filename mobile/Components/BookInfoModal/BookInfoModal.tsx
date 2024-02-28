@@ -10,6 +10,7 @@ import { Databases, Account } from "appwrite";
 import { Query } from "appwrite";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
+import { ActivityIndicator } from "react-native-paper";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -29,15 +30,13 @@ const BOOK_STATE_MAPPING = {
   DID_NOT_FINISH: "Did not finish",
 };
 
-// function BookStateLookup(s: string): BookState | null {
-function BookStateLookup(s: string): BookState {
+function BookStateLookup(s: string): BookState | null {
   for (const key of Object.keys(BOOK_STATE_MAPPING)) {
     if (BOOK_STATE_MAPPING[key] === s) {
       return key as BookState;
     }
   }
-  // return null;
-  return BookState.None;
+  return null;
 }
 
 async function getBookStatus(book_id: string): Promise<BookState | null> {
@@ -58,8 +57,7 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
 
 export const BookInfoModal = ({ route, navigation }) => {
   const { bookInfo } = route.params;
-  // const [status, setStatus] = React.useState<BookState | null>(null);
-  const [status, setStatus] = React.useState<BookState>(BookState.None);
+  const [status, setStatus] = React.useState<BookState | null>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -82,6 +80,20 @@ export const BookInfoModal = ({ route, navigation }) => {
   const handleOptionSelect = (state: any) => {
     setStatus(BookStateLookup(state));
   };
+
+  function StatusButtonView() {
+    if (!status) {
+      return <ActivityIndicator />;
+    } else {
+      return (
+        <ButtonText color={"white"}>
+          {status === BookState.None
+            ? "Mark as read"
+            : BOOK_STATE_MAPPING[status]}
+        </ButtonText>
+      );
+    }
+  }
 
   return (
     <View style={styles.outsideModalContainer}>
@@ -128,11 +140,7 @@ export const BookInfoModal = ({ route, navigation }) => {
             onPress={handlePress}
           >
             <ReadingNowContainer>
-              <ButtonText color={"white"}>
-                {status === BookState.None
-                  ? "Mark as read"
-                  : BOOK_STATE_MAPPING[status]}
-              </ButtonText>
+              <StatusButtonView />
             </ReadingNowContainer>
           </ReadingStatusButton>
         </ButtonContainer>
