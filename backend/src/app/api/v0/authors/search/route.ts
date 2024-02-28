@@ -6,10 +6,9 @@ import { Query } from "appwrite";
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 
-const databases = new sdk.Databases(client);
+import { MAIN_DB_ID, AUTHOR_COL_ID } from "@/app/Constants";
 
-const MAIN_DB_ID = process.env.mainDBID;
-const AUTHOR_COLLECTION_ID = process.env.authorCollectionID;
+const databases = new sdk.Databases(client);
 
 export async function GET(request: NextRequest) {
   const name = request.nextUrl.searchParams.get("name");
@@ -21,11 +20,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  let db_query = await databases.listDocuments(
-    MAIN_DB_ID,
-    AUTHOR_COLLECTION_ID,
-    [Query.search("name", name as string)],
-  );
+  let db_query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_COL_ID, [
+    Query.search("name", name as string),
+  ]);
 
   return construct_development_api_response({
     message: `DB search results for: ${name}`,

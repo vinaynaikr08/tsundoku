@@ -1,5 +1,3 @@
-
-
 import { ID, Permission, Role } from "appwrite";
 
 import { MAIN_DB_ID, BOOK_STAT_COL_ID } from "@/app/Constants";
@@ -23,7 +21,7 @@ export async function createBookStatus({
   user_id,
   book_id,
   status,
-  database
+  database,
 }: {
   user_id: string;
   book_id: string;
@@ -43,4 +41,3 @@ export async function createBookStatus({
   );
   return res.$id;
 }
-
