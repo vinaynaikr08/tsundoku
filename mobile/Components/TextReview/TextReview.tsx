@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import Modal from "react-native-modal";
 import Colors from "../../Constants/Colors";
@@ -19,33 +20,23 @@ import { client } from "../../appwrite";
 import { BookInfoContext } from "@/Contexts";
 import Toast from "react-native-toast-message";
 import { BACKEND_API_REVIEW_URL } from "../../Constants/URLs";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 function TextReview({ route, navigation }) {
   const { rating } = route.params;
   const bookInfo = useContext(BookInfoContext);
   const [text, setText] = useState("");
 
-  // React.useEffect(
-  //   () =>
-  //     navigation.addListener("beforeRemove", (e) => {
-  //       const action = e.data.action;
-  //       if (text != "") {
-  //         return;
-  //       }
-
-  //       e.preventDefault();
-
-  //       Alert.alert("Discard review?", "You have an unsaved review.", [
-  //         { text: "Don't leave", style: "cancel", onPress: () => {} },
-  //         {
-  //           text: "Discard",
-  //           style: "destructive",
-  //           onPress: () => navigation.dispatch(action),
-  //         },
-  //       ]);
-  //     }),
-  //   [navigation],
-  // );
+  function dismiss() {
+    Alert.alert("Discard review?", "You have an unsaved review.", [
+      { text: "Don't leave", style: "cancel", onPress: () => {} },
+      {
+        text: "Discard",
+        style: "destructive",
+        onPress: () => navigation.navigate("navbar"),
+      },
+    ]);
+  }
 
   const saveReview = async () => {
     const account = new Account(client);
@@ -92,6 +83,12 @@ function TextReview({ route, navigation }) {
           borderTopRightRadius: 20,
         }}
       >
+        <TouchableOpacity
+          style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
+          onPress={dismiss}
+        >
+          <Icon name={"close"} color="black" size={25} />
+        </TouchableOpacity>
         <Text style={styles.title}>What are your thoughts on this book?</Text>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -122,11 +119,11 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   title: {
-    fontSize: 25,
-    marginTop: 50,
+    fontSize: 20,
     fontWeight: "600",
     marginHorizontal: 40,
     textAlign: "center",
+    paddingHorizontal: 10,
   },
   text: {
     fontSize: 20,

@@ -5,10 +5,13 @@ import {
   Text,
   Pressable,
   StyleSheet,
+  Alert,
+  TouchableOpacity,
 } from "react-native";
 import Colors from "../../Constants/Colors";
 import Slider from "@react-native-community/slider";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 function StarRating(props) {
   const [isTextReviewModalVisible, setTextReviewModalVisible] = useState(false);
@@ -23,10 +26,27 @@ function StarRating(props) {
     }
   }, [isTextReviewModalVisible]);
 
+  function dismiss() {
+      Alert.alert("Discard review?", "You have an unsaved review.", [
+        { text: "Don't leave", style: "cancel", onPress: () => {} },
+        {
+          text: "Discard",
+          style: "destructive",
+          onPress: () => navigation.navigate("navbar"),
+        },
+      ]);
+  }
+
   return (
     <View
       style={styles.container}
     >
+      <TouchableOpacity
+          style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
+          onPress={dismiss}
+        >
+          <Icon name={"close"} color="black" size={25} />
+        </TouchableOpacity>
       <Text style={styles.title}>How would you rate this book?</Text>
       <View style={{ alignItems: "center" }}>
         <View
