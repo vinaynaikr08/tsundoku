@@ -13,8 +13,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useState } from "react";
+import BookInfoModalReview from "../BookInfoModalReview";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -96,130 +95,18 @@ function DescriptionTab({ bookInfo }) {
   );
 }
 
-function BookReviewsTab() {
-  const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
-  const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
-
-  const handleThumbsUpClick = () => {
-    setThumbsUpClicked(!thumbsUpClicked);
-    if (thumbsDownClicked) {
-      setThumbsDownClicked(false);
-    }
-  };
-
-  const handleThumbsDownClick = () => {
-    setThumbsDownClicked(!thumbsDownClicked);
-    if (thumbsUpClicked) {
-      setThumbsUpClicked(false);
-    }
-  };
+function BookReviewsTab({ bookInfo }) {
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView
+      {/* <ScrollView
         style={{ flex: 1 }}
         bounces={false}
         contentContainerStyle={styles.scrollViewStyle}
-      >
-        <TouchableOpacity activeOpacity={1}>
-          <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
-            Overall Rating:
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 40,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 30, fontWeight: "bold", marginRight: 12 }}>
-              4.9
-            </Text>
-            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={40} />
-            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={40} />
-            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={40} />
-            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={40} />
-            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={40} />
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ marginRight: 10 }}>
-              <Ionicons name={"person-circle"} color={"grey"} size={60} />
-            </View>
-            <View style={{ marginRight: 10 }}>
-              <Text style={{ fontSize: 20, marginBottom: 5 }}>Sarah Luo</Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <FontAwesome
-                  name={"star"}
-                  color={Colors.BUTTON_PURPLE}
-                  size={30}
-                />
-                <FontAwesome
-                  name={"star"}
-                  color={Colors.BUTTON_PURPLE}
-                  size={30}
-                />
-                <FontAwesome
-                  name={"star"}
-                  color={Colors.BUTTON_PURPLE}
-                  size={30}
-                />
-                <FontAwesome
-                  name={"star"}
-                  color={Colors.BUTTON_PURPLE}
-                  size={30}
-                />
-                <FontAwesome
-                  name={"star-o"}
-                  color={Colors.BUTTON_PURPLE}
-                  size={30}
-                />
-              </View>
-            </View>
-          </View>
-          <Text
-            style={{
-              fontSize: 15,
-              margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-            }}
-          >
-            I love this book! Reading this altered my brain chemistry. I
-            seriously recommend this book. I love how it integrates asian
-            history and culture. This is the book I needed when I was younger!
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableOpacity onPress={handleThumbsUpClick}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 10,
-                  marginTop: 10,
-                }}
-              >
-                <FontAwesome
-                  name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
-                  color={thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"}
-                  size={30}
-                />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleThumbsDownClick}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginLeft: 20,
-                }}
-              >
-                <FontAwesome
-                  name={thumbsDownClicked ? "thumbs-down" : "thumbs-o-down"}
-                  color={thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"}
-                  size={30}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
+      > */}
+      <TouchableOpacity activeOpacity={1}>
+        <BookInfoModalReview bookInfo={bookInfo} />
+      </TouchableOpacity>
+      {/* </ScrollView> */}
     </View>
   );
 }
@@ -239,12 +126,7 @@ function MyNotesTab() {
             When Rin aced the Keju—the Empire-wide test to find the most
             talented youth to learn at the Academies—it was a shock to everyone:
             to the test officials, who couldn’t believe a war orphan from
-            Rooster Province could pass without cheating; to Rin’s guardians,
-            who believed they’d finally be able to marry her off and further
-            their criminal enterprise; and to Rin herself, who realized she was
-            finally free of the servitude and despair that had made up her daily
-            existence. That she got into Sinegard—the most elite military school
-            in Nikan—was even more surprising.
+            Rooster Province could pass without cheating.
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -262,7 +144,10 @@ function BookInfoTabs({ bookInfo }) {
         name="Description"
         children={(props) => <DescriptionTab bookInfo={bookInfo} {...props} />}
       />
-      <Tab.Screen name="Reviews" component={BookReviewsTab} />
+      <Tab.Screen
+        name="Reviews"
+        children={(props) => <BookReviewsTab bookInfo={bookInfo} {...props} />}
+      />
       <Tab.Screen name="My Notes" component={MyNotesTab} />
     </Tab.Navigator>
   );

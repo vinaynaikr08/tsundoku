@@ -10,7 +10,9 @@ import { Databases, Account } from "appwrite";
 import { Query } from "appwrite";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
+import Toast from "react-native-toast-message";
 import { ActivityIndicator } from "react-native-paper";
+import { BACKEND_API_BOOK_STATUS_URL } from "@/Constants/URLs";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -66,19 +68,50 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, []);
 
   React.useEffect(() => {
-    // TODO: call some function to update server document if read state changes
+    console.log(status);
+    saveStatus();
   }, [status]);
+
+  const saveStatus = async () => {
+    let res = await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
+      method: "post",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+      body: JSON.stringify({
+        book_id: bookInfo.id,
+        status: status,
+      }),
+    });
+
+    if (res.ok) {
+      const res_json = await res.json();
+      console.log("status saved to database: " + res_json);
+    } else {
+      console.log("error: " + res.status);
+    }
+
+    Toast.show({
+      type: "success",
+      text1: "Status successfully saved!",
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+  };
 
   const handlePress = () => {
     if (status === BookState.None) {
       navigation.navigate("review", { bookInfo: bookInfo });
       setStatus(BookState.Read);
+      // saveStatus();
     }
-    // If any other status, do nothing
   };
 
   const handleOptionSelect = (state: any) => {
     setStatus(BookStateLookup(state));
+    // console.log(status);
+    // saveStatus();
   };
 
   function StatusButtonView() {
@@ -133,10 +166,12 @@ export const BookInfoModal = ({ route, navigation }) => {
                 ? Colors.BUTTON_PURPLE
                 : Colors.BUTTON_GRAY,
             alignItems: "center",
+            justifyContent: "center",
             marginBottom: 10,
             padding: 0,
           }}
         >
+          {/* <StatusButtonView /> */}
           <SelectDropdown
             data={Object.values(BOOK_STATE_MAPPING)}
             onSelect={(state) => handleOptionSelect(state)}
@@ -151,7 +186,7 @@ export const BookInfoModal = ({ route, navigation }) => {
                   : Colors.BUTTON_GRAY,
               paddingVertical: 5,
               borderRadius: 13,
-              width: "25%",
+              width: "28%",
               height: "100%",
             }}
             dropdownStyle={styles.dropdownStyle}

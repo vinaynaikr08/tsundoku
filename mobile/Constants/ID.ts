@@ -4,4 +4,5 @@ export default {
     authorCollectionID: "65ce2aa3affa7165ee7b",
     editionCollectionID: "65ce394edd6d6603ac1e",
     bookStatusCollectionID: "65da112a731dfc9bc51f",
+    reviewsCollectionID: "65da5ff3979f452f63d8",
 }
