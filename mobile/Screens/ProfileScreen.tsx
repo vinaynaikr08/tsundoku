@@ -16,7 +16,7 @@ import ID from "../Constants/ID";
 import { BookInfoContext, NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Divider } from "react-native-paper";
-import { Button, Icon } from "@rneui/themed";
+import { Button, Icon, Overlay } from "@rneui/themed";
 const databases = new Databases(client);
 
 export const Profile = (props) => {
@@ -36,6 +36,11 @@ export const Profile = (props) => {
   const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
   const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
   const [notif, setNotif] = useState(false);
+  const [overlayVisible, setOverlayVisible] = useState(false);
+
+  const toggleOverlay = () => {
+    setOverlayVisible(!overlayVisible);
+  };
 
   useEffect(() => {
     const account = new Account(client);
@@ -117,17 +122,32 @@ export const Profile = (props) => {
           />
         </View>
       </View>
+
       <Divider/>
-      <View style={{paddingTop: 30, alignItems: 'center'}}>
+
+      <TouchableOpacity>
+        <View style={{flexDirection: 'row', paddingTop: 10, paddingBottom: 10, width: '100%'}}>
+          <Text style={{fontSize: 20, paddingLeft: 20, flex: 9}}>Sign Out</Text>
+          <View style={{flex: 2}}>
+            <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30}/>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      <Divider/>
+
+      <View style={{paddingTop: 70, alignItems: 'center'}}>
         <Button
-          onPress={() => null}
-          color={Colors.BUTTON_PURPLE}
-          containerStyle={{borderRadius: 30, width: 125}}
+          onPress={toggleOverlay}
+          color={'red'}
+          containerStyle={{borderRadius: 30, }}
         >
-          <Text style={{color: 'white', paddingRight: 5, fontSize: 17, paddingTop: 5, paddingBottom: 5}}>Sign Out</Text>
-          <Icon name="logout" color="white" size={20}/>
+          <Text style={{color: 'white', paddingRight: 5, fontSize: 17, paddingTop: 5, paddingBottom: 5, alignSelf: 'center'}}>Delete Account</Text>
         </Button>
       </View>
+      <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
+        <Text>Delete account placeholder</Text>
+      </Overlay>
     </SafeAreaView>
     // </BookInfoContext.Provider>
   );
