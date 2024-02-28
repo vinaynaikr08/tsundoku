@@ -112,7 +112,7 @@ export const BookInfoModal = ({ route, navigation }) => {
           <SelectDropdown
             data={Object.values(BOOK_STATE_MAPPING)}
             onSelect={(state) => handleOptionSelect(state)}
-            buttonTextAfterSelection={(selectedItem: string) => {
+            buttonTextAfterSelection={() => {
               return "";
             }}
             defaultButtonText={""}
