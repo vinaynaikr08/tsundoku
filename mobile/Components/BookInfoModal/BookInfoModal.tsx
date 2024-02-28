@@ -91,7 +91,7 @@ export const BookInfoModal = ({ route, navigation }) => {
             color={Colors.BUTTON_PURPLE}
             onPress={handlePress}
           >
-            <ReadingNowContainer>
+            <ReadingNowContainer color={Colors.BUTTON_PURPLE}>
               <ButtonText color={"white"}>Mark as read</ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
@@ -99,8 +99,8 @@ export const BookInfoModal = ({ route, navigation }) => {
       } else {
         return (
           <DisabledReadingStatusButton color={Colors.BUTTON_PURPLE}>
-            <ReadingNowContainer>
-              <ButtonText color={"white"}>
+            <ReadingNowContainer color={Colors.BUTTON_GRAY}>
+              <ButtonText color={"black"}>
                 {BOOK_STATE_MAPPING[status]}
               </ButtonText>
             </ReadingNowContainer>
@@ -266,17 +266,17 @@ const DisabledReadingStatusButton = styled.View<ColorProps>`
   height: 45px;
   border: 2px solid ${({ color }) => color};
   padding: 1px 1px;
-  background-color: ${Colors.BUTTON_PURPLE};
+  background-color: ${Colors.BUTTON_GRAY};
   border-radius: 13px;
   flex: 1;
   align-items: center;
   justify-content: center;
 `;
 
-const ReadingNowContainer = styled.View`
+const ReadingNowContainer = styled.View<ColorProps>`
   flex-direction: row;
   align-items: center;
-  background-color: ${Colors.BUTTON_PURPLE};
+  background-color: ${({ color }) => color};
 `;
 
 const ButtonText = styled.Text<ColorProps>`
