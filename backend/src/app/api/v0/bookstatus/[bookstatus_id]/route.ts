@@ -2,17 +2,28 @@ const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
 
-import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
-import { bookStatusPermissions } from "../common";
+import { bookStatusPermissions, getUserContextDBAccount } from "../common";
 import { BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
-
-const database = new sdk.Databases(client);
+import { headers } from "next/headers";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { bookstatus_id: string } },
 ) {
+  const authToken = (headers().get("authorization") || "")
+    .split("Bearer ")
+    .at(1);
+
+  if (!authToken) {
+    return construct_development_api_response({
+      message: "Authentication token is missing.",
+      status_code: 401,
+    });
+  }
+
+  const { userDB } = getUserContextDBAccount(authToken);
+
   const data = await request.json();
   const bookstatus_id = params.bookstatus_id;
   const status = data.status;
@@ -24,7 +35,7 @@ export async function PATCH(
     );
   }
 
-  let db_query = await database.getDocument(
+  let db_query = await userDB.getDocument(
     MAIN_DB_ID,
     BOOK_STAT_COL_ID,
     bookstatus_id,
@@ -37,7 +48,7 @@ export async function PATCH(
       status_code: 404,
     });
   } else {
-    await database.updateDocument(
+    await userDB.updateDocument(
       MAIN_DB_ID,
       BOOK_STAT_COL_ID,
       bookstatus_id,

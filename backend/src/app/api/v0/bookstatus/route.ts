@@ -1,15 +1,15 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { headers } from "next/headers";
 import { AppwriteException, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
-import { bookStatusPermissions, createBookStatus } from "./common";
+import { bookStatusPermissions, createBookStatus, getUserContextDBAccount } from "./common";
 import { BOOK_COL_ID, BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
 
 const database = new sdk.Databases(client);
-const users = new sdk.Users(client);
 
 async function checkBookExists(book_id: string): Promise<boolean> {
   try {
@@ -26,34 +26,40 @@ async function checkBookExists(book_id: string): Promise<boolean> {
   }
 }
 
-async function checkUserExists(user_id: string): Promise<boolean> {
+export async function GET(request: NextRequest) {
+  const authToken = (headers().get("authorization") || "")
+    .split("Bearer ")
+    .at(1);
+
+  if (!authToken) {
+    return construct_development_api_response({
+      message: "Authentication token is missing.",
+      status_code: 401,
+    });
+  }
+
+  const { userDB, userAccount } = getUserContextDBAccount(authToken);
+  let db_query;
   try {
-    await users.get(user_id);
-    return true;
+    db_query = await userDB.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID);
   } catch (error: any) {
     if (
       error instanceof Error &&
-      (error as AppwriteException).type === "user_not_found"
+      (error as AppwriteException).type === "user_jwt_invalid"
     ) {
-      return false;
+      return construct_development_api_response({
+        message: "Authentication failed.",
+        status_code: 401,
+      });
     }
-    throw error;
-  }
-}
-
-export async function GET(request: NextRequest) {
-  const user_id = request.nextUrl.searchParams.get("user_id");
-
-  if (!user_id) {
-    return NextResponse.json(
-      { message: `Parameters not supplied.` },
-      { status: 400 },
-    );
+    console.log(error);
+    return construct_development_api_response({
+      message: "Unknown error. Please contact the developers.",
+      status_code: 500,
+    });
   }
 
-  let db_query = await database.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
-    Query.equal("user_id", user_id as string),
-  ]);
+  const user_id = (await userAccount.get()).$id;
 
   return construct_development_api_response({
     message: `Book status results for: ${user_id}`,
@@ -63,10 +69,22 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  let user_id, book_id, status;
+  const authToken = (headers().get("authorization") || "")
+    .split("Bearer ")
+    .at(1);
+
+  if (!authToken) {
+    return construct_development_api_response({
+      message: "Authentication token is missing.",
+      status_code: 401,
+    });
+  }
+
+  const { userAccount } = getUserContextDBAccount(authToken);
+
+  let book_id, status;
   try {
     const data = await request.json();
-    user_id = data.user_id;
     book_id = data.book_id;
     status = data.status;
   } catch (error) {
@@ -76,16 +94,9 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  if (!user_id || !book_id || !status) {
+  if (!book_id || !status) {
     return construct_development_api_response({
       message: `Required parameters not supplied.`,
-      status_code: 400,
-    });
-  }
-
-  if (!(await checkUserExists(user_id))) {
-    return construct_development_api_response({
-      message: `The specified user does not exist!`,
       status_code: 400,
     });
   }
@@ -96,6 +107,8 @@ export async function POST(request: NextRequest) {
       status_code: 400,
     });
   }
+
+  const user_id = (await userAccount.get()).$id;
 
   const db_query = await database.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
     Query.equal("user_id", user_id),
