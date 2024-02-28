@@ -124,7 +124,13 @@ export async function POST(request: NextRequest) {
 
   if (db_query.total == 0) {
     // Create new object
-    createReview({ database, user_id, book: book_id, star_rating, description });
+    createReview({
+      database,
+      user_id,
+      book: book_id,
+      star_rating,
+      description,
+    });
   } else {
     const review_id = db_query.documents[0].$id;
 

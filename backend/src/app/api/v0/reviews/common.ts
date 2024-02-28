@@ -15,7 +15,7 @@ export async function createReview({
   book,
   star_rating,
   description,
-  database
+  database,
 }: {
   user_id: string;
   book: string;
@@ -31,7 +31,7 @@ export async function createReview({
       user_id,
       book,
       star_rating,
-      description
+      description,
     },
     reviewPermissions,
   );
