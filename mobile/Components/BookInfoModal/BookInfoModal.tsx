@@ -68,7 +68,7 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const handlePress = () => {
-    if (status === BookState.CurrentlyReading) {
+    if (status === null) {
       navigation.navigate("review", { bookInfo: bookInfo });
       setStatus(BookState.Read);
     }
@@ -125,9 +125,7 @@ export const BookInfoModal = ({ route, navigation }) => {
           >
             <ReadingNowContainer>
               <ButtonText color={"white"}>
-                {status === BookState.CurrentlyReading
-                  ? "Mark as read"
-                  : BOOK_STATE_MAPPING[status]}
+                {status === null ? "Mark as read" : BOOK_STATE_MAPPING[status]}
               </ButtonText>
             </ReadingNowContainer>
           </ReadingStatusButton>
