@@ -22,8 +22,7 @@ import { BACKEND_API_REVIEW_URL } from "../../Constants/URLs";
 
 function TextReview({ route, navigation }) {
   const { rating } = route.params;
-  const { bookInfo } = useContext(BookInfoContext);
-  console.log("textreview: " + bookInfo);
+  const bookInfo = useContext(BookInfoContext);
   const [text, setText] = useState("");
 
   // React.useEffect(
@@ -51,8 +50,6 @@ function TextReview({ route, navigation }) {
   const saveReview = async () => {
     const account = new Account(client);
 
-    console.log("saving review\n");
-
     let res = await fetch(`${BACKEND_API_REVIEW_URL}`, {
       method: "post",
       headers: new Headers({
@@ -60,7 +57,7 @@ function TextReview({ route, navigation }) {
         Authorization: "Bearer " + (await account.createJWT()).jwt,
       }),
       body: JSON.stringify({
-        book_id: "65da0871ed3dadffe87d",
+        book_id: bookInfo,
         star_rating: rating,
         description: text,
       }),
@@ -72,8 +69,6 @@ function TextReview({ route, navigation }) {
     } else {
       console.log("error: " + res.status);
     }
-
-    console.log("saved review\n");
 
     Toast.show({
       type: "success",
