@@ -19,12 +19,12 @@ export function bookStatusPermissions(user_id: string) {
 
 export async function createBookStatus({
   user_id,
-  book_id,
+  book,
   status,
   database,
 }: {
   user_id: string;
-  book_id: string;
+  book: string;
   status: BookStatus_Status;
   database: any;
 }) {
@@ -34,7 +34,7 @@ export async function createBookStatus({
     ID.unique(),
     {
       user_id,
-      book_id,
+      book,
       status,
     },
     bookStatusPermissions,

@@ -12,13 +12,13 @@ export function reviewPermissions(user_id: string) {
 
 export async function createReview({
   user_id,
-  book_id,
+  book,
   star_rating,
   description,
   database
 }: {
   user_id: string;
-  book_id: string;
+  book: string;
   star_rating: Number;
   description: string;
   database: any;
@@ -29,7 +29,7 @@ export async function createReview({
     ID.unique(),
     {
       user_id,
-      book_id,
+      book,
       status,
     },
     reviewPermissions,

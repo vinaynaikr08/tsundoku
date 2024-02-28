@@ -113,12 +113,12 @@ export async function POST(request: NextRequest) {
 
   const db_query = await database.listDocuments(MAIN_DB_ID, BOOK_STAT_COL_ID, [
     Query.equal("user_id", user_id),
-    Query.equal("book_id", book_id),
+    Query.equal("book", book_id),
   ]);
 
   if (db_query.total == 0) {
     // Create new object
-    createBookStatus({ database, user_id, book_id, status });
+    createBookStatus({ database, user_id, book: book_id, status });
   } else {
     const book_status_id = db_query.documents[0].$id;
 

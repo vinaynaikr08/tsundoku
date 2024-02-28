@@ -119,12 +119,12 @@ export async function POST(request: NextRequest) {
 
   const db_query = await database.listDocuments(MAIN_DB_ID, REVIEW_COL_ID, [
     Query.equal("user_id", user_id),
-    Query.equal("book_id", book_id),
+    Query.equal("book", book_id),
   ]);
 
   if (db_query.total == 0) {
     // Create new object
-    createReview({ database, user_id, book_id, star_rating, description });
+    createReview({ database, user_id, book: book_id, star_rating, description });
   } else {
     const review_id = db_query.documents[0].$id;
 
