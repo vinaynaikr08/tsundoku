@@ -1,6 +1,6 @@
 name: Bug Report (Mobile)
 description: Report a problem with the mobile
-title: "bug: backend: "
+title: "bug: mobile: "
 labels: ["bug"]
 body:
   - type: markdown
