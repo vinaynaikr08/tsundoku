@@ -57,6 +57,7 @@ export const SignIn = (props) => {
             setLoading(false);
           })
           .catch((error: any) => {
+            setLoading(false);
             if (error instanceof Error) {
               setErrorMessage(error.message);
               setErrorModalVisible(true);
@@ -66,6 +67,7 @@ export const SignIn = (props) => {
           });
       })
       .catch((error: any) => {
+        setLoading(false);
         if (error instanceof Error) {
           setErrorMessage(error.message);
           setErrorModalVisible(true);
