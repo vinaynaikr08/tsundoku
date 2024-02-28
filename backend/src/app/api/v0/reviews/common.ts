@@ -30,7 +30,8 @@ export async function createReview({
     {
       user_id,
       book,
-      status,
+      star_rating,
+      description
     },
     reviewPermissions,
   );
