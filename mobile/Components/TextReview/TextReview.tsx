@@ -9,15 +9,16 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import Modal from "react-native-modal";
 import Colors from "../../Constants/Colors";
 import { useContext, useState } from "react";
 import { Account, Databases, ID } from "appwrite";
 import { client } from "../../appwrite";
-import IDList from "@/Constants/IDList";
 import { BookInfoContext } from "@/Contexts";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
+import { BACKEND_API_REVIEW_URL } from "../../Constants/URLs";
 
 function TextReview({ route, navigation }) {
   const { rating } = route.params;
@@ -25,48 +26,64 @@ function TextReview({ route, navigation }) {
   console.log("textreview: " + bookInfo);
   const [text, setText] = useState("");
 
-  function saveReview() {
-    // const account = new Account(client);
-    // const user = account.get();
-    // let user_id;
-    // user.then(
-    //   function (response) {
-    //     user_id = response.$id;
-    //   },
-    //   function (error) {
-    //     console.log(error);
-    //   },
-    // );
-    // const databases = new Databases(client);
+  // React.useEffect(
+  //   () =>
+  //     navigation.addListener("beforeRemove", (e) => {
+  //       const action = e.data.action;
+  //       if (text != "") {
+  //         return;
+  //       }
 
-    // const promise = databases.createDocument(
-    //   IDList.mainDBID,
-    //   IDList.reviewCollectionID,
-    //   ID.unique(),
-    //   {
-    //     user_id: user_id,
-    //     star_rating: rating,
-    //     description: text,
-    //     book: "65da0871ed3dadffe87d",
-    //   },
-    // );
+  //       e.preventDefault();
 
-    // promise.then(
-    //   function (response) {
-    //     navigation.navigate("navbar");
-    //   },
-    //   function (error) {
-    //     console.log(error);
-    //   },
-    // );
+  //       Alert.alert("Discard review?", "You have an unsaved review.", [
+  //         { text: "Don't leave", style: "cancel", onPress: () => {} },
+  //         {
+  //           text: "Discard",
+  //           style: "destructive",
+  //           onPress: () => navigation.dispatch(action),
+  //         },
+  //       ]);
+  //     }),
+  //   [navigation],
+  // );
+
+  const saveReview = async () => {
+    const account = new Account(client);
+
+    console.log("saving review\n");
+
+    let res = await fetch(`${BACKEND_API_REVIEW_URL}`, {
+      method: "post",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+      body: JSON.stringify({
+        book_id: "65da0871ed3dadffe87d",
+        star_rating: rating,
+        description: text,
+      }),
+    });
+
+    if (res.ok) {
+      const res_json = await res.json();
+      console.log("review saved to database: " + res_json);
+    } else {
+      console.log("error: " + res.status);
+    }
+
+    console.log("saved review\n");
 
     Toast.show({
-      type: 'success',
-      text1: 'Review successfully saved!',
-      position: 'bottom'
+      type: "success",
+      text1: "Review successfully saved!",
+      position: "bottom",
+      visibilityTime: 2000,
     });
     navigation.navigate("navbar");
-  }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View
