@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Platform, Image, FlatList, TouchableWithoutFeedback, Keyboard, KeyboardEvent, Dimensions, KeyboardAvoidingView } from "react-native";
+import { View, Text, Platform, Image, FlatList, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Dimensions, KeyboardAvoidingView, Pressable } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 
@@ -16,6 +16,7 @@ export const Discover = (props) => {
   const windowHeight = Dimensions.get('window').height; 
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
+  const [authors, setAuthors] = useState([]);
   const [search, setSearch] = useState("");
 
   React.useEffect(() => {
@@ -28,17 +29,16 @@ export const Discover = (props) => {
           }),
       );
       const res_json = await res.json();
-      try {
-        return await res_json.results.documents.map((book) => {
-          return {
-            title: book.title,
-            author: book.authors[0].name,
-            image_url: book.editions[0].thumbnail_url,
-            isbn_10: book.editions[0].isbn_10,
-            isbn_13: book.editions[0].isbn_13,
-          };
-        });
-      } catch (error) {}
+      return await res_json.results.documents.map((book) => {
+        return {
+          id: book.$id,
+          title: book.title,
+          author: book.authors[0].name,
+          image_url: book.editions[0].thumbnail_url,
+          isbn_10: book.editions[0].isbn_10,
+          isbn_13: book.editions[0].isbn_13,
+        };
+      });
     }
 
     async function getAuthors(param) {
@@ -50,20 +50,27 @@ export const Discover = (props) => {
           }),
       );
       const res_json = await res.json();
-      try {
-        return await res_json.results.documents.map((author) => {
-          return {
-            books: author.books,
-          };
-        });
-      } catch (error) {}
+      return await res_json.results.documents.map((author) => {
+        return {
+          books: author.books,
+        };
+      });
     }
-    
+
     getBooks(search).then((data) => {
       setBooks(data);
+    }).catch((error: TypeError) => {
+    }).catch(error => {
+      console.log('books: ' + error)
     });
 
-  
+    getAuthors(search).then(data => {
+      setAuthors(data);
+    }).catch((error: TypeError) => {
+    }).catch(error => {
+      console.log('authors: ' + error)
+    });
+
     setLoading(false);
   }, [search]);
 
@@ -103,7 +110,9 @@ export const Discover = (props) => {
             style={{flexGrow: 0}} 
             renderItem={({item}) => {
               return (
-                <View>
+                <TouchableOpacity onPress={() =>
+                  navigation.navigate("bookInfoModal", { bookInfo: item })
+                }>
                   <View style={{flexDirection: 'row', paddingTop: 10, paddingBottom: 10}}>
                     <Image
                       style={{
@@ -126,11 +135,12 @@ export const Discover = (props) => {
                     </View>
                   </View>
                   <Divider style={{backgroundColor: "black"}}/>
-                </View>
+                </TouchableOpacity>
               )
               
             } 
           }/>
+
         </KeyboardAvoidingView>}
       </SafeAreaView>
     </NavigationContext.Provider>

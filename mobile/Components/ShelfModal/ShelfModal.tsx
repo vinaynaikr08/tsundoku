@@ -135,7 +135,9 @@ const ShelfModal = ({ route, navigation}) => {
             return (
               <View>
                 <TouchableOpacity
-                  onPress={() => alert("temp")}
+                  onPress={() =>
+                    navigation.navigate("bookInfoModal", { bookInfo: item })
+                  }
                   style={{ flexDirection: "row", paddingTop: 8 }}
                 >
                   <Image
