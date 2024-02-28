@@ -14,6 +14,7 @@ import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useState } from "react";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -96,6 +97,22 @@ function DescriptionTab({ bookInfo }) {
 }
 
 function BookReviewsTab() {
+  const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
+  const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
+
+  const handleThumbsUpClick = () => {
+    setThumbsUpClicked(!thumbsUpClicked);
+    if (thumbsDownClicked) {
+      setThumbsDownClicked(false);
+    }
+  };
+
+  const handleThumbsDownClick = () => {
+    setThumbsDownClicked(!thumbsDownClicked);
+    if (thumbsUpClicked) {
+      setThumbsUpClicked(false);
+    }
+  };
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -169,25 +186,37 @@ function BookReviewsTab() {
             history and culture. This is the book I needed when I was younger!
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 10,
-                marginTop: 10,
-              }}
-            >
-              <FontAwesome name={"thumbs-o-up"} color={"grey"} size={30} />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginLeft: 20,
-              }}
-            >
-              <FontAwesome name={"thumbs-o-down"} color={"grey"} size={30} />
-            </View>
+            <TouchableOpacity onPress={handleThumbsUpClick}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 10,
+                  marginTop: 10,
+                }}
+              >
+                <FontAwesome
+                  name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
+                  color={thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"}
+                  size={30}
+                />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleThumbsDownClick}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 20,
+                }}
+              >
+                <FontAwesome
+                  name={thumbsDownClicked ? "thumbs-down" : "thumbs-o-down"}
+                  color={thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"}
+                  size={30}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </ScrollView>
