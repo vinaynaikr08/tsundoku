@@ -20,6 +20,8 @@ export const Discover = (props) => {
   const [authors, setAuthors] = useState([]);
   const [search, setSearch] = useState("");
   const GENRES = DATA();
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   React.useEffect(() => {
     async function getBooks(param) {
@@ -63,15 +65,25 @@ export const Discover = (props) => {
     getBooks(search).then((data) => {
       setBooks(data);
     }).catch((error: TypeError) => {
-    }).catch(error => {
-      console.log('books: ' + error)
+    }).catch((error: any) => {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        setErrorModalVisible(true);
+      } else {
+        throw error;
+      }
     });
 
     getAuthors(search).then(data => {
       setAuthors(data);
     }).catch((error: TypeError) => {
-    }).catch(error => {
-      console.log('authors: ' + error)
+    }).catch((error: any) => {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        setErrorModalVisible(true);
+      } else {
+        throw error;
+      }
     });
 
     setLoading(false);
