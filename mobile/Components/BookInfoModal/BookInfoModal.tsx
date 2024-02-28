@@ -85,13 +85,28 @@ export const BookInfoModal = ({ route, navigation }) => {
     if (!status) {
       return <ActivityIndicator />;
     } else {
-      return (
-        <ButtonText color={"white"}>
-          {status === BookState.None
-            ? "Mark as read"
-            : BOOK_STATE_MAPPING[status]}
-        </ButtonText>
-      );
+      if (status === BookState.None) {
+        return (
+          <ReadingStatusButton
+            color={Colors.BUTTON_PURPLE}
+            onPress={handlePress}
+          >
+            <ReadingNowContainer>
+              <ButtonText color={"white"}>Mark as read</ButtonText>
+            </ReadingNowContainer>
+          </ReadingStatusButton>
+        );
+      } else {
+        return (
+          <DisabledReadingStatusButton color={Colors.BUTTON_PURPLE}>
+            <ReadingNowContainer>
+              <ButtonText color={"white"}>
+                {BOOK_STATE_MAPPING[status]}
+              </ButtonText>
+            </ReadingNowContainer>
+          </DisabledReadingStatusButton>
+        );
+      }
     }
   }
 
@@ -135,14 +150,7 @@ export const BookInfoModal = ({ route, navigation }) => {
             }}
             dropdownIconPosition={"left"}
           />
-          <ReadingStatusButton
-            color={Colors.BUTTON_PURPLE}
-            onPress={handlePress}
-          >
-            <ReadingNowContainer>
-              <StatusButtonView />
-            </ReadingNowContainer>
-          </ReadingStatusButton>
+          <StatusButtonView />
         </ButtonContainer>
         <SafeAreaView>
           <BookInfoTabs bookInfo={bookInfo} />
@@ -244,6 +252,17 @@ const ButtonContainer = styled.View<{ padding: number }>`
 `;
 
 const ReadingStatusButton = styled.TouchableOpacity<ColorProps>`
+  height: 45px;
+  border: 2px solid ${({ color }) => color};
+  padding: 1px 1px;
+  background-color: ${Colors.BUTTON_PURPLE};
+  border-radius: 13px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DisabledReadingStatusButton = styled.View<ColorProps>`
   height: 45px;
   border: 2px solid ${({ color }) => color};
   padding: 1px 1px;
