@@ -10,8 +10,6 @@ permissions:
 jobs:
   build-server:
     runs-on: ubuntu-latest
-    env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,3 +31,4 @@ jobs:
           tags: ghcr.io/purdue-cs307-tsundoku/tsundoku-backend:latest
           build-args: |
             BRANCH=latest
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
