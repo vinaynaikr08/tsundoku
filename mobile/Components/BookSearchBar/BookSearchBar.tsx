@@ -1,5 +1,5 @@
 import { View, Text, TouchableWithoutFeedback, Keyboard, FlatList, } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, } from "react";
 import { Button, SearchBar, Overlay, CheckBox, Divider, } from "@rneui/base";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -36,20 +36,12 @@ export const genresSelected: Array<string> = [
     "LANGUAGE ARTS & DISCIPLINES",
     "YOUNG ADULT NONFICTION","LAW"];
 
-const BookSearchBar = ( {search, updateSearch, newPlaceholder, loading, showFilter} ) => {
-    const [checked, setChecked] = React.useState('title');
+const BookSearchBar = ( {search, updateSearch, newPlaceholder, loading, showFilter, GENRES } ) => {
     const [isOverlayVisible, setOverlayVisible] = useState(false);
-
-    const [fantasy, setFantasy] = useState(false);
-    const [romance, setRomance] = useState(false);
-    const [scienceFiction, setScienceFiction] = useState(false);
-    const [mystery, setMystery] = useState(false);
 
     const toggleOverlay = () => {
         setOverlayVisible(!isOverlayVisible);
     };
-
-    const GENRES = DATA();
 
     function clearFilter() {
         for (var value of GENRES) {
@@ -57,7 +49,6 @@ const BookSearchBar = ( {search, updateSearch, newPlaceholder, loading, showFilt
             value.setter[1](false);
         }
     }
-    
 
     return (
         <View>

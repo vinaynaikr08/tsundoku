@@ -9,6 +9,7 @@ import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchBar from "@/Components/BookSearchBar";
 import { Divider } from "react-native-paper";
+import { DATA } from "@/Components/BookSearchBar/Genres";
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export const Discover = (props) => {
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [search, setSearch] = useState("");
+  const GENRES = DATA();
 
   React.useEffect(() => {
     async function getBooks(param) {
@@ -37,6 +39,7 @@ export const Discover = (props) => {
           image_url: book.editions[0].thumbnail_url,
           isbn_10: book.editions[0].isbn_10,
           isbn_13: book.editions[0].isbn_13,
+          genre: book.genre
         };
       });
     }
@@ -79,6 +82,33 @@ export const Discover = (props) => {
     setSearch(search);
   };
 
+
+  function checkGenres(value) {
+    let noFilter: boolean = true;
+
+    for (let genre of GENRES) {
+      if (genre.state[0] == true) {
+        noFilter = false;
+      }
+      if (genre.state[1] == true) {
+        noFilter = false;
+      }
+    }
+    if (noFilter) {
+      return true;
+    } else {
+      for (let genre of GENRES) {
+        if (value == genre.title[0]) {
+          return (genre.state[0]);
+        }
+        else if (value == genre.title[1]) {
+          return (genre.state[1]);
+        }
+      }
+    }
+  }
+
+
   return (
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
@@ -98,7 +128,7 @@ export const Discover = (props) => {
           </View>
         </TouchableWithoutFeedback>
         <View style={{paddingLeft: 10, paddingBottom: 10, paddingRight: 10}}>
-          <BookSearchBar search={search} updateSearch={updateSearch} newPlaceholder={"Search all books"} loading={loading} showFilter={true} />
+          <BookSearchBar search={search} updateSearch={updateSearch} newPlaceholder={"Search all books"} loading={loading} showFilter={true} GENRES={GENRES} />
         </View>
         <CarouselTabs navigation={navigation} />
         
@@ -106,7 +136,7 @@ export const Discover = (props) => {
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ backgroundColor: '#F7F7F7', width: '100%', position: "absolute", top: '21.5%', zIndex: 100, borderColor: 'black', borderWidth: 0, maxHeight: windowHeight - 230}}>
-          <FlatList data={books}
+          <FlatList data={books.filter(book => checkGenres(book.genre))}
             style={{flexGrow: 0}} 
             renderItem={({item}) => {
               return (
@@ -126,7 +156,7 @@ export const Discover = (props) => {
                       resizeMode="contain"
                       source={{ uri: item.image_url }}
                     />
-                    <View style={{ paddingLeft: 10, width: "90%" }}>
+                    <View style={{ paddingLeft: 10, width: "80%" }}>
                       <View style={{ flexDirection: 'row' }}>
                         <Text style={{ fontSize: 20, flexShrink: 1}}>{item.title}</Text>
                       </View>

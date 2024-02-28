@@ -113,6 +113,7 @@ function RecommendedCarousel() {
           author: book.authors[0].name,
           summary: book.description,
           image_url: book.editions[0].thumbnail_url,
+          genre: book.genre,
         };
       });
     }

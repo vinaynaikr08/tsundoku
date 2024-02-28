@@ -12,7 +12,7 @@ import { useState, useContext } from "react";
 import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
 
-import { genresSelected } from "../BookSearchBar";
+import { DATA } from "../BookSearchBar/Genres";
 
 function checkTitle(value, search) {
   return value.title.toUpperCase().includes(search.toUpperCase());
@@ -20,10 +20,6 @@ function checkTitle(value, search) {
 
 function checkAuthor(value, search) {
   return value.author.toUpperCase().includes(search.toUpperCase());
-}
-
-function checkGenres(value) {
-  return genresSelected.includes(value.toUpperCase());
 }
 
 const ShelfModal = ({ route, navigation}) => {
@@ -34,13 +30,32 @@ const ShelfModal = ({ route, navigation}) => {
     setSearch(search);
   };
 
-  const books = [
-    { id: "1", title: "The Poppy War", author: "R. F. Kuang" },
-    { id: "2", title: "The Fifth Season", author: "N. K. Jemisin" },
-    { id: "3", title: "Six of Crows", author: "R. F. Kuang" },
-    { id: "4", title: "The Poppy War", author: "R. F. Kuang" },
-    { id: "5", title: "The Poppy War", author: "R. F. Kuang" },
-  ];
+  const GENRES = DATA();
+
+  function checkGenres(value) {
+    let noFilter: boolean = true;
+  
+    for (let genre of GENRES) {
+      if (genre.state[0] == true) {
+        noFilter = false;
+      }
+      if (genre.state[1] == true) {
+        noFilter = false;
+      }
+    }
+    if (noFilter) {
+      return true;
+    } else {
+      for (let genre of GENRES) {
+        if (value == genre.title[0]) {
+          return (genre.state[0]);
+        }
+        else if (value == genre.title[1]) {
+          return (genre.state[1]);
+        }
+      }
+    }
+  }
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('gestureCancel', (e) => {
@@ -106,7 +121,7 @@ const ShelfModal = ({ route, navigation}) => {
           paddingBottom: 0,
         }}
       >
-        <BookSearchBar search={search} updateSearch={updateSearch} newPlaceholder={"Search list"} loading={false} showFilter={true}/>
+        <BookSearchBar search={search} updateSearch={updateSearch} newPlaceholder={"Search list"} loading={false} showFilter={true} GENRES={GENRES} />
       </View>
       <View
         style={{
@@ -124,7 +139,7 @@ const ShelfModal = ({ route, navigation}) => {
         <FlatList
           data={bookData.filter(
             (e) =>
-              checkTitle(e, search) || checkAuthor(e, search), //&& (checkGenres(e.genre))
+              (checkTitle(e, search) || checkAuthor(e, search)) && (checkGenres(e.genre))
           )}
           scrollEventThrottle={1}
           style={{
@@ -155,6 +170,7 @@ const ShelfModal = ({ route, navigation}) => {
                   <View
                     style={{
                       paddingLeft: 10,
+                      width: '80%'
                     }}
                   >
                     <Text style={{ fontSize: 20 }}>{item.title}</Text>
