@@ -3,3 +3,4 @@ export const BOOK_COL_ID = process.env.bookCollectionID;
 export const AUTHOR_COL_ID = process.env.authorCollectionID;
 export const EDITION_COL_ID = process.env.editionCollectionID;
 export const BOOK_STAT_COL_ID = process.env.bookStatusCollectionID;
+export const REVIEW_COL_ID = process.env.reviewCollectionID;
