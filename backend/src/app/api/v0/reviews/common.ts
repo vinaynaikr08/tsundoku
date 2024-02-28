@@ -1,6 +1,6 @@
 import { ID, Permission, Role } from "appwrite";
 
-import { MAIN_DB_ID, BOOK_STAT_COL_ID } from "@/app/Constants";
+import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
 
 export function reviewPermissions(user_id: string) {
   return [
@@ -25,7 +25,7 @@ export async function createReview({
 }) {
   let res = await database.createDocument(
     MAIN_DB_ID,
-    BOOK_STAT_COL_ID,
+    REVIEW_COL_ID,
     ID.unique(),
     {
       user_id,
