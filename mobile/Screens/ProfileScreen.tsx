@@ -96,6 +96,11 @@ export const Profile = (props) => {
       });
   }, []);
 
+  function signOut() {
+    account.deleteSessions;
+    navigation.navigate("initial_launch");
+  }
+
   return (
     // <BookInfoContext.Provider value={bookInfo}>
     <SafeAreaView style={{ flex: 1 }}>
@@ -137,7 +142,7 @@ export const Profile = (props) => {
 
       <Divider />
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={signOut}>
         <View
           style={{
             flexDirection: "row",
@@ -177,9 +182,11 @@ export const Profile = (props) => {
           </Text>
         </Button>
       </View>
-      <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
-        <Text>Delete account placeholder</Text>
-      </Overlay>
+      <View style={{height: 300}}>
+        <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay} >
+          <Text style={{fontSize: 30}}>Delete account placeholder</Text>
+        </Overlay>
+      </View>
     </SafeAreaView>
     // </BookInfoContext.Provider>
   );
