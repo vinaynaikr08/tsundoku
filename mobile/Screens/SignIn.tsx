@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
@@ -24,13 +25,17 @@ const account = new Account(client);
 
 export const SignIn = (props) => {
   // TODO: unset dummy credentials before demo!
-  const [email, setEmail] = useState("bookymcbookface@tsundoku.ericswpark.com");
-  const [password, setPassword] = useState("demoaccount12345");
-  const [errorModalVisible, setErrorModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [session, setSession] = useState(null);
+  const [email, setEmail] = React.useState(
+    "bookymcbookface@tsundoku.ericswpark.com",
+  );
+  const [password, setPassword] = React.useState("demoaccount12345");
+  const [errorModalVisible, setErrorModalVisible] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [session, setSession] = React.useState(null);
   const [loggedInUser, setLoggedInUser] =
-    useState<Models.User<Models.Preferences> | null>(null);
+    React.useState<Models.User<Models.Preferences> | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
   const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -48,6 +53,8 @@ export const SignIn = (props) => {
 
             // if sign-in successful, nav to next screen
             navigation.navigate("navbar");
+
+            setLoading(false);
           })
           .catch((error: any) => {
             if (error instanceof Error) {
@@ -100,13 +107,25 @@ export const SignIn = (props) => {
               autoCapitalize="none"
             />
           </View>
-          <Pressable onPress={handleSignIn}>
-            <Icon
-              style={styles.icon}
-              name={"arrow-forward"}
-              size={Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_SIZE}
-              color={Colors.INITIAL_LAUNCH_SCREEN_ARROW_WHITE}
-            />
+          <Pressable
+            onPress={() => {
+              setLoading(true);
+              handleSignIn();
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator
+                color="#ffffff"
+                style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
+              />
+            ) : (
+              <Icon
+                style={styles.icon}
+                name={"arrow-forward"}
+                size={Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_SIZE}
+                color={Colors.INITIAL_LAUNCH_SCREEN_ARROW_WHITE}
+              />
+            )}
           </Pressable>
           <StatusBar style="auto" />
         </View>
