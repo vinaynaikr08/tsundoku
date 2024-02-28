@@ -98,11 +98,11 @@ export const BookInfoModal = ({ route, navigation }) => {
         );
       } else {
         return (
-          <DisabledReadingStatusButton color={Colors.BUTTON_PURPLE}>
+          <DisabledReadingStatusButton color={Colors.BUTTON_GRAY}>
             <ReadingNowContainer color={Colors.BUTTON_GRAY}>
-              <ButtonText color={"black"}>
+              <Text style={{ color: Colors.BUTTON_PURPLE, fontWeight: "600" }}>
                 {BOOK_STATE_MAPPING[status]}
-              </ButtonText>
+              </Text>
             </ReadingNowContainer>
           </DisabledReadingStatusButton>
         );
@@ -123,7 +123,20 @@ export const BookInfoModal = ({ route, navigation }) => {
         />
         <Text style={styles.bookTitleText}>{bookInfo.title}</Text>
         <Text style={styles.bookAuthorText}>{bookInfo.author}</Text>
-        <ButtonContainer padding={0}>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "37%",
+            borderRadius: 13,
+            backgroundColor:
+              status === BookState.None
+                ? Colors.BUTTON_PURPLE
+                : Colors.BUTTON_GRAY,
+            alignItems: "center",
+            marginBottom: 10,
+            padding: 0,
+          }}
+        >
           <SelectDropdown
             data={Object.values(BOOK_STATE_MAPPING)}
             onSelect={(state) => handleOptionSelect(state)}
@@ -131,7 +144,16 @@ export const BookInfoModal = ({ route, navigation }) => {
               return "";
             }}
             defaultButtonText={""}
-            buttonStyle={styles.markAsReadButton}
+            buttonStyle={{
+              backgroundColor:
+                status === BookState.None
+                  ? Colors.BUTTON_PURPLE
+                  : Colors.BUTTON_GRAY,
+              paddingVertical: 5,
+              borderRadius: 13,
+              width: "25%",
+              height: "100%",
+            }}
             dropdownStyle={styles.dropdownStyle}
             dropdownOverlayColor={"transparent"}
             rowTextStyle={{ fontSize: 14 }}
@@ -143,7 +165,11 @@ export const BookInfoModal = ({ route, navigation }) => {
                       ? "chevron-up-circle-outline"
                       : "chevron-down-circle-outline"
                   }
-                  color={"white"}
+                  color={
+                    status === BookState.None
+                      ? Colors.BUTTON_GRAY
+                      : Colors.BUTTON_PURPLE
+                  }
                   size={25}
                 />
               );
@@ -151,7 +177,7 @@ export const BookInfoModal = ({ route, navigation }) => {
             dropdownIconPosition={"left"}
           />
           <StatusButtonView />
-        </ButtonContainer>
+        </View>
         <SafeAreaView>
           <BookInfoTabs bookInfo={bookInfo} />
         </SafeAreaView>
