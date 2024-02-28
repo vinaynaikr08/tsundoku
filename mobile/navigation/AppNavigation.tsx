@@ -23,7 +23,11 @@ function AppNavigation() {
           animation: "slide_from_bottom",
         }}
       >
-        <Stack.Screen name="review" options={{gestureEnabled: false}} component={Review} />
+        <Stack.Screen
+          name="review"
+          options={{ gestureEnabled: false }}
+          component={Review}
+        />
         <Stack.Screen name="bookInfoModal" component={BookInfoModal} />
         <Stack.Screen name="shelfModal" component={ShelfModal} />
       </Stack.Group>

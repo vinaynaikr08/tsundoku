@@ -27,26 +27,24 @@ function StarRating(props) {
   }, [isTextReviewModalVisible]);
 
   function dismiss() {
-      Alert.alert("Discard review?", "You have an unsaved review.", [
-        { text: "Don't leave", style: "cancel", onPress: () => {} },
-        {
-          text: "Discard",
-          style: "destructive",
-          onPress: () => navigation.navigate("navbar"),
-        },
-      ]);
+    Alert.alert("Discard review?", "You have an unsaved review.", [
+      { text: "Don't leave", style: "cancel", onPress: () => {} },
+      {
+        text: "Discard",
+        style: "destructive",
+        onPress: () => navigation.navigate("navbar"),
+      },
+    ]);
   }
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <TouchableOpacity
-          style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
-          onPress={dismiss}
-        >
-          <Icon name={"close"} color="black" size={25} />
-        </TouchableOpacity>
+        style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
+        onPress={dismiss}
+      >
+        <Icon name={"close"} color="black" size={25} />
+      </TouchableOpacity>
       <Text style={styles.title}>How would you rate this book?</Text>
       <View style={{ alignItems: "center" }}>
         <View
@@ -74,7 +72,9 @@ function StarRating(props) {
           />
         </View>
         <Pressable
-          onPress={() => navigation.navigate("textReviewModal", {rating: rating})}
+          onPress={() =>
+            navigation.navigate("textReviewModal", { rating: rating })
+          }
           style={styles.nextButton}
         >
           <Text style={styles.nextButtonText}>Next</Text>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     fontWeight: "600",
     marginHorizontal: 50,
-    textAlign: "center"
+    textAlign: "center",
   },
   text: {
     fontSize: 20,

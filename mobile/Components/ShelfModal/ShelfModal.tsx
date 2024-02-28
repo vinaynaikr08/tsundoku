@@ -22,8 +22,8 @@ function checkAuthor(value, search) {
   return value.author.toUpperCase().includes(search.toUpperCase());
 }
 
-const ShelfModal = ({ route, navigation}) => {
-  const {bookData, shelf} = route.params;
+const ShelfModal = ({ route, navigation }) => {
+  const { bookData, shelf } = route.params;
   const [search, setSearch] = useState("");
 
   const updateSearch = (search) => {
@@ -34,7 +34,7 @@ const ShelfModal = ({ route, navigation}) => {
 
   function checkGenres(value) {
     let noFilter: boolean = true;
-  
+
     for (let genre of GENRES) {
       if (genre.state[0] == true) {
         noFilter = false;
@@ -48,20 +48,19 @@ const ShelfModal = ({ route, navigation}) => {
     } else {
       for (let genre of GENRES) {
         if (value == genre.title[0]) {
-          return (genre.state[0]);
-        }
-        else if (value == genre.title[1]) {
-          return (genre.state[1]);
+          return genre.state[0];
+        } else if (value == genre.title[1]) {
+          return genre.state[1];
         }
       }
     }
   }
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('gestureCancel', (e) => {
+    const unsubscribe = navigation.addListener("gestureCancel", (e) => {
       Keyboard.dismiss;
     });
-  
+
     return unsubscribe;
   }, [navigation]);
 
@@ -121,7 +120,14 @@ const ShelfModal = ({ route, navigation}) => {
           paddingBottom: 0,
         }}
       >
-        <BookSearchBar search={search} updateSearch={updateSearch} newPlaceholder={"Search list"} loading={false} showFilter={true} GENRES={GENRES} />
+        <BookSearchBar
+          search={search}
+          updateSearch={updateSearch}
+          newPlaceholder={"Search list"}
+          loading={false}
+          showFilter={true}
+          GENRES={GENRES}
+        />
       </View>
       <View
         style={{
@@ -139,7 +145,8 @@ const ShelfModal = ({ route, navigation}) => {
         <FlatList
           data={bookData.filter(
             (e) =>
-              (checkTitle(e, search) || checkAuthor(e, search)) && (checkGenres(e.genre))
+              (checkTitle(e, search) || checkAuthor(e, search)) &&
+              checkGenres(e.genre),
           )}
           scrollEventThrottle={1}
           style={{
@@ -157,12 +164,12 @@ const ShelfModal = ({ route, navigation}) => {
                 >
                   <Image
                     style={{
-                    width: 53,
-                    height: 80,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "white",
-                    shadowColor: "black",
+                      width: 53,
+                      height: 80,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      shadowColor: "black",
                     }}
                     resizeMode="contain"
                     source={{ uri: item.image_url }}
@@ -170,7 +177,7 @@ const ShelfModal = ({ route, navigation}) => {
                   <View
                     style={{
                       paddingLeft: 10,
-                      width: '80%'
+                      width: "80%",
                     }}
                   >
                     <Text style={{ fontSize: 20 }}>{item.title}</Text>

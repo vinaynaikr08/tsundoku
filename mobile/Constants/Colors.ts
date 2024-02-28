@@ -13,5 +13,5 @@ export default {
 
   BUTTON_PURPLE: "#5B2FA3",
   BUTTON_TEXT_GRAY: "#777777",
-  BUTTON_GRAY: "#F7F7F7"
+  BUTTON_GRAY: "#F7F7F7",
 };

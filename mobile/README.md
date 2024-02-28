@@ -18,7 +18,6 @@ npm install
 npx expo start
 ```
 
-
 ## Creating a new component
 
 ```

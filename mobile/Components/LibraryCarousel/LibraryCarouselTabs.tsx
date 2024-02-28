@@ -39,7 +39,7 @@ async function getBooksOfStatus(status: string) {
         author: book_data.authors[0].name,
         summary: book_data.description,
         image_url: book_data.editions[0].thumbnail_url,
-        genre: book_data.genre
+        genre: book_data.genre,
       });
     }),
   );

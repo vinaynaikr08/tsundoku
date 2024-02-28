@@ -110,39 +110,71 @@ export const Profile = (props) => {
       <Text style={styles.text}>
         Books did not finish: {booksDidNotFinishCount}
       </Text>
-      <Divider/>
-      <View style={{flexDirection: 'row', paddingTop: 10, paddingBottom: 10, width: '100%'}}>
-        <Text style={{fontSize: 20, paddingLeft: 20, flex: 9}}>Notifications</Text>
-        <View style={{flex: 2}}>
+      <Divider />
+      <View
+        style={{
+          flexDirection: "row",
+          paddingTop: 10,
+          paddingBottom: 10,
+          width: "100%",
+        }}
+      >
+        <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+          Notifications
+        </Text>
+        <View style={{ flex: 2 }}>
           <Switch
-            trackColor={{false: Colors.BUTTON_GRAY, true: Colors.BUTTON_PURPLE}}
+            trackColor={{
+              false: Colors.BUTTON_GRAY,
+              true: Colors.BUTTON_PURPLE,
+            }}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={() => (setNotif(!notif))}
+            onValueChange={() => setNotif(!notif)}
             value={notif}
           />
         </View>
       </View>
 
-      <Divider/>
+      <Divider />
 
       <TouchableOpacity>
-        <View style={{flexDirection: 'row', paddingTop: 10, paddingBottom: 10, width: '100%'}}>
-          <Text style={{fontSize: 20, paddingLeft: 20, flex: 9}}>Sign Out</Text>
-          <View style={{flex: 2}}>
-            <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30}/>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingTop: 10,
+            paddingBottom: 10,
+            width: "100%",
+          }}
+        >
+          <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+            Sign Out
+          </Text>
+          <View style={{ flex: 2 }}>
+            <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30} />
           </View>
         </View>
       </TouchableOpacity>
 
-      <Divider/>
+      <Divider />
 
-      <View style={{paddingTop: 70, alignItems: 'center'}}>
+      <View style={{ paddingTop: 70, alignItems: "center" }}>
         <Button
           onPress={toggleOverlay}
-          color={'red'}
-          containerStyle={{borderRadius: 30, }}
+          color={"red"}
+          containerStyle={{ borderRadius: 30 }}
         >
-          <Text style={{color: 'white', paddingRight: 5, fontSize: 17, paddingTop: 5, paddingBottom: 5, alignSelf: 'center'}}>Delete Account</Text>
+          <Text
+            style={{
+              color: "white",
+              paddingRight: 5,
+              fontSize: 17,
+              paddingTop: 5,
+              paddingBottom: 5,
+              alignSelf: "center",
+            }}
+          >
+            Delete Account
+          </Text>
         </Button>
       </View>
       <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
