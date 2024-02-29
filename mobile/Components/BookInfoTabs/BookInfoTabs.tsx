@@ -98,13 +98,7 @@ function DescriptionTab({ bookInfo }) {
 function BookReviewsTab({ bookInfo }) {
   return (
     <View style={{ flex: 1 }}>
-      {/* <ScrollView
-        style={{ flex: 1 }}
-        bounces={false}
-        contentContainerStyle={styles.scrollViewStyle}
-      > */}
       <BookInfoModalReview bookInfo={bookInfo} />
-      {/* </ScrollView> */}
     </View>
   );
 }

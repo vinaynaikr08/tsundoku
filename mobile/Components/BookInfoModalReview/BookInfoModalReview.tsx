@@ -53,7 +53,6 @@ async function getReviews(book_id: string) {
     }),
   );
   avgRating = avgRating / reviews.length;
-  // console.log(avgRating);
 
   return reviews;
 }
@@ -83,9 +82,16 @@ export const BookInfoModalReview = ({ bookInfo }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       {reviews.length === 0 ? (
-        <Text style={{ fontSize: 20, fontWeight: "bold", margin: 30 }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            margin: 30,
+            color: "grey",
+          }}
+        >
           No Reviews
         </Text>
       ) : (
@@ -98,8 +104,7 @@ export const BookInfoModalReview = ({ bookInfo }) => {
               <View
                 style={{
                   flexDirection: "row",
-                  margin: 20,
-                  marginBottom: 30,
+                  marginVertical: 30,
                   alignItems: "center",
                 }}
               >
@@ -115,88 +120,78 @@ export const BookInfoModalReview = ({ bookInfo }) => {
                 />
               </View>
             )}
-            renderItem={
-              ({ item }) => (
-                //   return (
-                <View style={{ flex: 1 }}>
-                  <TouchableOpacity activeOpacity={1}>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <View style={{ marginRight: 10 }}>
-                        <Ionicons
-                          name={"person-circle"}
-                          color={"grey"}
-                          size={60}
+            renderItem={({ item }) => (
+              <View style={{ flex: 1 }}>
+                <TouchableOpacity activeOpacity={1}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View style={{ marginRight: 10 }}>
+                      <Ionicons
+                        name={"person-circle"}
+                        color={"grey"}
+                        size={60}
+                      />
+                    </View>
+                    <View style={{ marginRight: 10 }}>
+                      <Text style={{ fontSize: 20, marginBottom: 5 }}>
+                        {item.username}
+                      </Text>
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        {createStars(item.rating / 4, 30)}
+                      </View>
+                    </View>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                    }}
+                  >
+                    {item.desc}
+                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <TouchableOpacity onPress={handleThumbsUpClick}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 10,
+                          marginTop: 10,
+                        }}
+                      >
+                        <FontAwesome
+                          name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
+                          color={
+                            thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"
+                          }
+                          size={30}
                         />
                       </View>
-                      <View style={{ marginRight: 10 }}>
-                        <Text style={{ fontSize: 20, marginBottom: 5 }}>
-                          {item.username}
-                        </Text>
-                        <View
-                          style={{ flexDirection: "row", alignItems: "center" }}
-                        >
-                          {createStars(item.rating / 4, 30)}
-                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleThumbsDownClick}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 20,
+                        }}
+                      >
+                        <FontAwesome
+                          name={
+                            thumbsDownClicked ? "thumbs-down" : "thumbs-o-down"
+                          }
+                          color={
+                            thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"
+                          }
+                          size={30}
+                        />
                       </View>
-                    </View>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-                      }}
-                    >
-                      {item.desc}
-                    </Text>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <TouchableOpacity onPress={handleThumbsUpClick}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginLeft: 10,
-                            marginTop: 10,
-                          }}
-                        >
-                          <FontAwesome
-                            name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
-                            color={
-                              thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"
-                            }
-                            size={30}
-                          />
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={handleThumbsDownClick}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginLeft: 20,
-                          }}
-                        >
-                          <FontAwesome
-                            name={
-                              thumbsDownClicked
-                                ? "thumbs-down"
-                                : "thumbs-o-down"
-                            }
-                            color={
-                              thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"
-                            }
-                            size={30}
-                          />
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )
-              //   );
-            }
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
           />
         </View>
       )}
@@ -208,25 +203,6 @@ function createStars(rating, size) {
   let stars = [];
 
   for (let i = 0; i < 5; i++) {
-    // if (i > rating) {
-    //   stars.push(
-    //     <FontAwesome
-    //       key={i}
-    //       name={"star-o"}
-    //       color={Colors.BUTTON_PURPLE}
-    //       size={size}
-    //     />,
-    //   );
-    // } else {
-    //   stars.push(
-    //     <FontAwesome
-    //       key={i}
-    //       name={"star"}
-    //       color={Colors.BUTTON_PURPLE}
-    //       size={size}
-    //     />,
-    //   );
-    // }
     stars.push(
       <View key={i} style={{ marginRight: 3 }}>
         {i < rating ? (
