@@ -67,13 +67,8 @@ export const BookInfoModal = ({ route, navigation }) => {
     })();
   }, []);
 
-  React.useEffect(() => {
-    console.log(status);
-    saveStatus();
-  }, [status]);
-
-  const saveStatus = async () => {
-    if (!status || status === BookState.None) {
+  const saveStatus = async (newStatus) => {
+    if (!newStatus || newStatus === BookState.None) {
       return;
     }
 
@@ -85,7 +80,7 @@ export const BookInfoModal = ({ route, navigation }) => {
       }),
       body: JSON.stringify({
         book_id: bookInfo.id,
-        status: status,
+        status: newStatus,
       }),
     });
 
@@ -101,14 +96,13 @@ export const BookInfoModal = ({ route, navigation }) => {
     if (status === BookState.None) {
       navigation.navigate("review", { bookInfo: bookInfo });
       setStatus(BookState.Read);
-      // saveStatus();
+      saveStatus(BookState.Read);
     }
   };
 
   const handleOptionSelect = (state: any) => {
     setStatus(BookStateLookup(state));
-    // console.log(status);
-    // saveStatus();
+    saveStatus(BookStateLookup(state));
   };
 
   function StatusButtonView() {
