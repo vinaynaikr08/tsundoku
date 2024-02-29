@@ -111,7 +111,9 @@ async function get_or_create_author_id(name: string) {
 
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
-  const simulateAPIFailure = request.nextUrl.searchParams.get("simulateAPIFailure") as string;
+  const simulateAPIFailure = request.nextUrl.searchParams.get(
+    "simulateAPIFailure",
+  ) as string;
 
   if (!title) {
     return construct_development_api_response({
@@ -133,7 +135,15 @@ export async function GET(request: NextRequest) {
 
   if (db_query.total == 0) {
     // Fetch some results from the Google Books API and populate the DB
-    const gbooks_books = await searchGoogleBooksAPI(title);
+    let gbooks_books;
+    try {
+      gbooks_books = await searchGoogleBooksAPI(title);
+    } catch (error: any) {
+      return construct_development_api_response({
+        message: "The Google Books API is currently unavailable.",
+        status_code: 503,
+      });
+    }
     if (gbooks_books.length >= 1) {
       for (const gbooks_target_book of gbooks_books) {
         // Get author information
