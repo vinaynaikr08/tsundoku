@@ -90,22 +90,29 @@ export const BookInfoModalReview = ({ bookInfo }) => {
         </Text>
       ) : (
         <View style={{ flex: 1 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 40,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
-              Overall Rating: {avgRating / 4}
-            </Text>
-            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={30} />
-          </View>
           <FlatList
             data={reviews}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.username}
+            ListHeaderComponent={() => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  margin: 20,
+                  marginBottom: 30,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  Overall Rating: {avgRating / 4}
+                </Text>
+                <FontAwesome
+                  name={"star"}
+                  color={Colors.BUTTON_PURPLE}
+                  size={25}
+                />
+              </View>
+            )}
             renderItem={
               ({ item }) => (
                 //   return (
