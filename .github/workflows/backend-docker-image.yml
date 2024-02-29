@@ -2,6 +2,7 @@ name: Build backend Docker image
 
 on:
   push:
+    branches: [main, master]
 
 permissions:
   packages: write
