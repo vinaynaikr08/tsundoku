@@ -40,7 +40,7 @@ export const Discover = (props) => {
   React.useEffect(() => {
     async function getBooks(param) {
       setLoading(true);
-      setBooks([]);
+      await setBooks([]);
       setLoading(true);
       let res = await fetch(
         `${BACKEND_API_BOOK_SEARCH_URL}?` +
@@ -49,8 +49,9 @@ export const Discover = (props) => {
           }),
       );
       const res_json = await res.json();
+      console.log(res_json);
       setLoading(false);
-      setBooks(await res_json.results.documents.map((book) => {
+      await setBooks(res_json.results.documents.map((book) => {
         return {
           id: book.$id,
           title: book.title,
@@ -61,10 +62,35 @@ export const Discover = (props) => {
           genre: book.genre,
         };
       }));
+
+      // res = await fetch(
+      //   `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
+      //     new URLSearchParams({
+      //       name: param,
+      //     }),
+      // );
+      // const res_json_authors = await res.json();
+      // const documents = await res_json_authors.results.documents;
+      // var array = [];
+      // await documents.forEach(element => {
+      //   if (element.books.length != 0) {
+      //     element.books.forEach(book => {
+      //       array = [...array, {
+      //         id: book.$id,
+      //         title: book.title,
+      //         author: element.name,
+      //         image_url: book.editions[0].thumbnail_url,
+      //         isbn_10: book.editions[0].isbn_10,
+      //         isbn_13: book.editions[0].isbn_13,
+      //         genre: book.genre,
+      //       }]
+      //     });
+      //   }
+      // });
+      // setBooks(books.concat(array));
     }
 
     async function getAuthors(param) {
-      setBooks([]);
       setLoading(true);
       let res = await fetch(
         `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
@@ -75,24 +101,12 @@ export const Discover = (props) => {
       const res_json = await res.json();
       var array = [];
       await res_json.results.documents.map((author) => {
+        console.log(author.name);
         array = array.concat(array, author.books);
       });
-      for (var arr of array) {
-        console.log(arr);
-      }
+      console.log(array);
       setLoading(false);
     }
-
-    getAuthors(search)
-    .catch((error: TypeError) => {})
-    .catch((error: any) => {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-        setErrorModalVisible(true);
-      } else {
-        throw error;
-      }
-    });
 
     if (search.length != 0) {
       getBooks(search)
@@ -106,7 +120,6 @@ export const Discover = (props) => {
         }
       });
     }
-    
   }, [search]);
 
   const { navigation } = props;
