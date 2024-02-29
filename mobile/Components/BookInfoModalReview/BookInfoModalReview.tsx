@@ -38,12 +38,13 @@ async function getReviews(book_id: string) {
       const review_data = await databases.getDocument(
         ID.mainDBID,
         ID.reviewsCollectionID,
-        document.book.$id,
+        document.$id,
       );
       reviews.push({
         rating: review_data.star_rating,
         desc: review_data.description,
         username: review_data.user_id,
+        id: document.$id,
       });
     }),
   );
