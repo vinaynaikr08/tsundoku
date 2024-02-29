@@ -104,7 +104,7 @@ export const BookInfoModalReview = ({ bookInfo }) => {
                 }}
               >
                 <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                  Overall Rating: {avgRating / 4}
+                  Overall Rating: {(avgRating / 4).toFixed(2)}
                 </Text>
                 <FontAwesome
                   name={"star"}
