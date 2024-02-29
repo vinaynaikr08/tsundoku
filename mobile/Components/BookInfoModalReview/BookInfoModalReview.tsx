@@ -48,7 +48,7 @@ async function getReviews(book_id: string) {
       });
     }),
   );
-  console.log(reviews);
+  // console.log(reviews);
   return reviews;
 }
 
@@ -60,7 +60,7 @@ export const BookInfoModalReview = ({ bookInfo }) => {
       setReviews(await getReviews(bookInfo.id));
     })();
   }, []);
-
+  console.log(reviews);
   const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
   const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
 

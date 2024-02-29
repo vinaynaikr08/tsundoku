@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
 import styled from "styled-components/native";
 import Dimensions from "../../Constants/Dimensions";
@@ -71,6 +71,9 @@ export const BookInfoModal = ({ route, navigation }) => {
     if (!newStatus || newStatus === BookState.None) {
       return;
     }
+    if (newStatus === BookState.Read) {
+      navigation.navigate("review", { bookInfo: bookInfo });
+    }
 
     await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
       method: "post",
@@ -111,12 +114,12 @@ export const BookInfoModal = ({ route, navigation }) => {
     // console.log(state);
     setStatus(BookStateLookup(state));
     saveStatus(BookStateLookup(state));
-    // if (status !== BookState.Read) {
-    //   navigation.navigate("review", { bookInfo: bookInfo });
-    // }
-    // if (state === "Read") {
-    // navigation.navigate("review", { bookInfo: bookInfo });
-    // }
+    // useEffect(() => {
+    //   // status changed from non-read state to read
+    //   if (status === BookState.Read) {
+    //     navigation.navigate("review", { bookInfo: bookInfo });
+    //   }
+    // }, [status]);
   };
 
   function StatusButtonView() {
