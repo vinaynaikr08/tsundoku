@@ -46,19 +46,14 @@ export async function PATCH(
       status_code: 404,
     });
   } else {
-    await userDB.updateDocument(
-      MAIN_DB_ID,
-      REVIEW_COL_ID,
-      review_id,
-      {
-        star_rating: star_rating
-          ? star_rating
-          : db_query.documents[0].star_rating,
-        description: description
-          ? description
-          : db_query.documents[0].description,
-      },
-    );
+    await userDB.updateDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id, {
+      star_rating: star_rating
+        ? star_rating
+        : db_query.documents[0].star_rating,
+      description: description
+        ? description
+        : db_query.documents[0].description,
+    });
   }
 
   return construct_development_api_response({
