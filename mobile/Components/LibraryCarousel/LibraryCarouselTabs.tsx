@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Databases, Account } from "appwrite";
-import React from "react";
+import React, { useEffect } from "react";
 import { Query } from "appwrite";
 
 import Carousel from "@/Components/Carousel/Carousel";
@@ -122,6 +122,9 @@ function ReadingStatusCarousel({ status }) {
 }
 
 function LibraryCarouselTabs({ navigation }) {
+  React.useEffect(() => {
+    shelf = "Currently Reading";
+  });
   return (
     <Tab.Navigator
       screenOptions={{ swipeEnabled: false }}
@@ -167,5 +170,4 @@ function LibraryCarouselTabs({ navigation }) {
   );
 }
 
-export { shelf };
 export default LibraryCarouselTabs;
