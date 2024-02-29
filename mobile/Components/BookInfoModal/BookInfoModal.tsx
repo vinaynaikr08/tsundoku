@@ -73,6 +73,10 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const saveStatus = async () => {
+    if (status === BookState.None) {
+      return;
+    }
+
     let res = await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
       method: "post",
       headers: new Headers({
