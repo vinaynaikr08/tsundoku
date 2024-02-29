@@ -24,6 +24,7 @@ import { debounce } from "lodash";
 
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
+import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 
@@ -33,11 +34,10 @@ async function getBooks(param) {
   let books = [];
 
   // Search by books
-  const book_documents = (
-    await databases.listDocuments(ID.mainDBID, ID.bookCollectionID, [
-      Query.search("title", param),
-    ])
-  ).documents;
+  const res = await fetch(
+    `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
+  );
+  const book_documents = (await res.json()).results.documents;
 
   for (const book of book_documents) {
     if (books.filter((e) => e.id === book.$id).length === 0) {
