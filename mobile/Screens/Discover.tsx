@@ -31,14 +31,16 @@ export const Discover = (props) => {
   const windowHeight = Dimensions.get("window").height;
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState([]);
-  const [authors, setAuthors] = useState([]);
   const [search, setSearch] = useState("");
   const GENRES = DATA();
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+
   React.useEffect(() => {
     async function getBooks(param) {
+      setLoading(true);
+      setBooks([]);
       setLoading(true);
       let res = await fetch(
         `${BACKEND_API_BOOK_SEARCH_URL}?` +
@@ -47,7 +49,8 @@ export const Discover = (props) => {
           }),
       );
       const res_json = await res.json();
-      return await res_json.results.documents.map((book) => {
+      setLoading(false);
+      setBooks(await res_json.results.documents.map((book) => {
         return {
           id: book.$id,
           title: book.title,
@@ -57,10 +60,11 @@ export const Discover = (props) => {
           isbn_13: book.editions[0].isbn_13,
           genre: book.genre,
         };
-      });
+      }));
     }
 
     async function getAuthors(param) {
+      setBooks([]);
       setLoading(true);
       let res = await fetch(
         `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
@@ -69,31 +73,29 @@ export const Discover = (props) => {
           }),
       );
       const res_json = await res.json();
-      return await res_json.results.documents.map((author) => {
-        return {
-          books: author.books,
-        };
+      var array = [];
+      await res_json.results.documents.map((author) => {
+        array = array.concat(array, author.books);
       });
+      for (var arr of array) {
+        console.log(arr);
+      }
+      setLoading(false);
     }
 
-    getBooks(search)
-      .then((data) => {
-        setBooks(data);
-      })
-      .catch((error: TypeError) => {})
-      .catch((error: any) => {
-        if (error instanceof Error) {
-          setErrorMessage(error.message);
-          setErrorModalVisible(true);
-        } else {
-          throw error;
-        }
-      });
-
     getAuthors(search)
-      .then((data) => {
-        setAuthors(data);
-      })
+    .catch((error: TypeError) => {})
+    .catch((error: any) => {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+        setErrorModalVisible(true);
+      } else {
+        throw error;
+      }
+    });
+
+    if (search.length != 0) {
+      getBooks(search)
       .catch((error: TypeError) => {})
       .catch((error: any) => {
         if (error instanceof Error) {
@@ -103,8 +105,8 @@ export const Discover = (props) => {
           throw error;
         }
       });
-
-    setLoading(false);
+    }
+    
   }, [search]);
 
   const { navigation } = props;
@@ -135,6 +137,7 @@ export const Discover = (props) => {
       }
     }
   }
+
 
   return (
     <NavigationContext.Provider value={navigation}>
