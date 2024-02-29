@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
-  Pressable,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -78,6 +77,33 @@ async function getBooks(param) {
             genre: book.genre,
           },
         ];
+      }
+    }
+
+    // Search by ISBN_13 and ISBN_10
+    const edition_documents = (
+      await databases.listDocuments(ID.mainDBID, ID.editionCollectionID, [
+        Query.search("isbn_13", param),
+        Query.search("isbn_10", param),
+      ])
+    ).documents;
+
+    for (const edition of edition_documents) {
+      for (const book of edition.books) {
+        if (books.filter((e) => e.id === book.$id).length === 0) {
+          books = [
+            ...books,
+            {
+              id: book.$id,
+              title: book.title,
+              author: author.name,
+              image_url: edition.thumbnail_url,
+              isbn_10: edition.isbn_10,
+              isbn_13: edition.isbn_13,
+              genre: book.genre,
+            },
+          ];
+        }
       }
     }
   }
