@@ -118,7 +118,24 @@ export async function POST(request: NextRequest) {
 
   if (db_query.total == 0) {
     // Create new object
-    createBookStatus({ database, user_id, book: book_id, status });
+    try {
+      createBookStatus({ database, user_id, book: book_id, status });
+    } catch (error: any) {
+      if (
+        error instanceof Error &&
+        (error as AppwriteException).code / 100 === 4
+      ) {
+        return construct_development_api_response({
+          message: (error as AppwriteException).message,
+          status_code: (error as AppwriteException).code,
+        });
+      }
+      console.log(error);
+      return construct_development_api_response({
+        message: "Unknown error. Please contact the developers.",
+        status_code: 500,
+      });
+    }
   } else {
     const book_status_id = db_query.documents[0].$id;
 
