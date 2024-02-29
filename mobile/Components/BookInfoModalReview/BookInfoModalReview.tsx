@@ -83,7 +83,7 @@ export const BookInfoModalReview = ({ bookInfo }) => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }}>
       {reviews.length === 0 ? (
         <Text style={{ fontSize: 20, fontWeight: "bold", margin: 30 }}>
           No Reviews
@@ -191,7 +191,7 @@ export const BookInfoModalReview = ({ bookInfo }) => {
           />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
