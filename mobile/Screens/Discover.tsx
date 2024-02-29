@@ -14,18 +14,76 @@ import {
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import {
-  BACKEND_API_BOOK_SEARCH_URL,
-  BACKEND_API_AUTHOR_SEARCH_URL,
-} from "../Constants/URLs";
 import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchBar from "@/Components/BookSearchBar";
 import { Divider } from "react-native-paper";
 import { DATA } from "@/Components/BookSearchBar/Genres";
+import { Databases, Query } from "appwrite";
+
+import { client } from "@/appwrite";
+import ID from "@/Constants/ID";
+
+const databases = new Databases(client);
 
 const Stack = createStackNavigator();
+
+async function getBooks(param) {
+  let books = [];
+
+  // Search by books
+  const book_documents = (
+    await databases.listDocuments(ID.mainDBID, ID.bookCollectionID, [
+      Query.search("title", param),
+    ])
+  ).documents;
+
+  for (const book of book_documents) {
+    if (books.filter((e) => e.id === book.$id).length === 0) {
+      books = [
+        ...books,
+        {
+          id: book.$id,
+          title: book.title,
+          author: book.authors[0].name,
+          image_url: book.editions[0].thumbnail_url,
+          isbn_10: book.editions[0].isbn_10,
+          isbn_13: book.editions[0].isbn_13,
+          genre: book.genre,
+        },
+      ];
+    }
+  }
+
+  // Search by author
+  const author_documents = (
+    await databases.listDocuments(ID.mainDBID, ID.authorCollectionID, [
+      Query.search("name", param),
+    ])
+  ).documents;
+
+  for (const author of author_documents) {
+    for (const book of author.books) {
+      if (books.filter((e) => e.id === book.$id).length === 0) {
+        books = [
+          ...books,
+          {
+            id: book.$id,
+            title: book.title,
+            author: author.name,
+            image_url: book.editions[0].thumbnail_url,
+            isbn_10: book.editions[0].isbn_10,
+            isbn_13: book.editions[0].isbn_13,
+            genre: book.genre,
+          },
+        ];
+      }
+    }
+  }
+
+  return books;
+}
 
 export const Discover = (props) => {
   const windowHeight = Dimensions.get("window").height;
@@ -36,89 +94,19 @@ export const Discover = (props) => {
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-
   React.useEffect(() => {
-    async function getBooks(param) {
-      setLoading(true);
-      await setBooks([]);
-      setLoading(true);
-      let res = await fetch(
-        `${BACKEND_API_BOOK_SEARCH_URL}?` +
-          new URLSearchParams({
-            title: param,
-          }),
-      );
-      const res_json = await res.json();
-      console.log(res_json);
-      setLoading(false);
-      await setBooks(res_json.results.documents.map((book) => {
-        return {
-          id: book.$id,
-          title: book.title,
-          author: book.authors[0].name,
-          image_url: book.editions[0].thumbnail_url,
-          isbn_10: book.editions[0].isbn_10,
-          isbn_13: book.editions[0].isbn_13,
-          genre: book.genre,
-        };
-      }));
-
-      // res = await fetch(
-      //   `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
-      //     new URLSearchParams({
-      //       name: param,
-      //     }),
-      // );
-      // const res_json_authors = await res.json();
-      // const documents = await res_json_authors.results.documents;
-      // var array = [];
-      // await documents.forEach(element => {
-      //   if (element.books.length != 0) {
-      //     element.books.forEach(book => {
-      //       array = [...array, {
-      //         id: book.$id,
-      //         title: book.title,
-      //         author: element.name,
-      //         image_url: book.editions[0].thumbnail_url,
-      //         isbn_10: book.editions[0].isbn_10,
-      //         isbn_13: book.editions[0].isbn_13,
-      //         genre: book.genre,
-      //       }]
-      //     });
-      //   }
-      // });
-      // setBooks(books.concat(array));
-    }
-
-    async function getAuthors(param) {
-      setLoading(true);
-      let res = await fetch(
-        `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
-          new URLSearchParams({
-            name: param,
-          }),
-      );
-      const res_json = await res.json();
-      var array = [];
-      await res_json.results.documents.map((author) => {
-        console.log(author.name);
-        array = array.concat(array, author.books);
-      });
-      console.log(array);
-      setLoading(false);
-    }
-
     if (search.length != 0) {
       getBooks(search)
-      .catch((error: TypeError) => {})
-      .catch((error: any) => {
-        if (error instanceof Error) {
-          setErrorMessage(error.message);
-          setErrorModalVisible(true);
-        } else {
-          throw error;
-        }
-      });
+        .then((books) => setBooks(books))
+        .catch((error: TypeError) => {})
+        .catch((error: any) => {
+          if (error instanceof Error) {
+            setErrorMessage(error.message);
+            setErrorModalVisible(true);
+          } else {
+            throw error;
+          }
+        });
     }
   }, [search]);
 
@@ -150,7 +138,6 @@ export const Discover = (props) => {
       }
     }
   }
-
 
   return (
     <NavigationContext.Provider value={navigation}>
