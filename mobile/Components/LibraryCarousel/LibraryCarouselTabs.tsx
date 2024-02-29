@@ -33,12 +33,14 @@ async function getBooksOfStatus(status: string) {
         ID.bookCollectionID,
         document.book.$id,
       );
+      console.log(book_data);
       books.push({
         id: book_data.$id,
         title: book_data.title,
         author: book_data.authors[0].name,
         summary: book_data.description,
         image_url: book_data.editions[0].thumbnail_url,
+        isbn: book_data.editions[0].isbn_13,
         genre: book_data.genre,
       });
     }),

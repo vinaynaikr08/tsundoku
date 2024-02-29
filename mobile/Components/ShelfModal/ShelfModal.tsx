@@ -22,6 +22,10 @@ function checkAuthor(value, search) {
   return value.author.toUpperCase().includes(search.toUpperCase());
 }
 
+function checkISBN(value, search) {
+  return value.isbn.toUpperCase().includes(search.toUpperCase()); 
+}
+
 const ShelfModal = ({ route, navigation }) => {
   const { bookData, shelf } = route.params;
   const [search, setSearch] = useState("");
@@ -145,7 +149,7 @@ const ShelfModal = ({ route, navigation }) => {
         <FlatList
           data={bookData.filter(
             (e) =>
-              (checkTitle(e, search) || checkAuthor(e, search)) &&
+              (checkTitle(e, search) || checkAuthor(e, search) || checkISBN(e, search)) &&
               checkGenres(e.genre),
           )}
           scrollEventThrottle={1}
@@ -182,7 +186,7 @@ const ShelfModal = ({ route, navigation }) => {
                   >
                     <Text style={{ fontSize: 20 }}>{item.title}</Text>
                     <Text>{item.author}</Text>
-                    <Text>ISBN: temp</Text>
+                    <Text>ISBN: {item.isbn}</Text>
                   </View>
                 </TouchableOpacity>
                 <Divider style={{ paddingTop: 8, paddingBottom: 8 }} />
