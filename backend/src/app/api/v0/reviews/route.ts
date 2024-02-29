@@ -6,9 +6,10 @@ import { AppwriteException, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
-import { createReview, reviewPermissions } from "./common";
+import { createReview } from "./common";
 import { getUserContextDBAccount } from "../userContext";
 import { BOOK_COL_ID, MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
+import userPermissions from "../userPermissions";
 
 const database = new sdk.Databases(client);
 
@@ -142,7 +143,7 @@ export async function POST(request: NextRequest) {
         star_rating: star_rating,
         description: description,
       },
-      reviewPermissions,
+      userPermissions(user_id),
     );
   }
 

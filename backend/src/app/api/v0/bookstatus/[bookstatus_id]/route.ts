@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { construct_development_api_response } from "../../dev_api_response";
-import { bookStatusPermissions } from "../common";
 import { BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
 
@@ -56,7 +55,6 @@ export async function PATCH(
       {
         status: status,
       },
-      bookStatusPermissions,
     );
   }
 

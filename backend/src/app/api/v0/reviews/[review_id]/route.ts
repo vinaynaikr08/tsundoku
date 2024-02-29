@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { construct_development_api_response } from "../../dev_api_response";
-import { reviewPermissions } from "../common";
 import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
 
@@ -59,7 +58,6 @@ export async function PATCH(
           ? description
           : db_query.documents[0].description,
       },
-      reviewPermissions,
     );
   }
 
