@@ -1,14 +1,7 @@
-import { ID, Permission, Role } from "appwrite";
+import { ID } from "appwrite";
 
 import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
-
-export function reviewPermissions(user_id: string) {
-  return [
-    Permission.read(Role.user(user_id)),
-    Permission.update(Role.user(user_id)),
-    Permission.delete(Role.user(user_id)),
-  ];
-}
+import userPermissions from "../userPermissions";
 
 export async function createReview({
   user_id,
@@ -33,7 +26,7 @@ export async function createReview({
       star_rating,
       description,
     },
-    reviewPermissions(user_id),
+    userPermissions(user_id),
   );
   return res.$id;
 }
