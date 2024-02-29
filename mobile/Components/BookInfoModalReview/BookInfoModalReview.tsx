@@ -24,9 +24,11 @@ const Tab = createMaterialTopTabNavigator();
 
 const account = new Account(client);
 const databases = new Databases(client);
+let avgRating = 0;
 
 async function getReviews(book_id: string) {
   let reviews = [];
+  avgRating = 0;
   let documents = (
     await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
       Query.equal("book", book_id),
@@ -40,6 +42,8 @@ async function getReviews(book_id: string) {
         ID.reviewsCollectionID,
         document.$id,
       );
+      avgRating += review_data.star_rating;
+
       reviews.push({
         rating: review_data.star_rating,
         desc: review_data.description,
@@ -48,7 +52,9 @@ async function getReviews(book_id: string) {
       });
     }),
   );
-  // console.log(reviews);
+  avgRating = avgRating / reviews.length;
+  // console.log(avgRating);
+
   return reviews;
 }
 
@@ -60,7 +66,6 @@ export const BookInfoModalReview = ({ bookInfo }) => {
       setReviews(await getReviews(bookInfo.id));
     })();
   }, []);
-  console.log(reviews);
   const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
   const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
 
@@ -79,118 +84,140 @@ export const BookInfoModalReview = ({ bookInfo }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
-        Overall Rating:
-      </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          marginBottom: 40,
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 30,
-            fontWeight: "bold",
-            marginRight: 12,
-          }}
-        >
-          {/* {item.rating / 4} */}
+      {reviews.length === 0 ? (
+        <Text style={{ fontSize: 20, fontWeight: "bold", margin: 30 }}>
+          No Reviews
         </Text>
-        {createStars(40)}
-      </View>
-      <FlatList
-        data={reviews}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.username}
-        renderItem={
-          ({ item }) => (
-            //   return (
-            <View style={{ flex: 1 }}>
-              <TouchableOpacity activeOpacity={1}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={{ marginRight: 10 }}>
-                    <Ionicons name={"person-circle"} color={"grey"} size={60} />
-                  </View>
-                  <View style={{ marginRight: 10 }}>
-                    <Text style={{ fontSize: 20, marginBottom: 5 }}>
-                      {item.username}
+      ) : (
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              marginBottom: 40,
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 5 }}>
+              Overall Rating: {avgRating / 4}
+            </Text>
+            <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={30} />
+          </View>
+          <FlatList
+            data={reviews}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item) => item.username}
+            renderItem={
+              ({ item }) => (
+                //   return (
+                <View style={{ flex: 1 }}>
+                  <TouchableOpacity activeOpacity={1}>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <View style={{ marginRight: 10 }}>
+                        <Ionicons
+                          name={"person-circle"}
+                          color={"grey"}
+                          size={60}
+                        />
+                      </View>
+                      <View style={{ marginRight: 10 }}>
+                        <Text style={{ fontSize: 20, marginBottom: 5 }}>
+                          {item.username}
+                        </Text>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          {createStars(item.rating / 4, 30)}
+                        </View>
+                      </View>
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                      }}
+                    >
+                      {item.desc}
                     </Text>
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      {createStars(30)}
-                    </View>
-                  </View>
-                </View>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-                  }}
-                >
-                  {item.desc}
-                </Text>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TouchableOpacity onPress={handleThumbsUpClick}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginLeft: 10,
-                        marginTop: 10,
-                      }}
-                    >
-                      <FontAwesome
-                        name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
-                        color={thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"}
-                        size={30}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleThumbsDownClick}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginLeft: 20,
-                      }}
-                    >
-                      <FontAwesome
-                        name={
-                          thumbsDownClicked ? "thumbs-down" : "thumbs-o-down"
-                        }
-                        color={
-                          thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"
-                        }
-                        size={30}
-                      />
+                      <TouchableOpacity onPress={handleThumbsUpClick}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 10,
+                            marginTop: 10,
+                          }}
+                        >
+                          <FontAwesome
+                            name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
+                            color={
+                              thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"
+                            }
+                            size={30}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleThumbsDownClick}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginLeft: 20,
+                          }}
+                        >
+                          <FontAwesome
+                            name={
+                              thumbsDownClicked
+                                ? "thumbs-down"
+                                : "thumbs-o-down"
+                            }
+                            color={
+                              thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"
+                            }
+                            size={30}
+                          />
+                        </View>
+                      </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-            </View>
-          )
-          //   );
-        }
-      />
+              )
+              //   );
+            }
+          />
+        </View>
+      )}
     </View>
   );
 };
 
-function createStars(size) {
+function createStars(rating, size) {
   let stars = [];
 
   for (let i = 0; i < 5; i++) {
-    stars.push(
-      <FontAwesome
-        key={i}
-        name={"star"}
-        color={Colors.BUTTON_PURPLE}
-        size={size}
-      />,
-    );
+    if (i > rating) {
+      stars.push(
+        <FontAwesome
+          key={i}
+          name={"star-o"}
+          color={Colors.BUTTON_PURPLE}
+          size={size}
+        />,
+      );
+    } else {
+      stars.push(
+        <FontAwesome
+          key={i}
+          name={"star"}
+          color={Colors.BUTTON_PURPLE}
+          size={size}
+        />,
+      );
+    }
   }
   return stars;
 }

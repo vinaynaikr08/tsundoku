@@ -103,9 +103,7 @@ function BookReviewsTab({ bookInfo }) {
         bounces={false}
         contentContainerStyle={styles.scrollViewStyle}
       > */}
-      {/* <TouchableOpacity activeOpacity={1}> */}
       <BookInfoModalReview bookInfo={bookInfo} />
-      {/* </TouchableOpacity> */}
       {/* </ScrollView> */}
     </View>
   );
