@@ -20,6 +20,7 @@ import BookSearchBar from "@/Components/BookSearchBar";
 import { Divider } from "react-native-paper";
 import { DATA } from "@/Components/BookSearchBar/Genres";
 import { Databases, Query } from "appwrite";
+import { debounce } from "lodash";
 
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
@@ -121,7 +122,18 @@ export const Discover = (props) => {
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const performDebouncedSearch = React.useMemo(() => {
+    return debounce(performSearch, 500);
+  }, []);
+
+  // Stop searching when screen is unmounted
   React.useEffect(() => {
+    return () => {
+      performDebouncedSearch.cancel();
+    };
+  });
+
+  function performSearch() {
     if (search.length != 0) {
       getBooks(search)
         .then((books) => setBooks(books))
@@ -135,12 +147,13 @@ export const Discover = (props) => {
           }
         });
     }
+  };
+
+  React.useEffect(() => {
+    performDebouncedSearch();
   }, [search]);
 
   const { navigation } = props;
-  const updateSearch = (search) => {
-    setSearch(search);
-  };
 
   function checkGenres(value) {
     let noFilter: boolean = true;
@@ -187,7 +200,7 @@ export const Discover = (props) => {
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
           <BookSearchBar
             search={search}
-            updateSearch={updateSearch}
+            updateSearch={setSearch}
             newPlaceholder={"Search all books"}
             loading={loading}
             showFilter={true}
