@@ -73,11 +73,11 @@ export const BookInfoModal = ({ route, navigation }) => {
   }, [status]);
 
   const saveStatus = async () => {
-    if (status === BookState.None) {
+    if (!status || status === BookState.None) {
       return;
     }
 
-    let res = await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
+    await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
       method: "post",
       headers: new Headers({
         "Content-Type": "application/json",
@@ -88,13 +88,6 @@ export const BookInfoModal = ({ route, navigation }) => {
         status: status,
       }),
     });
-
-    if (res.ok) {
-      const res_json = await res.json();
-      console.log("status saved to database: " + res_json);
-    } else {
-      console.log("error: " + res.status);
-    }
 
     Toast.show({
       type: "success",
