@@ -33,7 +33,7 @@ export async function createReview({
       star_rating,
       description,
     },
-    reviewPermissions,
+    reviewPermissions(user_id),
   );
   return res.$id;
 }

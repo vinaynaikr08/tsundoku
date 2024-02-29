@@ -37,7 +37,7 @@ export async function createBookStatus({
       book,
       status,
     },
-    bookStatusPermissions,
+    bookStatusPermissions(user_id),
   );
   return res.$id;
 }
