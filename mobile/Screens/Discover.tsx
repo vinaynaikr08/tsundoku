@@ -147,9 +147,11 @@ export const Discover = (props) => {
           }
         });
     }
-  };
+    setLoading(false);
+  }
 
   React.useEffect(() => {
+    setLoading(true);
     performDebouncedSearch();
   }, [search]);
 
