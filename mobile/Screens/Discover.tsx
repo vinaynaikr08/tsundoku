@@ -137,7 +137,6 @@ export const Discover = (props) => {
     if (search.length > 0) {
       getBooks(search)
         .then((books) => setBooks(books))
-        .catch((error: TypeError) => {})
         .catch((error: any) => {
           if (error instanceof Error) {
             setErrorMessage(error.message);
