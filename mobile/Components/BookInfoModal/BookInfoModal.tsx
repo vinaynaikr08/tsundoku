@@ -84,12 +84,19 @@ export const BookInfoModal = ({ route, navigation }) => {
       }),
     });
 
-    Toast.show({
-      type: "success",
-      text1: "Status successfully saved!",
-      position: "bottom",
-      visibilityTime: 2000,
-    });
+    // if (res.ok) {
+    //   const res_json = await res.json();
+    //   console.log("status saved to database: " + res_json);
+    // } else {
+    //   console.log("error: " + res.status);
+    // }
+
+    // Toast.show({
+    //   type: "success",xcdc
+    //   text1: "Status successfully saved!",
+    //   position: "bottom",
+    //   visibilityTime: 2000,
+    // });
   };
 
   const handlePress = () => {
@@ -101,8 +108,15 @@ export const BookInfoModal = ({ route, navigation }) => {
   };
 
   const handleOptionSelect = (state: any) => {
+    // console.log(state);
     setStatus(BookStateLookup(state));
     saveStatus(BookStateLookup(state));
+    if (status !== BookState.Read) {
+      navigation.navigate("review", { bookInfo: bookInfo });
+    }
+    // if (state === "Read") {
+    // navigation.navigate("review", { bookInfo: bookInfo });
+    // }
   };
 
   function StatusButtonView() {

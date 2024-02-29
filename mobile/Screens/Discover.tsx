@@ -46,6 +46,7 @@ async function getBooks(param) {
           id: book.$id,
           title: book.title,
           author: book.authors[0].name,
+          summary: book.description,
           image_url: book.editions[0].thumbnail_url,
           isbn_10: book.editions[0].isbn_10,
           isbn_13: book.editions[0].isbn_13,

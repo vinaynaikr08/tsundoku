@@ -48,6 +48,7 @@ async function getReviews(book_id: string) {
       });
     }),
   );
+  console.log(reviews);
   return reviews;
 }
 
@@ -102,9 +103,10 @@ export const BookInfoModalReview = ({ bookInfo }) => {
       <FlatList
         data={reviews}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return (
+        keyExtractor={(item) => item.username}
+        renderItem={
+          ({ item }) => (
+            //   return (
             <View style={{ flex: 1 }}>
               <TouchableOpacity activeOpacity={1}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -169,8 +171,9 @@ export const BookInfoModalReview = ({ bookInfo }) => {
                 </View>
               </TouchableOpacity>
             </View>
-          );
-        }}
+          )
+          //   );
+        }
       />
     </View>
   );
@@ -181,7 +184,12 @@ function createStars(size) {
 
   for (let i = 0; i < 5; i++) {
     stars.push(
-      <FontAwesome key={i} name={"star"} color={Colors.BUTTON_PURPLE} size={size} />,
+      <FontAwesome
+        key={i}
+        name={"star"}
+        color={Colors.BUTTON_PURPLE}
+        size={size}
+      />,
     );
   }
   return stars;
