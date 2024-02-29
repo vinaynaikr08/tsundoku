@@ -126,56 +126,64 @@ export async function GET(request: NextRequest) {
   if (db_query.total == 0) {
     // Fetch some results from the Google Books API and populate the DB
     const gbooks_books = await searchGoogleBooksAPI(title);
-
-    // Only check the first item (for now)
     if (gbooks_books.length >= 1) {
-      const gbooks_target_book = gbooks_books[0];
-      let author_id = await get_or_create_author_id(
-        gbooks_target_book.volumeInfo.authors[0],
-      );
-
-      // Check if book already exists in the database
-      let gbook_api_existing_query = await databases.listDocuments(
-        MAIN_DB_ID,
-        BOOK_COL_ID,
-        [Query.equal("google_books_id", gbooks_target_book.id)],
-      );
-
-      if (gbook_api_existing_query.total == 0) {
-        // Create new entry
+      for (const gbooks_target_book of gbooks_books) {
+        // Get author information
+        let author_id;
         try {
-          const edition_id = await createEdition({
-            isbn_13: gbooks_target_book.volumeInfo.industryIdentifiers.find(
-              (e: any) => e.type === "ISBN_13",
-            ).identifier,
-            isbn_10: gbooks_target_book.volumeInfo.industryIdentifiers.find(
-              (e: any) => e.type === "ISBN_10",
-            ).identifier,
-            publisher: gbooks_target_book.volumeInfo.publisher,
-            publish_date: gbooks_target_book.volumeInfo.published_date,
-            page_count: gbooks_target_book.volumeInfo.pageCount,
-            thumbnail_url: gbooks_target_book.volumeInfo.imageLinks.thumbnail,
-          });
-
-          await createBook({
-            title: gbooks_target_book.volumeInfo.title,
-            description: gbooks_target_book.volumeInfo.description,
-            genre: gbooks_target_book.volumeInfo.categories[0],
-            authors: [author_id],
-            editions: [edition_id],
-            google_books_id: gbooks_target_book.id,
-          });
-
-          // Fetch from DB to refresh
-          db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-            Query.search("title", title),
-          ]);
+          author_id = await get_or_create_author_id(
+            gbooks_target_book.volumeInfo.authors[0],
+          );
         } catch (error) {
           if (error instanceof TypeError) {
-            return construct_development_api_response({
-              message: `The Google Books API returned invalid data: ${JSON.stringify(gbooks_books)}. In particular, the offending copy was the following: ${JSON.stringify(gbooks_target_book)}`,
-              status_code: 503,
+            // This book doesn't have an author, skip
+            continue;
+          }
+        }
+
+        // Check if book already exists in the database
+        let gbook_api_existing_query = await databases.listDocuments(
+          MAIN_DB_ID,
+          BOOK_COL_ID,
+          [Query.equal("google_books_id", gbooks_target_book.id)],
+        );
+
+        if (gbook_api_existing_query.total == 0) {
+          // Create new entry
+          try {
+            const edition_id = await createEdition({
+              isbn_13: gbooks_target_book.volumeInfo.industryIdentifiers.find(
+                (e: any) => e.type === "ISBN_13",
+              ).identifier,
+              isbn_10: gbooks_target_book.volumeInfo.industryIdentifiers.find(
+                (e: any) => e.type === "ISBN_10",
+              ).identifier,
+              publisher: gbooks_target_book.volumeInfo.publisher,
+              publish_date: gbooks_target_book.volumeInfo.published_date,
+              page_count: gbooks_target_book.volumeInfo.pageCount,
+              thumbnail_url: gbooks_target_book.volumeInfo.imageLinks.thumbnail,
             });
+
+            await createBook({
+              title: gbooks_target_book.volumeInfo.title,
+              description: gbooks_target_book.volumeInfo.description,
+              genre: gbooks_target_book.volumeInfo.categories[0],
+              authors: [author_id],
+              editions: [edition_id],
+              google_books_id: gbooks_target_book.id,
+            });
+
+            // Fetch from DB to refresh
+            db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
+              Query.search("title", title),
+            ]);
+          } catch (error) {
+            if (error instanceof TypeError) {
+              return construct_development_api_response({
+                message: `The Google Books API returned invalid data: ${JSON.stringify(gbooks_books)}. In particular, the offending copy was the following: ${JSON.stringify(gbooks_target_book)}`,
+                status_code: 503,
+              });
+            }
           }
         }
       }
