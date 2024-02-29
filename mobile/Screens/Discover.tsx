@@ -134,7 +134,7 @@ export const Discover = (props) => {
   });
 
   function performSearch() {
-    if (search.length != 0) {
+    if (search.length > 0) {
       getBooks(search)
         .then((books) => setBooks(books))
         .catch((error: TypeError) => {})
