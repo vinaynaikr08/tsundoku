@@ -111,11 +111,19 @@ async function get_or_create_author_id(name: string) {
 
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
+  const simulateAPIFailure = request.nextUrl.searchParams.get("simulateAPIFailure") as string;
 
   if (!title) {
     return construct_development_api_response({
       message: "Parameter `title` not supplied.",
       status_code: 400,
+    });
+  }
+
+  if (simulateAPIFailure && simulateAPIFailure === "true") {
+    return construct_development_api_response({
+      message: "The Google Books API is currently unavailable.",
+      status_code: 503,
     });
   }
 
