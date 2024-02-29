@@ -111,9 +111,9 @@ export const BookInfoModal = ({ route, navigation }) => {
     // console.log(state);
     setStatus(BookStateLookup(state));
     saveStatus(BookStateLookup(state));
-    if (status !== BookState.Read) {
-      navigation.navigate("review", { bookInfo: bookInfo });
-    }
+    // if (status !== BookState.Read) {
+    //   navigation.navigate("review", { bookInfo: bookInfo });
+    // }
     // if (state === "Read") {
     // navigation.navigate("review", { bookInfo: bookInfo });
     // }
