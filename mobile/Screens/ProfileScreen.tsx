@@ -38,7 +38,6 @@ export const Profile = (props) => {
   const [booksCurrReadingCount, setBooksCurrReadingCount] = useState(0);
   const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
   const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
-  const [notif, setNotif] = useState(false);
   const [overlayVisible, setOverlayVisible] = useState(false);
 
   const toggleOverlay = () => {
@@ -121,29 +120,23 @@ export const Profile = (props) => {
         Books did not finish: {booksDidNotFinishCount}
       </Text>
       <Divider />
-      <View
-        style={{
-          flexDirection: "row",
-          paddingTop: 10,
-          paddingBottom: 10,
-          width: "100%",
-        }}
-      >
-        <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
-          Notifications
-        </Text>
-        <View style={{ flex: 2 }}>
-          <Switch
-            trackColor={{
-              false: Colors.BUTTON_GRAY,
-              true: Colors.BUTTON_PURPLE,
-            }}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => setNotif(!notif)}
-            value={notif}
-          />
+      <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingTop: 12,
+            paddingBottom: 12,
+            width: "100%",
+          }}
+        >
+            <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+              Notifications
+            </Text>
+            <View style={{ flex: 2 }}>
+              <Icon name="notifications" color={Colors.BUTTON_PURPLE} size={30} />
+            </View>
         </View>
-      </View>
+      </TouchableOpacity>
 
       <Divider />
 
@@ -151,8 +144,8 @@ export const Profile = (props) => {
         <View
           style={{
             flexDirection: "row",
-            paddingTop: 10,
-            paddingBottom: 10,
+            paddingTop: 12,
+            paddingBottom: 12,
             width: "100%",
           }}
         >
