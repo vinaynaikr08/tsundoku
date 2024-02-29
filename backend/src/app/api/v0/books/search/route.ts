@@ -1,6 +1,6 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { ID, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
