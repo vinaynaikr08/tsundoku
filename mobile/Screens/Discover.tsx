@@ -20,9 +20,11 @@ import BookSearchBar from "@/Components/BookSearchBar";
 import { Divider } from "react-native-paper";
 import { DATA } from "@/Components/BookSearchBar/Genres";
 import { Databases, Query } from "appwrite";
+import { debounce } from "lodash";
 
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
+import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 
@@ -32,11 +34,10 @@ async function getBooks(param) {
   let books = [];
 
   // Search by books
-  const book_documents = (
-    await databases.listDocuments(ID.mainDBID, ID.bookCollectionID, [
-      Query.search("title", param),
-    ])
-  ).documents;
+  const res = await fetch(
+    `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
+  );
+  const book_documents = (await res.json()).results.documents;
 
   for (const book of book_documents) {
     if (books.filter((e) => e.id === book.$id).length === 0) {
@@ -121,11 +122,21 @@ export const Discover = (props) => {
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const performDebouncedSearch = React.useMemo(() => {
+    return debounce(performSearch, 500);
+  }, []);
+
+  // Stop searching when screen is unmounted
   React.useEffect(() => {
-    if (search.length != 0) {
+    return () => {
+      performDebouncedSearch.cancel();
+    };
+  });
+
+  function performSearch() {
+    if (search.length > 0) {
       getBooks(search)
         .then((books) => setBooks(books))
-        .catch((error: TypeError) => {})
         .catch((error: any) => {
           if (error instanceof Error) {
             setErrorMessage(error.message);
@@ -135,12 +146,15 @@ export const Discover = (props) => {
           }
         });
     }
+    setLoading(false);
+  }
+
+  React.useEffect(() => {
+    setLoading(true);
+    performDebouncedSearch();
   }, [search]);
 
   const { navigation } = props;
-  const updateSearch = (search) => {
-    setSearch(search);
-  };
 
   function checkGenres(value) {
     let noFilter: boolean = true;
@@ -187,7 +201,7 @@ export const Discover = (props) => {
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
           <BookSearchBar
             search={search}
-            updateSearch={updateSearch}
+            updateSearch={setSearch}
             newPlaceholder={"Search all books"}
             loading={loading}
             showFilter={true}

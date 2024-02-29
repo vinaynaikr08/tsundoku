@@ -33,7 +33,6 @@ async function getBooksOfStatus(status: string) {
         ID.bookCollectionID,
         document.book.$id,
       );
-      console.log(book_data);
       books.push({
         id: book_data.$id,
         title: book_data.title,

@@ -7,6 +7,7 @@ import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
 import TextReview from "../Components/TextReview/TextReview";
 import BookInfoModal from "../Components/BookInfoModal/BookInfoModal";
 import ShelfModal from "../Components/ShelfModal/ShelfModal";
+import NotificationsModal from "../Components/Notifications/NotificationsModal";
 import Review from "../Components/Review/Review";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
@@ -38,6 +39,8 @@ function AppNavigation() {
             />
             <Stack.Screen name="bookInfoModal" component={BookInfoModal} />
             <Stack.Screen name="shelfModal" component={ShelfModal} />
+            <Stack.Screen name="notifModal" component={NotificationsModal} />
+
           </Stack.Group>
           <Stack.Screen
             name="textReviewModal"
