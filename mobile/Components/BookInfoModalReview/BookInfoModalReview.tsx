@@ -180,7 +180,7 @@ function createStars(size) {
 
   for (let i = 0; i < 5; i++) {
     stars.push(
-      <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={size} />,
+      <FontAwesome key={i} name={"star"} color={Colors.BUTTON_PURPLE} size={size} />,
     );
   }
   return stars;
