@@ -32,7 +32,6 @@ async function getReviews(book_id: string) {
       Query.equal("book", book_id),
     ])
   ).documents;
-  //   console.log(documents);
 
   await Promise.all(
     documents.map(async (document) => {
@@ -48,12 +47,7 @@ async function getReviews(book_id: string) {
       });
     }),
   );
-  console.log(reviews);
-  if (reviews.length > 0) {
-    return reviews;
-  } else {
-    // TODO: no reviews
-  }
+  return reviews;
 }
 
 export const BookInfoModalReview = ({ bookInfo }) => {
