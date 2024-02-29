@@ -17,9 +17,9 @@ import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
 import { Account } from "appwrite";
-import type { Models } from "appwrite";
 
 import { client } from "@/appwrite";
+import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
 const account = new Account(client);
 
@@ -31,10 +31,8 @@ export const SignIn = (props) => {
   const [password, setPassword] = React.useState("demoaccount12345");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [session, setSession] = React.useState(null);
-  const [loggedInUser, setLoggedInUser] =
-    React.useState<Models.User<Models.Preferences> | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const { setLoggedIn } = React.useContext(LoginStateContext);
 
   const { navigation } = props;
   const dismissKeyboard = () => {
@@ -43,17 +41,11 @@ export const SignIn = (props) => {
   const handleSignIn = () => {
     account
       .createEmailSession(email, password)
-      .then((session) => {
-        setSession(session);
-
+      .then(() => {
         account
           .get()
-          .then((user) => {
-            setLoggedInUser(user);
-
-            // if sign-in successful, nav to next screen
-            navigation.navigate("navbar");
-
+          .then(() => {
+            setLoggedIn(true);
             setLoading(false);
           })
           .catch((error: any) => {

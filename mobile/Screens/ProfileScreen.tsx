@@ -17,11 +17,14 @@ import { BookInfoContext, NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Divider } from "react-native-paper";
 import { Button, Icon, Overlay } from "@rneui/themed";
+import { LoginStateContext } from "@/Providers/LoginStateProvider";
+
 const databases = new Databases(client);
 
 export const Profile = (props) => {
   // const user_id = request.nextUrl.searchParams.get("user_id");
   // const user_id = account.get();
+  const { setLoggedIn } = React.useContext(LoginStateContext);
   const { navigation } = props;
   const account = new Account(client);
   const user_id = account.get();
@@ -97,8 +100,10 @@ export const Profile = (props) => {
   }, []);
 
   function signOut() {
-    account.deleteSessions;
-    navigation.navigate("initial_launch");
+    (async () => {
+      await account.deleteSessions();
+    })();
+    setLoggedIn(false);
   }
 
   return (
@@ -182,9 +187,9 @@ export const Profile = (props) => {
           </Text>
         </Button>
       </View>
-      <View style={{height: 300}}>
-        <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay} >
-          <Text style={{fontSize: 30}}>Delete account placeholder</Text>
+      <View style={{ height: 300 }}>
+        <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
+          <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
         </Overlay>
       </View>
     </SafeAreaView>
