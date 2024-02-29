@@ -33,6 +33,11 @@ const Stack = createStackNavigator();
 async function getBooks(param) {
   let books = [];
 
+  //set timeout function for errors
+  const timeout = setTimeout(() =>{
+    throw new Error('Error loading books!'); 
+  }, 5000);
+
   // Search by books
   const res = await fetch(
     `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
@@ -109,6 +114,8 @@ async function getBooks(param) {
       }
     }
   }
+
+  clearTimeout(timeout);
 
   return books;
 }
