@@ -103,7 +103,9 @@ export const BookInfoModalReview = ({ bookInfo }) => {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                <Text
+                  style={{ fontSize: 20, fontWeight: "bold", marginRight: 5 }}
+                >
                   Overall Rating: {(avgRating / 4).toFixed(2)}
                 </Text>
                 <FontAwesome
@@ -206,25 +208,38 @@ function createStars(rating, size) {
   let stars = [];
 
   for (let i = 0; i < 5; i++) {
-    if (i > rating) {
-      stars.push(
-        <FontAwesome
-          key={i}
-          name={"star-o"}
-          color={Colors.BUTTON_PURPLE}
-          size={size}
-        />,
-      );
-    } else {
-      stars.push(
-        <FontAwesome
-          key={i}
-          name={"star"}
-          color={Colors.BUTTON_PURPLE}
-          size={size}
-        />,
-      );
-    }
+    // if (i > rating) {
+    //   stars.push(
+    //     <FontAwesome
+    //       key={i}
+    //       name={"star-o"}
+    //       color={Colors.BUTTON_PURPLE}
+    //       size={size}
+    //     />,
+    //   );
+    // } else {
+    //   stars.push(
+    //     <FontAwesome
+    //       key={i}
+    //       name={"star"}
+    //       color={Colors.BUTTON_PURPLE}
+    //       size={size}
+    //     />,
+    //   );
+    // }
+    stars.push(
+      <View key={i} style={{ marginRight: 3 }}>
+        {i < rating ? (
+          <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={size} />
+        ) : (
+          <FontAwesome
+            name={"star-o"}
+            color={Colors.BUTTON_PURPLE}
+            size={size}
+          />
+        )}
+      </View>,
+    );
   }
   return stars;
 }
