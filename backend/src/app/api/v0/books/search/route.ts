@@ -179,10 +179,8 @@ export async function GET(request: NextRequest) {
             ]);
           } catch (error) {
             if (error instanceof TypeError) {
-              return construct_development_api_response({
-                message: `The Google Books API returned invalid data: ${JSON.stringify(gbooks_books)}. In particular, the offending copy was the following: ${JSON.stringify(gbooks_target_book)}`,
-                status_code: 503,
-              });
+              // This book doesn't have one of the required fields, skip
+              continue;
             }
           }
         }
