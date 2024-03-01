@@ -113,7 +113,7 @@ const BookSearchBar = ({
               borderRadius: 20,
               backgroundColor: "#F7F7F7",
             }}
-            onSubmitEditing={() => alert("temp")}
+            //onSubmitEditing={() => alert("temp")}
           />
         </View>
         {showFilter && (

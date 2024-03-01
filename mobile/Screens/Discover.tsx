@@ -144,6 +144,8 @@ export const Discover = (props) => {
           setErrorMessage(error);
           setErrorModalVisible(true);
         });
+    } else {
+      setLoading(false);
     }
   }
 
