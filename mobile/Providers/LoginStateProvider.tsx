@@ -7,23 +7,25 @@ const account = new Account(client);
 
 export const LoginStateContext = React.createContext(null);
 
-function checkLoggedIn() {
-  try {
-    (async () => {
-      await account.get();
-    })();
-  } catch (error: any) {
-    return false;
-  }
-  return true;
+function checkLoggedIn(setLoggedIn) {
+  account.get()
+  .then(() => {
+    setLoggedIn(true);
+  }).catch(() => {
+    setLoggedIn(false);
+  })
 }
 
 function LoginStateProvider({ children }) {
-  const [loggedIn, setLoggedIn] = React.useState(checkLoggedIn);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   function refreshLoginState() {
-    setLoggedIn(checkLoggedIn());
+    checkLoggedIn(setLoggedIn);
   }
+
+  React.useEffect(()=> {
+    refreshLoginState();
+  }, [])
 
   return (
     <LoginStateContext.Provider
