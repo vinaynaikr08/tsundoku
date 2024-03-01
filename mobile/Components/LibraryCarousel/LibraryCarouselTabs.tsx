@@ -18,7 +18,13 @@ const databases = new Databases(client);
 
 async function getBooksOfStatus(status: string) {
   let books = [];
-  const user_id = (await account.get()).$id;
+  let user_id;
+  try {
+    user_id = (await account.get()).$id;
+  } catch (error: any) {
+    console.warn("We attempted to fetch books while not logged in.");
+    return books;
+  }
   let documents = (
     await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
       Query.equal("user_id", user_id),
