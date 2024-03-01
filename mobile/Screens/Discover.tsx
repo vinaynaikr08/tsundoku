@@ -30,7 +30,12 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 
-async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading) {
+async function getBooks(
+  param,
+  setErrorMessage,
+  setErrorModalVisible,
+  setLoading,
+) {
   let books = [];
 
   //set timeout function for errors
@@ -78,6 +83,7 @@ async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading
           {
             id: book.$id,
             title: book.title,
+            summary: book.description,
             author: author.name,
             image_url: book.editions[0].thumbnail_url,
             isbn_10: book.editions[0].isbn_10,
@@ -105,6 +111,7 @@ async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading
               id: book.$id,
               title: book.title,
               author: author.name,
+              summary: book.description,
               image_url: edition.thumbnail_url,
               isbn_10: edition.isbn_10,
               isbn_13: edition.isbn_13,
