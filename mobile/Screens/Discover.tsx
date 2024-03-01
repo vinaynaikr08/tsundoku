@@ -35,7 +35,7 @@ async function getBooks(param) {
 
   //set timeout function for errors
   const timeout = setTimeout(() =>{
-    throw new Error('Error loading books!'); 
+    console.log('Book request timed out.'); 
   }, 5000);
 
   // Search by books
