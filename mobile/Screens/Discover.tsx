@@ -10,6 +10,9 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
+  Modal,
+  Pressable,
+  StyleSheet,
 } from "react-native";
 
 import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
@@ -27,12 +30,13 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 
-async function getBooks(param) {
+async function getBooks(param, setErrorMessage, setErrorModalVisible) {
   let books = [];
 
   //set timeout function for errors
   const timeout = setTimeout(() => {
-    console.log("Book request timed out.");
+    setErrorMessage("Book request timed out.");
+    setErrorModalVisible(true);
   }, 5000);
 
   // Search by books
@@ -133,10 +137,11 @@ export const Discover = (props) => {
 
   function performSearch(query) {
     if (query.length > 0) {
-      getBooks(query)
+      getBooks(query, setErrorMessage, setErrorModalVisible)
         .then((books) => setBooks(books))
         .catch((error: any) => {
-          console.error(error);
+          setErrorMessage(error);
+          setErrorModalVisible(true);
         });
     }
     setLoading(false);
@@ -263,6 +268,45 @@ export const Discover = (props) => {
           </KeyboardAvoidingView>
         )}
       </SafeAreaView>
+      <Modal
+        // animationType="slide"
+        transparent={true}
+        visible={errorModalVisible}
+        onRequestClose={() => setErrorModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{errorMessage}</Text>
+            <Pressable onPress={() => setErrorModalVisible(false)}>
+              <Text style={styles.modalButton}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </NavigationContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  modalButton: {
+    fontSize: 16,
+    color: "blue",
+    textAlign: "center",
+  },
+});
