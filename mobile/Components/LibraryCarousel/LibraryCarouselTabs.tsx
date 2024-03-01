@@ -22,7 +22,7 @@ async function getBooksOfStatus(status: string) {
   try {
     user_id = (await account.get()).$id;
   } catch (error: any) {
-    console.warn("We attempted to fetch books while not logged in.");
+    console.warn("LibraryCarouselTabs: an unknown error occurred attempting to fetch user details.");
     return books;
   }
   let documents = (
