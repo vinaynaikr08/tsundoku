@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {
   Text,
   View,
@@ -9,9 +9,6 @@ import {
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Carousel from "../Carousel/Carousel";
 import Colors from "../../Constants/Colors";
-import { client } from "../../appwrite";
-import { Account } from "appwrite";
-import { useEffect, useState } from "react";
 import { BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
 
 const Tab = createMaterialTopTabNavigator();
@@ -76,24 +73,8 @@ function MyTabBar({ state, descriptors, navigation, position }) {
   );
 }
 
-const account = new Account(client);
-
-const promise = account.get();
-let userID;
-
-promise.then(
-  function (response) {
-    //console.log(response); // Success
-    userID = response.$id;
-    console.log(userID);
-  },
-  function (error) {
-    console.log(error); // Failure
-  },
-);
-
 function RecommendedCarousel() {
-  const [books, setBooks] = useState(null);
+  const [books, setBooks] = React.useState(null);
   React.useEffect(() => {
     async function getBooks(title) {
       let res = await fetch(
