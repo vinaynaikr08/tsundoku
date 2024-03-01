@@ -125,6 +125,10 @@ function RecommendedCarousel() {
         "The Dragon Republic",
         "Ordinary Monsters",
         "Foundryside",
+        "Kingdom of Ash",
+        "Babel",
+        "Yellowface",
+        "A Tempest of Tea",
       ];
       let book_data = [];
 
