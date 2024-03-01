@@ -16,7 +16,7 @@ import {
 import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
-import { Account } from "appwrite";
+import { Account, AppwriteException } from "appwrite";
 
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
@@ -60,7 +60,13 @@ export const SignIn = (props) => {
       })
       .catch((error: any) => {
         setLoading(false);
-        if (error instanceof Error) {
+        if (
+          error instanceof AppwriteException &&
+          (error as AppwriteException).code === 429
+        ) {
+          setErrorMessage("Too many incorrect sign-in attempts. Try again later.");
+          setErrorModalVisible(true);
+        } else if (error instanceof Error) {
           setErrorMessage(error.message);
           setErrorModalVisible(true);
         } else {
