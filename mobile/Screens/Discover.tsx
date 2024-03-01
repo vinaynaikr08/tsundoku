@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -11,7 +11,6 @@ import {
   Dimensions,
   KeyboardAvoidingView,
 } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
 
 import CarouselTabs from "../Components/DiscoverCarouselTabs/DiscoverCarouselTabs";
 import { NavigationContext } from "../Contexts";
@@ -28,14 +27,12 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 
-const Stack = createStackNavigator();
-
 async function getBooks(param) {
   let books = [];
 
   //set timeout function for errors
-  const timeout = setTimeout(() =>{
-    console.log('Book request timed out.'); 
+  const timeout = setTimeout(() => {
+    console.log("Book request timed out.");
   }, 5000);
 
   // Search by books
@@ -122,44 +119,28 @@ async function getBooks(param) {
 
 export const Discover = (props) => {
   const windowHeight = Dimensions.get("window").height;
-  const [loading, setLoading] = useState(false);
-  const [books, setBooks] = useState([]);
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [books, setBooks] = React.useState([]);
+  const [search, setSearch] = React.useState("");
   const GENRES = DATA();
-  const [errorModalVisible, setErrorModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorModalVisible, setErrorModalVisible] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
 
-  const performDebouncedSearch = React.useMemo(() => {
-    return debounce(performSearch, 500);
-  }, []);
+  const performDebouncedSearch = React.useCallback(
+    debounce(performSearch, 1000),
+    [],
+  );
 
-  // Stop searching when screen is unmounted
-  React.useEffect(() => {
-    return () => {
-      performDebouncedSearch.cancel();
-    };
-  });
-
-  function performSearch() {
-    if (search.length > 0) {
-      getBooks(search)
+  function performSearch(query) {
+    if (query.length > 0) {
+      getBooks(query)
         .then((books) => setBooks(books))
         .catch((error: any) => {
-          if (error instanceof Error) {
-            setErrorMessage(error.message);
-            setErrorModalVisible(true);
-          } else {
-            throw error;
-          }
+          console.error(error);
         });
     }
     setLoading(false);
   }
-
-  React.useEffect(() => {
-    setLoading(true);
-    performDebouncedSearch();
-  }, [search]);
 
   const { navigation } = props;
 
@@ -208,7 +189,11 @@ export const Discover = (props) => {
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
           <BookSearchBar
             search={search}
-            updateSearch={setSearch}
+            updateSearch={(val) => {
+              setLoading(true);
+              setSearch(val);
+              performDebouncedSearch(val);
+            }}
             newPlaceholder={"Search all books"}
             loading={loading}
             showFilter={true}
