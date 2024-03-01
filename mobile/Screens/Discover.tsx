@@ -30,14 +30,14 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 
-async function getBooks(param, setErrorMessage, setErrorModalVisible) {
+async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading) {
   let books = [];
 
   //set timeout function for errors
   const timeout = setTimeout(() => {
     setErrorMessage("Book request timed out.");
     setErrorModalVisible(true);
-  }, 5000);
+  }, 10000);
 
   // Search by books
   const res = await fetch(
@@ -117,6 +117,7 @@ async function getBooks(param, setErrorMessage, setErrorModalVisible) {
   }
 
   clearTimeout(timeout);
+  setLoading(false);
 
   return books;
 }
@@ -137,14 +138,13 @@ export const Discover = (props) => {
 
   function performSearch(query) {
     if (query.length > 0) {
-      getBooks(query, setErrorMessage, setErrorModalVisible)
+      getBooks(query, setErrorMessage, setErrorModalVisible, setLoading)
         .then((books) => setBooks(books))
         .catch((error: any) => {
           setErrorMessage(error);
           setErrorModalVisible(true);
         });
     }
-    setLoading(false);
   }
 
   const { navigation } = props;
