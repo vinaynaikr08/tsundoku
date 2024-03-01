@@ -105,6 +105,7 @@ async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading
             id: book.$id,
             title: book.title,
             author: author.name,
+            summary: book.description,
             image_url: book.editions[0].thumbnail_url,
             isbn_10: book.editions[0].isbn_10,
             isbn_13: book.editions[0].isbn_13,
@@ -131,6 +132,7 @@ async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading
               id: book.$id,
               title: book.title,
               author: author.name,
+              summary: book.description,
               image_url: edition.thumbnail_url,
               isbn_10: edition.isbn_10,
               isbn_13: edition.isbn_13,
@@ -171,6 +173,7 @@ export const Library = (props) => {
           setErrorModalVisible(true);
         });
     } else {
+      setBooks([]);
       setLoading(false);
     }
   }

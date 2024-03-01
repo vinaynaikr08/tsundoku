@@ -152,6 +152,7 @@ export const Discover = (props) => {
           setErrorModalVisible(true);
         });
     } else {
+      setBooks([]);
       setLoading(false);
     }
   }
