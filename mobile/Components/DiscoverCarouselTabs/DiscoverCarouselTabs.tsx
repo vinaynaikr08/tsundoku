@@ -1,12 +1,10 @@
 import * as React from "react";
 import {
-  Button,
-  FlatList,
-  StyleSheet,
   Text,
   View,
   ScrollView,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Carousel from "../Carousel/Carousel";
@@ -95,7 +93,7 @@ promise.then(
 );
 
 function RecommendedCarousel() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState(null);
   React.useEffect(() => {
     async function getBooks(title) {
       let res = await fetch(
@@ -145,7 +143,11 @@ function RecommendedCarousel() {
   }, []);
   return (
     <View style={{ flex: 1 }}>
-      <Carousel books={books} shelf={shelf} />
+      {books ? (
+        <Carousel books={books} shelf={shelf} />
+      ) : (
+        <ActivityIndicator size="large" />
+      )}
     </View>
   );
 }
