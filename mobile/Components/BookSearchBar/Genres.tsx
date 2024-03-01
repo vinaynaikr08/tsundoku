@@ -100,7 +100,7 @@ export const DATA = () => {
       setter: [setBibles, setNature],
     },
     {
-      title: ["(Auto)Biographies", "Performing Arts"],
+      title: ["Autobiographies & Biographies", "Performing Arts"],
       state: [biography, performingArts],
       setter: [setBiography, setPerformingArts],
     },
@@ -110,12 +110,12 @@ export const DATA = () => {
       setter: [setBodyMindSpirit, setPets],
     },
     {
-      title: ["Business/Economics", "Philosophy"],
+      title: ["Business & Economics", "Philosophy"],
       state: [business, philosophy],
       setter: [setBusiness, setPhilosophy],
     },
     {
-      title: ["Comics/Graphic Novels", "Photography"],
+      title: ["Comics & Graphic Novels", "Photography"],
       state: [comics, photography],
       setter: [setComics, setPhotography],
     },
@@ -130,7 +130,7 @@ export const DATA = () => {
       setter: [setCooking, setPoliticalScience],
     },
     {
-      title: ["Crafts/Hobbies", "Psychology"],
+      title: ["Crafts & Hobbies", "Psychology"],
       state: [crafts, psychology],
       setter: [setCrafts, setPsychology],
     },
@@ -150,7 +150,7 @@ export const DATA = () => {
       setter: [setEducation, setScience],
     },
     {
-      title: ["Family/Relationships", "Self-Help"],
+      title: ["Family & Relationships", "Self-Help"],
       state: [family, selfHelp],
       setter: [setFamily, setSelfHelp],
     },
@@ -160,7 +160,7 @@ export const DATA = () => {
       setter: [setForeignLanguage, setSocialScience],
     },
     {
-      title: ["Games/Acitivites", "Sports/Recreation"],
+      title: ["Games & Acitivites", "Sports & Recreation"],
       state: [games, sportsRecreation],
       setter: [setGames, setSportsRecreation],
     },
@@ -170,7 +170,7 @@ export const DATA = () => {
       setter: [setGardening, setStudyAids],
     },
     {
-      title: ["Health/Fitness", "Technology/Engineering"],
+      title: ["Health & Fitness", "Technology & Engineering"],
       state: [health, technologyEngineering],
       setter: [setHealth, setTechnologyEngineering],
     },
@@ -180,7 +180,7 @@ export const DATA = () => {
       setter: [setHistory, setTransportation],
     },
     {
-      title: ["House/Home", "Travel"],
+      title: ["House & Home", "Travel"],
       state: [house, travel],
       setter: [setHouse, setTravel],
     },
@@ -195,7 +195,7 @@ export const DATA = () => {
       setter: [setJuvenileNonfiction, setYoungAdultNonfiction],
     },
     {
-      title: ["Language Arts/Disciplines", ""],
+      title: ["Language Arts & Disciplines", ""],
       state: [languageArts, languageArts],
       setter: [setLanguageArts, setLanguageArts],
     },
