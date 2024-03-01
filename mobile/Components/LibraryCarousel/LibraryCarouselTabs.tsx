@@ -54,7 +54,7 @@ async function getBooksOfStatus(status: string) {
   return books;
 }
 
-function MyTabBar({ state, descriptors, navigation, position }) {
+function MyTabBar({ state, descriptors, navigation }) {
   return (
     <View>
       <ScrollView
@@ -128,7 +128,7 @@ function ReadingStatusCarousel({ status }) {
   );
 }
 
-function LibraryCarouselTabs({ navigation }) {
+function LibraryCarouselTabs() {
   React.useEffect(() => {
     shelf = "Currently Reading";
   });

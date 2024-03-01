@@ -22,7 +22,7 @@ export const Library = (props) => {
         >
           Your Library
         </Text>
-        <CarouselTabs navigation={navigation} />
+        <CarouselTabs />
       </SafeAreaView>
     </NavigationContext.Provider>
   );
