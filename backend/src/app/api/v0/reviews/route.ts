@@ -10,6 +10,7 @@ import { createReview } from "./common";
 import { getUserContextDBAccount } from "../userContext";
 import { BOOK_COL_ID, MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
 import userPermissions from "../userPermissions";
+import { appwriteUnavailableResponse } from "../common_responses";
 
 const database = new sdk.Databases(client);
 
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
   }
 
   const { userDB, userAccount } = getUserContextDBAccount(authToken);
+  
   let db_query;
   try {
     db_query = await userDB.listDocuments(MAIN_DB_ID, REVIEW_COL_ID);
@@ -61,7 +63,18 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const user_id = (await userAccount.get()).$id;
+  let user_id: any;
+  userAccount
+    .get()
+    .then((res: { $id: any }) => {
+      user_id = res.$id;
+    })
+    .catch((error: any) => {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+      throw error;
+    });
 
   return construct_development_api_response({
     message: `Review results for: ${user_id}`,
@@ -116,12 +129,34 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const user_id = (await userAccount.get()).$id;
+  let user_id: any;
+  userAccount
+    .get()
+    .then((res: { $id: any }) => {
+      user_id = res.$id;
+    })
+    .catch((error: any) => {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+      throw error;
+    });
 
-  const db_query = await database.listDocuments(MAIN_DB_ID, REVIEW_COL_ID, [
-    Query.equal("user_id", user_id),
-    Query.equal("book", book_id),
-  ]);
+  let db_query: any;
+  database
+    .listDocuments(MAIN_DB_ID, REVIEW_COL_ID, [
+      Query.equal("user_id", user_id),
+      Query.equal("book", book_id),
+    ])
+    .then((res: any) => {
+      db_query = res;
+    })
+    .catch((error: any) => {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+      throw error;
+    });
 
   if (db_query.total == 0) {
     // Create new object
@@ -135,16 +170,23 @@ export async function POST(request: NextRequest) {
   } else {
     const review_id = db_query.documents[0].$id;
 
-    await database.updateDocument(
-      MAIN_DB_ID,
-      REVIEW_COL_ID,
-      review_id,
-      {
-        star_rating: star_rating,
-        description: description,
-      },
-      userPermissions(user_id),
-    );
+    try {
+      await database.updateDocument(
+        MAIN_DB_ID,
+        REVIEW_COL_ID,
+        review_id,
+        {
+          star_rating: star_rating,
+          description: description,
+        },
+        userPermissions(user_id),
+      );
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+      throw error;
+    }
   }
 
   return construct_development_api_response({

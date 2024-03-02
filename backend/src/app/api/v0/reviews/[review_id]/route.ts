@@ -6,6 +6,8 @@ import { headers } from "next/headers";
 import { construct_development_api_response } from "../../dev_api_response";
 import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
+import { AppwriteException } from "appwrite";
+import { appwriteUnavailableResponse } from "../../common_responses";
 
 export async function PATCH(
   request: NextRequest,
@@ -37,7 +39,14 @@ export async function PATCH(
     );
   }
 
-  let db_query = await userDB.getDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id);
+  let db_query: any;
+  try {
+    db_query = await userDB.getDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id);
+  } catch (error) {
+    if (error instanceof AppwriteException) {
+      return appwriteUnavailableResponse();
+    }
+  }
 
   if (db_query.total == 0) {
     return construct_development_api_response({
@@ -46,14 +55,20 @@ export async function PATCH(
       status_code: 404,
     });
   } else {
-    await userDB.updateDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id, {
-      star_rating: star_rating
-        ? star_rating
-        : db_query.documents[0].star_rating,
-      description: description
-        ? description
-        : db_query.documents[0].description,
-    });
+    try {
+      await userDB.updateDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id, {
+        star_rating: star_rating
+          ? star_rating
+          : db_query.documents[0].star_rating,
+        description: description
+          ? description
+          : db_query.documents[0].description,
+      });
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+    }
   }
 
   return construct_development_api_response({

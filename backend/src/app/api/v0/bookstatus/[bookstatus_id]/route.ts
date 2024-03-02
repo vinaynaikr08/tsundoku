@@ -54,9 +54,13 @@ export async function PATCH(
       status_code: 404,
     });
   } else {
-    await userDB.updateDocument(MAIN_DB_ID, BOOK_STAT_COL_ID, bookstatus_id, {
-      status: status,
-    });
+    try {
+      await userDB.updateDocument(MAIN_DB_ID, BOOK_STAT_COL_ID, bookstatus_id, {
+        status: status,
+      });
+    } catch (error) {
+      return appwriteUnavailableResponse();
+    }
   }
 
   return construct_development_api_response({
