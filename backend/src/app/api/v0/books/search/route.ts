@@ -11,6 +11,7 @@ import {
   EDITION_COL_ID,
   BOOK_COL_ID,
 } from "@/app/Constants";
+import { GoogleBooksAPI } from "../GoogleBooksAPI";
 
 const databases = new sdk.Databases(client);
 
@@ -89,14 +90,6 @@ async function createBook({
   return res.$id;
 }
 
-async function searchGoogleBooksAPI(title: string) {
-  const gbooks_api_res = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}`,
-  );
-  const gbooks_api_data = await gbooks_api_res.json();
-  return gbooks_api_data.items;
-}
-
 async function get_or_create_author_id(name: string) {
   let query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_COL_ID, [
     Query.equal("name", name),
@@ -137,7 +130,7 @@ export async function GET(request: NextRequest) {
     // Fetch some results from the Google Books API and populate the DB
     let gbooks_books;
     try {
-      gbooks_books = await searchGoogleBooksAPI(title);
+      gbooks_books = await GoogleBooksAPI.searchBook(title);
     } catch (error: any) {
       return construct_development_api_response({
         message: "The Google Books API is currently unavailable.",

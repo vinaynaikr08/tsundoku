@@ -7,15 +7,11 @@ import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 
 import { MAIN_DB_ID, BOOK_COL_ID } from "@/app/Constants";
+import { GoogleBooksAPI } from "../GoogleBooksAPI";
 
 const databases = new sdk.Databases(client);
 
-async function getBookFromGoogleBooksAPI(id: string) {
-  const gbooks_api_res = await fetch(
-    `https://www.googleapis.com/books/v1/volumes/${id}`,
-  );
-  return await gbooks_api_res.json();
-}
+
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -37,7 +33,15 @@ export async function POST(request: NextRequest) {
   const target_book_id = db_query.documents[0].$id;
 
   // Fetch updated book data from the Google Books API
-  const gbooks_book_data = await getBookFromGoogleBooksAPI(data.id);
+  let gbooks_book_data;
+  try {
+    gbooks_book_data = await GoogleBooksAPI.getBook(data.id);
+  } catch (error: any) {
+    return construct_development_api_response({
+      message: "The Google Books API is currently unavailable.",
+      status_code: 503,
+    });
+  }
 
   await databases.updateDocument(MAIN_DB_ID, BOOK_COL_ID, target_book_id, {
     title: gbooks_book_data.volumeInfo.title,
