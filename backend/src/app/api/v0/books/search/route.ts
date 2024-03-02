@@ -1,7 +1,7 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest } from "next/server";
-import { ID, Query } from "appwrite";
+import { AppwriteException, ID, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
@@ -102,6 +102,13 @@ async function get_or_create_author_id(name: string) {
   }
 }
 
+function appwriteUnavailableResponse() {
+  return construct_development_api_response({
+    message: "Our backend dependency is currently unavailable.",
+    status_code: 503,
+  });
+}
+
 export async function GET(request: NextRequest) {
   const title = request.nextUrl.searchParams.get("title") as string;
   const simulateAPIFailure = request.nextUrl.searchParams.get(
@@ -122,9 +129,17 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-    Query.search("title", title),
-  ]);
+  let db_query: any;
+  databases
+    .listDocuments(MAIN_DB_ID, BOOK_COL_ID, [Query.search("title", title)])
+    .then((res: any) => {
+      db_query = res;
+    })
+    .catch((error: any) => {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+    });
 
   if (db_query.total == 0) {
     // Fetch some results from the Google Books API and populate the DB
@@ -189,6 +204,9 @@ export async function GET(request: NextRequest) {
               Query.search("title", title),
             ]);
           } catch (error) {
+            if (error instanceof AppwriteException) {
+              return appwriteUnavailableResponse();
+            }
             if (error instanceof TypeError) {
               // This book doesn't have one of the required fields, skip
               continue;
