@@ -123,17 +123,16 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  let db_query: any;
-  databases
-    .listDocuments(MAIN_DB_ID, BOOK_COL_ID, [Query.search("title", title)])
-    .then((res: any) => {
-      db_query = res;
-    })
-    .catch((error: any) => {
-      if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
-      }
-    });
+  let db_query;
+  try {
+    db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
+      Query.search("title", title),
+    ]);
+  } catch (error: any) {
+    if (error instanceof AppwriteException) {
+      return appwriteUnavailableResponse();
+    }
+  }
 
   if (db_query.total == 0) {
     // Fetch some results from the Google Books API and populate the DB
