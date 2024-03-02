@@ -1,25 +1,34 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { Query } from "appwrite";
+import { AppwriteException, Query } from "appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 
 import { MAIN_DB_ID, BOOK_COL_ID } from "@/app/Constants";
 import { GoogleBooksAPI } from "../GoogleBooksAPI";
+import { appwriteUnavailableResponse } from "../../common_responses";
 
 const databases = new sdk.Databases(client);
-
-
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
   const gbooks_api_id = data.id;
 
-  let db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-    Query.equal("google_books_id", gbooks_api_id),
-  ]);
+  let db_query: any;
+  databases
+    .listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
+      Query.equal("google_books_id", gbooks_api_id),
+    ])
+    .then((res: any) => {
+      db_query = res;
+    })
+    .catch((error: any) => {
+      if (error instanceof AppwriteException) {
+        return appwriteUnavailableResponse();
+      }
+    });
 
   if (db_query.total == 0) {
     return construct_development_api_response({
@@ -43,11 +52,15 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  await databases.updateDocument(MAIN_DB_ID, BOOK_COL_ID, target_book_id, {
-    title: gbooks_book_data.volumeInfo.title,
-    description: gbooks_book_data.volumeInfo.description,
-    genre: gbooks_book_data.volumeInfo.categories[0],
-  });
+  try {
+    await databases.updateDocument(MAIN_DB_ID, BOOK_COL_ID, target_book_id, {
+      title: gbooks_book_data.volumeInfo.title,
+      description: gbooks_book_data.volumeInfo.description,
+      genre: gbooks_book_data.volumeInfo.categories[0],
+    });
+  } catch (error) {
+    return appwriteUnavailableResponse();
+  }
 
   return construct_development_api_response({
     message: `The book ID ${target_book_id} (Google Books API ID ${gbooks_api_id}) was updated.`,

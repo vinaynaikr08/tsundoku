@@ -12,6 +12,7 @@ import {
   BOOK_COL_ID,
 } from "@/app/Constants";
 import { GoogleBooksAPI } from "../GoogleBooksAPI";
+import { appwriteUnavailableResponse } from "../../common_responses";
 
 const databases = new sdk.Databases(client);
 
@@ -100,13 +101,6 @@ async function get_or_create_author_id(name: string) {
   } else {
     return query.documents[0].$id;
   }
-}
-
-function appwriteUnavailableResponse() {
-  return construct_development_api_response({
-    message: "Our backend dependency is currently unavailable.",
-    status_code: 503,
-  });
 }
 
 export async function GET(request: NextRequest) {

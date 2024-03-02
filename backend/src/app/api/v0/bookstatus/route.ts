@@ -10,6 +10,7 @@ import { createBookStatus } from "./common";
 import { getUserContextDBAccount } from "../userContext";
 import { BOOK_COL_ID, BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
 import userPermissions from "../userPermissions";
+import { appwriteUnavailableResponse } from "../common_responses";
 
 const database = new sdk.Databases(client);
 
@@ -61,7 +62,12 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const user_id = (await userAccount.get()).$id;
+  let user_id: any;
+  userAccount.get().then((res: any) => {
+    user_id = res.$id;
+  }).catch((error: any) => {
+    return appwriteUnavailableResponse(); 
+  })
 
   return construct_development_api_response({
     message: `Book status results for: ${user_id}`,

@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { construct_development_api_response } from "../../dev_api_response";
 import { BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
+import { appwriteUnavailableResponse } from "../../common_responses";
 
 export async function PATCH(
   request: NextRequest,
@@ -35,11 +36,16 @@ export async function PATCH(
     );
   }
 
-  let db_query = await userDB.getDocument(
-    MAIN_DB_ID,
-    BOOK_STAT_COL_ID,
-    bookstatus_id,
-  );
+  let db_query: any;
+  try {
+    db_query = await userDB.getDocument(
+      MAIN_DB_ID,
+      BOOK_STAT_COL_ID,
+      bookstatus_id,
+    );
+  } catch (error) {
+    return appwriteUnavailableResponse();
+  }
 
   if (db_query.total == 0) {
     return construct_development_api_response({
