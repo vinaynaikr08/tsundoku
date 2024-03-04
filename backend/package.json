@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@sentry/nextjs": "^7.103.0",
+    "@sentry/nextjs": "^7.105.0",
     "appwrite": "^13.0.2",
     "next": "14.1.1",
     "node-appwrite": "^11.1.1",
