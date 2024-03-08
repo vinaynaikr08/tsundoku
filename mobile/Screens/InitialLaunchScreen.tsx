@@ -15,7 +15,7 @@ export const InitialLaunchScreen = (props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="initial-launch-screen-view">
       <Text style={styles.title}>tsun•do•ku</Text>
       <Text style={styles.text}>/ˈsʌn.doʊ.kuː/ noun</Text>
       <Text style={styles.text}>
@@ -23,7 +23,7 @@ export const InitialLaunchScreen = (props) => {
         up with other unread books
       </Text>
 
-      <Pressable onPress={launchStart}>
+      <Pressable onPress={launchStart} testID="initial-launch-screen-launch-start-arrow">
         <Icon
           style={styles.icon}
           name={"arrow-forward"}

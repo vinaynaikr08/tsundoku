@@ -29,3 +29,19 @@ For example:
 ```
 npx new-component -l ts -d Components Button
 ```
+
+## Testing
+
+Note: to use the iOS simulator, `applesimutils` must be installed.
+
+```
+brew tap wix/brew
+brew install applesimutils
+```
+
+For iOS simulator (debug build):
+
+```
+detox build --configuration ios.sim.debug
+detox test --configuration ios.sim.debug
+```

@@ -79,6 +79,7 @@ export const SignIn = (props) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      testID="sign-in-view"
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.container}>
