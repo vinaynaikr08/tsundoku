@@ -40,6 +40,7 @@ export const Profile = (props) => {
   const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
   const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [username, setUsername] = useState(null);
 
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible);
@@ -51,6 +52,7 @@ export const Profile = (props) => {
       .get()
       .then((response) => {
         const user_id = response.$id; // user id in $id ?
+        setUsername(response.name);
         const databases = new Databases(client);
         const promise = databases.listDocuments(
           ID.mainDBID,
@@ -119,7 +121,7 @@ export const Profile = (props) => {
               fontSize: 21,
             }}
           >
-            Profile
+            {username}
           </Text>
         </View>
       </TouchableWithoutFeedback>

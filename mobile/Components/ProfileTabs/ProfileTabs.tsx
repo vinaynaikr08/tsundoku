@@ -117,6 +117,7 @@ function ProfileTab(props) {
   const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
   const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
   const [overlayVisible, setOverlayVisible] = useState(false);
+  //   const [username, setUsername] = useState(null);
 
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible);
@@ -128,6 +129,7 @@ function ProfileTab(props) {
       .get()
       .then((response) => {
         const user_id = response.$id; // user id in $id ?
+        // setUsername(response.name);
         const databases = new Databases(client);
         const promise = databases.listDocuments(
           ID.mainDBID,
@@ -184,20 +186,6 @@ function ProfileTab(props) {
   }
 
   return (
-    // <View style={{ flex: 1 }}>
-    //   <ScrollView
-    //     style={{ flex: 1 }}
-    //     bounces={false}
-    //     contentContainerStyle={styles.scrollViewStyle}
-    //     showsVerticalScrollIndicator={false}
-    //   >
-    //     <TouchableOpacity activeOpacity={1}>
-    //       <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
-    //         {/* {bookInfo.summary} */}
-    //       </Text>
-    //     </TouchableOpacity>
-    //   </ScrollView>
-    // </View>
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         style={{ flex: 1 }}
@@ -344,9 +332,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     backgroundColor: "white",
   },
-
   text: {
     fontSize: 20,
-    margin: 30,
+    margin: 20,
   },
 });
