@@ -1,5 +1,3 @@
-const sdk = require("node-appwrite");
-
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 

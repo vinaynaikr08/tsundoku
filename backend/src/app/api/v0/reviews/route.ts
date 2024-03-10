@@ -2,7 +2,7 @@ const sdk = require("node-appwrite");
 
 import { NextRequest } from "next/server";
 import { headers } from "next/headers";
-import { AppwriteException, Query } from "appwrite";
+import { AppwriteException, Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
@@ -21,7 +21,7 @@ async function checkBookExists(book_id: string): Promise<boolean> {
   } catch (error: any) {
     if (
       error instanceof Error &&
-      (error as AppwriteException).type === "document_not_found"
+      (error as AppwriteException).message === "document_not_found"
     ) {
       return false;
     }
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     if (
       error instanceof Error &&
-      (error as AppwriteException).type === "user_jwt_invalid"
+      (error as AppwriteException).message === "user_jwt_invalid"
     ) {
       return construct_development_api_response({
         message: "Authentication failed.",

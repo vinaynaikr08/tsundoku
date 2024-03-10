@@ -1,7 +1,7 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest, NextResponse } from "next/server";
-import { AppwriteException, Query } from "appwrite";
+import { NextRequest } from "next/server";
+import { AppwriteException, Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";

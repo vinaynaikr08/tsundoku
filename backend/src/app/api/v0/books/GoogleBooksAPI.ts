@@ -1,5 +1,3 @@
-import { error } from "console";
-
 export namespace GoogleBooksAPI {
   export function searchBook(title: string): any {
     return fetch(

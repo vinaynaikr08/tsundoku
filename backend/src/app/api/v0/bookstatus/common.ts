@@ -1,4 +1,4 @@
-import { ID } from "appwrite";
+import { ID } from "node-appwrite";
 
 import { MAIN_DB_ID, BOOK_STAT_COL_ID } from "@/app/Constants";
 import userPermissions from "../userPermissions";

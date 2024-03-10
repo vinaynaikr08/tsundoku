@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { construct_development_api_response } from "../../../dev_api_response";
 import { getUserContextDBAccount } from "../../../userContext";
 import { client } from "@/app/appwrite";
-import { AppwriteException } from "appwrite";
+import { AppwriteException } from "node-appwrite";
 
 const users = new sdk.Users(client);
 
@@ -46,7 +46,7 @@ export async function GET(
       response_name: "name",
     });
   } catch (error: any) {
-    if ((error as AppwriteException).type === "user_not_found") {
+    if ((error as AppwriteException).message === "user_not_found") {
       return construct_development_api_response({
         message: "The specified user ID cannot be found.",
         status_code: 404,

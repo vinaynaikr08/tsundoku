@@ -1,12 +1,10 @@
-const sdk = require("node-appwrite");
-
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { construct_development_api_response } from "../../dev_api_response";
 import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
-import { AppwriteException } from "appwrite";
+import { AppwriteException } from "node-appwrite";
 import { appwriteUnavailableResponse } from "../../common_responses";
 
 export async function PATCH(
