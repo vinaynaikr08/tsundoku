@@ -39,7 +39,13 @@ brew tap wix/brew
 brew install applesimutils
 ```
 
-For iOS simulator (debug build):
+Before running the tests, you should run an Expo `prebuild` so that the native source code is generated:
+
+```
+npx expo prebuild
+```
+
+For running in the iOS simulator (debug build):
 
 ```
 detox build --configuration ios.sim.debug
