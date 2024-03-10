@@ -129,8 +129,9 @@ async function getBooks(
   return books;
 }
 
+const windowHeight = Dimensions.get("window").height;
+
 export const Discover = (props) => {
-  const windowHeight = Dimensions.get("window").height;
   const [loading, setLoading] = React.useState(false);
   const [books, setBooks] = React.useState([]);
   const [search, setSearch] = React.useState("");
@@ -185,7 +186,7 @@ export const Discover = (props) => {
 
   return (
     <NavigationContext.Provider value={navigation}>
-      <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
+      <SafeAreaView style={styles.safeArea}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View>
             <Text
@@ -201,7 +202,7 @@ export const Discover = (props) => {
             </Text>
           </View>
         </TouchableWithoutFeedback>
-        <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
+        <View style={styles.bookSearchContainer}>
           <BookSearchBar
             search={search}
             updateSearch={(val) => {
@@ -220,16 +221,7 @@ export const Discover = (props) => {
         {search.length > 0 && (
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{
-              backgroundColor: "#F7F7F7",
-              width: "100%",
-              position: "absolute",
-              top: "21.5%",
-              zIndex: 100,
-              borderColor: "black",
-              borderWidth: 0,
-              maxHeight: windowHeight - 230,
-            }}
+            style={styles.searchResultContainer}
           >
             <FlatList
               data={books.filter((book) => checkGenres(book.genre))}
@@ -241,22 +233,9 @@ export const Discover = (props) => {
                       navigation.navigate("bookInfoModal", { bookInfo: item })
                     }
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                      }}
-                    >
+                    <View style={styles.resultItemContainer}>
                       <Image
-                        style={{
-                          width: 80,
-                          height: 100,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          backgroundColor: "white",
-                          shadowColor: "black",
-                        }}
+                        style={styles.image}
                         resizeMode="contain"
                         source={{ uri: item.image_url }}
                       />
@@ -298,6 +277,38 @@ export const Discover = (props) => {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flexGrow: 1, 
+    backgroundColor: "white",
+  },
+  bookSearchContainer: {
+    paddingLeft: 10, 
+    paddingBottom: 10, 
+    paddingRight: 10,
+  },
+  searchResultContainer: {
+    backgroundColor: "#F7F7F7",
+    width: "100%",
+    position: "absolute",
+    top: "21.5%",
+    zIndex: 100,
+    borderColor: "black",
+    borderWidth: 0,
+    maxHeight: windowHeight - 230,
+  },
+  resultItemContainer: {
+    flexDirection: "row",
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  image: {
+    width: 80,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    shadowColor: "black",
+  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",

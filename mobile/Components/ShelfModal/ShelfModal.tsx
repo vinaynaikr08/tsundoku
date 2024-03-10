@@ -6,6 +6,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Image,
+  StyleSheet,
 } from "react-native";
 import React from "react";
 import { useState, useContext } from "react";
@@ -13,6 +14,7 @@ import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
 
 import { DATA } from "../BookSearchBar/Genres";
+import { toStyleSheet } from "styled-components/native";
 
 function checkTitle(value, search) {
   return value.title.toUpperCase().includes(search.toUpperCase());
@@ -70,60 +72,26 @@ const ShelfModal = ({ route, navigation }) => {
 
   return (
     <View
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
-        width: "100%",
-        height: "100%",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-      }}
+      style={styles.modalContainer}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View
-          style={{
-            width: "100%",
-            position: "absolute",
-            borderRadius: 5,
-            alignSelf: "center",
-            top: 10,
-          }}
+          style={styles.grayBarContainer}
         >
           <View
-            style={{
-              backgroundColor: "#D3D3D3",
-              height: 7,
-              width: 70,
-              borderRadius: 5,
-              alignSelf: "center",
-            }}
+            style={styles.grayBar}
           />
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View
-          style={{
-            position: "absolute",
-            top: 30,
-            left: 20,
-            width: "100%",
-          }}
+          style={styles.titleContainer}
         >
           <Text style={{ fontWeight: "bold", fontSize: 30 }}>{shelf}</Text>
         </View>
       </TouchableWithoutFeedback>
 
-      <View
-        style={{
-          width: "93%",
-          position: "absolute",
-          borderRadius: 10,
-          top: 75,
-          left: 20,
-          paddingBottom: 0,
-        }}
-      >
+      <View style={styles.bookSearchBarContainer}>
         <BookSearchBar
           search={search}
           updateSearch={updateSearch}
@@ -134,17 +102,7 @@ const ShelfModal = ({ route, navigation }) => {
         />
       </View>
       <View
-        style={{
-          flex: 1,
-          width: "100%",
-          position: "absolute",
-          height: "82.3%",
-          borderRadius: 10,
-          top: 150,
-          left: 20,
-          paddingTop: 0,
-          marginTop: -14,
-        }}
+        style={styles.resultsContainer}
       >
         <FlatList
           data={bookData.filter(
@@ -167,29 +125,17 @@ const ShelfModal = ({ route, navigation }) => {
                   style={{ flexDirection: "row", paddingTop: 8 }}
                 >
                   <Image
-                    style={{
-                      width: 53,
-                      height: 80,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "white",
-                      shadowColor: "black",
-                    }}
+                    style={styles.image}
                     resizeMode="contain"
                     source={{ uri: item.image_url }}
                   />
-                  <View
-                    style={{
-                      paddingLeft: 10,
-                      width: "80%",
-                    }}
-                  >
+                  <View style={styles.textContainer}>
                     <Text style={{ fontSize: 20 }}>{item.title}</Text>
                     <Text>{item.author}</Text>
                     <Text>ISBN: {item.isbn}</Text>
                   </View>
                 </TouchableOpacity>
-                <Divider style={{ paddingTop: 8, paddingBottom: 8 }} />
+                <Divider style={styles.divider} />
               </View>
             );
           }}
@@ -214,3 +160,69 @@ export default ShelfModal;
 //   onBackdropPress={() => { setShelfModalVisible(false); setSearch("")}}
 //   onSwipeCancel={Keyboard.dismiss}
 // >
+const styles = StyleSheet.create({
+  modalContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    width: "100%",
+    height: "100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  grayBarContainer: {
+    width: "100%",
+    position: "absolute",
+    borderRadius: 5,
+    alignSelf: "center",
+    top: 10,
+  },
+  grayBar: {
+    backgroundColor: "#D3D3D3",
+    height: 7,
+    width: 70,
+    borderRadius: 5,
+    alignSelf: "center",
+  },
+  titleContainer: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    width: "100%",
+  },
+  bookSearchBarContainer: {
+    width: "93%",
+    position: "absolute",
+    borderRadius: 10,
+    top: 75,
+    left: 20,
+    paddingBottom: 0,
+  },
+  resultsContainer: {
+    flex: 1,
+    width: "100%",
+    position: "absolute",
+    height: "82.3%",
+    borderRadius: 10,
+    top: 150,
+    left: 20,
+    paddingTop: 0,
+    marginTop: -14,
+  },
+  image: {
+    width: 53,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    shadowColor: "black",
+  },
+  textContainer: {
+    paddingLeft: 10,
+    width: "80%",
+  },
+  divider: { 
+    paddingTop: 8, 
+    paddingBottom: 8 
+  },
+});
