@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "react-native-vector-icons/Entypo";
+import { Community } from "../../Screens/CommunityScreen";
 import Book from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
@@ -58,11 +59,7 @@ function TrackScreen() {
 }
 
 function SocialScreen() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Text style={{ margin: 100, fontSize: 40 }}>social</Text>
-    </View>
-  );
+  return <Community />;
 }
 
 function ProfileScreen() {
@@ -131,7 +128,7 @@ function NavBar() {
       />
       <BottomBar.Screen
         name="social"
-        component={SocialScreen}
+        component={Community}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon
