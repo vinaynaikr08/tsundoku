@@ -127,7 +127,8 @@ function ReadingStatusCarousel({ status }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <Carousel books={books} shelf={shelf} />
+      {/* <Text>hiii</Text> */}
+      {/* <Carousel books={books} shelf={shelf} /> */}
     </View>
   );
 }
@@ -142,56 +143,53 @@ function CommunityTabs() {
     shelf = "Friends";
   });
   return (
-    <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
-      <View>
-        <Tab.Navigator
-          screenOptions={{ swipeEnabled: false }}
-          tabBar={(props) => <MyTabBar {...props} />}
-        >
-          <Tab.Screen
-            name="Friends"
-            children={() => (
-              <ReadingStatusCarousel status="CURRENTLY_READING" />
-            )}
-            listeners={{
-              tabPress: (e) => {
-                shelf = "Friends";
-              },
-            }}
-          />
-          <Tab.Screen
-            name="Book Clubs"
-            children={() => <ReadingStatusCarousel status="WANT_TO_READ" />}
-            listeners={{
-              tabPress: (e) => {
-                shelf = "Book Clubs";
-              },
-            }}
-          />
-          <Tab.Screen
-            name="Challenges"
-            children={() => <ReadingStatusCarousel status="READ" />}
-            listeners={{
-              tabPress: (e) => {
-                shelf = "Challenges";
-              },
-            }}
-          />
-        </Tab.Navigator>
-      </View>
-      <View>
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{ swipeEnabled: false }}
+        tabBar={(props) => <MyTabBar {...props} />}
+      >
+        <Tab.Screen
+          name="Friends"
+          children={() => <ReadingStatusCarousel status="CURRENTLY_READING" />}
+          listeners={{
+            tabPress: (e) => {
+              shelf = "Currently Reading";
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Book Clubs"
+          children={() => <ReadingStatusCarousel status="WANT_TO_READ" />}
+          listeners={{
+            tabPress: (e) => {
+              shelf = "Want To Read";
+            },
+          }}
+        />
+        <Tab.Screen
+          name="Challenges"
+          children={() => <ReadingStatusCarousel status="READ" />}
+          listeners={{
+            tabPress: (e) => {
+              shelf = "Read";
+            },
+          }}
+        />
+      </Tab.Navigator>
+      {/* <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
         <CommunityUsersSearchBar
           search={search}
           updateSearch={(val) => {
             setLoading(true);
             setSearch(val);
+            //   performDebouncedSearch(val);
           }}
-          newPlaceholder={"Search all users"}
+          newPlaceholder={"Search all books"}
           loading={loading}
           showFilter={true}
           GENRES={GENRES}
         />
-      </View>
+      </View> */}
     </View>
   );
 }

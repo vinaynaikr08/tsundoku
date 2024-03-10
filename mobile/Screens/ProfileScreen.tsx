@@ -7,6 +7,8 @@ import {
   Pressable,
   TouchableOpacity,
   Switch,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Query } from "appwrite";
 import { client } from "../appwrite";
@@ -18,6 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Divider } from "react-native-paper";
 import { Button, Icon, Overlay } from "@rneui/themed";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
+import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
 
 const databases = new Databases(client);
 
@@ -106,87 +109,103 @@ export const Profile = (props) => {
   }
 
   return (
-    // <BookInfoContext.Provider value={bookInfo}>
-    <SafeAreaView style={{ flex: 1 }}>
-      <Text style={styles.text}>Profile</Text>
-      <Text style={styles.text}>Books read: {booksReadCount}</Text>
-      <Text style={styles.text}>
-        Books currently reading: {booksCurrReadingCount}
-      </Text>
-      <Text style={styles.text}>
-        Books want to read: {booksWantToReadCount}
-      </Text>
-      <Text style={styles.text}>
-        Books did not finish: {booksDidNotFinishCount}
-      </Text>
-      <Divider />
-      <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
-        <View
-          style={{
-            flexDirection: "row",
-            paddingTop: 12,
-            paddingBottom: 12,
-            width: "100%",
-          }}
-        >
-            <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
-              Notifications
-            </Text>
-            <View style={{ flex: 2 }}>
-              <Icon name="notifications" color={Colors.BUTTON_PURPLE} size={30} />
-            </View>
-        </View>
-      </TouchableOpacity>
-
-      <Divider />
-
-      <TouchableOpacity onPress={signOut}>
-        <View
-          style={{
-            flexDirection: "row",
-            paddingTop: 12,
-            paddingBottom: 12,
-            width: "100%",
-          }}
-        >
-          <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
-            Sign Out
-          </Text>
-          <View style={{ flex: 2 }}>
-            <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30} />
-          </View>
-        </View>
-      </TouchableOpacity>
-
-      <Divider />
-
-      <View style={{ paddingTop: 70, alignItems: "center" }}>
-        <Button
-          onPress={toggleOverlay}
-          color={"red"}
-          containerStyle={{ borderRadius: 30 }}
-        >
+    <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View>
           <Text
             style={{
-              color: "white",
-              paddingRight: 5,
-              fontSize: 17,
-              paddingTop: 5,
-              paddingBottom: 5,
-              alignSelf: "center",
+              marginLeft: 20,
+              marginBottom: 15,
+              marginTop: 5,
+              fontWeight: "700",
+              fontSize: 21,
             }}
           >
-            Delete Account
+            Profile
           </Text>
-        </Button>
-      </View>
-      <View style={{ height: 300 }}>
-        <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
-          <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
-        </Overlay>
-      </View>
+        </View>
+      </TouchableWithoutFeedback>
+      <ProfileTabs />
     </SafeAreaView>
-    // </BookInfoContext.Provider>
+    // <SafeAreaView style={{ flex: 1 }}>
+    //   <Text style={styles.text}>Profile</Text>
+    //   <Text style={styles.text}>Books read: {booksReadCount}</Text>
+    //   <Text style={styles.text}>
+    //     Books currently reading: {booksCurrReadingCount}
+    //   </Text>
+    //   <Text style={styles.text}>
+    //     Books want to read: {booksWantToReadCount}
+    //   </Text>
+    //   <Text style={styles.text}>
+    //     Books did not finish: {booksDidNotFinishCount}
+    //   </Text>
+    //   <Divider />
+    //   <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         paddingTop: 12,
+    //         paddingBottom: 12,
+    //         width: "100%",
+    //       }}
+    //     >
+    //         <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+    //           Notifications
+    //         </Text>
+    //         <View style={{ flex: 2 }}>
+    //           <Icon name="notifications" color={Colors.BUTTON_PURPLE} size={30} />
+    //         </View>
+    //     </View>
+    //   </TouchableOpacity>
+
+    //   <Divider />
+
+    //   <TouchableOpacity onPress={signOut}>
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         paddingTop: 12,
+    //         paddingBottom: 12,
+    //         width: "100%",
+    //       }}
+    //     >
+    //       <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+    //         Sign Out
+    //       </Text>
+    //       <View style={{ flex: 2 }}>
+    //         <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30} />
+    //       </View>
+    //     </View>
+    //   </TouchableOpacity>
+
+    //   <Divider />
+
+    //   <View style={{ paddingTop: 70, alignItems: "center" }}>
+    //     <Button
+    //       onPress={toggleOverlay}
+    //       color={"red"}
+    //       containerStyle={{ borderRadius: 30 }}
+    //     >
+    //       <Text
+    //         style={{
+    //           color: "white",
+    //           paddingRight: 5,
+    //           fontSize: 17,
+    //           paddingTop: 5,
+    //           paddingBottom: 5,
+    //           alignSelf: "center",
+    //         }}
+    //       >
+    //         Delete Account
+    //       </Text>
+    //     </Button>
+    //   </View>
+    //   <View style={{ height: 300 }}>
+    //     <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
+    //       <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
+    //     </Overlay>
+    //   </View>
+    // </SafeAreaView>
   );
 };
 
