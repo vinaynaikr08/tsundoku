@@ -19,7 +19,7 @@ const LoginPage = () => {
   const [name, setName] = useState("");
 
   const login = async (email: string, password: string) => {
-    const session = await account.createEmailSession(email, password);
+    const session = await account.createEmailPasswordSession(email, password);
     setLoggedInUser(await account.get());
   };
 
