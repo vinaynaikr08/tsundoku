@@ -1,74 +1,15 @@
 import {
   View,
   Text,
-  TouchableWithoutFeedback,
   Keyboard,
   FlatList,
+  StyleSheet,
 } from "react-native";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button, SearchBar, Overlay, CheckBox, Divider } from "@rneui/base";
 import Icon from "react-native-vector-icons/Ionicons";
 import {} from "react-native-vector-icons";
-import { RadioButton } from "react-native-paper";
-import { DATA } from "./Genres";
-
-export const genresSelected: Array<string> = [
-  "YOUNG ADULT FICTION",
-  "ANTIQUES & COLLECTIBLES",
-  "LITERARY COLLECTIONS",
-  "ARCHITECTURE",
-  "LITERARY CRITICISM",
-  "ART",
-  "MATHEMATICS",
-  "BIBLES",
-  "MEDICAL",
-  "BIOGRAPHY & AUTOBIOGRAPHY",
-  "MUSIC",
-  "BODY",
-  "MIND & SPIRIT",
-  "NATURE",
-  "BUSINESS & ECONOMICS",
-  "PERFORMING ARTS",
-  "COMICS & GRAPHIC NOVELS",
-  "PETS",
-  "COMPUTERS",
-  "PHILOSOPHY",
-  "COOKING",
-  "PHOTOGRAPHY",
-  "CRAFTS & HOBBIES",
-  "POETRY",
-  "DESIGN",
-  "POLITICAL SCIENCE",
-  "DRAMA",
-  "PSYCHOLOGY",
-  "EDUCATION",
-  "REFERENCE",
-  "FAMILY & RELATIONSHIPS",
-  "RELIGION",
-  "FICTION",
-  "SCIENCE",
-  "FOREIGN LANGUAGE STUDY",
-  "SELF-HELP",
-  "GAMES & ACTIVITIES",
-  "SOCIAL SCIENCE",
-  "GARDENING",
-  "SPORTS & RECREATION",
-  "HEALTH & FITNESS",
-  "STUDY AIDS",
-  "HISTORY",
-  "TECHNOLOGY & ENGINEERING",
-  "HOUSE & HOME",
-  "TRANSPORTATION",
-  "HUMOR",
-  "TRAVEL",
-  "JUVENILE FICTION",
-  "TRUE CRIME",
-  "JUVENILE NONFICTION",
-  "LANGUAGE ARTS & DISCIPLINES",
-  "YOUNG ADULT NONFICTION",
-  "LAW",
-];
 
 const BookSearchBar = ({
   search,
@@ -93,7 +34,7 @@ const BookSearchBar = ({
 
   return (
     <View>
-      <View style={{ backgroundColor: "white", flexDirection: "row" }}>
+      <View style={styles.searchBarView}>
         <View style={{ flex: 10 }}>
           <SearchBar
             placeholder={newPlaceholder}
@@ -103,21 +44,12 @@ const BookSearchBar = ({
             onChangeText={updateSearch}
             value={search}
             autoCorrect={false}
-            containerStyle={{
-              padding: 0,
-              backgroundColor: "transparent",
-              borderBottomColor: "transparent",
-              borderTopColor: "transparent",
-            }}
-            inputContainerStyle={{
-              borderRadius: 20,
-              backgroundColor: "#F7F7F7",
-            }}
-            //onSubmitEditing={() => alert("temp")}
+            containerStyle={styles.searchBarContainer}
+            inputContainerStyle={styles.inputContainer}
           />
         </View>
         {showFilter && (
-          <View style={{ flex: 2, alignItems: "center" }}>
+          <View style={styles.filterButton}>
             <Button
               type="clear"
               onPress={() => {
@@ -132,25 +64,10 @@ const BookSearchBar = ({
         <Overlay
           isVisible={isOverlayVisible}
           onBackdropPress={toggleOverlay}
-          overlayStyle={{
-            backgroundColor: "white",
-            width: "89%",
-            height: "70%",
-            borderRadius: 20,
-            marginTop: 60,
-          }}
+          overlayStyle={styles.filterOverlay}
         >
           <View style={{ backgroundColor: "white" }}>
-            <Text
-              style={{
-                marginLeft: 0,
-                marginTop: 5,
-                marginBottom: 5,
-                fontWeight: "bold",
-                fontSize: 20,
-                alignSelf: "center",
-              }}
-            >
+            <Text style={styles.filterText}>
               Filter by Genre
             </Text>
           </View>
@@ -168,12 +85,8 @@ const BookSearchBar = ({
                       onPress={() => {
                         item.setter[0](!item.state[0]);
                       }}
-                      containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
-                      textStyle={{
-                        fontWeight: "normal",
-                        fontSize: 17,
-                        marginLeft: 7,
-                      }}
+                      containerStyle={styles.checkboxContainer}
+                      textStyle={styles.checkboxText}
                     />
                   </View>
                   <View style={{ flex: 1, justifyContent: "center" }}>
@@ -186,12 +99,8 @@ const BookSearchBar = ({
                         onPress={() => {
                           item.setter[1](!item.state[1]);
                         }}
-                        containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
-                        textStyle={{
-                          fontWeight: "normal",
-                          fontSize: 17,
-                          marginLeft: 7,
-                        }}
+                        containerStyle={styles.checkboxContainer}
+                        textStyle={styles.checkboxText}
                       />
                     ) : (
                       <View />
@@ -200,53 +109,8 @@ const BookSearchBar = ({
                 </View>
               )}
             />
-            {/* <CheckBox 
-                                checked={fantasy}
-                                uncheckedIcon={<Icon name="square-outline" size={20} />}
-                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
-                                title="Fantasy"
-                                onPress={() => {setFantasy(!fantasy)}}
-                                containerStyle={{ paddingLeft: 0, paddingTop: 0, }}
-                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
-                            />
-                            <CheckBox 
-                                checked={scienceFiction}
-                                uncheckedIcon={<Icon name="square-outline" size={20} />}
-                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
-                                title="Science Fiction"
-                                onPress={() => {setScienceFiction(!scienceFiction)}}
-                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
-                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
-                            /> */}
-            {/* <View style={{ flex: 1 }}>
-                            <CheckBox 
-                                checked={romance}
-                                uncheckedIcon={<Icon name="square-outline" size={20} />}
-                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
-                                title="Romance"
-                                onPress={() => {setRomance(!romance)}}
-                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
-                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
-                            />
-                            <CheckBox 
-                                checked={mystery}
-                                uncheckedIcon={<Icon name="square-outline" size={20} />}
-                                checkedIcon={<Icon name="checkbox-outline" size={20}  />}
-                                title="Mystery"
-                                onPress={() => {setMystery(!mystery)}}
-                                containerStyle={{ paddingLeft: 0, paddingTop: 0 }}
-                                textStyle={{ fontWeight: 'normal', fontSize: 17, marginLeft: 7 }}
-                            />
-                        </View> */}
           </View>
-          <View
-            style={{
-              position: "absolute",
-              bottom: 20,
-              alignSelf: "center",
-              borderRadius: 20,
-            }}
-          >
+          <View style={styles.clearAllButton}>
             <Button
               buttonStyle={{ borderRadius: 10 }}
               color={"#5B2FA3"}
@@ -296,3 +160,54 @@ const BookSearchBar = ({
 };
 
 export default BookSearchBar;
+
+const styles = StyleSheet.create({
+    searchBarView: { 
+        backgroundColor: "white", 
+        flexDirection: "row" 
+    },
+    searchBarContainer: {
+        padding: 0,
+        backgroundColor: "transparent",
+        borderBottomColor: "transparent",
+        borderTopColor: "transparent",
+    },
+    inputContainer: {
+        borderRadius: 20,
+        backgroundColor: "#F7F7F7",
+    },
+    filterButton: { 
+        flex: 2, 
+        alignItems: "center", 
+    },
+    filterOverlay: {
+        backgroundColor: "white",
+        width: "89%",
+        height: "70%",
+        borderRadius: 20,
+        marginTop: 60,
+    },
+    filterText: {
+        marginLeft: 0,
+        marginTop: 5,
+        marginBottom: 5,
+        fontWeight: "bold",
+        fontSize: 20,
+        alignSelf: "center",
+    },
+    checkboxContainer: { 
+        paddingLeft: 0, 
+        paddingTop: 0 
+    },
+    checkboxText: {
+        fontWeight: "normal",
+        fontSize: 17,
+        marginLeft: 7,
+    },
+    clearAllButton: {
+        position: "absolute",
+        bottom: 20,
+        alignSelf: "center",
+        borderRadius: 20,
+    },
+});
