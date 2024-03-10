@@ -25,8 +25,6 @@ import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
 const databases = new Databases(client);
 
 export const Profile = (props) => {
-  // const user_id = request.nextUrl.searchParams.get("user_id");
-  // const user_id = account.get();
   const { setLoggedIn } = React.useContext(LoginStateContext);
   const { navigation } = props;
   const account = new Account(client);
