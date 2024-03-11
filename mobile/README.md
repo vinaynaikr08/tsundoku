@@ -45,9 +45,20 @@ Before running the tests, you should run an Expo `prebuild` so that the native s
 npx expo prebuild
 ```
 
+For Android, you may then have to open the `./android` subdirectory in Android Studio so that `gradlew` and the necessary dependencies are installed.
+
+Before running the tests, make sure you run the Expo server in a separate terminal window so that Detox can connect to it.
+
 For running in the iOS simulator (debug build):
 
 ```
 detox build --configuration ios.sim.debug
 detox test --configuration ios.sim.debug
+```
+
+For running on Android (debug build):
+
+```
+detox build --configuration android.emu.debug
+detox test --configuration android.emu.debug
 ```
