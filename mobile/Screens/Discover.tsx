@@ -149,7 +149,8 @@ export const Discover = (props) => {
       getBooks(query, setErrorMessage, setErrorModalVisible, setLoading)
         .then((books) => setBooks(books))
         .catch((error: any) => {
-          setErrorMessage(error);
+          console.error(error);
+          setErrorMessage("There was an error fetching books from the server.");
           setErrorModalVisible(true);
         });
     } else {
