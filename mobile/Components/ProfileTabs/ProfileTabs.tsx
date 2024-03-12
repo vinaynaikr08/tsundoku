@@ -117,7 +117,8 @@ function ProfileTab(props) {
   const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
   const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
   const [overlayVisible, setOverlayVisible] = useState(false);
-  //   const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [email, setEmail] = useState(null);
 
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible);
@@ -129,7 +130,8 @@ function ProfileTab(props) {
       .get()
       .then((response) => {
         const user_id = response.$id; // user id in $id ?
-        // setUsername(response.name);
+        setUsername(response.name);
+        setEmail(response.email);
         const databases = new Databases(client);
         const promise = databases.listDocuments(
           ID.mainDBID,
@@ -193,7 +195,8 @@ function ProfileTab(props) {
         contentContainerStyle={styles.scrollViewStyle}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.text}>Profile</Text>
+        <Text style={styles.userInfoText}>Username: {username}</Text>
+        <Text style={styles.userInfoText}>Email: {email}</Text>
         <Text style={styles.text}>Books read: {booksReadCount}</Text>
         <Text style={styles.text}>
           Books currently reading: {booksCurrReadingCount}
@@ -269,7 +272,7 @@ function ProfileTab(props) {
             </Text>
           </Button>
         </View>
-        <View style={{ height: 300 }}>
+        <View style={{ height: 100 }}>
           <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
             <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
           </Overlay>
@@ -334,6 +337,10 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+    margin: 20,
+  },
+  userInfoText: {
+    fontSize: 18,
     margin: 20,
   },
 });
