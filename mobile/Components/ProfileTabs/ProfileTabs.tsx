@@ -290,7 +290,7 @@ function ProfileTab(props) {
 
           <Divider />
 
-          <View style={{ paddingTop: 70, alignItems: "center" }}>
+          <View style={{ paddingTop: 20, alignItems: "center" }}>
             <Button
               onPress={toggleOverlay}
               color={"red"}
@@ -350,6 +350,7 @@ function ProfileTabs() {
     <Tab.Navigator
       screenOptions={{ animationEnabled: false }}
       tabBar={(props) => <MyTabBar {...props} />}
+      sceneContainerStyle={{ backgroundColor: "transparent" }}
     >
       <Tab.Screen name="Profile" children={(props) => <ProfileTab />} />
       <Tab.Screen name="Activity" children={(props) => <ActivityTab />} />
@@ -362,7 +363,7 @@ export default ProfileTabs;
 
 const styles = StyleSheet.create({
   scrollViewStyle: {
-    paddingBottom: 30,
+    // paddingBottom: 30,
     paddingHorizontal: 5,
     backgroundColor: "white",
   },

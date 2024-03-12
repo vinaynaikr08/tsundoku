@@ -29,24 +29,12 @@ import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
 const databases = new Databases(client);
 
 export const Profile = (props) => {
-  const { setLoggedIn } = React.useContext(LoginStateContext);
   // const { navigation } = props;
   const account = new Account(client);
-  const navigation = useContext(NavigationContext);
   const user_id = account.get();
-  const [isBookInfoModalVisible, setIsBookInfoModalVisible] = useState(false);
-  const promise = databases.listDocuments(
-    ID.mainDBID,
-    ID.bookStatusCollectionID,
-    [Query.equal("user_id", user_id as unknown as string)],
-  );
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [email, setEmail] = useState(null);
-
-  const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible);
-  };
 
   useEffect(() => {
     const account = new Account(client);
