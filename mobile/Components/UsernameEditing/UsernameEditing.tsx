@@ -14,11 +14,9 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
-import { ProfileContext } from "../../Contexts";
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
 import { Databases, Account } from "appwrite";
-
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
@@ -29,7 +27,6 @@ export const UsernameEditing = (props) => {
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { setLoggedIn } = React.useContext(LoginStateContext);
   let user_id;
   const { navigation } = props;
   const dismissKeyboard = () => {
@@ -40,23 +37,8 @@ export const UsernameEditing = (props) => {
     account
       .get()
       .then((response) => {
-        user_id = response.$id; // user id in $id ?
+        user_id = response.$id;
         setUsername(response.name);
-        // setEmail(response.email);
-        // const databases = new Databases(client);
-        // const promise = databases.listDocuments(
-        //   ID.mainDBID,
-        //   ID.bookStatusCollectionID,
-        //   [Query.equal("user_id", user_id)],
-        // );
-        // promise.then(
-        //   function (response) {
-        //     const documents = response.documents;
-        //   },
-        //   function (error) {
-        //     console.log(error);
-        //   },
-        // );
       })
       .catch((error) => {
         console.error("Error fetching user ID:", error);
@@ -140,7 +122,6 @@ export const UsernameEditing = (props) => {
               onPress={() => {
                 setLoading(true);
                 handleSaveUsername();
-                // navigation.navigate("Profile");
               }}
               style={styles.saveButton}
             >
@@ -240,9 +221,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
-    // color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     borderBottomWidth: 1,
-    // borderBottomColor: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     paddingVertical: 5,
   },
   modalContainer: {

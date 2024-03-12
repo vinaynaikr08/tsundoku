@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -12,69 +12,76 @@ import {
   Platform,
   Modal,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import Colors from "@/Constants/Colors";
-import { Icon } from "@rneui/themed";
 import Dimensions from "@/Constants/Dimensions";
-import { Account, AppwriteException } from "appwrite";
-import { useNavigation } from "@react-navigation/native";
+import { Databases, Account } from "appwrite";
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
 const account = new Account(client);
 
-export const EmailEditing = ({ route, navigation }) => {
-  // TODO: unset dummy credentials before demo!
-  const [email, setEmail] = React.useState(
-    "bookymcbookface@tsundoku.ericswpark.com",
-  );
-  const [password, setPassword] = React.useState("demoaccount12345");
+export const EmailEditing = (props) => {
+  const [email, setEmail] = useState(null);
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { setLoggedIn } = React.useContext(LoginStateContext);
-
-  //   const { navigation } = props;
+  let user_id;
+  const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const handleSignIn = () => {
+  useEffect(() => {
+    const account = new Account(client);
     account
-      .createEmailSession(email, password)
-      .then(() => {
-        account
-          .get()
-          .then(() => {
-            setLoggedIn(true);
-            setLoading(false);
-          })
-          .catch((error: any) => {
-            setLoading(false);
-            if (error instanceof Error) {
-              setErrorMessage(error.message);
-              setErrorModalVisible(true);
-            } else {
-              throw error;
-            }
-          });
+      .get()
+      .then((response) => {
+        user_id = response.$id;
+        setEmail(response.email);
       })
-      .catch((error: any) => {
-        setLoading(false);
-        if (
-          error instanceof AppwriteException &&
-          (error as AppwriteException).code === 429
-        ) {
-          setErrorMessage(
-            "Too many incorrect sign-in attempts. Try again later.",
-          );
-          setErrorModalVisible(true);
-        } else if (error instanceof Error) {
-          setErrorMessage(error.message);
-          setErrorModalVisible(true);
-        } else {
-          throw error;
-        }
+      .catch((error) => {
+        console.error("Error fetching user ID:", error);
       });
+  }, []);
+
+  const handleSaveEmail = async () => {
+    try {
+      setLoading(true);
+      if (!email.trim()) {
+        setErrorMessage("Email cannot be empty");
+        setErrorModalVisible(true);
+        return;
+      }
+
+      // if email is already taken
+      //   const isEmailTaken = await checkUsernameAvailability(username);
+      //   if (isEmailTaken) {
+      //     setErrorMessage("Email is already taken");
+      //     setErrorModalVisible(true);
+      //     return;
+      //   }
+
+      // dummy email
+      const promise = account.updateEmail(email, "demoaccount12345");
+      setEmail(email);
+
+      promise.then(
+        function (response) {
+          console.log(response);
+          navigation.navigate("Profile");
+        },
+        function (error) {
+          console.log(error);
+        },
+      );
+    } catch (error) {
+      console.error("Error saving email:", error);
+      setErrorMessage("An error occurred while saving the email");
+      setErrorModalVisible(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,7 +92,13 @@ export const EmailEditing = ({ route, navigation }) => {
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.container}>
-          <Text style={styles.title}>Sign in</Text>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>Change email</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -98,43 +111,28 @@ export const EmailEditing = ({ route, navigation }) => {
               autoCapitalize="none"
             />
           </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              placeholder="password"
-              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR}
-              secureTextEntry={true}
-              returnKeyType="done"
-              autoCapitalize="none"
-            />
+          <View style={styles.saveButtonContainer}>
+            <Pressable
+              onPress={() => {
+                setLoading(true);
+                handleSaveEmail();
+              }}
+              style={styles.saveButton}
+            >
+              {loading ? (
+                <ActivityIndicator
+                  color="#ffffff"
+                  style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
+                />
+              ) : (
+                <Text style={styles.saveButtonText}>Save</Text>
+              )}
+            </Pressable>
           </View>
-          <Pressable
-            onPress={() => {
-              setLoading(true);
-              handleSignIn();
-            }}
-          >
-            {loading ? (
-              <ActivityIndicator
-                color="#ffffff"
-                style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
-              />
-            ) : (
-              <Icon
-                style={styles.icon}
-                name={"arrow-forward"}
-                size={Dimensions.INITIAL_LAUNCH_SCREEN_NEXT_ARROW_SIZE}
-                color={Colors.INITIAL_LAUNCH_SCREEN_ARROW_WHITE}
-              />
-            )}
-          </Pressable>
           <StatusBar style="auto" />
         </View>
       </TouchableWithoutFeedback>
       <Modal
-        // animationType="slide"
         transparent={true}
         visible={errorModalVisible}
         onRequestClose={() => setErrorModalVisible(false)}
@@ -155,16 +153,43 @@ export const EmailEditing = ({ route, navigation }) => {
 export default EmailEditing;
 
 const styles = StyleSheet.create({
+  cancelButton: {
+    position: "absolute",
+    top: 100,
+    left: 30,
+    zIndex: 1,
+  },
+  cancelText: {
+    color: Colors.BUTTON_PURPLE,
+    fontSize: 20,
+  },
+  saveButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "30%",
+    borderRadius: 19,
+    height: 40,
+    backgroundColor: Colors.BUTTON_PURPLE,
+  },
+  saveButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  saveButtonContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
   container: {
     flex: 1,
+    // marginTop: "30%"
     justifyContent: "center",
   },
   title: {
-    marginTop: 350,
+    // marginTop: 10,
     marginBottom: 30,
     textAlign: "left",
     marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
-    fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE,
+    fontSize: 30,
     color: Colors.SIGN_IN_TEXT_BLACK,
     fontWeight: "bold",
   },
@@ -190,9 +215,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
-    color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
+    borderBottomWidth: 1,
     paddingVertical: 5,
   },
   modalContainer: {
