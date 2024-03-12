@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import { client } from "@/appwrite";
 import { Databases, Account } from "appwrite";
 import Colors from "@/Constants/Colors";
 import ID from "@/Constants/ID";
-// import { BookInfoContext, NavigationContext } from "../Contexts";
+import { ProfileContext } from "../../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Divider } from "react-native-paper";
 import { Button, Icon, Overlay } from "@rneui/themed";
@@ -87,7 +87,10 @@ const databases = new Databases(client);
 
 function ProfileTab(props) {
   const { setLoggedIn } = React.useContext(LoginStateContext);
-  const { navigation } = props;
+  //   const { navigation } = props;
+  // const { username } = usernameParam;
+  // const { email } = emailParam;
+  const { navigation } = useContext(ProfileContext);
   const account = new Account(client);
   const user_id = account.get();
   const [isBookInfoModalVisible, setIsBookInfoModalVisible] = useState(false);
@@ -103,6 +106,9 @@ function ProfileTab(props) {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [email, setEmail] = useState(null);
+  const handleEditUsername = () => {
+    navigation.navigate("UsernameEditing");
+  };
 
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible);
@@ -172,109 +178,121 @@ function ProfileTab(props) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        bounces={false}
-        contentContainerStyle={styles.scrollViewStyle}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.userInfoRow}>
-          <Text style={styles.userInfoText}>Username: {username}</Text>
-          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
-        </View>
-        <View style={styles.userInfoRow}>
-          <Text
-            style={styles.userInfoText}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            Email: {email}
-          </Text>
-          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
-        </View>
-        <Text style={styles.text}>Books read: {booksReadCount}</Text>
-        <Text style={styles.text}>
-          Books currently reading: {booksCurrReadingCount}
-        </Text>
-        <Text style={styles.text}>
-          Books want to read: {booksWantToReadCount}
-        </Text>
-        <Text style={styles.text}>
-          Books did not finish: {booksDidNotFinishCount}
-        </Text>
-        <Divider />
-        <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
-          <View
-            style={{
-              flexDirection: "row",
-              paddingTop: 12,
-              paddingBottom: 12,
-              width: "100%",
-            }}
-          >
-            <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
-              Notifications
-            </Text>
-            <View style={{ flex: 2 }}>
-              <Icon
-                name="notifications"
-                color={Colors.BUTTON_PURPLE}
-                size={30}
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        <Divider />
-
-        <TouchableOpacity onPress={signOut}>
-          <View
-            style={{
-              flexDirection: "row",
-              paddingTop: 12,
-              paddingBottom: 12,
-              width: "100%",
-            }}
-          >
-            <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
-              Sign Out
-            </Text>
-            <View style={{ flex: 2 }}>
-              <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30} />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        <Divider />
-
-        <View style={{ paddingTop: 70, alignItems: "center" }}>
-          <Button
-            onPress={toggleOverlay}
-            color={"red"}
-            containerStyle={{ borderRadius: 30 }}
-          >
-            <Text
-              style={{
-                color: "white",
-                paddingRight: 5,
-                fontSize: 17,
-                paddingTop: 5,
-                paddingBottom: 5,
-                alignSelf: "center",
+    <ProfileContext.Provider value={navigation}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          bounces={false}
+          contentContainerStyle={styles.scrollViewStyle}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.userInfoRow}>
+            <Text style={styles.userInfoText}>Username: {username}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("UsernameEditing");
               }}
             >
-              Delete Account
+              <MaterialIcons
+                name="edit"
+                size={22}
+                color={Colors.BUTTON_PURPLE}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.userInfoRow}>
+            <Text
+              style={styles.userInfoText}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              Email: {email}
             </Text>
-          </Button>
-        </View>
-        <View style={{ height: 100 }}>
-          <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
-            <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
-          </Overlay>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+          </View>
+          <Text style={styles.text}>Books read: {booksReadCount}</Text>
+          <Text style={styles.text}>
+            Books currently reading: {booksCurrReadingCount}
+          </Text>
+          <Text style={styles.text}>
+            Books want to read: {booksWantToReadCount}
+          </Text>
+          <Text style={styles.text}>
+            Books did not finish: {booksDidNotFinishCount}
+          </Text>
+          <Divider />
+          <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingTop: 12,
+                paddingBottom: 12,
+                width: "100%",
+              }}
+            >
+              <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+                Notifications
+              </Text>
+              <View style={{ flex: 2 }}>
+                <Icon
+                  name="notifications"
+                  color={Colors.BUTTON_PURPLE}
+                  size={30}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <Divider />
+
+          <TouchableOpacity onPress={signOut}>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingTop: 12,
+                paddingBottom: 12,
+                width: "100%",
+              }}
+            >
+              <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+                Sign Out
+              </Text>
+              <View style={{ flex: 2 }}>
+                <Icon name="logout" color={Colors.BUTTON_PURPLE} size={30} />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <Divider />
+
+          <View style={{ paddingTop: 70, alignItems: "center" }}>
+            <Button
+              onPress={toggleOverlay}
+              color={"red"}
+              containerStyle={{ borderRadius: 30 }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  paddingRight: 5,
+                  fontSize: 17,
+                  paddingTop: 5,
+                  paddingBottom: 5,
+                  alignSelf: "center",
+                }}
+              >
+                Delete Account
+              </Text>
+            </Button>
+          </View>
+          <View style={{ height: 100 }}>
+            <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
+              <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
+            </Overlay>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ProfileContext.Provider>
   );
 }
 
@@ -295,21 +313,14 @@ function StatisticsTab() {
         contentContainerStyle={styles.scrollViewStyle}
       >
         <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10 }}>
-            An epic historical military fantasy, inspired by the bloody history
-            of China’s twentieth century and filled with treachery and magic.
-            When Rin aced the Keju—the Empire-wide test to find the most
-            talented youth to learn at the Academies—it was a shock to everyone:
-            to the test officials, who couldn’t believe a war orphan from
-            Rooster Province could pass without cheating.
-          </Text>
+          <Text style={{ margin: 10 }}>Hello</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
   );
 }
 
-function ProfileTabs({}) {
+function ProfileTabs() {
   return (
     <Tab.Navigator
       screenOptions={{ animationEnabled: false }}
@@ -327,7 +338,6 @@ export default ProfileTabs;
 const styles = StyleSheet.create({
   scrollViewStyle: {
     paddingBottom: 30,
-    // marginBottom: 100,
     paddingHorizontal: 5,
     backgroundColor: "white",
   },

@@ -10,6 +10,8 @@ import ShelfModal from "../Components/ShelfModal/ShelfModal";
 import NotificationsModal from "../Components/Notifications/NotificationsModal";
 import Review from "../Components/Review/Review";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
+import UsernameEditing from "@/Components/UsernameEditing";
+import { Profile } from "@/Screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -40,7 +42,6 @@ function AppNavigation() {
             <Stack.Screen name="bookInfoModal" component={BookInfoModal} />
             <Stack.Screen name="shelfModal" component={ShelfModal} />
             <Stack.Screen name="notifModal" component={NotificationsModal} />
-
           </Stack.Group>
           <Stack.Screen
             name="textReviewModal"
@@ -50,6 +51,8 @@ function AppNavigation() {
               gestureDirection: "horizontal",
             }}
           />
+          <Stack.Screen name="ProfileScreen" component={Profile} />
+          <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
         </>
       )}
     </Stack.Navigator>

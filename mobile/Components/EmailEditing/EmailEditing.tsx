@@ -17,13 +17,13 @@ import Colors from "@/Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "@/Constants/Dimensions";
 import { Account, AppwriteException } from "appwrite";
-
+import { useNavigation } from "@react-navigation/native";
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
 const account = new Account(client);
 
-export const EmailEditing = (props) => {
+export const EmailEditing = ({ route, navigation }) => {
   // TODO: unset dummy credentials before demo!
   const [email, setEmail] = React.useState(
     "bookymcbookface@tsundoku.ericswpark.com",
@@ -34,7 +34,7 @@ export const EmailEditing = (props) => {
   const [loading, setLoading] = React.useState(false);
   const { setLoggedIn } = React.useContext(LoginStateContext);
 
-  const { navigation } = props;
+  //   const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
