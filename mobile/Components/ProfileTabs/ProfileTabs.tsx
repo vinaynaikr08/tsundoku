@@ -94,12 +94,6 @@ function ProfileTab(props) {
   const { navigation } = useContext(ProfileContext);
   const account = new Account(client);
   const user_id = account.get();
-  const [isBookInfoModalVisible, setIsBookInfoModalVisible] = useState(false);
-  const promise = databases.listDocuments(
-    ID.mainDBID,
-    ID.bookStatusCollectionID,
-    [Query.equal("user_id", user_id as unknown as string)],
-  );
   const [booksReadCount, setBooksReadCount] = useState(0);
   const [booksCurrReadingCount, setBooksCurrReadingCount] = useState(0);
   const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
@@ -107,10 +101,6 @@ function ProfileTab(props) {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [email, setEmail] = useState(null);
-  const handleEditUsername = () => {
-    navigation.navigate("UsernameEditing");
-  };
-
   const toggleOverlay = () => {
     setOverlayVisible(!overlayVisible);
   };

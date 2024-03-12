@@ -1,69 +1,38 @@
-import { Text, View, ScrollView, Pressable } from "react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Databases, Account } from "appwrite";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+  Switch,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+  FlatList,
+  RefreshControl,
+} from "react-native";
 import { Query } from "appwrite";
-
-import Carousel from "@/Components/Carousel/Carousel";
-import ID from "@/Constants/ID";
-import CommunityUsersSearchBar from "@/Components/CommunityUsersSearchBar";
-import { DATA } from "@/Components/BookSearchBar/Genres";
-import Colors from "@/Constants/Colors";
 import { client } from "@/appwrite";
+import { Databases, Account } from "appwrite";
+import Colors from "@/Constants/Colors";
+import ID from "@/Constants/ID";
+import { ProfileContext } from "../../Contexts";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useFocusEffect } from "@react-navigation/native";
+import Dimensions from "@/Constants/Dimensions";
 
 const Tab = createMaterialTopTabNavigator();
 
-let shelf = "Friends";
-
-const account = new Account(client);
-const databases = new Databases(client);
-
-async function getBooksOfStatus(status: string) {
-  let books = [];
-  let user_id;
-  try {
-    user_id = (await account.get()).$id;
-  } catch (error: any) {
-    console.warn(
-      "CommunityTabs: an unknown error occurred attempting to fetch user details.",
-    );
-    return books;
-  }
-  let documents = (
-    await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
-      Query.equal("user_id", user_id),
-      Query.equal("status", status),
-    ])
-  ).documents;
-
-  await Promise.all(
-    documents.map(async (document) => {
-      const book_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.bookCollectionID,
-        document.book.$id,
-      );
-      books.push({
-        id: book_data.$id,
-        title: book_data.title,
-        author: book_data.authors[0].name,
-        summary: book_data.description,
-        image_url: book_data.editions[0].thumbnail_url,
-        isbn: book_data.editions[0].isbn_13,
-        genre: book_data.genre,
-      });
-    }),
-  );
-
-  return books;
-}
-
-function MyTabBar({ state, descriptors, navigation }) {
+function MyTabBar({ state, descriptors, navigation, position }) {
   return (
     <View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        bounces={false}
         contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 15 }}
       >
         {state.routes.map((route, index) => {
@@ -97,12 +66,12 @@ function MyTabBar({ state, descriptors, navigation }) {
                 borderRadius: 25,
                 padding: 10,
                 paddingHorizontal: 15,
+                height: 40,
               }}
             >
               <Text
                 style={{
                   fontWeight: "600",
-                  fontSize: 14,
                   color: isFocused ? "white" : "#777777",
                 }}
               >
@@ -115,83 +84,202 @@ function MyTabBar({ state, descriptors, navigation }) {
     </View>
   );
 }
+const databases = new Databases(client);
 
-function ReadingStatusCarousel({ status }) {
-  const [books, setBooks] = React.useState([]);
+async function getReviews(book_id: string) {
+  let reviews = [];
+  let documents = (
+    await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
+      Query.equal("book", book_id),
+    ])
+  ).documents;
+
+  await Promise.all(
+    documents.map(async (document) => {
+      const review_data = await databases.getDocument(
+        ID.mainDBID,
+        ID.reviewsCollectionID,
+        document.$id,
+      );
+
+      reviews.push({
+        rating: review_data.star_rating,
+        desc: review_data.description,
+        username: review_data.user_id,
+        id: document.$id,
+      });
+    }),
+  );
+
+  return reviews;
+}
+function FriendsTab(bookInfo) {
+  //   const { navigation } = props;
+  const [reviews, setReviews] = React.useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    refreshReviews();
+  }, []);
+
+  const refreshReviews = async () => {
+    setRefreshing(true);
+    try {
+      const refreshedReviews = await getReviews(bookInfo.id);
+      setReviews(refreshedReviews);
+    } catch (error) {
+      console.error("Error refreshing reviews:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   React.useEffect(() => {
     (async () => {
-      setBooks(await getBooksOfStatus(status));
+      setReviews(await getReviews(bookInfo.id));
     })();
   }, []);
+  // const { navigation } = useContext(ProfileContext);
+  const account = new Account(client);
+  // const user_id = account.get();
+  // const promise = databases.listDocuments(
+  //   ID.mainDBID,
+  //   ID.bookStatusCollectionID,
+  //   [Query.equal("user_id", user_id as unknown as string)],
+  // );
 
   return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        {reviews.length === 0 ? (
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={refreshReviews}
+              />
+            }
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                margin: 30,
+                color: "grey",
+              }}
+            >
+              No Activity
+            </Text>
+          </ScrollView>
+        ) : (
+          <View style={{ flex: 1 }}>
+            <FlatList
+              data={reviews}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item) => item.username}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={refreshReviews}
+                />
+              }
+              ListHeaderComponent={() => (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginVertical: 30,
+                    alignItems: "center",
+                  }}
+                ></View>
+              )}
+              renderItem={({ item }) => (
+                <View style={{ flex: 1 }}>
+                  <TouchableOpacity activeOpacity={1}>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <View style={{ marginRight: 10 }}>
+                        <Text style={{ fontSize: 20, marginBottom: 5 }}>
+                          {item.username}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                      }}
+                    >
+                      {item.desc}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+function BookClubsTab({}) {
+  return (
     <View style={{ flex: 1 }}>
-      {/* <Text>hiii</Text> */}
-      {/* <Carousel books={books} shelf={shelf} /> */}
+      {/* <BookInfoModalReview bookInfo={bookInfo} /> */}
+    </View>
+  );
+}
+
+function ChallengesTab() {
+  return (
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        bounces={false}
+        contentContainerStyle={styles.scrollViewStyle}
+      >
+        <TouchableOpacity activeOpacity={1}>
+          <Text style={{ margin: 10 }}>Hello</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
 
 function CommunityTabs() {
-  const GENRES = DATA();
-  const [loading, setLoading] = React.useState(false);
-  const [books, setBooks] = React.useState([]);
-  const [search, setSearch] = React.useState("");
-
-  React.useEffect(() => {
-    shelf = "Friends";
-  });
   return (
-    <View style={{ flex: 1 }}>
-      <Tab.Navigator
-        screenOptions={{ swipeEnabled: false }}
-        tabBar={(props) => <MyTabBar {...props} />}
-      >
-        <Tab.Screen
-          name="Friends"
-          children={() => <ReadingStatusCarousel status="CURRENTLY_READING" />}
-          listeners={{
-            tabPress: (e) => {
-              shelf = "Currently Reading";
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Book Clubs"
-          children={() => <ReadingStatusCarousel status="WANT_TO_READ" />}
-          listeners={{
-            tabPress: (e) => {
-              shelf = "Want To Read";
-            },
-          }}
-        />
-        <Tab.Screen
-          name="Challenges"
-          children={() => <ReadingStatusCarousel status="READ" />}
-          listeners={{
-            tabPress: (e) => {
-              shelf = "Read";
-            },
-          }}
-        />
-      </Tab.Navigator>
-      {/* <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
-        <CommunityUsersSearchBar
-          search={search}
-          updateSearch={(val) => {
-            setLoading(true);
-            setSearch(val);
-            //   performDebouncedSearch(val);
-          }}
-          newPlaceholder={"Search all books"}
-          loading={loading}
-          showFilter={true}
-          GENRES={GENRES}
-        />
-      </View> */}
-    </View>
+    <Tab.Navigator
+      screenOptions={{ animationEnabled: false }}
+      tabBar={(props) => <MyTabBar {...props} />}
+      sceneContainerStyle={{ backgroundColor: "transparent" }}
+    >
+      <Tab.Screen name="Friends" children={(props) => <FriendsTab />} />
+      <Tab.Screen name="Book Clubs" children={(props) => <BookClubsTab />} />
+      <Tab.Screen name="Challenges" component={ChallengesTab} />
+    </Tab.Navigator>
   );
 }
 
 export default CommunityTabs;
+
+const styles = StyleSheet.create({
+  scrollViewStyle: {
+    // paddingBottom: 30,
+    paddingHorizontal: 5,
+    backgroundColor: "white",
+  },
+  text: {
+    fontSize: 20,
+    margin: 20,
+  },
+  userInfoRow: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  userInfoText: {
+    fontSize: 20,
+    margin: 20,
+  },
+});
