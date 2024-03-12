@@ -22,6 +22,7 @@ import { Button, Icon, Overlay } from "@rneui/themed";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -114,14 +115,31 @@ function ProfileTab(props) {
     setOverlayVisible(!overlayVisible);
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      (async () => {
+        const account = new Account(client);
+        account
+          .get()
+          .then((response) => {
+            setUsername(response.name);
+            setEmail(response.email);
+          })
+          .catch((error) => {
+            console.error("Error fetching user ID:", error);
+          });
+      })();
+    }, []),
+  );
+
   useEffect(() => {
     const account = new Account(client);
     account
       .get()
       .then((response) => {
-        const user_id = response.$id; // user id in $id ?
-        setUsername(response.name);
-        setEmail(response.email);
+        const user_id = response.$id;
+        // setUsername(response.name);
+        // setEmail(response.email);
         const databases = new Databases(client);
         const promise = databases.listDocuments(
           ID.mainDBID,
@@ -136,7 +154,6 @@ function ProfileTab(props) {
             let currReadingCount = 0;
             let wantToReadCount = 0;
             let didNotFinishCount = 0;
-
             documents.forEach((doc) => {
               switch (doc.status) {
                 case "READ":
@@ -285,7 +302,7 @@ function ProfileTab(props) {
               </Text>
             </Button>
           </View>
-          <View style={{ height: 100 }}>
+          <View style={{ height: 50 }}>
             <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
               <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
             </Overlay>

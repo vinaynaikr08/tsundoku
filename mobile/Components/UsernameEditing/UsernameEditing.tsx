@@ -16,7 +16,6 @@ import {
 } from "react-native";
 import { ProfileContext } from "../../Contexts";
 import Colors from "@/Constants/Colors";
-import { Icon } from "@rneui/themed";
 import Dimensions from "@/Constants/Dimensions";
 import { Databases, Account } from "appwrite";
 
@@ -26,17 +25,12 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 const account = new Account(client);
 
 export const UsernameEditing = (props) => {
-  // TODO: unset dummy credentials before demo!
-  //   const [email, setEmail] = React.useState(
-  //     "bookymcbookface@tsundoku.ericswpark.com",
-  //   );
   const [username, setUsername] = useState(null);
-  //   const [password, setPassword] = React.useState("demoaccount12345");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const { setLoggedIn } = React.useContext(LoginStateContext);
-  //   const navigation = useContext(ProfileContext);
+  let user_id;
   const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -46,46 +40,18 @@ export const UsernameEditing = (props) => {
     account
       .get()
       .then((response) => {
-        const user_id = response.$id; // user id in $id ?
+        user_id = response.$id; // user id in $id ?
         setUsername(response.name);
         // setEmail(response.email);
-        const databases = new Databases(client);
+        // const databases = new Databases(client);
         // const promise = databases.listDocuments(
         //   ID.mainDBID,
         //   ID.bookStatusCollectionID,
         //   [Query.equal("user_id", user_id)],
         // );
-
         // promise.then(
         //   function (response) {
         //     const documents = response.documents;
-        //     let readCount = 0;
-        //     let currReadingCount = 0;
-        //     let wantToReadCount = 0;
-        //     let didNotFinishCount = 0;
-
-        //     documents.forEach((doc) => {
-        //       switch (doc.status) {
-        //         case "READ":
-        //           readCount++;
-        //           break;
-        //         case "CURRENTLY_READING":
-        //           currReadingCount++;
-        //           break;
-        //         case "WANT_TO_READ":
-        //           wantToReadCount++;
-        //           break;
-        //         case "DID_NOT_FINISH":
-        //           didNotFinishCount++;
-        //           break;
-        //         default:
-        //           break;
-        //       }
-        //     });
-        //     setBooksReadCount(readCount);
-        //     setBooksCurrReadingCount(currReadingCount);
-        //     setBooksWantToReadCount(wantToReadCount);
-        //     setBooksDidNotFinishCount(didNotFinishCount);
         //   },
         //   function (error) {
         //     console.log(error);
@@ -96,44 +62,51 @@ export const UsernameEditing = (props) => {
         console.error("Error fetching user ID:", error);
       });
   }, []);
-  //   const handleSignIn = () => {
-  //     account
-  //       .createEmailSession(email, password)
-  //       .then(() => {
-  //         account
-  //           .get()
-  //           .then(() => {
-  //             setLoggedIn(true);
-  //             setLoading(false);
-  //           })
-  //           .catch((error: any) => {
-  //             setLoading(false);
-  //             if (error instanceof Error) {
-  //               setErrorMessage(error.message);
-  //               setErrorModalVisible(true);
-  //             } else {
-  //               throw error;
-  //             }
-  //           });
-  //       })
-  //       .catch((error: any) => {
-  //         setLoading(false);
-  //         if (
-  //           error instanceof AppwriteException &&
-  //           (error as AppwriteException).code === 429
-  //         ) {
-  //           setErrorMessage(
-  //             "Too many incorrect sign-in attempts. Try again later.",
-  //           );
-  //           setErrorModalVisible(true);
-  //         } else if (error instanceof Error) {
-  //           setErrorMessage(error.message);
-  //           setErrorModalVisible(true);
-  //         } else {
-  //           throw error;
-  //         }
-  //       });
-  //   };
+
+  const handleSaveUsername = async () => {
+    try {
+      setLoading(true);
+
+      if (!username.trim()) {
+        setErrorMessage("Username cannot be empty");
+        setErrorModalVisible(true);
+        return;
+      }
+
+      // if username is already taken
+      //   const isUsernameTaken = await checkUsernameAvailability(username);
+      //   if (isUsernameTaken) {
+      //     setErrorMessage("Username is already taken");
+      //     setErrorModalVisible(true);
+      //     return;
+      //   }
+
+      //   const promise = account.updateEmail(user_id, 'email@example.com');
+      const promise = account.updateName(username);
+      setUsername(username);
+
+      promise.then(
+        function (response) {
+          console.log(response);
+          navigation.navigate("Profile");
+        },
+        function (error) {
+          console.log(error);
+        },
+      );
+    } catch (error) {
+      console.error("Error saving username:", error);
+      setErrorMessage("An error occurred while saving the username");
+      setErrorModalVisible(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkUsernameAvailability = async (username) => {
+    // TODO
+    return false; // return true if username is already taken, false otherwise
+  };
 
   return (
     <KeyboardAvoidingView
@@ -165,9 +138,9 @@ export const UsernameEditing = (props) => {
           <View style={styles.saveButtonContainer}>
             <Pressable
               onPress={() => {
-                //   setLoading(true);
-                //   handleSignIn();
-                navigation.navigate("Profile");
+                setLoading(true);
+                handleSaveUsername();
+                // navigation.navigate("Profile");
               }}
               style={styles.saveButton}
             >

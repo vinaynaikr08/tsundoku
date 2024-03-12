@@ -40,10 +40,6 @@ export const Profile = (props) => {
     ID.bookStatusCollectionID,
     [Query.equal("user_id", user_id as unknown as string)],
   );
-  const [booksReadCount, setBooksReadCount] = useState(0);
-  const [booksCurrReadingCount, setBooksCurrReadingCount] = useState(0);
-  const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
-  const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [email, setEmail] = useState(null);
@@ -57,7 +53,7 @@ export const Profile = (props) => {
     account
       .get()
       .then((response) => {
-        const user_id = response.$id; // user id in $id ?
+        const user_id = response.$id;
         setUsername(response.name);
         setEmail(response.email);
         const databases = new Databases(client);
@@ -66,42 +62,6 @@ export const Profile = (props) => {
           ID.bookStatusCollectionID,
           [Query.equal("user_id", user_id)],
         );
-
-        // promise.then(
-        //   function (response) {
-        //     const documents = response.documents;
-        //     let readCount = 0;
-        //     let currReadingCount = 0;
-        //     let wantToReadCount = 0;
-        //     let didNotFinishCount = 0;
-
-        //     documents.forEach((doc) => {
-        //       switch (doc.status) {
-        //         case "READ":
-        //           readCount++;
-        //           break;
-        //         case "CURRENTLY_READING":
-        //           currReadingCount++;
-        //           break;
-        //         case "WANT_TO_READ":
-        //           wantToReadCount++;
-        //           break;
-        //         case "DID_NOT_FINISH":
-        //           didNotFinishCount++;
-        //           break;
-        //         default:
-        //           break;
-        //       }
-        //     });
-        //     setBooksReadCount(readCount);
-        //     setBooksCurrReadingCount(currReadingCount);
-        //     setBooksWantToReadCount(wantToReadCount);
-        //     setBooksDidNotFinishCount(didNotFinishCount);
-        //   },
-        //   function (error) {
-        //     console.log(error);
-        //   },
-        // );
       })
       .catch((error) => {
         console.error("Error fetching user ID:", error);
