@@ -1,19 +1,3 @@
-// import * as React from "react";
-// import {
-//   Button,
-//   FlatList,
-//   StyleSheet,
-//   Text,
-//   View,
-//   ScrollView,
-//   Pressable,
-//   TouchableOpacity,
-// } from "react-native";
-// import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-// import Colors from "../../Constants/Colors";
-// import Dimensions from "../../Constants/Dimensions";
-// import FontAwesome from "react-native-vector-icons/FontAwesome";
-// import BookInfoModalReview from "../BookInfoModalReview";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -37,7 +21,7 @@ import { Divider } from "react-native-paper";
 import { Button, Icon, Overlay } from "@rneui/themed";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-// import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -195,8 +179,20 @@ function ProfileTab(props) {
         contentContainerStyle={styles.scrollViewStyle}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.userInfoText}>Username: {username}</Text>
-        <Text style={styles.userInfoText}>Email: {email}</Text>
+        <View style={styles.userInfoRow}>
+          <Text style={styles.userInfoText}>Username: {username}</Text>
+          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text
+            style={styles.userInfoText}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            Email: {email}
+          </Text>
+          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+        </View>
         <Text style={styles.text}>Books read: {booksReadCount}</Text>
         <Text style={styles.text}>
           Books currently reading: {booksCurrReadingCount}
@@ -339,8 +335,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 20,
   },
+  userInfoRow: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
   userInfoText: {
-    fontSize: 18,
+    fontSize: 20,
     margin: 20,
   },
 });
