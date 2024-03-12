@@ -138,8 +138,6 @@ function ProfileTab(props) {
       .get()
       .then((response) => {
         const user_id = response.$id;
-        // setUsername(response.name);
-        // setEmail(response.email);
         const databases = new Databases(client);
         const promise = databases.listDocuments(
           ID.mainDBID,
@@ -225,7 +223,17 @@ function ProfileTab(props) {
             >
               Email: {email}
             </Text>
-            <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("EmailEditing");
+              }}
+            >
+              <MaterialIcons
+                name="edit"
+                size={22}
+                color={Colors.BUTTON_PURPLE}
+              />
+            </TouchableOpacity>
           </View>
           <Text style={styles.text}>Books read: {booksReadCount}</Text>
           <Text style={styles.text}>

@@ -12,6 +12,7 @@ import Review from "../Components/Review/Review";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import UsernameEditing from "@/Components/UsernameEditing";
 import { Profile } from "@/Screens/ProfileScreen";
+import EmailEditing from "@/Components/EmailEditing";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ function AppNavigation() {
           />
           <Stack.Screen name="ProfileScreen" component={Profile} />
           <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
+          <Stack.Screen name="EmailEditing" component={EmailEditing} />
         </>
       )}
     </Stack.Navigator>
