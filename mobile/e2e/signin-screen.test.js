@@ -4,7 +4,9 @@ describe("Sign in screen", () => {
   });
 
   beforeEach(async () => {
-    await device.reloadReactNative();
+    await device.uninstallApp();
+    await device.installApp();
+    await device.launchApp();
 
     // Navigate to sign-in screen
     await element(by.id("initial-launch-screen-launch-start-arrow")).tap();
@@ -27,10 +29,33 @@ describe("Sign in screen", () => {
     );
 
     // Dismiss keyboard (or else Detox (and the user) cannot see the sign in arrow)
-    await element(by.id('sign-in-password-field')).tapReturnKey();
+    await element(by.id("sign-in-password-field")).tapReturnKey();
 
     await element(by.id("sign-in-signin-arrow")).tap();
 
     await expect(element(by.id("library-screen-view"))).toBeVisible();
+  });
+
+  it("try sign in with bad credentials", async () => {
+    // Clear fields if populated
+    await element(by.id("sign-in-email-field")).clearText();
+    await element(by.id("sign-in-password-field")).clearText();
+
+    await element(by.id("sign-in-email-field")).typeText(
+      "detoxtest@example.com",
+    );
+    await element(by.id("sign-in-password-field")).typeText(
+      "intentionally-wrong-password",
+    );
+
+    // Dismiss keyboard (or else Detox (and the user) cannot see the sign in arrow)
+    await element(by.id("sign-in-password-field")).tapReturnKey();
+
+    await element(by.id("sign-in-signin-arrow")).tap();
+
+    await expect(element(by.id("sign-in-error-modal"))).toBeVisible();
+    await expect(element(by.id("sign-in-error-modal-message"))).toHaveText(
+      "Invalid credentials. Please check the email and password.",
+    );
   });
 });

@@ -112,7 +112,7 @@ export const SignIn = () => {
             />
           </View>
           <Pressable
-          testID="sign-in-signin-arrow"
+            testID="sign-in-signin-arrow"
             onPress={() => {
               setLoading(true);
               handleSignIn();
@@ -141,9 +141,11 @@ export const SignIn = () => {
         visible={errorModalVisible}
         onRequestClose={() => setErrorModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
+        <View style={styles.modalContainer} testID="sign-in-error-modal">
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{errorMessage}</Text>
+            <Text style={styles.modalText} testID="sign-in-error-modal-message">
+              {errorMessage}
+            </Text>
             <Pressable onPress={() => setErrorModalVisible(false)}>
               <Text style={styles.modalButton}>Close</Text>
             </Pressable>
