@@ -24,4 +24,6 @@ jobs:
       - name: Run Detox Build
         run: npx detox build --configuration ios.sim.debug
       - name: Run Detox Test
-        run: npx detox test --configuration ios.sim.debug
+        run: |
+          npx expo start &
+          npx detox test --configuration ios.sim.debug
