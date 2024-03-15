@@ -11,7 +11,7 @@ env:
   ANDROID_TARGET: google_apis_playstore
   API_LEVEL: 34
   EMULATOR_NAME: Pixel_7_API_34_x86
-  ANDROID_SDK_PACKAGES: tools platfrom-tools emulator system-images;android-34;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0
+  ANDROID_SDK_PACKAGES: tools platform-tools emulator system-images;android-34;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0
 
 jobs:
   build:
