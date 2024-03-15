@@ -33,7 +33,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: ${{ ANDROID_SDK_PACKAGES }}
+          packages: ${{env.ANDROID_SDK_PACKAGES}}
       - name: Build emulator
         run: |
           echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
