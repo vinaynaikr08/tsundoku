@@ -19,10 +19,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: setup-cocoapods
+      - name: Set up CocoaPods
         uses: maxim-lobanov/setup-cocoapods@v1
         with:
           version: latest
+      - name: Set up applesimutils
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
       - name: Install dependencies
         run: npm ci
       - name: Install CocoaPods
