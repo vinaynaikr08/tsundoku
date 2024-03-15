@@ -7,6 +7,12 @@ export namespace GoogleBooksAPI {
         res
           .json()
           .then((res_json) => {
+            if (
+              typeof res_json === "undefined" ||
+              typeof res_json.items === "undefined"
+            ) {
+              throw new Error();
+            }
             return res_json.items;
           })
           .catch((error) => {
@@ -24,6 +30,9 @@ export namespace GoogleBooksAPI {
         res
           .json()
           .then((res_json) => {
+            if (typeof res_json === "undefined") {
+              throw new Error();
+            }
             return res_json;
           })
           .catch((error) => {
