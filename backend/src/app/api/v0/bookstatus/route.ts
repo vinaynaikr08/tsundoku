@@ -24,8 +24,9 @@ async function checkBookExists(book_id: string): Promise<boolean> {
       (error as AppwriteException).message === "document_not_found"
     ) {
       return false;
+    } else {
+      throw error;
     }
-    throw error;
   }
 }
 
@@ -54,20 +55,24 @@ export async function GET(request: NextRequest) {
         message: "Authentication failed.",
         status_code: 401,
       });
+    } else {
+      console.log(error);
+      return construct_development_api_response({
+        message: "Unknown error. Please contact the developers.",
+        status_code: 500,
+      });
     }
-    console.log(error);
-    return construct_development_api_response({
-      message: "Unknown error. Please contact the developers.",
-      status_code: 500,
-    });
   }
 
   let user_id: any;
-  userAccount.get().then((res: any) => {
-    user_id = res.$id;
-  }).catch((error: any) => {
-    return appwriteUnavailableResponse(); 
-  })
+  userAccount
+    .get()
+    .then((res: any) => {
+      user_id = res.$id;
+    })
+    .catch((error: any) => {
+      return appwriteUnavailableResponse();
+    });
 
   return construct_development_api_response({
     message: `Book status results for: ${user_id}`,

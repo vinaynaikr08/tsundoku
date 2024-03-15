@@ -131,6 +131,8 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     if (error instanceof AppwriteException) {
       return appwriteUnavailableResponse();
+    } else {
+      throw error;
     }
   }
 
@@ -157,6 +159,8 @@ export async function GET(request: NextRequest) {
           if (error instanceof TypeError) {
             // This book doesn't have an author, skip
             continue;
+          } else {
+            throw error;
           }
         }
 
@@ -199,10 +203,11 @@ export async function GET(request: NextRequest) {
           } catch (error) {
             if (error instanceof AppwriteException) {
               return appwriteUnavailableResponse();
-            }
-            if (error instanceof TypeError) {
+            } else if (error instanceof TypeError) {
               // This book doesn't have one of the required fields, skip
               continue;
+            } else {
+              throw error;
             }
           }
         }
