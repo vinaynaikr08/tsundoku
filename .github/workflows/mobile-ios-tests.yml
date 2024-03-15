@@ -21,8 +21,10 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci
-      - name: Run Detox Build
-        run: npx detox build --configuration ios.sim.debug
+      - name: Prebuild and build test artifact
+        run: |
+          npx expo prebuild
+          npx detox build --configuration ios.sim.debug
       - name: Run Detox Test
         run: |
           npx expo start &
