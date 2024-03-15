@@ -62,3 +62,19 @@ For running on Android (debug build):
 detox build --configuration android.emu.debug
 detox test --configuration android.emu.debug
 ```
+
+### Troubleshooting
+
+#### When running `detox build`, I get an Xcode error.
+
+- Make sure you have installed all updates for your Mac.
+  - In System Settings, make sure you do not have any system updates. If you do, install all of them.
+  - In the App Store, make sure you do not have any updates for Xcode. If you do, install it.
+- Launch Xcode and agree to the terms and conditions.
+- Xcode will prompt you to install the runtimes and simulators. Make sure the "iOS" platform is selected, and click "Install"
+
+Then try running the commands again.
+
+#### The build command fails on Windows.
+
+This is a syntax issue with the commands. I've asked about it on the Detox Discord, but for now, you can temporarily work around it by changing the `./gradlew` command in the build commands section to `.\\gradlew`.
