@@ -87,7 +87,6 @@ function NavBar() {
       })}
     >
       <BottomBar.Screen
-        // currently is sign-in screen for testing
         name="home"
         component={Library}
         options={{
