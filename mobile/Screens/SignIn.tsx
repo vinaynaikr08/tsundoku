@@ -40,7 +40,7 @@ export const SignIn = (props) => {
   };
   const handleSignIn = () => {
     account
-      .createEmailSession(email, password)
+      .createEmailPasswordSession(email, password)
       .then(() => {
         account
           .get()
