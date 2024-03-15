@@ -22,7 +22,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run Detox Build
-        run: npx detox build --configuration android.emu.debug
+        run: |
+          chmod +x android/gradlew
+          npx detox build --configuration android.emu.debug
       - name: Run Detox Test
         run: |
           npx expo start &
