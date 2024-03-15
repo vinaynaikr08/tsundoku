@@ -23,7 +23,7 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
 const account = new Account(client);
 
-export const SignIn = (props) => {
+export const SignIn = () => {
   // TODO: unset dummy credentials before demo!
   const [email, setEmail] = React.useState(
     "bookymcbookface@tsundoku.ericswpark.com",
@@ -34,7 +34,6 @@ export const SignIn = (props) => {
   const [loading, setLoading] = React.useState(false);
   const { setLoggedIn } = React.useContext(LoginStateContext);
 
-  const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
