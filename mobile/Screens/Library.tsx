@@ -208,7 +208,7 @@ export const Library = (props) => {
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View>
+          <View testID="library-screen-view">
             <Text
               style={{
                 marginLeft: 20,

@@ -64,7 +64,9 @@ export const SignIn = (props) => {
           error instanceof AppwriteException &&
           (error as AppwriteException).code === 429
         ) {
-          setErrorMessage("Too many incorrect sign-in attempts. Try again later.");
+          setErrorMessage(
+            "Too many incorrect sign-in attempts. Try again later.",
+          );
           setErrorModalVisible(true);
         } else if (error instanceof Error) {
           setErrorMessage(error.message);
@@ -86,6 +88,7 @@ export const SignIn = (props) => {
           <Text style={styles.title}>Sign in</Text>
           <View style={styles.inputContainer}>
             <TextInput
+              testID="sign-in-email-field"
               style={styles.input}
               value={email}
               onChangeText={setEmail}
@@ -98,6 +101,7 @@ export const SignIn = (props) => {
           </View>
           <View style={styles.inputContainer}>
             <TextInput
+              testID="sign-in-password-field"
               style={styles.input}
               value={password}
               onChangeText={setPassword}
@@ -109,6 +113,7 @@ export const SignIn = (props) => {
             />
           </View>
           <Pressable
+          testID="sign-in-signin-arrow"
             onPress={() => {
               setLoading(true);
               handleSignIn();
