@@ -74,7 +74,3 @@ detox test --configuration android.emu.debug
 - Xcode will prompt you to install the runtimes and simulators. Make sure the "iOS" platform is selected, and click "Install"
 
 Then try running the commands again.
-
-#### The build command fails on Windows.
-
-This is a syntax issue with the commands. I've asked about it on the Detox Discord, but for now, you can temporarily work around it by changing the `./gradlew` command in the build commands section to `.\\gradlew`.
