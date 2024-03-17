@@ -43,4 +43,4 @@ jobs:
       - name: Run Detox Test
         run: |
           npx expo start &
-          sleep 5 && npx detox test --configuration ios.sim.debug
+          sleep 5 && npx detox test --configuration ios.sim.debug --headless
