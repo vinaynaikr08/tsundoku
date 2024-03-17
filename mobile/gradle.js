@@ -10,7 +10,7 @@ function runAndroidTest(args) {
   const command = `${baseCommand} ${args.join(" ")}`;
 
   try {
-    const output = execSync(command, { stdio: "inherit", cwd: "./android" });
+    const output = execSync(command, { stdio: "inherit", cwd: "android" });
     if (output && output.toString()) {
       console.log(output.toString());
     }
