@@ -9,8 +9,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
+  Image,
   FlatList,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { Query } from "appwrite";
 import { client } from "@/appwrite";
@@ -86,47 +88,86 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 }
 const databases = new Databases(client);
 
-async function getReviews(book_id: string) {
-  let reviews = [];
+async function getBookInfo(book_id: string) {
+  let bookInfo = [];
+  const account = new Account(client);
+  let user_id;
+  try {
+    user_id = (await account.get()).$id;
+  } catch (error: any) {
+    console.warn("An unknown error occurred attempting to fetch user details.");
+    return bookInfo;
+  }
+  const book_document = await databases.getDocument(
+    ID.mainDBID,
+    ID.bookCollectionID,
+    book_id,
+  );
+  if (book_document) {
+    bookInfo.push({
+      id: book_document.$id,
+      title: book_document.title,
+      author: book_document.authors[0].name,
+      image_url: book_document.editions[0].thumbnail_url,
+    });
+  }
+  return bookInfo;
+}
+
+async function getActivity(book_id: string) {
+  // const activity = [];
+  let activity = [];
+  const account = new Account(client);
+  const uniqueActivity = new Map();
+  let user_id;
+  try {
+    user_id = (await account.get()).$id;
+  } catch (error: any) {
+    console.warn("An unknown error occurred attempting to fetch user details.");
+    return activity;
+  }
   let documents = (
-    await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
-      Query.equal("book", book_id),
-    ])
+    await databases.listDocuments(
+      ID.mainDBID,
+      ID.bookStatusCollectionID,
+      // TODO: make it so only friend activity appears
+      //  [ Query.equal("user_id", user_id) ]
+    )
   ).documents;
 
   await Promise.all(
     documents.map(async (document) => {
-      const review_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.reviewsCollectionID,
-        document.$id,
-      );
-
-      reviews.push({
-        rating: review_data.star_rating,
-        desc: review_data.description,
-        username: review_data.user_id,
-        id: document.$id,
+      const bookInfo = await getBookInfo(document.book.$id);
+      console.log(bookInfo);
+      activity.push({
+        key: document.$id,
+        status: document.status,
+        username: document.user_id,
+        book: bookInfo[0],
+        timestamp: document.$createdAt,
       });
     }),
   );
-
-  return reviews;
+  activity.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  );
+  return activity;
 }
+
 function FriendsTab(bookInfo) {
-  //   const { navigation } = props;
-  const [reviews, setReviews] = React.useState([]);
+  const [activity, setActivity] = React.useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    refreshReviews();
+    refreshActivity();
   }, []);
 
-  const refreshReviews = async () => {
+  const refreshActivity = async () => {
     setRefreshing(true);
     try {
-      const refreshedReviews = await getReviews(bookInfo.id);
-      setReviews(refreshedReviews);
+      setActivity([]);
+      const refreshedActivity = await getActivity(bookInfo.id);
+      setActivity(refreshedActivity);
     } catch (error) {
       console.error("Error refreshing reviews:", error);
     } finally {
@@ -136,86 +177,105 @@ function FriendsTab(bookInfo) {
 
   React.useEffect(() => {
     (async () => {
-      setReviews(await getReviews(bookInfo.id));
+      setActivity(await getActivity(bookInfo.id));
     })();
   }, []);
   // const { navigation } = useContext(ProfileContext);
-  const account = new Account(client);
-  // const user_id = account.get();
-  // const promise = databases.listDocuments(
-  //   ID.mainDBID,
-  //   ID.bookStatusCollectionID,
-  //   [Query.equal("user_id", user_id as unknown as string)],
-  // );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        {reviews.length === 0 ? (
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={refreshReviews}
-              />
-            }
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                margin: 30,
-                color: "grey",
-              }}
-            >
-              No Activity
-            </Text>
-          </ScrollView>
+        {refreshing ? (
+          <ActivityIndicator size="large" color="grey" />
         ) : (
-          <View style={{ flex: 1 }}>
-            <FlatList
-              data={reviews}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item) => item.username}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={refreshReviews}
-                />
-              }
-              ListHeaderComponent={() => (
-                <View
+          <View style={{ flex: 1, backgroundColor: "white" }}>
+            {activity.length === 0 ? (
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={refreshActivity}
+                  />
+                }
+              >
+                <Text
                   style={{
-                    flexDirection: "row",
-                    marginVertical: 30,
-                    alignItems: "center",
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    margin: 30,
+                    color: "grey",
                   }}
-                ></View>
-              )}
-              renderItem={({ item }) => (
-                <View style={{ flex: 1 }}>
-                  <TouchableOpacity activeOpacity={1}>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <View style={{ marginRight: 10 }}>
-                        <Text style={{ fontSize: 20, marginBottom: 5 }}>
-                          {item.username}
-                        </Text>
-                      </View>
+                >
+                  No Activity
+                </Text>
+              </ScrollView>
+            ) : (
+              <View style={{ flex: 1 }}>
+                <FlatList
+                  data={activity}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={(item) => item.key}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={refreshActivity}
+                    />
+                  }
+                  renderItem={({ item }) => (
+                    <View style={styles.cardContainer}>
+                      <TouchableOpacity
+                        activeOpacity={1}
+                        style={{ flexDirection: "row" }}
+                      >
+                        <View style={{ flex: 1 }}>
+                          {item.status === "READ" && (
+                            <Text style={styles.statusText}>
+                              {`${item.username} finished reading:\n${item.book.title}`}
+                            </Text>
+                          )}
+                          {item.status === "CURRENTLY_READING" && (
+                            <Text style={styles.statusText}>
+                              {`${item.username} started reading:\n${item.book.title}`}
+                            </Text>
+                          )}
+                          {item.status === "WANT_TO_READ" && (
+                            <Text style={styles.statusText}>
+                              {`${item.username} wants to read:\n${item.book.title}`}
+                            </Text>
+                          )}
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              marginLeft:
+                                Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                              marginBottom:
+                                Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                            }}
+                          >
+                            {new Date(item.timestamp).toLocaleString()}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              marginLeft:
+                                Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                              marginBottom:
+                                Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+                            }}
+                          >
+                            {`by ${item.book.author}`}
+                          </Text>
+                        </View>
+                        <Image
+                          source={{ uri: item.book.image_url }}
+                          style={styles.bookCoverImage}
+                        />
+                      </TouchableOpacity>
                     </View>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-                      }}
-                    >
-                      {item.desc}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
+                  )}
+                />
+              </View>
+            )}
           </View>
         )}
       </View>
@@ -264,6 +324,21 @@ function CommunityTabs() {
 export default CommunityTabs;
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    padding: 10,
+    // marginBottom: 10,
+    margin: 15,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   scrollViewStyle: {
     // paddingBottom: 30,
     paddingHorizontal: 5,
@@ -281,5 +356,19 @@ const styles = StyleSheet.create({
   userInfoText: {
     fontSize: 20,
     margin: 20,
+  },
+  statusText: {
+    fontSize: 17,
+    margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+  },
+  timestampText: {
+    fontSize: 15,
+  },
+  bookCoverImage: {
+    width: 80,
+    height: 120,
+    margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+    resizeMode: "cover",
+    borderRadius: 5,
   },
 });
