@@ -52,4 +52,4 @@ jobs:
       - name: Run Detox Test
         run: |
           npx expo start &
-          npx detox test --configuration android.emu.debug
+          sleep 5 && npx detox test --configuration android.emu.debug
