@@ -58,6 +58,11 @@ jobs:
           chmod +x android/gradlew
           npx detox build --configuration android.emu.debug
       - name: Run Detox Test
-        run: |
-          npx expo start &
-          sleep 5 && npx detox test --configuration android.emu.debug
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ env.API_LEVEL }}
+          arch: ${{ env.ANDROID_ARCH }}
+          avd-name: ${{ env.EMULATOR_NAME }}
+          script: |
+            npx expo start &
+            sleep 5 && npx detox test --configuration android.emu.debug --headless
