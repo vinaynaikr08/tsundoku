@@ -66,6 +66,7 @@ jobs:
           api-level: ${{ env.ANDROID_EMU_API_LEVEL }}
           arch: ${{ env.ANDROID_EMU_ARCH }}
           avd-name: ${{ env.ANDROID_EMU_NAME }}
+          working-directory: ./mobile
           script: |
             npx expo start &
             sleep 5 && npx detox test --configuration android.emu.debug --headless
