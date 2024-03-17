@@ -12,7 +12,6 @@ on:
 
 env:
   ANDROID_EMU_ARCH: x86_64
-  ANDROID_TARGET: google_apis_playstore
   ANDROID_EMU_API_LEVEL: 34
   ANDROID_EMU_NAME: Pixel_7_API_34_x86
 
@@ -44,6 +43,14 @@ jobs:
           key: ${{ runner.os }}-detox-build
           restore-keys: |
             ${{ runner.os }}-detox-build
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ env.ANDROID_EMU_API_LEVEL }}
       - name: Run Detox Build
         run: |
           chmod +x android/gradlew
