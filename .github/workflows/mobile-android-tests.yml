@@ -11,11 +11,10 @@ on:
       - mobile/**
 
 env:
-  ANDROID_ARCH: x86_64
+  ANDROID_EMU_ARCH: x86_64
   ANDROID_TARGET: google_apis_playstore
-  API_LEVEL: 34
-  EMULATOR_NAME: Pixel_7_API_34_x86
-  ANDROID_SDK_PACKAGES: tools platform-tools emulator system-images;android-34;google_apis_playstore;x86_64 platforms;android-34 build-tools;34.0.0
+  ANDROID_EMU_API_LEVEL: 34
+  ANDROID_EMU_NAME: Pixel_7_API_34_x86
 
 jobs:
   build:
@@ -35,14 +34,6 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           cache: "gradle"
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: ${{ env.ANDROID_SDK_PACKAGES }}
-      - name: Build emulator
-        run: |
-          echo "no" | avdmanager --verbose create avd --force -n "$EMULATOR_NAME" --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
-          avdmanager list avd
       - name: Install dependencies
         run: npm ci
       - name: Cache Detox build
@@ -60,9 +51,9 @@ jobs:
       - name: Run Detox Test
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ env.API_LEVEL }}
-          arch: ${{ env.ANDROID_ARCH }}
-          avd-name: ${{ env.EMULATOR_NAME }}
+          api-level: ${{ env.ANDROID_EMU_API_LEVEL }}
+          arch: ${{ env.ANDROID_EMU_ARCH }}
+          avd-name: ${{ env.ANDROID_EMU_NAME }}
           script: |
             npx expo start &
             sleep 5 && npx detox test --configuration android.emu.debug --headless
