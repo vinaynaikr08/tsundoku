@@ -180,7 +180,6 @@ function FriendsTab(bookInfo) {
       setActivity(await getActivity(bookInfo.id));
     })();
   }, []);
-  // const { navigation } = useContext(ProfileContext);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
