@@ -1,5 +1,8 @@
 # mobile
 
+[![Mobile iOS Tests](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/mobile-ios-tests.yml/badge.svg)](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/mobile-ios-tests.yml)
+[![Mobile Android Tests](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/mobile-android-tests.yml/badge.svg)](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/mobile-android-tests.yml)
+
 Android/iOS app written in React Native (Expo)
 
 ## Building

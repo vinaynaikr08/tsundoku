@@ -1,5 +1,7 @@
 # Tsundoku-Docker
 
+[![Build backend Docker image](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/backend-docker-image.yml/badge.svg)](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/backend-docker-image.yml)
+
 This directory houses the project needed to set up the Tsundoku stack with Docker and Docker Compose.
 
 ## Upgrading

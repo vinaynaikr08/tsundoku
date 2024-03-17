@@ -1,3 +1,9 @@
+# Backend
+
+[![Backend Playwright Tests](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/backend-playwright-tests.yml/badge.svg)](https://github.com/Purdue-CS307-tsundoku/tsundoku/actions/workflows/backend-playwright-tests.yml)
+
+Backend project for Tsundoku, written with NextJS
+
 ## Build
 
 ```bash
