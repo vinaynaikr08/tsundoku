@@ -38,13 +38,21 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
-          packages: ${{env.ANDROID_SDK_PACKAGES}}
+          packages: ${{ env.ANDROID_SDK_PACKAGES }}
       - name: Build emulator
         run: |
           echo "no" | avdmanager --verbose create avd --force -n "$EMULATOR_NAME" --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
           avdmanager list avd
       - name: Install dependencies
         run: npm ci
+      - name: Cache Detox build
+        id: cache-detox-build
+        uses: actions/cache@v3
+        with:
+          path: android/app/build
+          key: ${{ runner.os }}-detox-build
+          restore-keys: |
+            ${{ runner.os }}-detox-build
       - name: Run Detox Build
         run: |
           chmod +x android/gradlew
