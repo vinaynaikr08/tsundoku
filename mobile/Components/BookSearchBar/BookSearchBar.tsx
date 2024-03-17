@@ -121,7 +121,6 @@ const BookSearchBar = ({
           </View>
         </Overlay>
       </View>
-      <Divider style={{ marginTop: 11, paddingBottom: 0 }} />
 
       {/*}
             <View style={{position: "absolute", bottom: -40, flexDirection: "row"}}>

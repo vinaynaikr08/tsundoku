@@ -101,6 +101,9 @@ const ShelfModal = ({ route, navigation }) => {
           GENRES={GENRES}
         />
       </View>
+
+      <Divider style={styles.sectionDivider} />
+
       <View
         style={styles.resultsContainer}
       >
@@ -135,7 +138,7 @@ const ShelfModal = ({ route, navigation }) => {
                     <Text>ISBN: {item.isbn}</Text>
                   </View>
                 </TouchableOpacity>
-                <Divider style={styles.divider} />
+                <Divider style={styles.resultDivider} />
               </View>
             );
           }}
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "82.3%",
     borderRadius: 10,
-    top: 150,
+    top: 148,
     left: 20,
     paddingTop: 0,
     marginTop: -14,
@@ -221,8 +224,16 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     width: "80%",
   },
-  divider: { 
+  resultDivider: { 
     paddingTop: 8, 
-    paddingBottom: 8 
+    paddingBottom: 8,
+    width: '90%',
   },
+  sectionDivider: {
+    paddingTop: 0, 
+    paddingBottom: 0, 
+    width: '94%', 
+    position: "absolute", 
+    top: 133, 
+    left: '3%'},
 });
