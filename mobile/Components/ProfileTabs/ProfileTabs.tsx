@@ -236,6 +236,30 @@ function ProfileTab(props) {
             Books did not finish: {booksDidNotFinishCount}
           </Text>
           <Divider />
+           
+          <TouchableOpacity onPress={() => navigation.navigate("manageFriends")}>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingTop: 12,
+                paddingBottom: 12,
+                width: "100%",
+              }}
+            >
+              <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+                Manage Friends
+              </Text>
+              <View style={{ flex: 2 }}>
+                <Icon
+                  name="people"
+                  color={Colors.BUTTON_PURPLE}
+                  size={30}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <Divider />
           <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
             <View
               style={{

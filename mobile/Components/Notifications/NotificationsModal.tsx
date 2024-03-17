@@ -12,7 +12,7 @@ const NotificationsModal = () => {
 
     return (
         <View style={{alignItems: 'center', paddingTop: 20}}>
-            <Text style={{fontSize: 30}}>
+            <Text style={{fontSize: 25}}>
                 Notification Settings
             </Text>
 
