@@ -217,6 +217,17 @@ export const Discover = (props) => {
             GENRES={GENRES}
           />
         </View>
+        <View>
+          <Image source={require("../assets/wrapped-banner.png")} style={{width: '100%', height: 150}} />
+          <View style={{position: 'absolute', top: "15%", width: 300, justifyContent: 'center', alignSelf: 'center',}}>
+            <Text style={{color: 'white', fontSize: 20, textAlign: 'center', fontWeight: '500'}}>
+              Your [insert year] Tsundoku Wrapped is here!
+            </Text>
+            <TouchableOpacity style={{backgroundColor: 'white', padding: 0, margin: 0, height: 36, width: '36%', top: 10, justifyContent: 'center', alignSelf: 'center', borderRadius: 15}}>
+              <Text style={{textAlign: 'center', color: '#5E3FC5', fontSize: 15}}>Open</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <CarouselTabs navigation={navigation} />
 
         {search.length > 0 && (
