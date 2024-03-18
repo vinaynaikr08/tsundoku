@@ -69,4 +69,6 @@ jobs:
           working-directory: ./mobile
           script: |
             npx expo start &
+            expo_bundler_pid=$!
             sleep 5 && npx detox test --configuration android.emu.debug --headless
+            kill "$expo_bundler_pid"
