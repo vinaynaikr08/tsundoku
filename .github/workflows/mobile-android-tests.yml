@@ -43,14 +43,6 @@ jobs:
           key: ${{ runner.os }}-detox-build
           restore-keys: |
             ${{ runner.os }}-detox-build
-      - name: AVD cache
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-${{ env.ANDROID_EMU_API_LEVEL }}
       - name: Run Detox Build
         run: |
           chmod +x android/gradlew
