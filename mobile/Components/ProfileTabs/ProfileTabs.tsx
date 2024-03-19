@@ -236,8 +236,29 @@ function ProfileTab(props) {
             Books did not finish: {booksDidNotFinishCount}
           </Text>
           <Divider />
-           
-          <TouchableOpacity onPress={() => navigation.navigate("manageFriends")}>
+
+          <Button
+            onPress={() => navigation.navigate("createCustomProperty")}
+            color={Colors.BUTTON_PURPLE}
+            containerStyle={{ borderRadius: 30 }}
+          >
+            <Text
+              style={{
+                color: "white",
+                paddingRight: 5,
+                fontSize: 17,
+                paddingTop: 5,
+                paddingBottom: 5,
+                alignSelf: "center",
+              }}
+            >
+              Create Custom Property
+            </Text>
+          </Button>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("manageFriends")}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -250,11 +271,7 @@ function ProfileTab(props) {
                 Manage Friends
               </Text>
               <View style={{ flex: 2 }}>
-                <Icon
-                  name="people"
-                  color={Colors.BUTTON_PURPLE}
-                  size={30}
-                />
+                <Icon name="people" color={Colors.BUTTON_PURPLE} size={30} />
               </View>
             </View>
           </TouchableOpacity>

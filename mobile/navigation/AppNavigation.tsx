@@ -14,6 +14,7 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import UsernameEditing from "@/Components/UsernameEditing";
 import { Profile } from "@/Screens/ProfileScreen";
 import EmailEditing from "@/Components/EmailEditing";
+import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ function AppNavigation() {
             <Stack.Screen name="shelfModal" component={ShelfModal} />
             <Stack.Screen name="notifModal" component={NotificationsModal} />
             <Stack.Screen name="manageFriends" component={ManageFriendsModal} />
+            <Stack.Screen name="createCustomProperty" component={CreateCustomProperty} />
           </Stack.Group>
           <Stack.Screen
             name="textReviewModal"
