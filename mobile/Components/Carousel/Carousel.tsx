@@ -115,7 +115,7 @@ export const Carousel = ({ books, shelf }) => {
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: 15,
-                    backgroundColor: "pink",
+                    backgroundColor: "white",
                     shadowColor: "black",
                     shadowOffset: {
                       width: 3,
