@@ -95,10 +95,10 @@ function DescriptionTab({ bookInfo }) {
   );
 }
 
-function BookReviewsTab({ bookInfo }) {
+function BookReviewsTab({ bookInfo, navigation }) {
   return (
     <View style={{ flex: 1 }}>
-      <BookInfoModalReview bookInfo={bookInfo} />
+      <BookInfoModalReview bookInfo={bookInfo} navigation={navigation} />
     </View>
   );
 }
@@ -126,7 +126,7 @@ function MyNotesTab() {
   );
 }
 
-function BookInfoTabs({ bookInfo }) {
+function BookInfoTabs({ bookInfo, navigation }) {
   return (
     <Tab.Navigator
       screenOptions={{ animationEnabled: false }}
@@ -138,7 +138,7 @@ function BookInfoTabs({ bookInfo }) {
       />
       <Tab.Screen
         name="Reviews"
-        children={(props) => <BookReviewsTab bookInfo={bookInfo} {...props} />}
+        children={(props) => <BookReviewsTab bookInfo={bookInfo} navigation={navigation} {...props} />}
       />
       <Tab.Screen name="My Notes" component={MyNotesTab} />
     </Tab.Navigator>

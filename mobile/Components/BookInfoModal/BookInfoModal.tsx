@@ -59,7 +59,6 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
 }
 
 export const BookInfoModal = ({ route, navigation }) => {
-  // const { bookInfo } = route.params;
   const bookInfo = useContext(BookInfoWrapperContext);
   const [status, setStatus] = React.useState<BookState | null>(null);
 
@@ -203,7 +202,7 @@ export const BookInfoModal = ({ route, navigation }) => {
           <StatusButtonView />
         </View>
         <SafeAreaView>
-          <BookInfoTabs bookInfo={bookInfo} />
+          <BookInfoTabs bookInfo={bookInfo} navigation={navigation} />
         </SafeAreaView>
       </View>
     </View>

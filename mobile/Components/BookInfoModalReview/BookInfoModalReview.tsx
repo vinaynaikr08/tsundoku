@@ -19,6 +19,7 @@ import { useState } from "react";
 import { Account, Databases, Query } from "appwrite";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -57,7 +58,7 @@ async function getReviews(book_id: string) {
   return reviews;
 }
 
-export const BookInfoModalReview = ({ bookInfo }) => {
+export const BookInfoModalReview = ({ bookInfo, navigation }) => {
   const [reviews, setReviews] = React.useState([]);
 
   React.useEffect(() => {
@@ -122,7 +123,9 @@ export const BookInfoModalReview = ({ bookInfo }) => {
             )}
             renderItem={({ item }) => (
               <View style={{ flex: 1 }}>
-                <TouchableOpacity activeOpacity={1}>
+                <TouchableOpacity activeOpacity={1} onPress={() =>
+                  navigation.navigate("bookInfoFullReview", { bookInfo: bookInfo })
+                }>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View style={{ marginRight: 10 }}>
                       <Ionicons
