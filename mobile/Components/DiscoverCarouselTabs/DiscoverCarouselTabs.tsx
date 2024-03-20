@@ -120,10 +120,6 @@ function RecommendedCarousel() {
 
     getHardcodedBooks().then((data) => {
       setBooks(data);
-    }).catch(error => {
-      if (error instanceof TypeError) {
-        console.log("No books found")
-      }
     });
   }, []);
   return (
