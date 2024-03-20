@@ -5,12 +5,7 @@ import { AppwriteException, ID, Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
-import {
-  MAIN_DB_ID,
-  AUTHOR_COL_ID,
-  EDITION_COL_ID,
-  BOOK_COL_ID,
-} from "@/app/Constants";
+import Constants from "@/app/Constants";
 import { GoogleBooksAPI } from "../GoogleBooksAPI";
 import { appwriteUnavailableResponse } from "../../common_responses";
 
@@ -32,8 +27,8 @@ async function createEdition({
   thumbnail_url: string;
 }) {
   let res = await databases.createDocument(
-    MAIN_DB_ID,
-    EDITION_COL_ID,
+    Constants.MAIN_DB_ID,
+    Constants.EDITION_COL_ID,
     ID.unique(),
     {
       isbn_13,
@@ -49,8 +44,8 @@ async function createEdition({
 
 async function createAuthor({ name }: { name: any }) {
   let res = await databases.createDocument(
-    MAIN_DB_ID,
-    AUTHOR_COL_ID,
+    Constants.MAIN_DB_ID,
+    Constants.AUTHOR_COL_ID,
     ID.unique(),
     {
       name,
@@ -75,8 +70,8 @@ async function createBook({
   google_books_id: any;
 }) {
   let res = await databases.createDocument(
-    MAIN_DB_ID,
-    BOOK_COL_ID,
+    Constants.MAIN_DB_ID,
+    Constants.BOOK_COL_ID,
     ID.unique(),
     {
       title,
@@ -92,9 +87,11 @@ async function createBook({
 }
 
 async function get_or_create_author_id(name: string) {
-  let query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_COL_ID, [
-    Query.equal("name", name),
-  ]);
+  let query = await databases.listDocuments(
+    Constants.MAIN_DB_ID,
+    Constants.AUTHOR_COL_ID,
+    [Query.equal("name", name)],
+  );
 
   if (query.total == 0) {
     return createAuthor({ name: name });
@@ -125,9 +122,11 @@ export async function GET(request: NextRequest) {
 
   let db_query;
   try {
-    db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-      Query.search("title", title),
-    ]);
+    db_query = await databases.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.BOOK_COL_ID,
+      [Query.search("title", title)],
+    );
   } catch (error: any) {
     if (error instanceof AppwriteException) {
       console.error(error);
@@ -167,8 +166,8 @@ export async function GET(request: NextRequest) {
 
         // Check if book already exists in the database
         let gbook_api_existing_query = await databases.listDocuments(
-          MAIN_DB_ID,
-          BOOK_COL_ID,
+          Constants.MAIN_DB_ID,
+          Constants.BOOK_COL_ID,
           [Query.equal("google_books_id", gbooks_target_book.id)],
         );
 
@@ -198,9 +197,11 @@ export async function GET(request: NextRequest) {
             });
 
             // Fetch from DB to refresh
-            db_query = await databases.listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
-              Query.search("title", title),
-            ]);
+            db_query = await databases.listDocuments(
+              Constants.MAIN_DB_ID,
+              Constants.BOOK_COL_ID,
+              [Query.search("title", title)],
+            );
           } catch (error) {
             if (error instanceof AppwriteException) {
               console.error(error);

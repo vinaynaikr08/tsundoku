@@ -6,7 +6,7 @@ import { AppwriteException, Query } from "node-appwrite";
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 
-import { MAIN_DB_ID, BOOK_COL_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 import { GoogleBooksAPI } from "../GoogleBooksAPI";
 import { appwriteUnavailableResponse } from "../../common_responses";
 
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
   let db_query: any;
   databases
-    .listDocuments(MAIN_DB_ID, BOOK_COL_ID, [
+    .listDocuments(Constants.MAIN_DB_ID, Constants.BOOK_COL_ID, [
       Query.equal("google_books_id", gbooks_api_id),
     ])
     .then((res: any) => {
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await databases.updateDocument(MAIN_DB_ID, BOOK_COL_ID, target_book_id, {
+    await databases.updateDocument(Constants.MAIN_DB_ID, Constants.BOOK_COL_ID, target_book_id, {
       title: gbooks_book_data.volumeInfo.title,
       description: gbooks_book_data.volumeInfo.description,
       genre: gbooks_book_data.volumeInfo.categories[0],

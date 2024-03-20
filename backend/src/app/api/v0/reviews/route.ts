@@ -8,7 +8,7 @@ import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
 import { createReview } from "./common";
 import { getUserContextDBAccount } from "../userContext";
-import { BOOK_COL_ID, MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { appwriteUnavailableResponse } from "../common_responses";
 
@@ -16,7 +16,7 @@ const database = new sdk.Databases(client);
 
 async function checkBookExists(book_id: string): Promise<boolean> {
   try {
-    await database.getDocument(MAIN_DB_ID, BOOK_COL_ID, book_id);
+    await database.getDocument(Constants.MAIN_DB_ID, Constants.BOOK_COL_ID, book_id);
     return true;
   } catch (error: any) {
     if (
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   
   let db_query;
   try {
-    db_query = await userDB.listDocuments(MAIN_DB_ID, REVIEW_COL_ID);
+    db_query = await userDB.listDocuments(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID);
   } catch (error: any) {
     if (
       error instanceof Error &&
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
 
   let db_query: any;
   database
-    .listDocuments(MAIN_DB_ID, REVIEW_COL_ID, [
+    .listDocuments(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID, [
       Query.equal("user_id", user_id),
       Query.equal("book", book_id),
     ])
@@ -172,8 +172,8 @@ export async function POST(request: NextRequest) {
 
     try {
       await database.updateDocument(
-        MAIN_DB_ID,
-        REVIEW_COL_ID,
+        Constants.MAIN_DB_ID,
+        Constants.REVIEW_COL_ID,
         review_id,
         {
           star_rating: star_rating,

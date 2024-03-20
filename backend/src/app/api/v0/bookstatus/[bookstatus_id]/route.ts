@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { construct_development_api_response } from "../../dev_api_response";
-import { BOOK_STAT_COL_ID, MAIN_DB_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
 import { appwriteUnavailableResponse } from "../../common_responses";
 
@@ -37,8 +37,8 @@ export async function PATCH(
   let db_query: any;
   try {
     db_query = await userDB.getDocument(
-      MAIN_DB_ID,
-      BOOK_STAT_COL_ID,
+      Constants.MAIN_DB_ID,
+      Constants.BOOK_STAT_COL_ID,
       bookstatus_id,
     );
   } catch (error) {
@@ -53,9 +53,14 @@ export async function PATCH(
     });
   } else {
     try {
-      await userDB.updateDocument(MAIN_DB_ID, BOOK_STAT_COL_ID, bookstatus_id, {
-        status: status,
-      });
+      await userDB.updateDocument(
+        Constants.MAIN_DB_ID,
+        Constants.BOOK_STAT_COL_ID,
+        bookstatus_id,
+        {
+          status: status,
+        },
+      );
     } catch (error) {
       return appwriteUnavailableResponse();
     }

@@ -1,6 +1,6 @@
 import { ID } from "node-appwrite";
 
-import { MAIN_DB_ID, BOOK_STAT_COL_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 
 export enum BookStatus_Status {
@@ -22,8 +22,8 @@ export async function createBookStatus({
   database: any;
 }) {
   let res = await database.createDocument(
-    MAIN_DB_ID,
-    BOOK_STAT_COL_ID,
+    Constants.MAIN_DB_ID,
+    Constants.BOOK_STAT_COL_ID,
     ID.unique(),
     {
       user_id,

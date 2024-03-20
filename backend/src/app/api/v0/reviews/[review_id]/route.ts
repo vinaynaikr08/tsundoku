@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { construct_development_api_response } from "../../dev_api_response";
-import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 import { getUserContextDBAccount } from "../../userContext";
 import { AppwriteException } from "node-appwrite";
 import { appwriteUnavailableResponse } from "../../common_responses";
@@ -39,7 +39,7 @@ export async function PATCH(
 
   let db_query: any;
   try {
-    db_query = await userDB.getDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id);
+    db_query = await userDB.getDocument(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID, review_id);
   } catch (error) {
     if (error instanceof AppwriteException) {
       return appwriteUnavailableResponse();
@@ -54,7 +54,7 @@ export async function PATCH(
     });
   } else {
     try {
-      await userDB.updateDocument(MAIN_DB_ID, REVIEW_COL_ID, review_id, {
+      await userDB.updateDocument(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID, review_id, {
         star_rating: star_rating
           ? star_rating
           : db_query.documents[0].star_rating,

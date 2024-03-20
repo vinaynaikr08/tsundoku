@@ -1,6 +1,12 @@
-export const MAIN_DB_ID = process.env.mainDBID;
-export const BOOK_COL_ID = process.env.bookCollectionID;
-export const AUTHOR_COL_ID = process.env.authorCollectionID;
-export const EDITION_COL_ID = process.env.editionCollectionID;
-export const BOOK_STAT_COL_ID = process.env.bookStatusCollectionID;
-export const REVIEW_COL_ID = process.env.reviewCollectionID;
+import { unstable_noStore as noStore } from "next/cache";
+
+noStore();
+
+export default {
+  MAIN_DB_ID: process.env.mainDBID,
+  BOOK_COL_ID: process.env.bookCollectionID,
+  AUTHOR_COL_ID: process.env.authorCollectionID,
+  EDITION_COL_ID: process.env.editionCollectionID,
+  BOOK_STAT_COL_ID: process.env.bookStatusCollectionID,
+  REVIEW_COL_ID: process.env.reviewCollectionID,
+};

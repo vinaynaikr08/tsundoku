@@ -6,7 +6,7 @@ import { Query } from "node-appwrite";
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 
-import { MAIN_DB_ID, AUTHOR_COL_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 
 const databases = new sdk.Databases(client);
 
@@ -20,9 +20,11 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  let db_query = await databases.listDocuments(MAIN_DB_ID, AUTHOR_COL_ID, [
-    Query.search("name", name as string),
-  ]);
+  let db_query = await databases.listDocuments(
+    Constants.MAIN_DB_ID,
+    Constants.AUTHOR_COL_ID,
+    [Query.search("name", name as string)],
+  );
 
   return construct_development_api_response({
     message: `DB search results for: ${name}`,

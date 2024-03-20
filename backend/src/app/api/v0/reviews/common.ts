@@ -1,6 +1,6 @@
 import { ID } from "node-appwrite";
 
-import { MAIN_DB_ID, REVIEW_COL_ID } from "@/app/Constants";
+import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 
 export async function createReview({
@@ -17,8 +17,8 @@ export async function createReview({
   database: any;
 }) {
   let res = await database.createDocument(
-    MAIN_DB_ID,
-    REVIEW_COL_ID,
+    Constants.MAIN_DB_ID,
+    Constants.REVIEW_COL_ID,
     ID.unique(),
     {
       user_id,
