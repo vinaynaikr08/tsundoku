@@ -309,7 +309,11 @@ export const Discover = (props) => {
           </KeyboardAvoidingView>
         )}
       </SafeAreaView>
-      <ErrorModal message={errorMessage} visible={errorModalVisible} setVisible={setErrorModalVisible} />
+      <ErrorModal
+        message={errorMessage}
+        visible={errorModalVisible}
+        setVisible={setErrorModalVisible}
+      />
     </NavigationContext.Provider>
   );
 };
