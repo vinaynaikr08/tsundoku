@@ -61,3 +61,8 @@ jobs:
           working-directory: ./mobile
           script: ./android-test.sh
           disk-size: 4G
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: artifacts/
