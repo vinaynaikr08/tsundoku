@@ -10,8 +10,6 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
-  Modal,
-  Pressable,
   StyleSheet,
 } from "react-native";
 
@@ -27,6 +25,7 @@ import { debounce } from "lodash";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
 import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
+import ErrorModal from "@/Components/ErrorModal";
 
 const databases = new Databases(client);
 
@@ -310,21 +309,7 @@ export const Discover = (props) => {
           </KeyboardAvoidingView>
         )}
       </SafeAreaView>
-      <Modal
-        // animationType="slide"
-        transparent={true}
-        visible={errorModalVisible}
-        onRequestClose={() => setErrorModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{errorMessage}</Text>
-            <Pressable onPress={() => setErrorModalVisible(false)}>
-              <Text style={styles.modalButton}>Close</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+      <ErrorModal message={errorMessage} visible={errorModalVisible} setVisible={setErrorModalVisible} />
     </NavigationContext.Provider>
   );
 };
@@ -361,26 +346,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     shadowColor: "black",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    elevation: 5,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  modalButton: {
-    fontSize: 16,
-    color: "blue",
-    textAlign: "center",
   },
 });
