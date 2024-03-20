@@ -15,6 +15,7 @@ import UsernameEditing from "@/Components/UsernameEditing";
 import { Profile } from "@/Screens/ProfileScreen";
 import EmailEditing from "@/Components/EmailEditing";
 import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
+import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +43,7 @@ function AppNavigation() {
               options={{ gestureEnabled: false }}
               component={Review}
             />
-            <Stack.Screen name="bookInfoModal" component={BookInfoModal} />
+            <Stack.Screen name="bookInfoModal" component={BookInfoWrapper} />
             <Stack.Screen name="shelfModal" component={ShelfModal} />
             <Stack.Screen name="notifModal" component={NotificationsModal} />
             <Stack.Screen name="manageFriends" component={ManageFriendsModal} />

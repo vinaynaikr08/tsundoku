@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
 import styled from "styled-components/native";
 import Dimensions from "../../Constants/Dimensions";
@@ -13,6 +13,7 @@ import ID from "@/Constants/ID";
 import Toast from "react-native-toast-message";
 import { ActivityIndicator } from "react-native-paper";
 import { BACKEND_API_BOOK_STATUS_URL } from "@/Constants/URLs";
+import { BookInfoWrapperContext } from "@/Contexts";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -58,7 +59,8 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
 }
 
 export const BookInfoModal = ({ route, navigation }) => {
-  const { bookInfo } = route.params;
+  // const { bookInfo } = route.params;
+  const bookInfo = useContext(BookInfoWrapperContext);
   const [status, setStatus] = React.useState<BookState | null>(null);
 
   React.useEffect(() => {
