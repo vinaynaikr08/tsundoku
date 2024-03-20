@@ -18,8 +18,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import Slider from "@react-native-community/slider";
 
-function CategoryInputs({ numCategories }) {
-  const [categories, setCategories] = useState(Array(numCategories).fill(""));
+function CategoryInputs({ numCategories, categories, setCategories }) {
   let category;
   const handleCategoryChange = (index: number, value: string) => {
     const newCategories = [...categories];
@@ -41,17 +40,14 @@ function CategoryInputs({ numCategories }) {
     );
   }
 
-  return (
-    <>
-      {inputs}
-    </>
-  );
+  return <>{inputs}</>;
 }
 
 function CreateCustomProperty({ navigation }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [numCategories, setNumCategories] = useState(1);
+  const [categories, setCategories] = useState(Array(numCategories).fill(""));
   const propertyTypes = ["numerical", "categorical", "boolean"];
 
   function dismiss() {
@@ -91,7 +87,7 @@ function CreateCustomProperty({ navigation }) {
           style={styles.nameInput}
           onChangeText={setName}
           value={name}
-          placeholder="Property Name"
+          placeholder="Custom Property Name"
           placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
         />
         <SelectDropdown
@@ -146,7 +142,11 @@ function CreateCustomProperty({ navigation }) {
                 minimumTrackTintColor="black"
                 maximumTrackTintColor={Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR}
               />
-              <CategoryInputs numCategories={numCategories} />
+              <CategoryInputs
+                numCategories={numCategories}
+                categories={categories}
+                setCategories={setCategories}
+              />
             </View>
           )}
         </View>

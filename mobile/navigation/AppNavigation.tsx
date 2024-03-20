@@ -46,7 +46,11 @@ function AppNavigation() {
             <Stack.Screen name="shelfModal" component={ShelfModal} />
             <Stack.Screen name="notifModal" component={NotificationsModal} />
             <Stack.Screen name="manageFriends" component={ManageFriendsModal} />
-            <Stack.Screen name="createCustomProperty" component={CreateCustomProperty} />
+            <Stack.Screen
+              name="createCustomProperty"
+              options={{ gestureEnabled: false }}
+              component={CreateCustomProperty}
+            />
           </Stack.Group>
           <Stack.Screen
             name="textReviewModal"
