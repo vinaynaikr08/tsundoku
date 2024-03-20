@@ -11,8 +11,6 @@ on:
       - mobile/**
 
 env:
-  ANDROID_EMU_ARCH: x86_64
-  ANDROID_EMU_API_LEVEL: 34
   ANDROID_EMU_NAME: Pixel_7_API_34_x86
 
 jobs:
@@ -57,9 +55,10 @@ jobs:
       - name: Run Detox Test
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ env.ANDROID_EMU_API_LEVEL }}
-          arch: ${{ env.ANDROID_EMU_ARCH }}
+          api-level: 34
+          arch: x86_64
           avd-name: ${{ env.ANDROID_EMU_NAME }}
+          target: playstore
           working-directory: ./mobile
           script: ./android-test.sh
           disk-size: 4G
