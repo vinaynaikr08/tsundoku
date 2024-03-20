@@ -9,6 +9,7 @@ on:
     branches: [master]
     paths:
       - mobile/**
+  workflow_dispatch:
 
 env:
   ANDROID_EMU_NAME: Pixel_7_API_34_x86
