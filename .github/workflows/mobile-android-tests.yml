@@ -60,3 +60,4 @@ jobs:
           avd-name: ${{ env.ANDROID_EMU_NAME }}
           working-directory: ./mobile
           script: ./android-test.sh
+          disk-size: 4G
