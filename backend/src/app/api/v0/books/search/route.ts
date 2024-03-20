@@ -130,6 +130,7 @@ export async function GET(request: NextRequest) {
     ]);
   } catch (error: any) {
     if (error instanceof AppwriteException) {
+      console.error(error);
       return appwriteUnavailableResponse();
     } else {
       throw error;
@@ -202,6 +203,7 @@ export async function GET(request: NextRequest) {
             ]);
           } catch (error) {
             if (error instanceof AppwriteException) {
+              console.error(error);
               return appwriteUnavailableResponse();
             } else if (error instanceof TypeError) {
               // This book doesn't have one of the required fields, skip
