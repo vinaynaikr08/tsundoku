@@ -48,9 +48,11 @@ Before running the tests, you should run an Expo `prebuild` so that the native s
 npx expo prebuild
 ```
 
+For iOS, you may then have to go inside the `./ios` directory and make sure that the CocoaPods are installed using `pod install`.
+
 For Android, you may then have to open the `./android` subdirectory in Android Studio so that `gradlew` and the necessary dependencies are installed.
 
-Before running the tests, make sure you run the Expo server in a separate terminal window so that Detox can connect to it.
+Before running the tests, make sure you run the Expo server in a separate terminal window (using `npx expo start`) so that Detox can connect to it.
 
 For running in the iOS simulator (debug build):
 
