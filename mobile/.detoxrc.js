@@ -15,6 +15,9 @@ module.exports = {
       screenshot: "failing",
     },
   },
+  logger: {
+    level: "verbose",
+  },
   apps: {
     "ios.debug": {
       type: "ios.app",
