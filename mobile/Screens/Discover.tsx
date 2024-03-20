@@ -45,10 +45,17 @@ async function getBooks(
   }, 10000);
 
   // Search by books
-  const res = await fetch(
-    `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
-  );
-  const book_documents = (await res.json()).results.documents;
+  let book_documents;
+  try {
+    const res = await fetch(
+      `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
+    );
+    book_documents = (await res.json()).results.documents;
+  } catch (error) {
+    console.error(error);
+    setErrorMessage("An error occurred while contacting the server for books.");
+    setErrorModalVisible(true);
+  }
 
   for (const book of book_documents) {
     if (books.filter((e) => e.id === book.$id).length === 0) {
@@ -218,13 +225,47 @@ export const Discover = (props) => {
           />
         </View>
         <View>
-          <Image source={require("../assets/wrapped-banner.png")} style={{width: '100%', height: 150}} />
-          <View style={{position: 'absolute', top: "15%", width: 300, justifyContent: 'center', alignSelf: 'center',}}>
-            <Text style={{color: 'white', fontSize: 20, textAlign: 'center', fontWeight: '500'}}>
+          <Image
+            source={require("../assets/wrapped-banner.png")}
+            style={{ width: "100%", height: 150 }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              top: "15%",
+              width: 300,
+              justifyContent: "center",
+              alignSelf: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 20,
+                textAlign: "center",
+                fontWeight: "500",
+              }}
+            >
               Your [insert year] Tsundoku Wrapped is here!
             </Text>
-            <TouchableOpacity style={{backgroundColor: 'white', padding: 0, margin: 0, height: 36, width: '36%', top: 10, justifyContent: 'center', alignSelf: 'center', borderRadius: 15}}>
-              <Text style={{textAlign: 'center', color: '#5E3FC5', fontSize: 15}}>Open</Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "white",
+                padding: 0,
+                margin: 0,
+                height: 36,
+                width: "36%",
+                top: 10,
+                justifyContent: "center",
+                alignSelf: "center",
+                borderRadius: 15,
+              }}
+            >
+              <Text
+                style={{ textAlign: "center", color: "#5E3FC5", fontSize: 15 }}
+              >
+                Open
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -290,12 +331,12 @@ export const Discover = (props) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flexGrow: 1, 
+    flexGrow: 1,
     backgroundColor: "white",
   },
   bookSearchContainer: {
-    paddingLeft: 10, 
-    paddingBottom: 10, 
+    paddingLeft: 10,
+    paddingBottom: 10,
     paddingRight: 10,
   },
   searchResultContainer: {
