@@ -1,18 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    googleBooksAPIKey: process.env.TSUNDOKU_BACKEND_GOOGLE_BOOKS_API_KEY,
-    appwriteEndpoint: process.env.TSUNDOKU_BACKEND_APPWRITE_ENDPOINT,
-    appwriteProjectID: process.env.TSUNDOKU_BACKEND_APPWRITE_PROJECT_ID,
-    appwriteAPIKey: process.env.TSUNDOKU_BACKEND_APPWRITE_API_KEY,
-    mainDBID: process.env.TSUNDOKU_BACKEND_APPWRITE_MAIN_DB_ID,
-    bookCollectionID: process.env.TSUNDOKU_BACKEND_APPWRITE_BOOK_COL_ID,
-    authorCollectionID: process.env.TSUNDOKU_BACKEND_APPWRITE_AUTHOR_COL_ID,
-    editionCollectionID: process.env.TSUNDOKU_BACKEND_APPWRITE_EDITION_COL_ID,
-    bookStatusCollectionID: process.env.TSUNDOKU_BACKEND_APPWRITE_BOOKSTATUS_COL_ID,
-    reviewCollectionID: process.env.TSUNDOKU_BACKEND_APPWRITE_REVIEW_COL_ID,
-  },
+  env: {},
   output: "standalone",
 };
 

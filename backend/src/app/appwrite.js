@@ -1,8 +1,10 @@
 const sdk = require("node-appwrite");
 
+import Constants from "./Constants";
+
 export const client = new sdk.Client();
 
 client
-  .setEndpoint(process.env.appwriteEndpoint)
-  .setProject(process.env.appwriteProjectID)
-  .setKey(process.env.appwriteAPIKey);
+  .setEndpoint(Constants.APPWRITE_ENDPOINT)
+  .setProject(Constants.APPWRITE_PROJECT_ID)
+  .setKey(Constants.APPWRITE_API_KEY);
