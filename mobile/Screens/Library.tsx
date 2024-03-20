@@ -10,9 +10,6 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
-  Modal,
-  Pressable,
-  StyleSheet,
 } from "react-native";
 
 import BookSearchBar from "@/Components/BookSearchBar";
@@ -28,6 +25,7 @@ import CarouselTabs from "../Components/LibraryCarousel/LibraryCarouselTabs";
 
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ErrorModal from "@/Components/ErrorModal";
 
 // export const Library = (props) => {
 //   const { navigation } = props;
@@ -52,11 +50,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 //   );
 // };
 
-
-
 const databases = new Databases(client);
 
-async function getBooks(param, setErrorMessage, setErrorModalVisible, setLoading) {
+async function getBooks(
+  param,
+  setErrorMessage,
+  setErrorModalVisible,
+  setLoading,
+) {
   let books = [];
 
   //set timeout function for errors
@@ -298,45 +299,11 @@ export const Library = (props) => {
           </KeyboardAvoidingView>
         )}
       </SafeAreaView>
-      <Modal
-        // animationType="slide"
-        transparent={true}
+      <ErrorModal
+        message={errorMessage}
         visible={errorModalVisible}
-        onRequestClose={() => setErrorModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{errorMessage}</Text>
-            <Pressable onPress={() => setErrorModalVisible(false)}>
-              <Text style={styles.modalButton}>Close</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+        setVisible={setErrorModalVisible}
+      />
     </NavigationContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    elevation: 5,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  modalButton: {
-    fontSize: 16,
-    color: "blue",
-    textAlign: "center",
-  },
-});
