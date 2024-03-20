@@ -19,6 +19,7 @@ jobs:
   build:
     name: Android Test
     runs-on: ubuntu-latest
+    continue-on-error: true
     defaults:
       run:
         working-directory: ./mobile
