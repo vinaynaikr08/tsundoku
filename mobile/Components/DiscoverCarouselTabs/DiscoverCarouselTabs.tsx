@@ -10,6 +10,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import Carousel from "../Carousel/Carousel";
 import Colors from "../../Constants/Colors";
 import { BACKEND_API_BOOK_SEARCH_URL } from "../../Constants/URLs";
+import ErrorModal from "@/Components/ErrorModal";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -75,27 +76,36 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 
 function RecommendedCarousel() {
   const [books, setBooks] = React.useState(null);
+  const [errorModalVisible, setErrorModalVisible] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+
   React.useEffect(() => {
     async function getBooks(title) {
-      let res = await fetch(
-        `${BACKEND_API_BOOK_SEARCH_URL}?` +
-          new URLSearchParams({
-            title: title,
-          }),
-      );
+      try {
+        const res = await fetch(
+          `${BACKEND_API_BOOK_SEARCH_URL}?` +
+            new URLSearchParams({
+              title: title,
+            }),
+        );
+        const res_json = await res.json();
 
-      const res_json = await res.json();
-      return res_json.results.documents.map((book) => {
-        return {
-          id: book.$id,
-          title: book.title,
-          author: book.authors[0].name,
-          summary: book.description,
-          image_url: book.editions[0].thumbnail_url,
-          isbn: book.editions[0].isbn_13,
-          genre: book.genre,
-        };
-      });
+        return res_json.results.documents.map((book) => {
+          return {
+            id: book.$id,
+            title: book.title,
+            author: book.authors[0].name,
+            summary: book.description,
+            image_url: book.editions[0].thumbnail_url,
+            isbn: book.editions[0].isbn_13,
+            genre: book.genre,
+          };
+        });
+      } catch (error) {
+        console.error(error);
+        setErrorMessage("An error occurred fetching the books.");
+        setErrorModalVisible(true);
+      }
     }
 
     async function getHardcodedBooks() {
@@ -118,22 +128,35 @@ function RecommendedCarousel() {
       return book_data;
     }
 
-    getHardcodedBooks().then((data) => {
-      setBooks(data);
-    });
+    getHardcodedBooks()
+      .then((data) => {
+        setBooks(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setErrorMessage("An error occurred fetching the recommended books.");
+        setErrorModalVisible(true);
+      });
   }, []);
   return (
-    <View style={{ flex: 1 }}>
-      {books ? (
-        <Carousel books={books} shelf={shelf} />
-      ) : (
-        <ActivityIndicator size="large" />
-      )}
-    </View>
+    <>
+      <View style={{ flex: 1 }}>
+        {books ? (
+          <Carousel books={books} shelf={shelf} />
+        ) : (
+          <ActivityIndicator size="large" />
+        )}
+      </View>
+      <ErrorModal
+        message={errorMessage}
+        visible={errorModalVisible}
+        setVisible={setErrorModalVisible}
+      />
+    </>
   );
 }
 
-function CarouselTabs({ navigation }) {
+function CarouselTabs() {
   return (
     <Tab.Navigator
       screenOptions={{ swipeEnabled: false }}

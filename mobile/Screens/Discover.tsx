@@ -228,7 +228,7 @@ export const Discover = (props) => {
             </TouchableOpacity>
           </View>
         </View>
-        <CarouselTabs navigation={navigation} />
+        <CarouselTabs />
 
         {search.length > 0 && (
           <KeyboardAvoidingView
