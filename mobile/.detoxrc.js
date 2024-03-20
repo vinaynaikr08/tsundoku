@@ -16,7 +16,7 @@ module.exports = {
     },
   },
   logger: {
-    level: "verbose",
+    level: "trace",
   },
   apps: {
     "ios.debug": {
