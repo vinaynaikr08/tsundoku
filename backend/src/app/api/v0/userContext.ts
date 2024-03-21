@@ -12,3 +12,7 @@ export function getUserContextDBAccount(authToken: string) {
 
   return { userDB, userAccount };
 }
+
+export async function getUserID(userAccount: any) {
+  return (await userAccount.get()).$id;
+}

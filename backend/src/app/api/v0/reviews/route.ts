@@ -7,7 +7,7 @@ import { AppwriteException, Query } from "node-appwrite";
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
 import { createReview } from "./common";
-import { getUserContextDBAccount } from "../userContext";
+import { getUserContextDBAccount, getUserID } from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { appwriteUnavailableResponse } from "../common_responses";
@@ -52,18 +52,12 @@ export async function GET() {
     });
   }
 
-  let user_id: any;
-  userAccount
-    .get()
-    .then((res: { $id: any }) => {
-      user_id = res.$id;
-    })
-    .catch((error: any) => {
-      if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse(error);
-      }
-      throw error;
-    });
+  let user_id;
+  try {
+    user_id = await getUserID(userAccount);
+  } catch (error: any) {
+    return appwriteUnavailableResponse(error);
+  }
 
   return construct_development_api_response({
     message: `Review results for: ${user_id}`,

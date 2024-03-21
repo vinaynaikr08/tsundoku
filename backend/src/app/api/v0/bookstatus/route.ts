@@ -7,7 +7,7 @@ import { AppwriteException, Query } from "node-appwrite";
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../dev_api_response";
 import { createBookStatus } from "./common";
-import { getUserContextDBAccount } from "../userContext";
+import { getUserContextDBAccount, getUserID } from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { appwriteUnavailableResponse } from "../common_responses";
@@ -52,15 +52,12 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  let user_id: any;
-  userAccount
-    .get()
-    .then((res: any) => {
-      user_id = res.$id;
-    })
-    .catch((error: any) => {
-      return appwriteUnavailableResponse(error);
-    });
+  let user_id;
+  try {
+    user_id = await getUserID(userAccount);
+  } catch (error: any) {
+    return appwriteUnavailableResponse(error);
+  }
 
   return construct_development_api_response({
     message: `Book status results for: ${user_id}`,
@@ -109,7 +106,12 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const user_id = (await userAccount.get()).$id;
+  let user_id;
+  try {
+    user_id = await getUserID(userAccount);
+  } catch (error: any) {
+    return appwriteUnavailableResponse(error);
+  }
 
   const db_query = await database.listDocuments(
     Constants.MAIN_DB_ID,
