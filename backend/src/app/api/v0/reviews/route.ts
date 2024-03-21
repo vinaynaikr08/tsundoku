@@ -16,7 +16,11 @@ const database = new sdk.Databases(client);
 
 async function checkBookExists(book_id: string): Promise<boolean> {
   try {
-    await database.getDocument(Constants.MAIN_DB_ID, Constants.BOOK_COL_ID, book_id);
+    await database.getDocument(
+      Constants.MAIN_DB_ID,
+      Constants.BOOK_COL_ID,
+      book_id,
+    );
     return true;
   } catch (error: any) {
     if (
@@ -42,10 +46,13 @@ export async function GET(request: NextRequest) {
   }
 
   const { userDB, userAccount } = getUserContextDBAccount(authToken);
-  
+
   let db_query;
   try {
-    db_query = await userDB.listDocuments(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID);
+    db_query = await userDB.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.REVIEW_COL_ID,
+    );
   } catch (error: any) {
     if (
       error instanceof Error &&
@@ -143,20 +150,18 @@ export async function POST(request: NextRequest) {
     });
 
   let db_query: any;
-  database
-    .listDocuments(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID, [
-      Query.equal("user_id", user_id),
-      Query.equal("book", book_id),
-    ])
-    .then((res: any) => {
-      db_query = res;
-    })
-    .catch((error: any) => {
-      if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
-      }
-      throw error;
-    });
+  try {
+    db_query = await database.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.REVIEW_COL_ID,
+      [Query.equal("user_id", user_id), Query.equal("book", book_id)],
+    );
+  } catch (error: any) {
+    if (error instanceof AppwriteException) {
+      return appwriteUnavailableResponse();
+    }
+    throw error;
+  }
 
   if (db_query.total == 0) {
     // Create new object
