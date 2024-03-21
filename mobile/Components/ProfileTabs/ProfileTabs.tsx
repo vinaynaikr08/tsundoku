@@ -369,7 +369,8 @@ function StatisticsTab() {
         contentContainerStyle={styles.scrollViewStyle}
       >
         <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10 }}>Hello</Text>
+          <Text style={{ margin: 10 }}>Text Statistics:</Text>
+          <Text style={{ margin: 10 }}>Graph Statistics:</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
