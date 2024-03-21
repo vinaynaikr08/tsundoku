@@ -15,7 +15,7 @@ import { checkBookExists } from "@/app/api/v0/books/Books";
 
 const database = new sdk.Databases(client);
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const authToken = (headers().get("authorization") || "")
     .split("Bearer ")
     .at(1);
