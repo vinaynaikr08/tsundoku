@@ -223,50 +223,52 @@ export const Discover = (props) => {
             GENRES={GENRES}
           />
         </View>
-        <View>
-          <Image
-            source={require("../assets/wrapped-banner.png")}
-            style={{ width: "100%", height: 150 }}
-          />
-          <View
-            style={{
-              position: "absolute",
-              top: "15%",
-              width: 300,
-              justifyContent: "center",
-              alignSelf: "center",
-            }}
-          >
-            <Text
+        <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 15}}>
+          <TouchableOpacity>
+            <Image
+              source={require("../assets/wrapped-banner.png")}
+              style={{width: '90%', height: undefined, aspectRatio: 5/2, borderRadius: 15, overflow: 'hidden', }}
+            />
+            <View
               style={{
-                color: "white",
-                fontSize: 20,
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
-              Your [insert year] Tsundoku Wrapped is here!
-            </Text>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "white",
-                padding: 0,
-                margin: 0,
-                height: 36,
-                width: "36%",
-                top: 10,
+                position: "absolute",
+                top: "15%",
+                width: 300,
                 justifyContent: "center",
                 alignSelf: "center",
-                borderRadius: 15,
               }}
             >
               <Text
-                style={{ textAlign: "center", color: "#5E3FC5", fontSize: 15 }}
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontWeight: "500",
+                }}
               >
-                Open
+                Your [insert year] Tsundoku Wrapped is here!
               </Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "white",
+                  padding: 0,
+                  margin: 0,
+                  height: 36,
+                  width: "36%",
+                  top: 10,
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  borderRadius: 15,
+                }}
+              >
+                <Text
+                  style={{ textAlign: "center", color: "#5E3FC5", fontSize: 15 }}
+                >
+                  Open
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </View>
         <CarouselTabs />
 
