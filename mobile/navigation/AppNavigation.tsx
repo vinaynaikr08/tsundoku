@@ -16,6 +16,7 @@ import { Profile } from "@/Screens/ProfileScreen";
 import EmailEditing from "@/Components/EmailEditing";
 import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
 import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
+import { WrappedScreen } from "@/Screens/WrappedScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,14 @@ function AppNavigation() {
             options={{
               presentation: "modal",
               gestureDirection: "horizontal",
+            }}
+          />
+          <Stack.Screen
+            name="wrappedScreen"
+            component={WrappedScreen}
+            options={{
+              gestureDirection: "horizontal",
+              gestureEnabled: true
             }}
           />
           <Stack.Screen name="ProfileScreen" component={Profile} />

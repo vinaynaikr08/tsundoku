@@ -223,8 +223,10 @@ export const Discover = (props) => {
             GENRES={GENRES}
           />
         </View>
+        
+        {/* Wrapped banner */}
         <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 15}}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("wrappedScreen") }>
             <Image
               source={require("../assets/wrapped-banner.png")}
               style={{width: '90%', height: undefined, aspectRatio: 5/2, borderRadius: 15, overflow: 'hidden', }}
