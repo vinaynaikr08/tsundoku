@@ -11,24 +11,9 @@ import { getUserContextDBAccount } from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { appwriteUnavailableResponse } from "../common_responses";
+import { checkBookExists } from "@/app/api/v0/books/Books";
 
 const database = new sdk.Databases(client);
-
-async function checkBookExists(book_id: string): Promise<boolean> {
-  try {
-    await database.getDocument(Constants.MAIN_DB_ID, Constants.BOOK_COL_ID, book_id);
-    return true;
-  } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "document_not_found"
-    ) {
-      return false;
-    } else {
-      throw error;
-    }
-  }
-}
 
 export async function GET(request: NextRequest) {
   const authToken = (headers().get("authorization") || "")
@@ -45,7 +30,10 @@ export async function GET(request: NextRequest) {
   const { userDB, userAccount } = getUserContextDBAccount(authToken);
   let db_query;
   try {
-    db_query = await userDB.listDocuments(Constants.MAIN_DB_ID, Constants.BOOK_STAT_COL_ID);
+    db_query = await userDB.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.BOOK_STAT_COL_ID,
+    );
   } catch (error: any) {
     if (
       error instanceof Error &&
@@ -123,10 +111,11 @@ export async function POST(request: NextRequest) {
 
   const user_id = (await userAccount.get()).$id;
 
-  const db_query = await database.listDocuments(Constants.MAIN_DB_ID, Constants.BOOK_STAT_COL_ID, [
-    Query.equal("user_id", user_id),
-    Query.equal("book", book_id),
-  ]);
+  const db_query = await database.listDocuments(
+    Constants.MAIN_DB_ID,
+    Constants.BOOK_STAT_COL_ID,
+    [Query.equal("user_id", user_id), Query.equal("book", book_id)],
+  );
 
   if (db_query.total == 0) {
     // Create new object
