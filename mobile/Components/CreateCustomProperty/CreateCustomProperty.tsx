@@ -17,6 +17,10 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import Slider from "@react-native-community/slider";
+import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
+import { Account } from "appwrite";
+import { client } from "../../appwrite";
+import Toast from "react-native-toast-message";
 
 function CategoryInputs({ numCategories, categories, setCategories }) {
   let category;
@@ -48,7 +52,7 @@ function CreateCustomProperty({ navigation }) {
   const [type, setType] = useState("");
   const [numCategories, setNumCategories] = useState(1);
   const [categories, setCategories] = useState(Array(numCategories).fill(""));
-  const propertyTypes = ["numerical", "categorical", "boolean"];
+  const propertyTypes = ["NUMERICAL", "CATEGORICAL", "BOOLEAN"];
 
   function dismiss() {
     Alert.alert("Discard property?", "You have an unsaved custom property.", [
@@ -61,7 +65,36 @@ function CreateCustomProperty({ navigation }) {
     ]);
   }
 
-  function saveCustomProperty() {}
+  const saveCustomProperty = async () => {
+    const account = new Account(client);
+
+    let res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}`, {
+      method: "post",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+      body: JSON.stringify({
+        name: name,
+        type: type,
+      }),
+    });
+
+    if (res.ok) {
+      const res_json = await res.json();
+      console.log("custom property saved to database: " + res_json);
+    } else {
+      console.log("error number: " + res.status);
+    }
+
+    Toast.show({
+      type: "success",
+      text1: "New custom property successfully saved!",
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+    navigation.navigate("navbar");
+  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View
@@ -122,7 +155,7 @@ function CreateCustomProperty({ navigation }) {
         />
 
         <View>
-          {type == "categorical" && (
+          {type == "CATEGORICAL" && (
             <View>
               <Text style={styles.title}>
                 Number of Categories: {numCategories}{" "}

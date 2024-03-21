@@ -58,7 +58,8 @@ function TextReview({ route, navigation }) {
       const res_json = await res.json();
       console.log("review saved to database: " + res_json);
     } else {
-      console.log("error: " + res.status);
+      console.log("error number: " + res.status);
+      console.log("error: " + res.statusText);
     }
 
     Toast.show({
