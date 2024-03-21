@@ -9,7 +9,6 @@ import { construct_development_api_response } from "../../dev_api_response";
 import { createTemplate } from "./common";
 import { getUserContextDBAccount } from "../../userContext";
 import Constants from "@/app/Constants";
-import userPermissions from "../../userPermissions";
 import { appwriteUnavailableResponse } from "../../common_responses";
 
 const database = new sdk.Databases(client);

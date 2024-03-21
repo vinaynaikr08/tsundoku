@@ -39,7 +39,11 @@ export async function PATCH(
 
   let db_query: any;
   try {
-    db_query = await userDB.getDocument(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID, review_id);
+    db_query = await userDB.getDocument(
+      Constants.MAIN_DB_ID,
+      Constants.REVIEW_COL_ID,
+      review_id,
+    );
   } catch (error) {
     if (error instanceof AppwriteException) {
       return appwriteUnavailableResponse();
@@ -54,14 +58,19 @@ export async function PATCH(
     });
   } else {
     try {
-      await userDB.updateDocument(Constants.MAIN_DB_ID, Constants.REVIEW_COL_ID, review_id, {
-        star_rating: star_rating
-          ? star_rating
-          : db_query.documents[0].star_rating,
-        description: description
-          ? description
-          : db_query.documents[0].description,
-      });
+      await userDB.updateDocument(
+        Constants.MAIN_DB_ID,
+        Constants.REVIEW_COL_ID,
+        review_id,
+        {
+          star_rating: star_rating
+            ? star_rating
+            : db_query.documents[0].star_rating,
+          description: description
+            ? description
+            : db_query.documents[0].description,
+        },
+      );
     } catch (error) {
       if (error instanceof AppwriteException) {
         return appwriteUnavailableResponse();
