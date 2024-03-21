@@ -1,18 +1,21 @@
+import { unstable_noStore as noStore } from "next/cache";
+
 import React from "react";
 import { Client, Account } from "appwrite";
 import type { Models } from "appwrite";
 
 import Constants from "@/app/Constants";
 
-const client = new Client();
-
-client
-  .setEndpoint(Constants.APPWRITE_ENDPOINT as string)
-  .setProject(Constants.APPWRITE_PROJECT_ID as string);
-
-const account = new Account(client);
-
 const JWTPage = () => {
+  noStore();
+  const client = new Client();
+
+  client
+    .setEndpoint(Constants.APPWRITE_ENDPOINT as string)
+    .setProject(Constants.APPWRITE_PROJECT_ID as string);
+
+  const account = new Account(client);
+
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
