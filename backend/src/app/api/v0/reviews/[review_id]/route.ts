@@ -46,7 +46,7 @@ export async function PATCH(
     );
   } catch (error) {
     if (error instanceof AppwriteException) {
-      return appwriteUnavailableResponse();
+      return appwriteUnavailableResponse(error);
     }
   }
 
@@ -73,7 +73,7 @@ export async function PATCH(
       );
     } catch (error) {
       if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
+        return appwriteUnavailableResponse(error);
       }
     }
   }

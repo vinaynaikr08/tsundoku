@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       user_id = res.$id;
     })
     .catch((error: any) => {
-      return appwriteUnavailableResponse();
+      return appwriteUnavailableResponse(error);
     });
 
   return construct_development_api_response({

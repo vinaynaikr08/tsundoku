@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     })
     .catch((error: any) => {
       if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
+        return appwriteUnavailableResponse(error);
       }
     });
 
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       genre: gbooks_book_data.volumeInfo.categories[0],
     });
   } catch (error) {
-    return appwriteUnavailableResponse();
+    return appwriteUnavailableResponse(error);
   }
 
   return construct_development_api_response({

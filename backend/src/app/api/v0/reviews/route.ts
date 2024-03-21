@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     })
     .catch((error: any) => {
       if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
+        return appwriteUnavailableResponse(error);
       }
       throw error;
     });
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
     })
     .catch((error: any) => {
       if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
+        return appwriteUnavailableResponse(error);
       }
       throw error;
     });
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error: any) {
     if (error instanceof AppwriteException) {
-      return appwriteUnavailableResponse();
+      return appwriteUnavailableResponse(error);
     }
     throw error;
   }
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
       );
     } catch (error) {
       if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse();
+        return appwriteUnavailableResponse(error);
       }
       throw error;
     }

@@ -42,7 +42,7 @@ export async function PATCH(
       bookstatus_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse();
+    return appwriteUnavailableResponse(error);
   }
 
   if (db_query.total == 0) {
@@ -62,7 +62,7 @@ export async function PATCH(
         },
       );
     } catch (error) {
-      return appwriteUnavailableResponse();
+      return appwriteUnavailableResponse(error);
     }
   }
 

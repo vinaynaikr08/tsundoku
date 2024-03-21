@@ -46,7 +46,7 @@ export async function PATCH(
       template_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse();
+    return appwriteUnavailableResponse(error);
   }
 
   if (db_query.total == 0) {
@@ -64,7 +64,7 @@ export async function PATCH(
         Object.assign({}, name ? null : { name }, type ? null : { type }),
       );
     } catch (error) {
-      return appwriteUnavailableResponse();
+      return appwriteUnavailableResponse(error);
     }
   }
 
