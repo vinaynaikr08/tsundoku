@@ -124,7 +124,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
             renderItem={({ item }) => (
               <View style={{ flex: 1 }}>
                 <TouchableOpacity activeOpacity={1} onPress={() =>
-                  navigation.navigate("bookInfoFullReview", { bookInfo: bookInfo })
+                  navigation.navigate("bookInfoFullReview", { review: item })
                 }>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View style={{ marginRight: 10 }}>
