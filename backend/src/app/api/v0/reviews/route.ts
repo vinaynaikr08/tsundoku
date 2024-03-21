@@ -119,17 +119,14 @@ export async function POST(request: NextRequest) {
   }
 
   let user_id: any;
-  userAccount
-    .get()
-    .then((res: { $id: any }) => {
-      user_id = res.$id;
-    })
-    .catch((error: any) => {
-      if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse(error);
-      }
-      throw error;
-    });
+  try {
+    user_id = (await userAccount.get()).$id;
+  } catch (error: any) {
+    if (error instanceof AppwriteException) {
+      return appwriteUnavailableResponse(error);
+    }
+    throw error;
+  }
 
   let db_query: any;
   try {
