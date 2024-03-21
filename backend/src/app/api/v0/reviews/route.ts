@@ -11,27 +11,9 @@ import { getUserContextDBAccount } from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { appwriteUnavailableResponse } from "../common_responses";
+import { checkBookExists } from "@/app/api/v0/books/Books";
 
 const database = new sdk.Databases(client);
-
-async function checkBookExists(book_id: string): Promise<boolean> {
-  try {
-    await database.getDocument(
-      Constants.MAIN_DB_ID,
-      Constants.BOOK_COL_ID,
-      book_id,
-    );
-    return true;
-  } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "document_not_found"
-    ) {
-      return false;
-    }
-    throw error;
-  }
-}
 
 export async function GET(request: NextRequest) {
   const authToken = (headers().get("authorization") || "")
