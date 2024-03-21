@@ -87,6 +87,10 @@ function CreateCustomProperty({ navigation }) {
       console.log("error number: " + res.status);
     }
 
+    if (type == "CATEGORICAL") {
+      // save to categories
+    }
+
     Toast.show({
       type: "success",
       text1: "New custom property successfully saved!",

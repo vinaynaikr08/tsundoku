@@ -59,6 +59,7 @@ function FullReview({ route, navigation }) {
                   marginBottom: 0,
                   marginLeft: 15,
                 }}
+                key={index}
               >
                 <Text style={styles.propertyName}>{item.propertyName}</Text>
                 <Text style={styles.value}>: {item.value}</Text>

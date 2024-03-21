@@ -17,6 +17,7 @@ import EmailEditing from "@/Components/EmailEditing";
 import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
 import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
 import { WrappedScreen } from "@/Screens/WrappedScreen";
+import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ function AppNavigation() {
               options={{ gestureEnabled: false }}
               component={CreateCustomProperty}
             />
+            <Stack.Screen name="viewCustomProperties" component={ViewCustomPropertiesWrapper} />
           </Stack.Group>
           <Stack.Screen
             name="textReviewModal"

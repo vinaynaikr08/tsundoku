@@ -255,6 +255,24 @@ function ProfileTab(props) {
               Create Custom Property
             </Text>
           </Button>
+          <Button
+            onPress={() => navigation.navigate("viewCustomProperties")}
+            color={Colors.BUTTON_PURPLE}
+            containerStyle={{ borderRadius: 30, marginTop: 10 }}
+          >
+            <Text
+              style={{
+                color: "white",
+                paddingRight: 5,
+                fontSize: 17,
+                paddingTop: 5,
+                paddingBottom: 5,
+                alignSelf: "center",
+              }}
+            >
+              View My Custom Properties
+            </Text>
+          </Button>
 
           <TouchableOpacity
             onPress={() => navigation.navigate("manageFriends")}
