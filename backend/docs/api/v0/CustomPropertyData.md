@@ -2,11 +2,11 @@
 
     The v0 endpoints can and will change at any time!
 
-# Custom Property Category query/update
+# Custom Property Data query/update
 
-`host/api/v0/custom_property/category`
+`host/api/v0/custom_property/data`
 
-This endpoint allows you to query the `CustomPropertyCategories` documents, or update a given `CustomPropertyCategory` document.
+This endpoint allows you to query the `CustomPropertyData` documents, or update a given `CustomPropertyData` document.
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
@@ -18,16 +18,11 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 ### Example
 
-`host/api/v0/custom_property/category`
-
-### Search query parameters (**required**)
-
-`template_id`
+`host/api/v0/custom_property/data`
 
 ### Returns
 
 - `200` - request was successful
-- `400` - if the required parameters are not supplied
 - `401` - if the auth token was not supplied or is invalid
 
 ## Creating
@@ -38,8 +33,9 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 ### Body parameters (**required**)
 
+- `book_id`
 - `template_id`
-- `values`
+- `value`
 
 ### Returns
 
@@ -49,7 +45,7 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 ## Updating by ID
 
-`host/api/v0/custom_property/category/[category_id]`
+`host/api/v0/custom_property/data/[data_id]`
 
 #### Method
 
@@ -57,11 +53,11 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 #### Body parameters (**required**)
 
-- `values`
+- `value`
 
 #### Returns
 
 - `200` - request was successful
 - `400` - if the required parameters are not supplied
 - `401` - if the auth token was not supplied or is invalid
-- `404` - if the specified ID does not correspond to a custom property category entry
+- `404` - if the specified ID does not correspond to a custom property data entry
