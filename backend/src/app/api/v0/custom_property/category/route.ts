@@ -9,7 +9,6 @@ import { construct_development_api_response } from "../../dev_api_response";
 import { createCategory } from "./common";
 import { getUserContextDBAccount, getUserID } from "../../userContext";
 import Constants from "@/app/Constants";
-import { appwriteUnavailableResponse } from "../../common_responses";
 
 const database = new sdk.Databases(client);
 
@@ -120,11 +119,24 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  let user_id;
+  // Auth token check
   try {
-    user_id = await getUserID(userAccount);
+    await getUserID(userAccount);
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    if (
+      error instanceof Error &&
+      (error as AppwriteException).message === "user_jwt_invalid"
+    ) {
+      return construct_development_api_response({
+        message: "Authentication failed.",
+        status_code: 401,
+      });
+    }
+    console.log(error);
+    return construct_development_api_response({
+      message: "Unknown error. Please contact the developers.",
+      status_code: 500,
+    });
   }
 
   try {

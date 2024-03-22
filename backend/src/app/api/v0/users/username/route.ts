@@ -117,13 +117,13 @@ export async function PATCH(request: NextRequest) {
   }
 
   let userdata_id;
-  let db_query;
   try {
-    db_query = await databases.getDocument(
+    const db_query = await databases.getDocument(
       Constants.MAIN_DB_ID,
       Constants.USERDATA_COL_ID,
       [Query.equal("user_id", user_id)],
     );
+    userdata_id = db_query.username;
   } catch (error: any) {
     if (
       error instanceof Error &&
