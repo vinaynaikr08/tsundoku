@@ -25,6 +25,8 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  const book_id = request.nextUrl.searchParams.get("book_id") as string;
+
   const { userDB, userAccount } = getUserContextDBAccount(authToken);
 
   let db_query, user_id;
@@ -33,6 +35,7 @@ export async function GET(request: NextRequest) {
     db_query = await userDB.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.CUSTOM_PROP_DATA_COL_ID,
+      book_id ? [Query.equal("book_id", book_id)] : null,
     );
   } catch (error: any) {
     if (

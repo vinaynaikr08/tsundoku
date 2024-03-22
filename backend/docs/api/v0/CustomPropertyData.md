@@ -16,6 +16,10 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 `GET`
 
+### Search query parameters (optional)
+
+- `book_id` - if supplied, returns custom property data associated with the specific book
+
 ### Example
 
 `host/api/v0/custom_property/data`
