@@ -20,7 +20,7 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 `host/api/v0/custom_property/template`
 
-### Body parameters (optional)
+### Search query parameters (optional)
 
 - `self` - if set to `true`, returns custom property templates associated with the current user. Defaults to `false`.
 

@@ -25,8 +25,7 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const data = await request.json();
-  const self = data.self;
+  const self = request.nextUrl.searchParams.get("self") as string;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
