@@ -2,7 +2,7 @@ const sdk = require("node-appwrite");
 
 import { NextRequest } from "next/server";
 import { headers } from "next/headers";
-import { AppwriteException } from "node-appwrite";
+import { AppwriteException, Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
@@ -25,13 +25,14 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const { userDB, userAccount } = getUserContextDBAccount(authToken);
-  let db_query;
+  const data = await request.json();
+  const self = data.self;
+
+  const { userAccount } = getUserContextDBAccount(authToken);
+
+  let user_id;
   try {
-    db_query = await userDB.listDocuments(
-      Constants.MAIN_DB_ID,
-      Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
-    );
+    user_id = await getUserID(userAccount);
   } catch (error: any) {
     if (
       error instanceof Error &&
@@ -41,20 +42,27 @@ export async function GET(request: NextRequest) {
         message: "Authentication failed.",
         status_code: 401,
       });
-    } else {
-      console.log(error);
-      return construct_development_api_response({
-        message: "Unknown error. Please contact the developers.",
-        status_code: 500,
-      });
     }
+    console.log(error);
+    return construct_development_api_response({
+      message: "Unknown error. Please contact the developers.",
+      status_code: 500,
+    });
   }
 
-  let user_id;
+  let db_query;
   try {
-    user_id = await getUserID(userAccount);
+    db_query = await database.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
+      self && self === "true" ? [Query.equal("user_id", user_id)] : null,
+    );
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    console.log(error);
+    return construct_development_api_response({
+      message: "Unknown error. Please contact the developers.",
+      status_code: 500,
+    });
   }
 
   return construct_development_api_response({
