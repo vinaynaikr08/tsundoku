@@ -25,14 +25,13 @@ export async function PATCH(
 
   const data = await request.json();
   const category_id = params.category_id;
-  const template_id = data.template_id;
   const values = data.values;
 
-  if (!template_id && !values) {
+  if (!values) {
     return NextResponse.json(
       {
         message:
-          "Warning: you're attempting to edit the category, but didn't supply any of the parameters.",
+          "Warning: you're attempting to edit the category, but didn't supply the values.",
       },
       { status: 400 },
     );
@@ -61,11 +60,7 @@ export async function PATCH(
         Constants.MAIN_DB_ID,
         Constants.CUSTOM_PROP_CATEGORY_COL_ID,
         category_id,
-        Object.assign(
-          {},
-          template_id ? null : { template_id },
-          values ? null : { values },
-        ),
+        { values },
       );
     } catch (error) {
       return appwriteUnavailableResponse(error);
