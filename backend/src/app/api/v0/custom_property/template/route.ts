@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
 
   let template_id;
   try {
-    template_id = createTemplate({ database, user_id, name, type });
+    template_id = await createTemplate({ database, user_id, name, type });
   } catch (error: any) {
     if (
       error instanceof Error &&
