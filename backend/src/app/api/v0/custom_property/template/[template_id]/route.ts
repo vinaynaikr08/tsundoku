@@ -69,6 +69,6 @@ export async function PATCH(
   }
 
   return construct_development_api_response({
-    message: `The book status item was updated.`,
+    message: `The custom property template was updated.`,
   });
 }
