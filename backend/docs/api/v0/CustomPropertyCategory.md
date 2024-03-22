@@ -2,11 +2,11 @@
 
     The v0 endpoints can and will change at any time!
 
-# Custom Property Template query/update
+# Custom Property Category query/update
 
-`host/api/v0/custom_property/template`
+`host/api/v0/custom_property/category`
 
-This endpoint allows you to query the `CustomPropertyTemplates` documents, or update a given `CustomPropertyTemplate` document.
+This endpoint allows you to query the `CustomPropertyCategories` documents, or update a given `CustomPropertyCategory` document.
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
@@ -18,15 +18,16 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 ### Example
 
-`host/api/v0/custom_property/template`
+`host/api/v0/custom_property/category`
 
-### Body parameters (optional)
+### Search query parameters (**required**)
 
-- `self` - if set to `true`, returns custom property templates associated with the current user. Defaults to `false`.
+`template_id`
 
 ### Returns
 
 - `200` - request was successful
+- `400` - if the required parameters are not supplied
 - `401` - if the auth token was not supplied or is invalid
 
 ## Creating
@@ -37,8 +38,8 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 ### Body parameters (**required**)
 
-- `name`
-- `type` enum
+- `template_id`
+- `values`
 
 ### Returns
 
@@ -48,22 +49,19 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 ## Updating by ID
 
-`host/api/v0/custom_property/template/[template_id]`
+`host/api/v0/custom_property/category/[category_id]`
 
-### Method
+#### Method
 
 `PATCH`
 
-### Body parameters (optional)
+#### Body parameters (**required**)
 
-Note: one of the optional parameters must be supplied.
+- `values`
 
-- `name`
-- `type` enum
-
-### Returns
+#### Returns
 
 - `200` - request was successful
-- `400` - if none of the optional parameters were supplied
+- `400` - if the required parameters are not supplied
 - `401` - if the auth token was not supplied or is invalid
 - `404` - if the specified ID does not correspond to a custom property template entry
