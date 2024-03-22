@@ -111,8 +111,9 @@ export async function POST(request: NextRequest) {
     return appwriteUnavailableResponse(error);
   }
 
+  let template_id;
   try {
-    createTemplate({ database, user_id, name, type });
+    template_id = createTemplate({ database, user_id, name, type });
   } catch (error: any) {
     if (
       error instanceof Error &&
@@ -132,5 +133,7 @@ export async function POST(request: NextRequest) {
 
   return construct_development_api_response({
     message: `The template was created.`,
+    response_name: "template_id",
+    response_data: template_id,
   });
 }
