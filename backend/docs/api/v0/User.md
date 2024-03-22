@@ -1,6 +1,8 @@
 # User
 
-## Username query
+## Username
+
+### Query
 
 `host/api/v0/users/username`
 
@@ -8,13 +10,29 @@ This endpoitn allows you to query the username of the current user.
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
-### Method
+#### Method
 
 `GET`
 
-### Returns
+#### Returns
 
 - `200` - request was successful
+- `401` - if the auth token was not supplied or is invalid
+
+### Update
+
+#### Method
+
+`PATCH`
+
+#### Body parameters (**required**)
+
+- `username`
+
+#### Returns
+
+- `200` - request was successful
+- `400` - if the required parameters are not supplied or are invalid
 - `401` - if the auth token was not supplied or is invalid
 
 ## Name query
