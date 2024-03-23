@@ -10,12 +10,12 @@ import {
 } from "../../dev_api_response";
 
 import Constants from "@/app/Constants";
-import { getRequiredParameterOrFail } from "../../helpers";
+import { getRequiredSearchParamOrFail } from "../../helpers";
 
 const databases = new sdk.Databases(client);
 
 export async function GET(request: NextRequest) {
-  const name = getRequiredParameterOrFail(request, "name");
+  const name = getRequiredSearchParamOrFail(request, "name");
   if (name instanceof NextResponse) return name;
 
   let db_query;

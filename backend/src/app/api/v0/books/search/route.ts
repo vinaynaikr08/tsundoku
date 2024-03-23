@@ -10,7 +10,7 @@ import {
 } from "../../dev_api_response";
 import Constants from "@/app/Constants";
 import { GoogleBooksAPI } from "../GoogleBooksAPI";
-import { getRequiredParameterOrFail } from "../../helpers";
+import { getRequiredSearchParamOrFail } from "../../helpers";
 
 const databases = new sdk.Databases(client);
 
@@ -104,7 +104,7 @@ async function get_or_create_author_id(name: string) {
 }
 
 export async function GET(request: NextRequest) {
-  const title = getRequiredParameterOrFail(request, "title");
+  const title = getRequiredSearchParamOrFail(request, "title");
   if (title instanceof NextResponse) return title;
 
   const simulateAPIFailure = request.nextUrl.searchParams.get(

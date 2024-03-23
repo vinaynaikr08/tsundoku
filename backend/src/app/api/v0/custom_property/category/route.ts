@@ -11,7 +11,10 @@ import {
 import { createCategory } from "./common";
 import { checkUserToken } from "../../userContext";
 import Constants from "@/app/Constants";
-import { getOrFailAuthTokens, getRequiredParameterOrFail } from "../../helpers";
+import {
+  getOrFailAuthTokens,
+  getRequiredSearchParamOrFail,
+} from "../../helpers";
 
 const database = new sdk.Databases(client);
 
@@ -19,7 +22,7 @@ export async function GET(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const template_id = getRequiredParameterOrFail(request, "template_id");
+  const template_id = getRequiredSearchParamOrFail(request, "template_id");
   if (template_id instanceof NextResponse) return template_id;
 
   const tokenCheck = await checkUserToken(authToken);

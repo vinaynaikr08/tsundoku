@@ -17,15 +17,18 @@ export function getOrFailAuthTokens() {
   return authToken;
 }
 
-export function getRequiredParameterOrFail(request: NextRequest, param_name: string) {
-    const param = request.nextUrl.searchParams.get(param_name) as string;
+export function getRequiredSearchParamOrFail(
+  request: NextRequest,
+  param_name: string,
+) {
+  const param = request.nextUrl.searchParams.get(param_name) as string;
 
-    if (!param) {
-      return construct_development_api_response({
-        message: `Parameter \`${param_name}\` not supplied.`,
-        status_code: 400,
-      });
-    }
+  if (!param) {
+    return construct_development_api_response({
+      message: `Parameter \`${param_name}\` not supplied.`,
+      status_code: 400,
+    });
+  }
 
-    return param;
+  return param;
 }
