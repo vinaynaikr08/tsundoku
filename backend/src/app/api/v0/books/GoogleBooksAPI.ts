@@ -7,10 +7,10 @@ export namespace GoogleBooksAPI {
         res
           .json()
           .then((res_json) => {
-            if (
-              typeof res_json === "undefined" ||
-              typeof res_json.items === "undefined"
-            ) {
+            if (typeof res_json === "undefined" || !("items" in res_json)) {
+              console.error(
+                `The Google Books API returned the following response: ${res_json}`,
+              );
               throw new Error();
             }
             return res_json.items;
