@@ -15,7 +15,6 @@ jobs:
   build:
     name: iOS Test
     runs-on: macos-14
-    continue-on-error: true
     defaults:
       run:
         working-directory: ./mobile
@@ -48,6 +47,7 @@ jobs:
           sleep 5 && npx detox test --configuration ios.sim.debug --headless
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
+        if: ${{ always() }}
         with:
           name: test-results
           path: ./mobile/artifacts/
