@@ -170,7 +170,8 @@ export const Library = (props) => {
       getBooks(query, setErrorMessage, setErrorModalVisible, setLoading)
         .then((books) => setBooks(books))
         .catch((error: any) => {
-          setErrorMessage(error);
+          console.error(error);
+          setErrorMessage("An error occurred while searching for the books.");
           setErrorModalVisible(true);
         });
     } else {
