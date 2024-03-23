@@ -27,29 +27,6 @@ import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ErrorModal from "@/Components/ErrorModal";
 
-// export const Library = (props) => {
-//   const { navigation } = props;
-
-//   return (
-//     <NavigationContext.Provider value={navigation}>
-//       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
-//         <Text
-//           style={{
-//             marginLeft: 20,
-//             marginBottom: 15,
-//             marginTop: 5,
-//             fontWeight: "700",
-//             fontSize: 21,
-//           }}
-//         >
-//           Your Library
-//         </Text>
-//         <CarouselTabs />
-//       </SafeAreaView>
-//     </NavigationContext.Provider>
-//   );
-// };
-
 const databases = new Databases(client);
 
 async function getBooks(
