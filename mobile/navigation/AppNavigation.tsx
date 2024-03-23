@@ -67,7 +67,7 @@ function AppNavigation() {
             }}
           />
           <Stack.Screen
-            name="wrappedScreen"
+            name="WrappedScreen"
             component={WrappedScreen}
             options={{
               gestureDirection: "horizontal",

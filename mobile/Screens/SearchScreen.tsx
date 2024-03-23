@@ -7,6 +7,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 
 import BookSearchBar from "@/Components/BookSearchBar";
@@ -45,10 +47,11 @@ async function getBooks(
     const res = await fetch(
       `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
     );
-    console.log(await res.json());
     book_documents = (await res.json()).results.documents;
   } catch (error: any) {
     console.error(error);
+    clearTimeout(timeout);
+    setLoading(false);
   }
 
   for (const book of book_documents) {
@@ -216,50 +219,52 @@ function SearchScreen(props) {
             GENRES={GENRES}
           />
         </View>
-        <FlatList
-          data={books.filter((book) => checkGenres(book.genre))}
-          style={{ flexGrow: 0 }}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("bookInfoModal", { bookInfo: item })
-                }
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                  }}
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{height: '100%'}}>
+          <FlatList
+            data={books.filter((book) => checkGenres(book.genre))}
+            style={{ flexGrow: 0 }}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("bookInfoModal", { bookInfo: item })
+                  }
                 >
-                  <Image
+                  <View
                     style={{
-                      width: 80,
-                      height: 100,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "white",
-                      shadowColor: "black",
+                      flexDirection: "row",
+                      paddingTop: 10,
+                      paddingBottom: 10,
                     }}
-                    resizeMode="contain"
-                    source={{ uri: item.image_url }}
-                  />
-                  <View style={{ paddingLeft: 10, width: "80%" }}>
-                    <View style={{ flexDirection: "row" }}>
-                      <Text style={{ fontSize: 20, flexShrink: 1 }}>
-                        {item.title}
-                      </Text>
+                  >
+                    <Image
+                      style={{
+                        width: 80,
+                        height: 100,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                        shadowColor: "black",
+                      }}
+                      resizeMode="contain"
+                      source={{ uri: item.image_url }}
+                    />
+                    <View style={{ paddingLeft: 10, width: "80%" }}>
+                      <View style={{ flexDirection: "row" }}>
+                        <Text style={{ fontSize: 20, flexShrink: 1 }}>
+                          {item.title}
+                        </Text>
+                      </View>
+                      <Text>{item.author}</Text>
+                      <Text>ISBN: {item.isbn_13}</Text>
                     </View>
-                    <Text>{item.author}</Text>
-                    <Text>ISBN: {item.isbn_13}</Text>
                   </View>
-                </View>
-                <Divider style={{ backgroundColor: "black" }} />
-              </TouchableOpacity>
-            );
-          }}
-        />
+                  <Divider style={{ backgroundColor: "black" }} />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </KeyboardAvoidingView>
       </SafeAreaView>
       <ErrorModal
         message={errorMessage}
