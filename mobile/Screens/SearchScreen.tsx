@@ -25,31 +25,16 @@ import ErrorModal from "@/Components/ErrorModal";
 
 const databases = new Databases(client);
 
-async function getBooks(
-  param,
-  setErrorMessage,
-  setErrorModalVisible,
-  setLoading,
-) {
+async function getBooks(param) {
   let books = [];
-
-  //set timeout function for errors
-  const timeout = setTimeout(() => {
-    setErrorMessage("Book request timed out.");
-    setErrorModalVisible(true);
-  }, 10000);
 
   // Search by books
   let book_documents;
-  try {
-    const res = await fetch(
-      `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
-    );
-    console.log(await res.json());
-    book_documents = (await res.json()).results.documents;
-  } catch (error: any) {
-    console.error(error);
-  }
+  const res = await fetch(
+    `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
+  );
+  console.log(await res.json());
+  book_documents = (await res.json()).results.documents;
 
   for (const book of book_documents) {
     if (books.filter((e) => e.id === book.$id).length === 0) {
@@ -123,10 +108,6 @@ async function getBooks(
       }
     }
   }
-
-  clearTimeout(timeout);
-  setLoading(false);
-
   return books;
 }
 
@@ -145,12 +126,26 @@ function SearchScreen(props) {
 
   function performSearch(query) {
     if (query.length > 0) {
-      getBooks(query, setErrorMessage, setErrorModalVisible, setLoading)
-        .then((books) => setBooks(books))
+      setLoading(true);
+
+      // Set timeout function for errors
+      const timeout = setTimeout(() => {
+        setErrorMessage("Book request timed out.");
+        setErrorModalVisible(true);
+      }, 10000);
+
+      getBooks(query)
+        .then((books) => {
+          setBooks(books);
+        })
         .catch((error: any) => {
           console.error(error);
           setErrorMessage("An error occurred while searching for the books.");
           setErrorModalVisible(true);
+        })
+        .finally(() => {
+          clearTimeout(timeout);
+          setLoading(false);
         });
     } else {
       setBooks([]);
