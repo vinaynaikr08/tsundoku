@@ -226,7 +226,7 @@ export const Discover = (props) => {
         
         {/* Wrapped banner */}
         <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 15}}>
-          <TouchableOpacity onPress={() => navigation.navigate("wrappedScreen") }>
+          <TouchableOpacity onPress={ () => navigation.navigate("wrappedScreen") }>
             <Image
               source={require("../assets/wrapped-banner.png")}
               style={{width: '90%', height: undefined, aspectRatio: 5/2, borderRadius: 15, overflow: 'hidden', }}
@@ -262,6 +262,7 @@ export const Discover = (props) => {
                   alignSelf: "center",
                   borderRadius: 15,
                 }}
+                onPress={ () => navigation.navigate("wrappedScreen")}
               >
                 <Text
                   style={{ textAlign: "center", color: "#5E3FC5", fontSize: 15 }}
