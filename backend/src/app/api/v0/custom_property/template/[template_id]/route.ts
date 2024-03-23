@@ -1,10 +1,16 @@
+const sdk = require("node-appwrite");
+
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
+import { client } from "@/app/appwrite";
 import { construct_development_api_response } from "@/app/api/v0/dev_api_response";
 import Constants from "@/app/Constants";
-import { getUserContextDBAccount } from "@/app/api/v0/userContext";
+import { getUserContextDBAccount, getUserID } from "@/app/api/v0/userContext";
 import { appwriteUnavailableResponse } from "@/app/api/v0/common_responses";
+import { Query } from "node-appwrite";
+
+const database = new sdk.Databases(client);
 
 export async function PATCH(
   request: NextRequest,
@@ -70,5 +76,101 @@ export async function PATCH(
 
   return construct_development_api_response({
     message: `The custom property template was updated.`,
+  });
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: { template_id: string } },
+) {
+  const authToken = (headers().get("authorization") || "")
+    .split("Bearer ")
+    .at(1);
+
+  if (!authToken) {
+    return construct_development_api_response({
+      message: "Authentication token is missing.",
+      status_code: 401,
+    });
+  }
+
+  const { userAccount } = getUserContextDBAccount(authToken);
+
+  let user_id;
+  try {
+    user_id = await getUserID(userAccount);
+  } catch (error: any) {
+    return appwriteUnavailableResponse(error);
+  }
+
+  const template_id = params.template_id;
+
+  let db_query: any;
+  try {
+    db_query = await database.getDocument(
+      Constants.MAIN_DB_ID,
+      Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
+      template_id,
+    );
+  } catch (error) {
+    return appwriteUnavailableResponse(error);
+  }
+
+  if (db_query.total == 0) {
+    return construct_development_api_response({
+      message:
+        "The specified ID does not have an associated custom property template!",
+      status_code: 404,
+    });
+  } else {
+    try {
+      // Check if user is the owner of the template
+      if (db_query.documents[0].user_id !== user_id) {
+        return construct_development_api_response({
+          message: "You are not the owner of ths custom property template.",
+          status_code: 401,
+        });
+      }
+
+      // Get all associated category documents and delete them
+      const category_query = await database.listDocuments(
+        Constants.MAIN_DB_ID,
+        Constants.CUSTOM_PROP_CATEGORY_COL_ID,
+        [Query.equal("template_id", template_id)],
+      );
+
+      for (const category_id of category_query.documents.map((item: any) => {
+        return item.$id;
+      })) {
+        await database.deleteDocument(
+          Constants.MAIN_DB_ID,
+          Constants.CUSTOM_PROP_CATEGORY_COL_ID,
+          category_id,
+        );
+      }
+
+      // Get all associated data documents and delete them
+      const data_query = await database.listDocuments(
+        Constants.MAIN_DB_ID,
+        Constants.CUSTOM_PROP_DATA_COL_ID,
+        [Query.equal("template_id", template_id)],
+      );
+
+      for (const data_id of data_query.documents.map((item: any) => {
+        return item.$id;
+      })) {
+        await database.deleteDocument(
+          Constants.MAIN_DB_ID,
+          Constants.CUSTOM_PROP_DATA_COL_ID,
+          data_id,
+        );
+      }
+    } catch (error) {
+      return appwriteUnavailableResponse(error);
+    }
+  }
+
+  return construct_development_api_response({
+    message: `The custom property template was deleted.`,
   });
 }
