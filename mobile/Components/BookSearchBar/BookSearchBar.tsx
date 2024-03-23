@@ -1,15 +1,8 @@
-import {
-  View,
-  Text,
-  Keyboard,
-  FlatList,
-  StyleSheet,
-} from "react-native";
-import React, { useEffect } from "react";
+import { View, Text, Keyboard, FlatList, StyleSheet } from "react-native";
+import React from "react";
 import { useState } from "react";
-import { Button, SearchBar, Overlay, CheckBox, Divider } from "@rneui/base";
+import { Button, SearchBar, Overlay, CheckBox } from "@rneui/base";
 import Icon from "react-native-vector-icons/Ionicons";
-import {} from "react-native-vector-icons";
 
 const BookSearchBar = ({
   search,
@@ -37,6 +30,7 @@ const BookSearchBar = ({
       <View style={styles.searchBarView}>
         <View style={{ flex: 10 }}>
           <SearchBar
+            autoFocus={true}
             placeholder={newPlaceholder}
             lightTheme
             showLoading={loading}
@@ -67,9 +61,7 @@ const BookSearchBar = ({
           overlayStyle={styles.filterOverlay}
         >
           <View style={{ backgroundColor: "white" }}>
-            <Text style={styles.filterText}>
-              Filter by Genre
-            </Text>
+            <Text style={styles.filterText}>Filter by Genre</Text>
           </View>
           <View style={{ flexDirection: "row", marginTop: 8, height: "83%" }}>
             <FlatList
@@ -121,39 +113,6 @@ const BookSearchBar = ({
           </View>
         </Overlay>
       </View>
-
-      {/*}
-            <View style={{position: "absolute", bottom: -40, flexDirection: "row"}}>
-                <Text style={{marginLeft: 0, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
-                    Search by:  
-                </Text> 
-                <RadioButton.Android
-                    value="title"
-                    status={ checked === 'title' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('title')}
-                    
-                />
-                <Text style={{marginLeft: -4, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
-                    Title 
-                </Text> 
-                <RadioButton.Android
-                    value="author"
-                    status={ checked === 'author' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('author')}
-                />
-                <Text style={{marginLeft: -4, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
-                    Author 
-                </Text> 
-                <RadioButton.Android
-                    value="ISBN"
-                    status={ checked === 'ISBN' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('ISBN')}
-                />
-                <Text style={{marginLeft: -4, marginTop: 8, paddingRight: 10, fontSize: 16, color: '#333',}}> 
-                    ISBN 
-                </Text> 
-                
-    </View>*/}
     </View>
   );
 };
@@ -161,52 +120,52 @@ const BookSearchBar = ({
 export default BookSearchBar;
 
 const styles = StyleSheet.create({
-    searchBarView: { 
-        backgroundColor: "white", 
-        flexDirection: "row" 
-    },
-    searchBarContainer: {
-        padding: 0,
-        backgroundColor: "transparent",
-        borderBottomColor: "transparent",
-        borderTopColor: "transparent",
-    },
-    inputContainer: {
-        borderRadius: 20,
-        backgroundColor: "#F7F7F7",
-    },
-    filterButton: { 
-        flex: 2, 
-        alignItems: "center", 
-    },
-    filterOverlay: {
-        backgroundColor: "white",
-        width: "89%",
-        height: "70%",
-        borderRadius: 20,
-        marginTop: 60,
-    },
-    filterText: {
-        marginLeft: 0,
-        marginTop: 5,
-        marginBottom: 5,
-        fontWeight: "bold",
-        fontSize: 20,
-        alignSelf: "center",
-    },
-    checkboxContainer: { 
-        paddingLeft: 0, 
-        paddingTop: 0 
-    },
-    checkboxText: {
-        fontWeight: "normal",
-        fontSize: 17,
-        marginLeft: 7,
-    },
-    clearAllButton: {
-        position: "absolute",
-        bottom: 20,
-        alignSelf: "center",
-        borderRadius: 20,
-    },
+  searchBarView: {
+    backgroundColor: "white",
+    flexDirection: "row",
+  },
+  searchBarContainer: {
+    padding: 0,
+    backgroundColor: "transparent",
+    borderBottomColor: "transparent",
+    borderTopColor: "transparent",
+  },
+  inputContainer: {
+    borderRadius: 20,
+    backgroundColor: "#F7F7F7",
+  },
+  filterButton: {
+    flex: 2,
+    alignItems: "center",
+  },
+  filterOverlay: {
+    backgroundColor: "white",
+    width: "89%",
+    height: "70%",
+    borderRadius: 20,
+    marginTop: 60,
+  },
+  filterText: {
+    marginLeft: 0,
+    marginTop: 5,
+    marginBottom: 5,
+    fontWeight: "bold",
+    fontSize: 20,
+    alignSelf: "center",
+  },
+  checkboxContainer: {
+    paddingLeft: 0,
+    paddingTop: 0,
+  },
+  checkboxText: {
+    fontWeight: "normal",
+    fontSize: 17,
+    marginLeft: 7,
+  },
+  clearAllButton: {
+    position: "absolute",
+    bottom: 20,
+    alignSelf: "center",
+    borderRadius: 20,
+  },
 });

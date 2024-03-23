@@ -2,14 +2,11 @@ import React from "react";
 import {
   View,
   Text,
-  Platform,
   Image,
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
-  Dimensions,
-  KeyboardAvoidingView,
 } from "react-native";
 
 import BookSearchBar from "@/Components/BookSearchBar";
@@ -21,12 +18,10 @@ import { debounce } from "lodash";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
 import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
-import CarouselTabs from "../Components/LibraryCarousel/LibraryCarouselTabs";
 
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ErrorModal from "@/Components/ErrorModal";
-import BookSearchButton from "@/Components/BookSearchButton";
 
 const databases = new Databases(client);
 
@@ -135,8 +130,7 @@ async function getBooks(
   return books;
 }
 
-export const Library = (props) => {
-  const windowHeight = Dimensions.get("window").height;
+function SearchScreen(props) {
   const [loading, setLoading] = React.useState(false);
   const [books, setBooks] = React.useState([]);
   const [search, setSearch] = React.useState("");
@@ -194,7 +188,7 @@ export const Library = (props) => {
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View testID="library-screen-view">
+          <View testID="search-screen-view">
             <Text
               style={{
                 marginLeft: 20,
@@ -204,15 +198,76 @@ export const Library = (props) => {
                 fontSize: 21,
               }}
             >
-              Library
+              Search
             </Text>
           </View>
         </TouchableWithoutFeedback>
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
-          <BookSearchButton navigation={navigation} placeholder={"Search all books"}/>
+          <BookSearchBar
+            search={search}
+            updateSearch={(val) => {
+              setLoading(true);
+              setSearch(val);
+              performDebouncedSearch(val);
+            }}
+            newPlaceholder={"Search all books"}
+            loading={loading}
+            showFilter={true}
+            GENRES={GENRES}
+          />
         </View>
-        <CarouselTabs />
+        <FlatList
+          data={books.filter((book) => checkGenres(book.genre))}
+          style={{ flexGrow: 0 }}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("bookInfoModal", { bookInfo: item })
+                }
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                  }}
+                >
+                  <Image
+                    style={{
+                      width: 80,
+                      height: 100,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      shadowColor: "black",
+                    }}
+                    resizeMode="contain"
+                    source={{ uri: item.image_url }}
+                  />
+                  <View style={{ paddingLeft: 10, width: "80%" }}>
+                    <View style={{ flexDirection: "row" }}>
+                      <Text style={{ fontSize: 20, flexShrink: 1 }}>
+                        {item.title}
+                      </Text>
+                    </View>
+                    <Text>{item.author}</Text>
+                    <Text>ISBN: {item.isbn_13}</Text>
+                  </View>
+                </View>
+                <Divider style={{ backgroundColor: "black" }} />
+              </TouchableOpacity>
+            );
+          }}
+        />
       </SafeAreaView>
+      <ErrorModal
+        message={errorMessage}
+        visible={errorModalVisible}
+        setVisible={setErrorModalVisible}
+      />
     </NavigationContext.Provider>
   );
-};
+}
+
+export default SearchScreen;
