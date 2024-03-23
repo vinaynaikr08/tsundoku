@@ -1,33 +1,35 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest } from "next/server";
-import { headers } from "next/headers";
-import { AppwriteException, Query } from "node-appwrite";
+import { NextRequest, NextResponse } from "next/server";
+import { Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
-import { construct_development_api_response } from "../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../dev_api_response";
 import { createBookStatus } from "./common";
-import { getUserContextDBAccount, getUserID } from "../userContext";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
-import { appwriteUnavailableResponse } from "../common_responses";
 import { checkBookExists } from "@/app/api/v0/books/Books";
+import { getOrFailAuthTokens } from "../helpers";
 
 const database = new sdk.Databases(client);
 
 export async function GET() {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userDB, userAccount } = getUserContextDBAccount(authToken);
+
   let db_query;
   try {
     db_query = await userDB.listDocuments(
@@ -35,28 +37,14 @@ export async function GET() {
       Constants.BOOK_STAT_COL_ID,
     );
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    } else {
-      console.log(error);
-      return construct_development_api_response({
-        message: "Unknown error. Please contact the developers.",
-        status_code: 500,
-      });
-    }
+    return handle_error(error);
   }
 
   let user_id;
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   return construct_development_api_response({
@@ -67,16 +55,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -110,47 +93,43 @@ export async function POST(request: NextRequest) {
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
-  const db_query = await database.listDocuments(
-    Constants.MAIN_DB_ID,
-    Constants.BOOK_STAT_COL_ID,
-    [Query.equal("user_id", user_id), Query.equal("book", book_id)],
-  );
+  let db_query;
+  try {
+    db_query = await database.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.BOOK_STAT_COL_ID,
+      [Query.equal("user_id", user_id), Query.equal("book", book_id)],
+    );
+  } catch (error: any) {
+    return handle_error(error);
+  }
 
   if (db_query.total == 0) {
     // Create new object
     try {
       createBookStatus({ database, user_id, book: book_id, status });
     } catch (error: any) {
-      if (
-        error instanceof Error &&
-        (error as AppwriteException).code! / 100 === 4
-      ) {
-        return construct_development_api_response({
-          message: (error as AppwriteException).message,
-          status_code: (error as AppwriteException).code!,
-        });
-      }
-      console.log(error);
-      return construct_development_api_response({
-        message: "Unknown error. Please contact the developers.",
-        status_code: 500,
-      });
+      handle_error(error);
     }
   } else {
     const book_status_id = db_query.documents[0].$id;
 
-    await database.updateDocument(
-      Constants.MAIN_DB_ID,
-      Constants.BOOK_STAT_COL_ID,
-      book_status_id,
-      {
-        status: status,
-      },
-      userPermissions(user_id),
-    );
+    try {
+      await database.updateDocument(
+        Constants.MAIN_DB_ID,
+        Constants.BOOK_STAT_COL_ID,
+        book_status_id,
+        {
+          status: status,
+        },
+        userPermissions(user_id),
+      );
+    } catch (error: any) {
+      return handle_error(error);
+    }
   }
 
   return construct_development_api_response({

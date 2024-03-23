@@ -1,15 +1,20 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 
 import { client } from "@/app/appwrite";
-import { construct_development_api_response } from "../../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../../dev_api_response";
 import Constants from "@/app/Constants";
-import { getUserContextDBAccount, getUserID } from "../../userContext";
-import { appwriteUnavailableResponse } from "../../common_responses";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "../../userContext";
 import { Friends_Status } from "../common";
-import { AppwriteException } from "node-appwrite";
+import { getOrFailAuthTokens } from "../../helpers";
 
 const database = new sdk.Databases(client);
 
@@ -17,16 +22,11 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { friends_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -34,16 +34,7 @@ export async function PATCH(
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   const data = await request.json();
@@ -75,7 +66,7 @@ export async function PATCH(
       friends_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -104,7 +95,7 @@ export async function PATCH(
       },
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   return construct_development_api_response({
@@ -116,16 +107,11 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { friends_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -133,16 +119,7 @@ export async function DELETE(
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   const friends_id = params.friends_id;
@@ -155,7 +132,7 @@ export async function DELETE(
       friends_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -182,7 +159,7 @@ export async function DELETE(
       friends_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   return construct_development_api_response({

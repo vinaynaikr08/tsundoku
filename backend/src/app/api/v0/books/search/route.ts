@@ -1,13 +1,16 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest } from "next/server";
-import { AppwriteException, ID, Query } from "node-appwrite";
+import { NextRequest, NextResponse } from "next/server";
+import { ID, Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
-import { construct_development_api_response } from "../../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../../dev_api_response";
 import Constants from "@/app/Constants";
 import { GoogleBooksAPI } from "../GoogleBooksAPI";
-import { appwriteUnavailableResponse } from "../../common_responses";
+import { getRequiredParameterOrFail } from "../../helpers";
 
 const databases = new sdk.Databases(client);
 
@@ -101,17 +104,12 @@ async function get_or_create_author_id(name: string) {
 }
 
 export async function GET(request: NextRequest) {
-  const title = request.nextUrl.searchParams.get("title") as string;
+  const title = getRequiredParameterOrFail(request, "title");
+  if (title instanceof NextResponse) return title;
+
   const simulateAPIFailure = request.nextUrl.searchParams.get(
     "simulateAPIFailure",
   ) as string;
-
-  if (!title) {
-    return construct_development_api_response({
-      message: "Parameter `title` not supplied.",
-      status_code: 400,
-    });
-  }
 
   if (simulateAPIFailure && simulateAPIFailure === "true") {
     return construct_development_api_response({
@@ -128,12 +126,7 @@ export async function GET(request: NextRequest) {
       [Query.search("title", title)],
     );
   } catch (error: any) {
-    if (error instanceof AppwriteException) {
-      console.error(error);
-      return appwriteUnavailableResponse(error);
-    } else {
-      throw error;
-    }
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -203,14 +196,11 @@ export async function GET(request: NextRequest) {
               [Query.search("title", title)],
             );
           } catch (error) {
-            if (error instanceof AppwriteException) {
-              console.error(error);
-              return appwriteUnavailableResponse(error);
-            } else if (error instanceof TypeError) {
+            if (error instanceof TypeError) {
               // This book doesn't have one of the required fields, skip
               continue;
             } else {
-              throw error;
+              return handle_error(error);
             }
           }
         }

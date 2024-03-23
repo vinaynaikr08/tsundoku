@@ -12,6 +12,7 @@ import { appwriteUnavailableResponse } from "../../common_responses";
 
 const databases = new sdk.Databases(client);
 
+// TODO: delete this route entirely
 export async function POST(request: NextRequest) {
   const data = await request.json();
   const gbooks_api_id = data.id;

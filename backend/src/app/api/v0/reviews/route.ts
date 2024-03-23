@@ -1,31 +1,32 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest } from "next/server";
-import { headers } from "next/headers";
-import { AppwriteException, Query } from "node-appwrite";
+import { NextRequest, NextResponse } from "next/server";
+import { Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
-import { construct_development_api_response } from "../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../dev_api_response";
 import { createReview } from "./common";
-import { getUserContextDBAccount, getUserID } from "../userContext";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
-import { appwriteUnavailableResponse } from "../common_responses";
 import { checkBookExists } from "@/app/api/v0/books/Books";
+import { getOrFailAuthTokens } from "../helpers";
 
 const database = new sdk.Databases(client);
 
 export async function GET() {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userDB, userAccount } = getUserContextDBAccount(authToken);
 
@@ -36,27 +37,14 @@ export async function GET() {
       Constants.REVIEW_COL_ID,
     );
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    console.log(error);
-    return construct_development_api_response({
-      message: "Unknown error. Please contact the developers.",
-      status_code: 500,
-    });
+    return handle_error(error);
   }
 
   let user_id;
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   return construct_development_api_response({
@@ -67,16 +55,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -116,10 +99,7 @@ export async function POST(request: NextRequest) {
   try {
     user_id = (await userAccount.get()).$id;
   } catch (error: any) {
-    if (error instanceof AppwriteException) {
-      return appwriteUnavailableResponse(error);
-    }
-    throw error;
+    return handle_error(error);
   }
 
   let db_query: any;
@@ -130,10 +110,7 @@ export async function POST(request: NextRequest) {
       [Query.equal("user_id", user_id), Query.equal("book", book_id)],
     );
   } catch (error: any) {
-    if (error instanceof AppwriteException) {
-      return appwriteUnavailableResponse(error);
-    }
-    throw error;
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -160,10 +137,7 @@ export async function POST(request: NextRequest) {
         userPermissions(user_id),
       );
     } catch (error) {
-      if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse(error);
-      }
-      throw error;
+      return handle_error(error);
     }
   }
 

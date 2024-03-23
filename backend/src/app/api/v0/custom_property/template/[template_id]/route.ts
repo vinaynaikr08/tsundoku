@@ -1,14 +1,20 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 
 import { client } from "@/app/appwrite";
-import { construct_development_api_response } from "@/app/api/v0/dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "@/app/api/v0/dev_api_response";
 import Constants from "@/app/Constants";
-import { getUserContextDBAccount, getUserID } from "@/app/api/v0/userContext";
-import { appwriteUnavailableResponse } from "@/app/api/v0/common_responses";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "@/app/api/v0/userContext";
 import { Query } from "node-appwrite";
+import { getOrFailAuthTokens } from "../../../helpers";
 
 const database = new sdk.Databases(client);
 
@@ -16,16 +22,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { template_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
-
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
   const { userDB } = getUserContextDBAccount(authToken);
 
@@ -51,8 +49,8 @@ export async function PATCH(
       Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
       template_id,
     );
-  } catch (error) {
-    return appwriteUnavailableResponse(error);
+  } catch (error: any) {
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -69,8 +67,8 @@ export async function PATCH(
         template_id,
         Object.assign({}, name ? { name } : null, type ? { type } : null),
       );
-    } catch (error) {
-      return appwriteUnavailableResponse(error);
+    } catch (error: any) {
+      return handle_error(error);
     }
   }
 
@@ -83,16 +81,11 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: { template_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -100,7 +93,7 @@ export async function DELETE(
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   const template_id = params.template_id;
@@ -113,7 +106,7 @@ export async function DELETE(
       template_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -166,7 +159,7 @@ export async function DELETE(
         );
       }
     } catch (error) {
-      return appwriteUnavailableResponse(error);
+      return handle_error(error);
     }
   }
 

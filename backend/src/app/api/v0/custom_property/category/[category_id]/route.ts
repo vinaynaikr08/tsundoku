@@ -1,25 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 
-import { construct_development_api_response } from "@/app/api/v0/dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "@/app/api/v0/dev_api_response";
 import Constants from "@/app/Constants";
 import { getUserContextDBAccount } from "@/app/api/v0/userContext";
-import { appwriteUnavailableResponse } from "@/app/api/v0/common_responses";
+import { getOrFailAuthTokens } from "../../../helpers";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { category_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
-
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
   const { userDB } = getUserContextDBAccount(authToken);
 
@@ -45,7 +39,7 @@ export async function PATCH(
       category_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -63,7 +57,7 @@ export async function PATCH(
         { values },
       );
     } catch (error) {
-      return appwriteUnavailableResponse(error);
+      return handle_error(error);
     }
   }
 

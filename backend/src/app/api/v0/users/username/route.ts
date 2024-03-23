@@ -1,28 +1,28 @@
 const sdk = require("node-appwrite");
 
-import { headers } from "next/headers";
-
-import { construct_development_api_response } from "../../dev_api_response";
-import { getUserContextDBAccount, getUserID } from "../../userContext";
-import { client } from "@/app/appwrite";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../../dev_api_response";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "../../userContext";
+import { client, isAppwriteUserError } from "@/app/appwrite";
 import { AppwriteException, ID, Query } from "node-appwrite";
 import Constants from "@/app/Constants";
-import { appwriteUnavailableResponse } from "../../common_responses";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getOrFailAuthTokens } from "../../helpers";
 
 const databases = new sdk.Databases(client);
 
 export async function GET() {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -45,15 +45,17 @@ export async function GET() {
     );
   } catch (error: any) {
     if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "document_not_found"
+      isAppwriteUserError(error) &&
+      //@ts-ignore: type not defined in AppwriteException
+      (error as AppwriteException).type === "document_not_found"
     ) {
       return construct_development_api_response({
         message: `The user currently does not have a username set.`,
         response_name: "username",
       });
+    } else {
+      return handle_error(error);
     }
-    return appwriteUnavailableResponse(error);
   }
 
   return construct_development_api_response({
@@ -64,16 +66,11 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   let username;
   try {
@@ -110,10 +107,7 @@ export async function PATCH(request: NextRequest) {
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    return construct_development_api_response({
-      message: "Authentication token is invalid.",
-      status_code: 401,
-    });
+    return handle_error(error);
   }
 
   let userdata_id;
@@ -130,29 +124,38 @@ export async function PATCH(request: NextRequest) {
       (error as AppwriteException).message === "document_not_found"
     ) {
       userdata_id = null;
+    } else {
+      return handle_error(error);
     }
-    return appwriteUnavailableResponse(error);
   }
 
   if (!userdata_id) {
-    // Create new userdata entry
-    await databases.createDocument(
-      Constants.MAIN_DB_ID,
-      Constants.USERDATA_COL_ID,
-      ID.unique(),
-      {
-        user_id,
-        username,
-      },
-    );
+    try {
+      // Create new userdata entry
+      await databases.createDocument(
+        Constants.MAIN_DB_ID,
+        Constants.USERDATA_COL_ID,
+        ID.unique(),
+        {
+          user_id,
+          username,
+        },
+      );
+    } catch (error: any) {
+      return handle_error(error);
+    }
   } else {
-    // Update existing userdata entry
-    await databases.updateDocument(
-      Constants.MAIN_DB_ID,
-      Constants.USERDATA_COL_ID,
-      userdata_id,
-      { username },
-    );
+    try {
+      // Update existing userdata entry
+      await databases.updateDocument(
+        Constants.MAIN_DB_ID,
+        Constants.USERDATA_COL_ID,
+        userdata_id,
+        { username },
+      );
+    } catch (error: any) {
+      return handle_error(error);
+    }
   }
 
   return construct_development_api_response({

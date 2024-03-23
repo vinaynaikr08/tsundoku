@@ -1,12 +1,12 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest } from "next/server";
-import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 import { construct_development_api_response } from "../../../dev_api_response";
-import { getUserContextDBAccount } from "../../../userContext";
+import { checkUserToken } from "../../../userContext";
 import { client } from "@/app/appwrite";
 import { AppwriteException } from "node-appwrite";
+import { getOrFailAuthTokens } from "../../../helpers";
 
 const users = new sdk.Users(client);
 
@@ -14,27 +14,11 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { user_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  try {
-    await userAccount.get();
-  } catch (error: any) {
-    return construct_development_api_response({
-      message: "Authentication token is invalid.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const user_id = params.user_id;
   try {

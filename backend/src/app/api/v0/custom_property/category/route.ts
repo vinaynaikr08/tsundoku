@@ -1,21 +1,15 @@
 const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { AppwriteException, Query } from "node-appwrite";
+import { Query } from "node-appwrite";
 
+import { client } from "@/app/appwrite";
 import {
-  client,
-  formatAppwriteUserError,
-  isAppwriteUserError,
-} from "@/app/appwrite";
-import { construct_development_api_response } from "../../dev_api_response";
+  construct_development_api_response,
+  handle_error,
+} from "../../dev_api_response";
 import { createCategory } from "./common";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../../userContext";
+import { checkUserToken } from "../../userContext";
 import Constants from "@/app/Constants";
 import { getOrFailAuthTokens, getRequiredParameterOrFail } from "../../helpers";
 
@@ -39,15 +33,7 @@ export async function GET(request: NextRequest) {
       [Query.equal("template_id", template_id)],
     );
   } catch (error: any) {
-    if (isAppwriteUserError(error)) {
-      return formatAppwriteUserError(error);
-    } else {
-      console.log(error);
-      return construct_development_api_response({
-        message: "Unknown error. Please contact the developers.",
-        status_code: 500,
-      });
-    }
+    return handle_error(error);
   }
 
   return construct_development_api_response({
@@ -86,18 +72,7 @@ export async function POST(request: NextRequest) {
   try {
     createCategory({ database, template_id, values });
   } catch (error: any) {
-    if (isAppwriteUserError(error)) {
-      return construct_development_api_response({
-        message: (error as AppwriteException).message,
-        status_code: (error as AppwriteException).code!,
-      });
-    } else {
-      console.log(error);
-      return construct_development_api_response({
-        message: "Unknown error. Please contact the developers.",
-        status_code: 500,
-      });
-    }
+    return handle_error(error);
   }
 
   return construct_development_api_response({

@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 
-import { construct_development_api_response } from "../../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../../dev_api_response";
 import Constants from "@/app/Constants";
-import { getUserContextDBAccount } from "../../userContext";
+import { checkUserToken, getUserContextDBAccount } from "../../userContext";
 import { AppwriteException } from "node-appwrite";
-import { appwriteUnavailableResponse } from "../../common_responses";
+import { getOrFailAuthTokens } from "../../helpers";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { review_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userDB } = getUserContextDBAccount(authToken);
 
@@ -46,7 +43,7 @@ export async function PATCH(
     );
   } catch (error) {
     if (error instanceof AppwriteException) {
-      return appwriteUnavailableResponse(error);
+      return handle_error(error);
     }
   }
 
@@ -72,9 +69,7 @@ export async function PATCH(
         },
       );
     } catch (error) {
-      if (error instanceof AppwriteException) {
-        return appwriteUnavailableResponse(error);
-      }
+      handle_error(error);
     }
   }
 

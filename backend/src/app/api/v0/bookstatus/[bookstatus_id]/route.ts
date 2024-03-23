@@ -1,25 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 
-import { construct_development_api_response } from "../../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../../dev_api_response";
 import Constants from "@/app/Constants";
-import { getUserContextDBAccount } from "../../userContext";
-import { appwriteUnavailableResponse } from "../../common_responses";
+import { checkUserToken, getUserContextDBAccount } from "../../userContext";
+import { getOrFailAuthTokens } from "../../helpers";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { bookstatus_id: string } },
 ) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userDB } = getUserContextDBAccount(authToken);
 
@@ -42,7 +39,7 @@ export async function PATCH(
       bookstatus_id,
     );
   } catch (error) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   if (db_query.total == 0) {
@@ -62,7 +59,7 @@ export async function PATCH(
         },
       );
     } catch (error) {
-      return appwriteUnavailableResponse(error);
+      return handle_error(error);
     }
   }
 

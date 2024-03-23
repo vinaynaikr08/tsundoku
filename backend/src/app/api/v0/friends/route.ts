@@ -1,30 +1,31 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest } from "next/server";
-import { headers } from "next/headers";
-import { AppwriteException, ID, Query } from "node-appwrite";
+import { NextRequest, NextResponse } from "next/server";
+import { ID, Query } from "node-appwrite";
 
 import { client } from "@/app/appwrite";
-import { construct_development_api_response } from "../dev_api_response";
-import { getUserContextDBAccount, getUserID } from "../userContext";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../dev_api_response";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
-import { appwriteUnavailableResponse } from "../common_responses";
 import { Friends_Status } from "./common";
+import { getOrFailAuthTokens } from "../helpers";
 
 const database = new sdk.Databases(client);
 
 export async function GET() {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -32,16 +33,7 @@ export async function GET() {
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   let db_query;
@@ -60,7 +52,7 @@ export async function GET() {
       ],
     );
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   return construct_development_api_response({
@@ -71,16 +63,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   const { userAccount } = getUserContextDBAccount(authToken);
 
@@ -88,16 +75,7 @@ export async function POST(request: NextRequest) {
   try {
     user_id = await getUserID(userAccount);
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
 
   let requestee_id;
@@ -150,7 +128,7 @@ export async function POST(request: NextRequest) {
       ],
     );
   } catch (error: any) {
-    return appwriteUnavailableResponse(error);
+    return handle_error(error);
   }
   if (db_query.total > 0) {
     return construct_development_api_response({
@@ -171,20 +149,7 @@ export async function POST(request: NextRequest) {
         userPermissions(user_id),
       );
     } catch (error: any) {
-      if (
-        error instanceof Error &&
-        (error as AppwriteException).code! / 100 === 4
-      ) {
-        return construct_development_api_response({
-          message: (error as AppwriteException).message,
-          status_code: (error as AppwriteException).code!,
-        });
-      }
-      console.log(error);
-      return construct_development_api_response({
-        message: "Unknown error. Please contact the developers.",
-        status_code: 500,
-      });
+      return handle_error(error);
     }
   }
 
