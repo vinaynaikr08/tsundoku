@@ -11,54 +11,55 @@ const account = new Account(client);
 function ViewCustomProperties() {
   const [properties, setProperties] = React.useState([]);
 
-  const fakeData = [
-    { name: "test property 1", type: "BOOLEAN" },
-    { name: "test property 2", type: "NUMERICAL" },
-    { name: "test property 3", type: "CATEGORICAL" },
-  ];
+  React.useEffect(() => {
+    async function getCustomProperty() {
+      const user_id = (await account.get()).$id;
+      try {
+        const res = await fetch(
+          `${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}?` +
+            new URLSearchParams({
+              self: "true",
+            }),
+          {
+            method: "get",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+          },
+        );
 
-  // React.useEffect(() => {
-  //   async function getCustomProperty() {
-  //     const user_id = (await account.get()).$id;
-  //     try {
-  //       const res = await fetch(
-  //         `${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}?` +
-  //           new URLSearchParams({
-  //             user_id: user_id
-  //           }),
-  //       );
-  //       const res_json = await res.json();
+        const res_json = await res.json();
+        return res_json.results.documents.map((property) => {
+          return {
+            name: property.name,
+            type: property.type,
+          };
+        });
+      } catch (error) {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the books.");
+        // setErrorModalVisible(true);
+      }
+    }
 
-  //       return res_json.results.documents.map((property) => {
-  //         return {
-  //           name: property.name,
-  //           type: property.type
-  //         };
-  //       });
-  //     } catch (error) {
-  //       console.error(error);
-  //       // setErrorMessage("An error occurred fetching the books.");
-  //       // setErrorModalVisible(true);
-  //     }
-  //   }
-
-  //   getCustomProperty()
-  //     .then((data) => {
-  //       setProperties(data);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       // setErrorMessage("An error occurred fetching the recommended books.");
-  //       // setErrorModalVisible(true);
-  //     });
-  // }, []);
+    getCustomProperty()
+      .then((data) => {
+        setProperties(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the recommended books.");
+        // setErrorModalVisible(true);
+      });
+  }, []);
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "white" }} bounces={false}>
+    <ScrollView style={{ flex: 1, backgroundColor: "white" }} >
       <Text style={styles.title}>Your Custom Properties</Text>
-      {fakeData && (
+      {properties && (
         <View>
-          <View style={{ marginBottom: 10 }}>
-            {fakeData.map((item, index) => (
+          <View style={{ marginBottom: 20 }}>
+            {properties.map((item, index) => (
               <View
                 style={{
                   display: "flex",
@@ -78,7 +79,7 @@ function ViewCustomProperties() {
                 }}
                 key={index}
               >
-                <View >
+                <View>
                   <Text style={styles.name}>{item.name}</Text>
                   <Text style={styles.type}>{item.type.toLowerCase()}</Text>
                 </View>
@@ -111,12 +112,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: "500",
-    textAlign: "center"
+    textAlign: "center",
+    color: Colors.BUTTON_PURPLE,
   },
   type: {
     fontSize: 18,
     textAlign: "center",
-    textTransform: "capitalize"
+    textTransform: "capitalize",
   },
 });
 

@@ -20,7 +20,7 @@ function FullReview({ route, navigation }) {
   const rating = review.rating / 4;
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <TouchableOpacity
         style={{
           margin: 15,

@@ -17,7 +17,10 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
 import Slider from "@react-native-community/slider";
-import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
+import {
+  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
+  BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL,
+} from "@/Constants/URLs";
 import { Account } from "appwrite";
 import { client } from "../../appwrite";
 import Toast from "react-native-toast-message";
@@ -82,13 +85,33 @@ function CreateCustomProperty({ navigation }) {
 
     if (res.ok) {
       const res_json = await res.json();
-      console.log("custom property saved to database: " + res_json);
+      console.log("custom property saved to database: " + JSON.stringify(res_json));
+
+      if (type == "CATEGORICAL") {
+        console.log("template id: " + JSON.stringify(res_json.template_id));
+        let categories_res = await fetch(
+          `${BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL}`,
+          {
+            method: "post",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+            body: JSON.stringify({
+              template_id: res_json.template_id,
+              values: categories,
+            }),
+          },
+        );
+
+        if (categories_res.ok) {
+          console.log("categories saved to database");
+        } else {
+          console.log("error saving categories: " + categories_res.status);
+        }
+      }
     } else {
       console.log("error number: " + res.status);
-    }
-
-    if (type == "CATEGORICAL") {
-      // save to categories
     }
 
     Toast.show({
