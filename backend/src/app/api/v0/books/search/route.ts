@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
     // Fetch some results from the Google Books API and populate the DB
     let gbooks_books;
     try {
-      gbooks_books = await GoogleBooksAPI.searchBook(title);
+      gbooks_books = await GoogleBooksAPI.searchBooks(title);
     } catch (error: any) {
       return construct_development_api_response({
         message: "The Google Books API is currently unavailable.",

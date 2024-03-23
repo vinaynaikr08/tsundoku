@@ -1,5 +1,5 @@
 export namespace GoogleBooksAPI {
-  export function searchBook(title: string): any {
+  export function searchBooks(title: string): any {
     return fetch(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}`,
     )
