@@ -1,59 +1,35 @@
 const sdk = require("node-appwrite");
 
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { AppwriteException, Query } from "node-appwrite";
 
-import { client } from "@/app/appwrite";
+import {
+  client,
+  formatAppwriteUserError,
+  isAppwriteUserError,
+} from "@/app/appwrite";
 import { construct_development_api_response } from "../../dev_api_response";
 import { createCategory } from "./common";
-import { getUserContextDBAccount, getUserID } from "../../userContext";
+import {
+  checkUserToken,
+  getUserContextDBAccount,
+  getUserID,
+} from "../../userContext";
 import Constants from "@/app/Constants";
+import { getOrFailAuthTokens, getRequiredParameterOrFail } from "../../helpers";
 
 const database = new sdk.Databases(client);
 
 export async function GET(request: NextRequest) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
+  const template_id = getRequiredParameterOrFail(request, "template_id");
+  if (template_id instanceof NextResponse) return template_id;
 
-  const template_id = request.nextUrl.searchParams.get("template_id") as string;
-
-  if (!template_id) {
-    return construct_development_api_response({
-      message: "Parameter `template_id` not supplied.",
-      status_code: 400,
-    });
-  }
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  // Auth token check
-  try {
-    await getUserID(userAccount);
-  } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    console.log(error);
-    return construct_development_api_response({
-      message: "Unknown error. Please contact the developers.",
-      status_code: 500,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   let db_query;
   try {
@@ -63,20 +39,15 @@ export async function GET(request: NextRequest) {
       [Query.equal("template_id", template_id)],
     );
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).code! / 100 === 4
-    ) {
+    if (isAppwriteUserError(error)) {
+      return formatAppwriteUserError(error);
+    } else {
+      console.log(error);
       return construct_development_api_response({
-        message: (error as AppwriteException).message,
-        status_code: (error as AppwriteException).code!,
+        message: "Unknown error. Please contact the developers.",
+        status_code: 500,
       });
     }
-    console.log(error);
-    return construct_development_api_response({
-      message: "Unknown error. Please contact the developers.",
-      status_code: 500,
-    });
   }
 
   return construct_development_api_response({
@@ -87,18 +58,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authToken = (headers().get("authorization") || "")
-    .split("Bearer ")
-    .at(1);
-
-  if (!authToken) {
-    return construct_development_api_response({
-      message: "Authentication token is missing.",
-      status_code: 401,
-    });
-  }
-
-  const { userAccount } = getUserContextDBAccount(authToken);
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
 
   let template_id, values;
   try {
@@ -119,43 +80,24 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  // Auth token check
-  try {
-    await getUserID(userAccount);
-  } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "user_jwt_invalid"
-    ) {
-      return construct_development_api_response({
-        message: "Authentication failed.",
-        status_code: 401,
-      });
-    }
-    console.log(error);
-    return construct_development_api_response({
-      message: "Unknown error. Please contact the developers.",
-      status_code: 500,
-    });
-  }
+  const tokenCheck = await checkUserToken(authToken);
+  if (tokenCheck instanceof NextResponse) return tokenCheck;
 
   try {
     createCategory({ database, template_id, values });
   } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).code! / 100 === 4
-    ) {
+    if (isAppwriteUserError(error)) {
       return construct_development_api_response({
         message: (error as AppwriteException).message,
         status_code: (error as AppwriteException).code!,
       });
+    } else {
+      console.log(error);
+      return construct_development_api_response({
+        message: "Unknown error. Please contact the developers.",
+        status_code: 500,
+      });
     }
-    console.log(error);
-    return construct_development_api_response({
-      message: "Unknown error. Please contact the developers.",
-      status_code: 500,
-    });
   }
 
   return construct_development_api_response({
