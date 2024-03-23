@@ -1,14 +1,18 @@
 import React from "react";
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Modal,
-} from "react-native";
+import { StyleSheet, Text, View, Pressable, Modal } from "react-native";
 
-function ErrorModal({ message, visible, setVisible}) {
+function ErrorModal({ message, visible, setVisible }) {
+  if (typeof message === "object") {
+    console.error(
+      "Error: the ErrorModal was supplied an object in the message parameter. We only support strings.",
+    );
+    console.info(
+      `The object being attempted to render in the error module is the following: ${JSON.stringify(message)}`,
+    );
+    return;
+  }
+
   return (
     <Modal
       // animationType="slide"
