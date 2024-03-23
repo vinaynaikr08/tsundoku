@@ -61,7 +61,7 @@ export async function PATCH(
         Constants.MAIN_DB_ID,
         Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
         template_id,
-        Object.assign({}, name ? null : { name }, type ? null : { type }),
+        Object.assign({}, name ? { name } : null, type ? { type } : null),
       );
     } catch (error) {
       return appwriteUnavailableResponse(error);
