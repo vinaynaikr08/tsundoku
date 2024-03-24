@@ -99,58 +99,50 @@ export async function DELETE(
     return handle_error(error);
   }
 
-  if (db_query.total == 0) {
-    return construct_development_api_response({
-      message:
-        "The specified ID does not have an associated custom property template!",
-      status_code: 404,
-    });
-  } else {
-    try {
-      // Check if user is the owner of the template
-      if (db_query.documents[0].user_id !== user_id) {
-        return construct_development_api_response({
-          message: "You are not the owner of ths custom property template.",
-          status_code: 401,
-        });
-      }
+  try {
+    // Check if user is the owner of the template
+    if (db_query.user_id !== user_id) {
+      return construct_development_api_response({
+        message: "You are not the owner of ths custom property template.",
+        status_code: 401,
+      });
+    }
 
-      // Get all associated category documents and delete them
-      const category_query = await database.listDocuments(
+    // Get all associated category documents and delete them
+    const category_query = await database.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.CUSTOM_PROP_CATEGORY_COL_ID,
+      [Query.equal("template_id", template_id)],
+    );
+
+    for (const category_id of category_query.documents.map((item: any) => {
+      return item.$id;
+    })) {
+      await database.deleteDocument(
         Constants.MAIN_DB_ID,
         Constants.CUSTOM_PROP_CATEGORY_COL_ID,
-        [Query.equal("template_id", template_id)],
+        category_id,
       );
+    }
 
-      for (const category_id of category_query.documents.map((item: any) => {
-        return item.$id;
-      })) {
-        await database.deleteDocument(
-          Constants.MAIN_DB_ID,
-          Constants.CUSTOM_PROP_CATEGORY_COL_ID,
-          category_id,
-        );
-      }
+    // Get all associated data documents and delete them
+    const data_query = await database.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.CUSTOM_PROP_DATA_COL_ID,
+      [Query.equal("template_id", template_id)],
+    );
 
-      // Get all associated data documents and delete them
-      const data_query = await database.listDocuments(
+    for (const data_id of data_query.documents.map((item: any) => {
+      return item.$id;
+    })) {
+      await database.deleteDocument(
         Constants.MAIN_DB_ID,
         Constants.CUSTOM_PROP_DATA_COL_ID,
-        [Query.equal("template_id", template_id)],
+        data_id,
       );
-
-      for (const data_id of data_query.documents.map((item: any) => {
-        return item.$id;
-      })) {
-        await database.deleteDocument(
-          Constants.MAIN_DB_ID,
-          Constants.CUSTOM_PROP_DATA_COL_ID,
-          data_id,
-        );
-      }
-    } catch (error) {
-      return handle_error(error);
     }
+  } catch (error) {
+    return handle_error(error);
   }
 
   return construct_development_api_response({
