@@ -67,3 +67,16 @@ Note: one of the optional parameters must be supplied.
 - `400` - if none of the optional parameters were supplied
 - `401` - if the auth token was not supplied or is invalid
 - `404` - if the specified ID does not correspond to a custom property template entry
+
+## Deleting by ID
+
+### Method
+
+`DELETE`
+
+### Returns
+
+- `200` - request was successful
+- `400` - if none of the optional parameters were supplied
+- `401` - if the auth token was not supplied or is invalid, or if the user does not have the necessary permissions
+- `404` - if the specified ID does not correspond to a custom property template entry
