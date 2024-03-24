@@ -1,6 +1,7 @@
 import { ID } from "node-appwrite";
 
 import Constants from "@/app/Constants";
+import userPermissions from "../../userPermissions";
 
 export enum CustomProperty_Type {
   BOOLEAN,
@@ -28,6 +29,7 @@ export async function createTemplate({
       user_id,
       type,
     },
+    userPermissions(user_id),
   );
   return res.$id;
 }
