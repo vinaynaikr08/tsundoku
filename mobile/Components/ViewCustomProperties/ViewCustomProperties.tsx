@@ -10,6 +10,7 @@ const account = new Account(client);
 
 function ViewCustomProperties({navigation}) {
   const [properties, setProperties] = React.useState([]);
+  const [propertiesChanged, setPropertiesChanged] = React.useState(false);
 
   async function deleteProperty(id) {
     try {
@@ -26,6 +27,7 @@ function ViewCustomProperties({navigation}) {
 
       const res_json = await res.json();
       if (res.ok) {
+        setPropertiesChanged((prev) => !prev);
         console.log("successfully deleted");
       } else {
         console.log("error deleting: " + JSON.stringify(res_json));
@@ -91,7 +93,7 @@ function ViewCustomProperties({navigation}) {
         // setErrorMessage("An error occurred fetching the recommended books.");
         // setErrorModalVisible(true);
       });
-  }, []);
+  }, [propertiesChanged]);
 
   function editProperty({name}) {}
   return (
