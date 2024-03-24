@@ -3,7 +3,15 @@ import {
   BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL,
 } from "@/Constants/URLs";
 import * as React from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Pressable,
+} from "react-native";
 import { Account } from "appwrite";
 import { client } from "@/appwrite";
 import Colors from "@/Constants/Colors";
@@ -15,17 +23,23 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const account = new Account(client);
 
-function PropertyInput({ property, propertyData, setPropertyData }) {
-  let newProperty;
+function PropertyInput({ property, propertyData, setPropertyData, index }) {
+  let [newProperty, setNewProperty] = React.useState("");
   const [categories, setCategories] = React.useState(null);
-  const booleanCategories = [ "true", "false"];
+  const booleanCategories = ["true", "false"];
   const handleInputChange = (value: string) => {
-    const newPropertyData = [
-      ...propertyData,
-      { template_id: property.id, value: value },
-    ];
+    const newPropertyData = [...propertyData];
+    if (index >= newPropertyData.length) {
+      newPropertyData.push({ template_id: property.id, value: value });
+    } else {
+      newPropertyData[index] = { template_id: property.id, value: value };
+    }
     setPropertyData(newPropertyData);
   };
+
+  for (let i = 0; i < propertyData.length; i++) {
+    console.log("property data " + i + ": " + propertyData[i].value);
+  }
 
   if (property.type == "NUMERICAL") {
     return (
@@ -33,7 +47,8 @@ function PropertyInput({ property, propertyData, setPropertyData }) {
         <Text style={styles.propertyInput}>{property.name}</Text>
         <TextInput
           style={styles.categoryInput}
-          onChangeText={(value) => handleInputChange(value)}
+          onChangeText={setNewProperty}
+          onEndEditing={() => handleInputChange(newProperty)}
           value={newProperty}
           placeholder="Input a number"
           placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
@@ -230,6 +245,13 @@ function CustomPropertyReview({ navigation, route }) {
         <Icon name={"close"} color="black" size={25} />
       </TouchableOpacity>
       <Text style={styles.title}>Custom Properties</Text>
+      {properties.length == 0 && (
+        <View>
+          <Text style={styles.propertyInput}>
+            You have no custom properties!
+          </Text>
+        </View>
+      )}
       {properties &&
         properties.map((item, index) => (
           <View key={index}>
@@ -237,17 +259,21 @@ function CustomPropertyReview({ navigation, route }) {
               property={item}
               propertyData={propertyData}
               setPropertyData={setPropertyData}
+              index={index}
             />
           </View>
         ))}
-        <Pressable
-          onPress={() =>
-            navigation.navigate("textReviewModal", { rating: rating, propertyData: propertyData })
-          }
-          style={styles.nextButton}
-        >
-          <Text style={styles.nextButtonText}>Next</Text>
-        </Pressable>
+      <Pressable
+        onPress={() =>
+          navigation.navigate("textReviewModal", {
+            rating: rating,
+            propertyData: propertyData,
+          })
+        }
+        style={styles.nextButton}
+      >
+        <Text style={styles.nextButtonText}>Next</Text>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -311,7 +337,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
     marginBottom: 12,
     marginTop: 5,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   nextButtonText: {
     color: "black",
@@ -323,7 +349,8 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    alignSelf: "center"
+    alignSelf: "center",
+    marginTop: 10,
   },
 });
 

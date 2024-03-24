@@ -8,6 +8,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Divider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { Account } from "appwrite";
+import { client } from "@/appwrite";
+import { BACKEND_API_CUSTOM_PROPERTY_DATA_URL, BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
+
+const account = new Account(client);
 
 const fakeData = [
   { propertyName: "How many times I cried", value: "2" },
@@ -18,6 +23,58 @@ function FullReview({ route, navigation }) {
   const bookInfo = useContext(BookInfoWrapperContext);
   const { review } = route.params;
   const rating = review.rating / 4;
+  const [properties, setProperties] = React.useState([]);
+
+  React.useEffect(() => {
+    async function getCustomPropertiesRaw() {
+      try {
+        const res = await fetch(
+          `${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}?` +
+            new URLSearchParams({
+              book_id: bookInfo.id,
+            }),
+          {
+            method: "get",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+          },
+        );
+
+        const res_json = await res.json();
+        return res_json.results.documents.map((property) => {
+          return {
+            template_id: property.template_id,
+            value: property.value
+          };
+        });
+      } catch (error) {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the books.");
+        // setErrorModalVisible(true);
+      }
+    }
+
+    async function getCustomProperties() {
+      let rawData = await getCustomPropertiesRaw();
+      let processedData;
+      for ( let i = 0; i < rawData.length; i++) {
+        const rawProperty = rawData[i];
+      }
+      return processedData;
+    }
+
+    getCustomProperties()
+      .then((data) => {
+        setProperties(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the recommended books.");
+        // setErrorModalVisible(true);
+      });
+  }, []);
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
