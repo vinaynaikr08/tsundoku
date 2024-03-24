@@ -12,11 +12,16 @@ import {
 } from "react-native";
 import { Account } from "appwrite";
 import { client } from "@/appwrite";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const account = new Account(client);
 
 function EditCustomProperty({ navigation, route }) {
-  const { propertyInfo } = route.params;
+  const { propertyInfo, setPropertiesChanged } = route.params;
   const [newName, setNewName] = React.useState("");
 
   async function updateCustomProperty() {
@@ -38,10 +43,14 @@ function EditCustomProperty({ navigation, route }) {
         },
       );
 
+      const res_json = await res.json();
+
       if (res.ok) {
         console.log("updated property template name");
+        setPropertiesChanged((prev) => !prev);
+        navigation.pop();
       } else {
-        console.log("did not updated: " + res.status);
+        console.log("did not updated: " + JSON.stringify(res_json));
       }
     } catch (error) {
       console.error(error);
@@ -65,17 +74,16 @@ function EditCustomProperty({ navigation, route }) {
           placeholder="New Property Name"
           placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
         />
-        <View style={{flexDirection: "row", justifyContent: "center", gap: 10}}>
+        <View
+          style={{ flexDirection: "row", justifyContent: "center", gap: 10 }}
+        >
           <Pressable
             onPress={() => updateCustomProperty()}
             style={styles.saveButton}
           >
             <Text style={styles.saveButtonText}>Save</Text>
           </Pressable>
-          <Pressable
-            onPress={() => navigation.pop()}
-            style={styles.saveButton}
-          >
+          <Pressable onPress={() => navigation.pop()} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Cancel</Text>
           </Pressable>
         </View>

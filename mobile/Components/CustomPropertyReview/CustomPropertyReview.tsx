@@ -37,10 +37,6 @@ function PropertyInput({ property, propertyData, setPropertyData, index }) {
     setPropertyData(newPropertyData);
   };
 
-  for (let i = 0; i < propertyData.length; i++) {
-    console.log("property data " + i + ": " + propertyData[i].value);
-  }
-
   if (property.type == "NUMERICAL") {
     return (
       <View>

@@ -95,7 +95,6 @@ function ViewCustomProperties({navigation}) {
       });
   }, [propertiesChanged]);
 
-  function editProperty({name}) {}
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <Text style={styles.title}>Your Custom Properties</Text>
@@ -133,7 +132,7 @@ function ViewCustomProperties({navigation}) {
                   }}
                 >
                   <Pressable
-                    onPress={() => navigation.navigate("editCustomProperty", { propertyInfo: item })}
+                    onPress={() => navigation.navigate("editCustomProperty", { propertyInfo: item, setPropertiesChanged: setPropertiesChanged })}
                     style={styles.buttonStyle}
                   >
                     <Text
