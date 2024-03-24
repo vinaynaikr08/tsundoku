@@ -22,6 +22,7 @@ import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ErrorModal from "@/Components/ErrorModal";
+import { Icon } from "@rneui/base";
 
 const databases = new Databases(client);
 
@@ -33,7 +34,6 @@ async function getBooks(param) {
   const res = await fetch(
     `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
   );
-  console.log(await res.json());
   book_documents = (await res.json()).results.documents;
 
   for (const book of book_documents) {
@@ -183,10 +183,15 @@ function SearchScreen(props) {
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View testID="search-screen-view">
+          <View testID="search-screen-view" style={{flexDirection: 'row', width: '100%'}}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <View style={{marginTop: 5, flexDirection: 'row', marginLeft: 20}}>
+                <Icon name="arrow-back-ios"/>
+              </View>
+            </TouchableOpacity>
             <Text
               style={{
-                marginLeft: 20,
+                marginLeft: 0,
                 marginBottom: 15,
                 marginTop: 5,
                 fontWeight: "700",
@@ -211,50 +216,52 @@ function SearchScreen(props) {
             GENRES={GENRES}
           />
         </View>
-        <FlatList
-          data={books.filter((book) => checkGenres(book.genre))}
-          style={{ flexGrow: 0 }}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("bookInfoModal", { bookInfo: item })
-                }
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    paddingTop: 10,
-                    paddingBottom: 10,
-                  }}
+        <View style={{height: '89%'}}>
+          <FlatList
+            data={books.filter((book) => checkGenres(book.genre))}
+            style={{ flexGrow: 0 }}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("bookInfoModal", { bookInfo: item })
+                  }
                 >
-                  <Image
+                  <View
                     style={{
-                      width: 80,
-                      height: 100,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "white",
-                      shadowColor: "black",
+                      flexDirection: "row",
+                      paddingTop: 10,
+                      paddingBottom: 10,
                     }}
-                    resizeMode="contain"
-                    source={{ uri: item.image_url }}
-                  />
-                  <View style={{ paddingLeft: 10, width: "80%" }}>
-                    <View style={{ flexDirection: "row" }}>
-                      <Text style={{ fontSize: 20, flexShrink: 1 }}>
-                        {item.title}
-                      </Text>
+                  >
+                    <Image
+                      style={{
+                        width: 80,
+                        height: 100,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "white",
+                        shadowColor: "black",
+                      }}
+                      resizeMode="contain"
+                      source={{ uri: item.image_url }}
+                    />
+                    <View style={{ paddingLeft: 10, width: "80%" }}>
+                      <View style={{ flexDirection: "row" }}>
+                        <Text style={{ fontSize: 20, flexShrink: 1 }}>
+                          {item.title}
+                        </Text>
+                      </View>
+                      <Text>{item.author}</Text>
+                      <Text>ISBN: {item.isbn_13}</Text>
                     </View>
-                    <Text>{item.author}</Text>
-                    <Text>ISBN: {item.isbn_13}</Text>
                   </View>
-                </View>
-                <Divider style={{ backgroundColor: "black" }} />
-              </TouchableOpacity>
-            );
-          }}
-        />
+                  <Divider style={{ backgroundColor: "black" }} />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
       </SafeAreaView>
       <ErrorModal
         message={errorMessage}
