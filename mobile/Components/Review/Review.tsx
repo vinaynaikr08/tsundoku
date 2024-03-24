@@ -4,13 +4,14 @@ import TextReview from "../TextReview/TextReview";
 import StarRating from "../StarRating/StarRating";
 import { BookInfoContext } from "@/Contexts";
 import { createStackNavigator } from "@react-navigation/stack";
+import CustomPropertyReview from "../CustomPropertyReview/CustomPropertyReview";
 
 const Stack = createStackNavigator();
 
 function Review({ route }) {
   const { bookInfo } = route.params;
   return (
-    <BookInfoContext.Provider value={bookInfo.id}>
+    <BookInfoContext.Provider value={bookInfo}>
       <Stack.Navigator>
         <Stack.Group
           screenOptions={{
@@ -18,6 +19,7 @@ function Review({ route }) {
           }}
         >
           <Stack.Screen name="starRatingModal" component={StarRating} />
+          <Stack.Screen name="customPropertyModal" component={CustomPropertyReview} />
           <Stack.Screen name="textReviewModal" component={TextReview} />
         </Stack.Group>
       </Stack.Navigator>

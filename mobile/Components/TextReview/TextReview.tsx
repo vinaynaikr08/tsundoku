@@ -19,11 +19,14 @@ import { Account, Databases, ID } from "appwrite";
 import { client } from "../../appwrite";
 import { BookInfoContext } from "@/Contexts";
 import Toast from "react-native-toast-message";
-import { BACKEND_API_REVIEW_URL } from "../../Constants/URLs";
+import {
+  BACKEND_API_REVIEW_URL,
+  BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
+} from "../../Constants/URLs";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 function TextReview({ route, navigation }) {
-  const { rating } = route.params;
+  const { rating, propertyData } = route.params;
   const bookInfo = useContext(BookInfoContext);
   const [text, setText] = useState("");
 
@@ -48,7 +51,7 @@ function TextReview({ route, navigation }) {
         Authorization: "Bearer " + (await account.createJWT()).jwt,
       }),
       body: JSON.stringify({
-        book_id: bookInfo,
+        book_id: bookInfo.id,
         star_rating: rating,
         description: text,
       }),
@@ -60,6 +63,31 @@ function TextReview({ route, navigation }) {
     } else {
       console.log("error number: " + res.status);
       console.log("error: " + res.statusText);
+    }
+
+    for (let i = 0; i < propertyData.length; i++) {
+      const property = propertyData[i];
+      let custom_res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`, {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({
+          book_id: bookInfo.id,
+          template_id: property.template_id,
+          value: property.value,
+        }),
+      });
+      const custom_res_json = await custom_res.json();
+
+      if (custom_res.ok) {
+        console.log("custom properties saved to database: " + JSON.stringify(custom_res_json));
+      } else {
+        console.log(
+          "error saving custom properties: " + JSON.stringify(custom_res_json),
+        );
+      }
     }
 
     Toast.show({

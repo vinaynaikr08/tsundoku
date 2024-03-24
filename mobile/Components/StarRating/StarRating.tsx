@@ -73,7 +73,7 @@ function StarRating(props) {
         </View>
         <Pressable
           onPress={() =>
-            navigation.navigate("textReviewModal", { rating: rating })
+            navigation.navigate("customPropertyModal", { rating: rating })
           }
           style={styles.nextButton}
         >

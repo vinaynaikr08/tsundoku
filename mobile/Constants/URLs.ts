@@ -9,5 +9,7 @@ export const BACKEND_API_BOOK_STATUS_URL = `${BACKEND_API_URL}/v0/bookstatus`;
 
 export const BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL= `${BACKEND_API_URL}/v0/custom_property/template`;
 export const BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL= `${BACKEND_API_URL}/v0/custom_property/category`;
+export const BACKEND_API_CUSTOM_PROPERTY_DATA_URL= `${BACKEND_API_URL}/v0/custom_property/data`;
+
 
 
