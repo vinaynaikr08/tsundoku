@@ -16,14 +16,14 @@ export function getUserContextDBAccount(authToken: string) {
   return { userDB, userAccount };
 }
 
-export async function getUserID(userAccount: any) {
+async function getUserID(userAccount: any) {
   return (await userAccount.get()).$id;
 }
 
 export async function checkUserToken(token: string) {
   const { userAccount } = getUserContextDBAccount(token);
   try {
-    await getUserID(userAccount);
+    return await getUserID(userAccount);
   } catch (error: any) {
     if (isAppwriteUserError(error)) {
       // @ts-ignore: there's no type declared in AppwriteException, this is expected

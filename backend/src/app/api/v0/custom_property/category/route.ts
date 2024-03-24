@@ -25,8 +25,8 @@ export async function GET(request: NextRequest) {
   const template_id = getRequiredSearchParamOrFail(request, "template_id");
   if (template_id instanceof NextResponse) return template_id;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let db_query;
   try {
@@ -69,8 +69,8 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   try {
     createCategory({ database, template_id, values });

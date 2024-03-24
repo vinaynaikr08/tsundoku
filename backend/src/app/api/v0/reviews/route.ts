@@ -9,11 +9,7 @@ import {
   handle_error,
 } from "../dev_api_response";
 import { createReview } from "./common";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../userContext";
+import { checkUserToken, getUserContextDBAccount } from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { checkBookExists } from "@/app/api/v0/books/Books";
@@ -25,10 +21,10 @@ export async function GET() {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
-  const { userDB, userAccount } = getUserContextDBAccount(authToken);
+  const { userDB } = getUserContextDBAccount(authToken);
 
   let db_query;
   try {
@@ -36,13 +32,6 @@ export async function GET() {
       Constants.MAIN_DB_ID,
       Constants.REVIEW_COL_ID,
     );
-  } catch (error: any) {
-    return handle_error(error);
-  }
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
   } catch (error: any) {
     return handle_error(error);
   }
@@ -58,10 +47,8 @@ export async function POST(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let book_id, star_rating, description;
   try {
@@ -93,13 +80,6 @@ export async function POST(request: NextRequest) {
       message: `The specified book does not exist!`,
       status_code: 400,
     });
-  }
-
-  let user_id: any;
-  try {
-    user_id = (await userAccount.get()).$id;
-  } catch (error: any) {
-    return handle_error(error);
   }
 
   let db_query: any;

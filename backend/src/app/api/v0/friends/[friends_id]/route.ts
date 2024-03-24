@@ -8,11 +8,7 @@ import {
   handle_error,
 } from "../../dev_api_response";
 import Constants from "@/app/Constants";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../../userContext";
+import { checkUserToken } from "../../userContext";
 import { Friends_Status } from "../common";
 import { getOrFailAuthTokens } from "../../helpers";
 
@@ -25,17 +21,8 @@ export async function PATCH(
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
-  }
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   const data = await request.json();
   const friends_id = params.friends_id;
@@ -110,17 +97,8 @@ export async function DELETE(
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
-  }
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   const friends_id = params.friends_id;
 

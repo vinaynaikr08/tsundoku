@@ -11,7 +11,7 @@ import { getOrFailAuthTokens } from "../../../helpers";
 const users = new sdk.Users(client);
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { user_id: string } },
 ) {
   const authToken = getOrFailAuthTokens();

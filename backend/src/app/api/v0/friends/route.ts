@@ -8,11 +8,7 @@ import {
   construct_development_api_response,
   handle_error,
 } from "../dev_api_response";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../userContext";
+import { checkUserToken } from "../userContext";
 import Constants from "@/app/Constants";
 import userPermissions from "../userPermissions";
 import { Friends_Status } from "./common";
@@ -24,17 +20,8 @@ export async function GET() {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
-  }
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let db_query;
   try {
@@ -66,17 +53,8 @@ export async function POST(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
-  }
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let requestee_id;
   try {

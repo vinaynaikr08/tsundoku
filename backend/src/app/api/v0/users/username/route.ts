@@ -4,11 +4,7 @@ import {
   construct_development_api_response,
   handle_error,
 } from "../../dev_api_response";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../../userContext";
+import { checkUserToken } from "../../userContext";
 import { client, isAppwriteUserError } from "@/app/appwrite";
 import { AppwriteException, ID, Query } from "node-appwrite";
 import Constants from "@/app/Constants";
@@ -21,20 +17,8 @@ export async function GET() {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return construct_development_api_response({
-      message: "Authentication token is invalid.",
-      status_code: 401,
-    });
-  }
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let db_query;
   try {
@@ -69,8 +53,8 @@ export async function PATCH(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let username;
   try {
@@ -99,15 +83,6 @@ export async function PATCH(request: NextRequest) {
       response_data: error.message,
       status_code: 400,
     });
-  }
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
   }
 
   let userdata_id;

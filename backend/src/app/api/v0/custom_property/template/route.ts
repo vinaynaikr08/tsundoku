@@ -10,11 +10,7 @@ import {
   handle_error,
 } from "../../dev_api_response";
 import { createTemplate } from "./common";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../../userContext";
+import { checkUserToken } from "../../userContext";
 import Constants from "@/app/Constants";
 import { getOrFailAuthTokens } from "../../helpers";
 
@@ -24,19 +20,10 @@ export async function GET(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   const self = request.nextUrl.searchParams.get("self") as string;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
-  }
 
   let db_query;
   try {
@@ -60,10 +47,8 @@ export async function POST(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let name, type;
   try {
@@ -82,13 +67,6 @@ export async function POST(request: NextRequest) {
       message: `Required parameters not supplied.`,
       status_code: 400,
     });
-  }
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
   }
 
   let template_id;

@@ -11,7 +11,6 @@ import Constants from "@/app/Constants";
 import {
   checkUserToken,
   getUserContextDBAccount,
-  getUserID,
 } from "@/app/api/v0/userContext";
 import { Query } from "node-appwrite";
 import { getOrFailAuthTokens } from "../../../helpers";
@@ -84,17 +83,8 @@ export async function DELETE(
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
-  }
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   const template_id = params.template_id;
 

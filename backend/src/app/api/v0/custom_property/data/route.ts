@@ -9,11 +9,7 @@ import {
   handle_error,
 } from "../../dev_api_response";
 import { createData } from "./common";
-import {
-  checkUserToken,
-  getUserContextDBAccount,
-  getUserID,
-} from "../../userContext";
+import { checkUserToken, getUserContextDBAccount } from "../../userContext";
 import Constants from "@/app/Constants";
 import { getOrFailAuthTokens } from "../../helpers";
 
@@ -23,14 +19,14 @@ export async function GET(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   const book_id = request.nextUrl.searchParams.get("book_id") as string;
 
   const { userDB } = getUserContextDBAccount(authToken);
 
-  let db_query, user_id;
+  let db_query;
   try {
     db_query = await userDB.listDocuments(
       Constants.MAIN_DB_ID,
@@ -52,8 +48,8 @@ export async function POST(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
-  const tokenCheck = await checkUserToken(authToken);
-  if (tokenCheck instanceof NextResponse) return tokenCheck;
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
 
   let book_id, template_id, value;
   try {
@@ -73,15 +69,6 @@ export async function POST(request: NextRequest) {
       message: `Required parameters not supplied.`,
       status_code: 400,
     });
-  }
-
-  const { userAccount } = getUserContextDBAccount(authToken);
-
-  let user_id;
-  try {
-    user_id = await getUserID(userAccount);
-  } catch (error: any) {
-    return handle_error(error);
   }
 
   try {
