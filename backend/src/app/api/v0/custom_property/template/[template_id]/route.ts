@@ -145,6 +145,16 @@ export async function DELETE(
     return handle_error(error);
   }
 
+  try {
+    await database.deleteDocument(
+      Constants.MAIN_DB_ID,
+      Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
+      template_id,
+    );
+  } catch (error: any) {
+    return handle_error(error);
+  }
+
   return construct_development_api_response({
     message: `The custom property template was deleted.`,
   });
