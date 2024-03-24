@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     db_query = (
       await database.listDocuments(
         Constants.MAIN_DB_ID,
-        Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
+        Constants.CUSTOM_PROP_CATEGORY_COL_ID,
         [Query.equal("template_id", template_id)],
       )
     ).documents;
