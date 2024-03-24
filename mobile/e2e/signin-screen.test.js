@@ -59,4 +59,8 @@ async function typeLoginCredentials(email, password) {
 async function dismissKeyboard() {
   // Dismiss keyboard (or else Detox (and the user) cannot see the sign in arrow)
   await element(by.id("sign-in-password-field")).tapReturnKey();
+
+  // Tap on header to delay (workaround for issue #111)
+  // TODO: remove this once the sync issue upstream is fixed!
+  await element(by.text("Sign in")).tap();
 }
