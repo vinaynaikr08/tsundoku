@@ -30,11 +30,22 @@ export async function GET(request: NextRequest) {
 
   let db_query;
   try {
-    db_query = await database.getDocument(
-      Constants.MAIN_DB_ID,
-      Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
-      [Query.equal("template_id", template_id)],
-    );
+    db_query = (
+      await database.listDocuments(
+        Constants.MAIN_DB_ID,
+        Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
+        [Query.equal("template_id", template_id)],
+      )
+    ).documents;
+
+    if (db_query.length !== 1) {
+      return construct_development_api_response({
+        message: "No documents or multiple documents found.",
+        status_code: 404,
+      });
+    } else {
+      db_query = db_query[0];
+    }
   } catch (error: any) {
     return handle_error(error);
   }
