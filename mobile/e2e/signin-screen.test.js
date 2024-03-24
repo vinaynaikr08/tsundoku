@@ -17,19 +17,12 @@ describe("Sign in screen", () => {
   });
 
   it("try sign in with demo credentials", async () => {
-    // Clear fields if populated
-    await element(by.id("sign-in-email-field")).clearText();
-    await element(by.id("sign-in-password-field")).clearText();
-
-    await element(by.id("sign-in-email-field")).typeText(
+    await clearSignInFields();
+    await typeLoginCredentials(
       "detoxtest@example.com",
-    );
-    await element(by.id("sign-in-password-field")).typeText(
       "testing-purposes-only!@!",
     );
-
-    // Dismiss keyboard (or else Detox (and the user) cannot see the sign in arrow)
-    await element(by.id("sign-in-password-field")).tapReturnKey();
+    await dismissKeyboard();
 
     await element(by.id("sign-in-signin-arrow")).tap();
 
@@ -37,19 +30,12 @@ describe("Sign in screen", () => {
   });
 
   it("try sign in with bad credentials", async () => {
-    // Clear fields if populated
-    await element(by.id("sign-in-email-field")).clearText();
-    await element(by.id("sign-in-password-field")).clearText();
-
-    await element(by.id("sign-in-email-field")).typeText(
+    await clearSignInFields();
+    await typeLoginCredentials(
       "detoxtest@example.com",
-    );
-    await element(by.id("sign-in-password-field")).typeText(
       "intentionally-wrong-password",
     );
-
-    // Dismiss keyboard (or else Detox (and the user) cannot see the sign in arrow)
-    await element(by.id("sign-in-password-field")).tapReturnKey();
+    await dismissKeyboard();
 
     await element(by.id("sign-in-signin-arrow")).tap();
 
@@ -59,3 +45,18 @@ describe("Sign in screen", () => {
     );
   });
 });
+
+async function clearSignInFields() {
+  await element(by.id("sign-in-email-field")).clearText();
+  await element(by.id("sign-in-password-field")).clearText();
+}
+
+async function typeLoginCredentials(email, password) {
+  await element(by.id("sign-in-email-field")).typeText(email);
+  await element(by.id("sign-in-password-field")).typeText(password);
+}
+
+async function dismissKeyboard() {
+  // Dismiss keyboard (or else Detox (and the user) cannot see the sign in arrow)
+  await element(by.id("sign-in-password-field")).tapReturnKey();
+}
