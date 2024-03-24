@@ -46,35 +46,49 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 - `400` - if the required parameters are not supplied
 - `401` - if the auth token was not supplied or is invalid
 
-## Updating by ID
+## Query/Update/Delete by ID
 
 `host/api/v0/custom_property/template/[template_id]`
 
-### Method
+### Query
+
+#### Method
+
+`GET`
+
+#### Returns
+
+- `200` - request was successful
+- `401` - if the auth token was not supplied or is invalid
+- `404` - if the specified ID does not correspond to a custom property template entry
+
+### Update
+
+#### Method
 
 `PATCH`
 
-### Body parameters (optional)
+#### Body parameters (optional)
 
 Note: one of the optional parameters must be supplied.
 
 - `name`
 - `type` enum
 
-### Returns
+#### Returns
 
 - `200` - request was successful
 - `400` - if none of the optional parameters were supplied
 - `401` - if the auth token was not supplied or is invalid
 - `404` - if the specified ID does not correspond to a custom property template entry
 
-## Deleting by ID
+### Delete
 
-### Method
+#### Method
 
 `DELETE`
 
-### Returns
+#### Returns
 
 - `200` - request was successful
 - `400` - if none of the optional parameters were supplied

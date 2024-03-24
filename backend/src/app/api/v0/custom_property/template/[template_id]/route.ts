@@ -17,6 +17,35 @@ import { getOrFailAuthTokens } from "../../../helpers";
 
 const database = new sdk.Databases(client);
 
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: { template_id: string } },
+) {
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
+
+  const { userDB } = getUserContextDBAccount(authToken);
+
+  const template_id = params.template_id;
+
+  let db_query: any;
+  try {
+    db_query = await userDB.getDocument(
+      Constants.MAIN_DB_ID,
+      Constants.CUSTOM_PROP_TEMPLATE_COL_ID,
+      template_id,
+    );
+  } catch (error: any) {
+    return handle_error(error);
+  }
+
+  return construct_development_api_response({
+    message: `Custom property template for: ${template_id}`,
+    response_name: "result",
+    response_data: db_query,
+  });
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { template_id: string } },
