@@ -10,6 +10,7 @@ import { BACKEND_API_FRIENDS_URL } from "@/Constants/URLs";
 const databases = new Databases(client);
 
 const ManageFriendsModal = () => {
+    const [friends, setFriends] = useState(null);
     useEffect(() => {
         const account = new Account(client);
         account
@@ -25,11 +26,15 @@ const ManageFriendsModal = () => {
                     Query.equal("requester", user_id),
                     Query.equal("requestee", user_id),
                 ]
-              ), Query.select(["status"])],
+              ), ],
             );
-            promise.then((response) => {
-                console.log(response);
-            });
+            promise.then(
+                function (response) {
+                    const documents = response.documents;
+                    const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
+                    setFriends(filtered.map((friend) => (user_id == friend.requestee ? friend.requester : friend.requestee)));
+                }
+            );
           })
           .catch((error) => {
             console.error("Error fetching user ID:", error);
@@ -51,22 +56,23 @@ const ManageFriendsModal = () => {
                 width: "100%",
             }}>
                 <FlatList
-                    data={null}
+                    data={friends}
                     scrollEventThrottle={1}
                     style={{
                         flex: 1,
                         marginBottom: 0,
                     }}
                     renderItem={({ item }) => {
-                        return (<View/>);
+                        return (
+                            <View style={{marginLeft: 20}}>
+                                <Text style={{fontSize: 17}}>{item}</Text>
+                            </View>
+                        );
                     }}
                 />
 
             </View>
 
-            {/* <FlatList>
-
-            </FlatList> */}
         </View>
     );
 }
