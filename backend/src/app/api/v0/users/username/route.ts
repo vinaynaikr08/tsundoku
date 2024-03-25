@@ -150,7 +150,7 @@ async function checkUsernameValidity(username: string) {
   }
 
   // Check if username is comprised of alphanumeric characters
-  if (!username.match(/^[0-9a-z]+$/)) {
+  if (!username.match(/^[0-9a-zA-Z]+$/)) {
     throw new Error("Username must only contain alphanumeric characters");
   }
   // Check if others are using the same username
