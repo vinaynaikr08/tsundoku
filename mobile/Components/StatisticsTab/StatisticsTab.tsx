@@ -222,11 +222,11 @@ const StatisticsTab = () => {
   //     "December",
   //   ];
 
-  //   const datasets = [
-  //     {
-  //       data: bookCounts,
-  //     },
-  //   ];
+  const datasets = [
+    {
+      data: bookCounts,
+    },
+  ];
   const labels = [
     "January",
     "February",
@@ -242,17 +242,19 @@ const StatisticsTab = () => {
     "December",
   ];
 
-  const datasets = [
-    {
-      data: Array(12).fill(0),
-    },
-  ];
+  // Create datasets array with bookCounts
+  //   const datasets = [
+  //     {
+  //       data: Array(12).fill(0),
+  //     },
+  //   ];
 
-  labels.forEach((month, index) => {
-    const monthKey = `${index + 1}`.padStart(2, "0");
-    const monthYear = `2024-${monthKey}`;
-    datasets[0].data[index] = booksReadByMonth[monthYear] || 0;
-  });
+  //   // Populate datasets with book counts
+  //   labels.forEach((month, index) => {
+  //     const monthKey = `${index + 1}`.padStart(2, "0");
+  //     const monthYear = `2024-${monthKey}`;
+  //     datasets[0].data[index] = booksReadByMonth[monthYear] || 0;
+  //   });
 
   const data = {
     labels: labels,
