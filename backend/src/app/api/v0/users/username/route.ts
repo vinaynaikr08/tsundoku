@@ -143,6 +143,12 @@ async function checkUsernameValidity(username: string) {
   if (username.length > 20) {
     throw new Error("Username is too long (must be below 20 characters)");
   }
+
+  // Check if username is empty
+  if (username.length < 1) {
+    throw new Error("Username is empty");
+  }
+
   // Check if username is comprised of alphanumeric characters
   if (!username.match(/^[0-9a-z]+$/)) {
     throw new Error("Username must only contain alphanumeric characters");
