@@ -165,10 +165,10 @@ const StatisticsTab = () => {
   const sortedBooksByMonth = Object.entries(booksReadByMonth).sort(
     (a, b) => new Date(a[0]).getMonth() - new Date(b[0]).getMonth(),
   );
-  const mostReadMonth =
-    sortedBooksByMonth.length > 0
-      ? sortedBooksByMonth[sortedBooksByMonth.length - 1][0]
-      : null;
+  //   const mostReadMonth =
+  //     sortedBooksByMonth.length > 0
+  //       ? sortedBooksByMonth[sortedBooksByMonth.length - 1][0]
+  //       : null;
 
   const authorsRead = activity.reduce((acc, cur) => {
     const author = cur.book.author;
@@ -274,12 +274,20 @@ const StatisticsTab = () => {
       >
         <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: 10, fontSize: 22 }}>Books Read by Month:</Text>
-          <View>
+          {/* <View>
             {sortedBooksByMonth.map(([monthYear, count]) => (
               <Text
                 style={{ margin: 10, fontSize: 18 }}
                 key={monthYear}
               >{`${getMonthName(parseInt(monthYear.split("-")[1]))} ${monthYear.split("-")[0]}: ${count} books`}</Text>
+            ))}
+          </View> */}
+          <View>
+            {labels.map((month, index) => (
+              <Text
+                style={{ margin: 10, fontSize: 15 }}
+                key={month}
+              >{`${month}: ${bookCounts[index]} books`}</Text>
             ))}
           </View>
         </TouchableOpacity>
