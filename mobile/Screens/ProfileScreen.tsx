@@ -1,58 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
-import BookInfoModal from "../Components/BookInfoModal";
+import React from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-  Switch,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { Query } from "appwrite";
 import { client } from "../appwrite";
-import { Databases, Account } from "appwrite";
-import Colors from "../Constants/Colors";
-import ID from "../Constants/ID";
-import {
-  BookInfoContext,
-  NavigationContext,
-  ProfileContext,
-} from "../Contexts";
+import { Account } from "appwrite";
+import { ProfileContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Divider } from "react-native-paper";
-import { Button, Icon, Overlay } from "@rneui/themed";
-import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
 
-const databases = new Databases(client);
 
 export const Profile = (props) => {
-  // const { navigation } = props;
-  const account = new Account(client);
-  const user_id = account.get();
-  const [overlayVisible, setOverlayVisible] = useState(false);
-  const [username, setUsername] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [username, setUsername] = React.useState(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const account = new Account(client);
     account
       .get()
       .then((response) => {
-        const user_id = response.$id;
         setUsername(response.name);
-        setEmail(response.email);
-        const databases = new Databases(client);
-        const promise = databases.listDocuments(
-          ID.mainDBID,
-          ID.bookStatusCollectionID,
-          [Query.equal("user_id", user_id)],
-        );
       })
       .catch((error) => {
-        console.error("Error fetching user ID:", error);
+        console.error("Error fetching user ID: ", error);
       });
   }, []);
 
@@ -79,10 +50,3 @@ export const Profile = (props) => {
     </ProfileContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    margin: 30,
-  },
-});
