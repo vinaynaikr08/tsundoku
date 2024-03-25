@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { Query } from "appwrite";
 import { client } from "../../appwrite";
 import { Databases, Account } from "appwrite";
 import ID from "../../Constants/ID";
 import { BarChart } from "react-native-chart-kit";
+import { ScreenWidth } from "@rneui/base";
 
 const databases = new Databases(client);
 
@@ -149,7 +156,6 @@ const StatisticsTab = () => {
     fetchData();
   }, []);
 
-  // Calculate statistics
   const booksReadByMonth = activity.reduce((acc, cur) => {
     const monthYear = cur.timestamp.substr(0, 7); // timestamp is in format YYYY-MM-DDTHH:MM:SS
     acc[monthYear] = (acc[monthYear] || 0) + 1;
@@ -157,7 +163,7 @@ const StatisticsTab = () => {
   }, {});
 
   const sortedBooksByMonth = Object.entries(booksReadByMonth).sort(
-    (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(),
+    (a, b) => new Date(a[0]).getMonth() - new Date(b[0]).getMonth(),
   );
   const mostReadMonth =
     sortedBooksByMonth.length > 0
@@ -176,12 +182,6 @@ const StatisticsTab = () => {
 
   const mostReadAuthor = sortedAuthors.length > 0 ? sortedAuthors[0][0] : null;
 
-  // const data = {
-  //     labels: Object.keys(booksReadByMonth),
-  //     datasets: [{
-  //       data: Object.values(booksReadByMonth).map(value => value),
-  //     }],
-  //   };
   const getMonthName = (index) => {
     const months = [
       "January",
@@ -197,18 +197,40 @@ const StatisticsTab = () => {
       "November",
       "December",
     ];
-    return months[index - 1]; // Adjust for zero-based indexing
+    return months[index - 1]; // zero-based indexing
   };
+
+  const bookCounts = Array(12).fill(0);
+
+  activity.forEach((cur) => {
+    const monthIndex = new Date(cur.timestamp).getMonth();
+    bookCounts[monthIndex]++;
+  });
+
+  const labels = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const datasets = [
+    {
+      data: bookCounts,
+    },
+  ];
+
   const data = {
-    labels: sortedBooksByMonth.map(([monthYear, _]) => {
-      const [year, month] = monthYear.split("-");
-      return `${getMonthName(month)} ${year}`;
-    }),
-    datasets: [
-      {
-        data: sortedBooksByMonth.map(([_, count]) => count),
-      },
-    ],
+    labels: labels,
+    datasets: datasets,
   };
 
   return (
@@ -223,41 +245,18 @@ const StatisticsTab = () => {
         }}
       >
         <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10, fontSize: 20 }}>Books Read by Month:</Text>
-          {/* <Text style={{ margin: 10, fontSize: 20 }}>
-            {Object.entries(booksReadByMonth).map(([monthYear, count]) => (
-              <Text key={monthYear}>{`${monthYear}: ${count} books\n`}</Text>
-            ))}
-          </Text> */}
+          <Text style={{ margin: 10, fontSize: 22 }}>Books Read by Month:</Text>
           <View>
             {sortedBooksByMonth.map(([monthYear, count]) => (
               <Text
-                style={{ margin: 10, fontSize: 20 }}
+                style={{ margin: 10, fontSize: 18 }}
                 key={monthYear}
               >{`${getMonthName(parseInt(monthYear.split("-")[1]))} ${monthYear.split("-")[0]}: ${count} books`}</Text>
             ))}
           </View>
         </TouchableOpacity>
       </View>
-      {/* <BarChart
-        style={{ marginTop: 20 }}
-        width={300}
-        height={200}
-        yAxisLabel="Count"
-        data={data}
-        chartConfig={{
-          backgroundColor: '#FFFFFF',
-          backgroundGradientFrom: '#FFFFFF',
-          backgroundGradientTo: '#FFFFFF',
-          decimalPlaces: 0,
-          color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-        }}
-      /> */}
-      <View
+      {/* <View
         style={{
           flexDirection: "row",
           paddingTop: 10,
@@ -270,25 +269,31 @@ const StatisticsTab = () => {
             Most Read Author: {mostReadAuthor}
           </Text>
         </TouchableOpacity>
-      </View>
-      {/* <View style={{ flex: 1 }}>
-        <BarChart
-          style={{ height: 200 }}
-          data={data}
-          gridMin={0}
-          svg={{ fill: "rgba(134, 65, 244, 0.8)" }}
-          contentInset={{ top: 30, bottom: 30 }}
-        >
-          <Grid />
-        </BarChart>
-        <XAxis
-          style={{ marginTop: 10 }}
-          data={data}
-          formatLabel={(value, index) => data[index].monthYear}
-          contentInset={{ left: 20, right: 20 }}
-          svg={{ fontSize: 10, fill: "black" }}
-        />
       </View> */}
+      <BarChart
+        style={{ marginTop: 20, marginLeft: -30 }}
+        width={Dimensions.get("window").width - 50}
+        height={400}
+        yAxisLabel=""
+        yAxisSuffix=" books"
+        data={data}
+        verticalLabelRotation={90}
+        chartConfig={{
+          backgroundColor: "#FFFFFF",
+          backgroundGradientFrom: "#FFFFFF",
+          backgroundGradientTo: "#FFFFFF",
+          decimalPlaces: 0,
+          color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+          barPercentage: 0.5, // width of bars
+          propsForLabels: {
+            fontSize: 10,
+          },
+        }}
+      />
     </View>
   );
 };
