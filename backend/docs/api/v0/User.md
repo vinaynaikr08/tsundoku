@@ -1,12 +1,29 @@
 # User
 
+`host/api/v0/users/`
+
+## Account deletion
+
+This endpoint allows you to delete the account of the current user.
+
+All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
+
+#### Method
+
+`DELETE`
+
+#### Returns
+
+- `200` - request was successful
+- `401` - if the auth token was not supplied or is invalid
+
 ## Username
 
 ### Query
 
 `host/api/v0/users/username`
 
-This endpoitn allows you to query the username of the current user.
+This endpoint allows you to query the username of the current user.
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
