@@ -23,7 +23,7 @@ import { ProfileContext } from "../../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useFocusEffect } from "@react-navigation/native";
+import { BACKEND_API_URL } from "@/Constants/URLs";
 import Dimensions from "@/Constants/Dimensions";
 
 const Tab = createMaterialTopTabNavigator();
@@ -114,44 +114,123 @@ async function getBookInfo(book_id: string) {
   return bookInfo;
 }
 
+// async function getActivity(book_id: string) {
+//   // const activity = [];
+//   let activity = [];
+//   const account = new Account(client);
+//   const uniqueActivity = new Map();
+//   let user_id;
+
+//   try {
+//     user_id = (await account.get()).$id;
+//   } catch (error: any) {
+//     console.warn("An unknown error occurred attempting to fetch user details.");
+//     return activity;
+//   }
+//   let documents = (
+//     await databases.listDocuments(
+//       ID.mainDBID,
+//       ID.bookStatusCollectionID,
+//       // TODO: make it so only friend activity appears
+//       //  [ Query.equal("user_id", user_id) ]
+//     )
+//   ).documents;
+
+//   await Promise.all(
+//     documents.map(async (document) => {
+//       const bookInfo = await getBookInfo(document.book.$id);
+//       // console.log(bookInfo);
+//       activity.push({
+//         key: document.$id,
+//         status: document.status,
+//         username: document.user_id,
+//         book: bookInfo[0],
+//         timestamp: document.$createdAt,
+//       });
+//     }),
+//   );
+//   activity.sort(
+//     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+//   );
+//   return activity;
+// }
 async function getActivity(book_id: string) {
-  // const activity = [];
   let activity = [];
   const account = new Account(client);
-  const uniqueActivity = new Map();
-  let user_id;
+  const databases = new Databases(client);
+
   try {
-    user_id = (await account.get()).$id;
+    const user_id = (await account.get()).$id;
+    const friends = await getFriends(user_id, databases); // fetch friends
+
+    let documents = (
+      await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
+        Query.equal("user_id", friends),
+      ])
+    ).documents;
+
+    const res = friends.map(async (friendId) => {
+      const response = await fetch(
+        `${BACKEND_API_URL}/v0/users/${friendId}/name`,
+        {
+          method: "GET",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        },
+      );
+      const { name } = await response.json();
+      return { friendId, name };
+    });
+    const friendNames = await Promise.all(res);
+    await Promise.all(
+      documents.map(async (document) => {
+        const bookInfo = await getBookInfo(document.book.$id);
+        const friendName =
+          friendNames.find((friend) => friend.friendId === document.user_id)
+            ?.name || "Unknown";
+        activity.push({
+          key: document.$id,
+          status: document.status,
+          username: friendName,
+          book: bookInfo[0],
+          timestamp: document.$createdAt,
+        });
+      }),
+    );
+
+    activity.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+    );
+
+    return activity;
   } catch (error: any) {
     console.warn("An unknown error occurred attempting to fetch user details.");
     return activity;
   }
-  let documents = (
-    await databases.listDocuments(
-      ID.mainDBID,
-      ID.bookStatusCollectionID,
-      // TODO: make it so only friend activity appears
-      //  [ Query.equal("user_id", user_id) ]
-    )
-  ).documents;
+}
 
-  await Promise.all(
-    documents.map(async (document) => {
-      const bookInfo = await getBookInfo(document.book.$id);
-      console.log(bookInfo);
-      activity.push({
-        key: document.$id,
-        status: document.status,
-        username: document.user_id,
-        book: bookInfo[0],
-        timestamp: document.$createdAt,
-      });
-    }),
+async function getFriends(user_id: string, databases: Databases) {
+  const response = await databases.listDocuments(
+    ID.mainDBID,
+    ID.friendsCollectionID,
+    [
+      Query.or([
+        Query.equal("requester", user_id),
+        Query.equal("requestee", user_id),
+      ]),
+    ],
   );
-  activity.sort(
-    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+
+  const documents = response.documents;
+  const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
+  const friendIds = filtered.map((friend) =>
+    user_id == friend.requestee ? friend.requester : friend.requestee,
   );
-  return activity;
+
+  return friendIds;
 }
 
 function FriendsTab(bookInfo) {

@@ -19,6 +19,7 @@ import Dimensions from "@/Constants/Dimensions";
 import { Databases, Account } from "appwrite";
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
+import { BACKEND_API_USERNAME_URL } from "@/Constants/URLs";
 
 const account = new Account(client);
 
@@ -56,14 +57,13 @@ export const UsernameEditing = (props) => {
       }
 
       // if username is already taken
-      //   const isUsernameTaken = await checkUsernameAvailability(username);
-      //   if (isUsernameTaken) {
-      //     setErrorMessage("Username is already taken");
-      //     setErrorModalVisible(true);
-      //     return;
-      //   }
+      const isUsernameTaken = await checkUsernameAvailability();
+      if (isUsernameTaken) {
+        setErrorMessage("Username is already taken");
+        setErrorModalVisible(true);
+        return;
+      }
 
-      //   const promise = account.updateEmail(user_id, 'email@example.com');
       const promise = account.updateName(username);
       setUsername(username);
 
@@ -85,10 +85,30 @@ export const UsernameEditing = (props) => {
     }
   };
 
-  const checkUsernameAvailability = async (username) => {
-    // TODO
-    return false; // return true if username is already taken, false otherwise
-  };
+  async function checkUsernameAvailability() {
+    let res = await fetch(`${BACKEND_API_USERNAME_URL}`, {
+      method: "PATCH",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+      body: JSON.stringify({
+        username: username,
+      }),
+    });
+    console.log(username);
+    if (res.ok) {
+      console.log("name saved to database");
+      // return true if username is already taken
+      return false;
+    } else {
+      console.log("error number: " + res.status);
+      const res_json = await res.json();
+      console.log("res json: " + res_json);
+      console.log("res json: " + JSON.stringify(res_json));
+      return true;
+    }
+  }
 
   return (
     <KeyboardAvoidingView
