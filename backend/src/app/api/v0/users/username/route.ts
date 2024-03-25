@@ -85,23 +85,18 @@ export async function PATCH(request: NextRequest) {
     });
   }
 
-  let userdata_id;
+  let userdata_id = null;
   try {
-    const db_query = await databases.getDocument(
+    const db_query = await databases.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.USERDATA_COL_ID,
       [Query.equal("user_id", user_id)],
     );
-    userdata_id = db_query.username;
-  } catch (error: any) {
-    if (
-      error instanceof Error &&
-      (error as AppwriteException).message === "document_not_found"
-    ) {
-      userdata_id = null;
-    } else {
-      return handle_error(error);
+    if (db_query.documents.length === 1) {
+      userdata_id = db_query.documents[0].$id;
     }
+  } catch (error: any) {
+    return handle_error(error);
   }
 
   if (!userdata_id) {
