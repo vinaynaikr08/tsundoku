@@ -19,7 +19,7 @@ import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
 import { WrappedScreen } from "@/Screens/WrappedScreen";
 import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
 import SearchScreen from "@/Screens/SearchScreen";
-
+import DeleteAccount from "@/Screens/DeleteAccount";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,7 +56,10 @@ function AppNavigation() {
               options={{ gestureEnabled: false }}
               component={CreateCustomProperty}
             />
-            <Stack.Screen name="viewCustomProperties" component={ViewCustomPropertiesWrapper} />
+            <Stack.Screen
+              name="viewCustomProperties"
+              component={ViewCustomPropertiesWrapper}
+            />
           </Stack.Group>
           <Stack.Screen
             name="textReviewModal"
@@ -71,13 +74,14 @@ function AppNavigation() {
             component={WrappedScreen}
             options={{
               gestureDirection: "horizontal",
-              gestureEnabled: true
+              gestureEnabled: true,
             }}
           />
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
           <Stack.Screen name="ProfileScreen" component={Profile} />
           <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
           <Stack.Screen name="EmailEditing" component={EmailEditing} />
+          <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
         </>
       )}
     </Stack.Navigator>

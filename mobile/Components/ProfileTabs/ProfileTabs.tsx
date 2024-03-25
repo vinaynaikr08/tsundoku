@@ -101,8 +101,8 @@ function ProfileTab(props) {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [email, setEmail] = useState(null);
-  const toggleOverlay = () => {
-    setOverlayVisible(!overlayVisible);
+  const navigateDeleteAccount = () => {
+    navigation.navigate("DeleteAccount");
   };
 
   useFocusEffect(
@@ -341,7 +341,7 @@ function ProfileTab(props) {
 
           <View style={{ paddingTop: 20, alignItems: "center" }}>
             <Button
-              onPress={toggleOverlay}
+              onPress={navigateDeleteAccount}
               color={"red"}
               containerStyle={{ borderRadius: 30 }}
             >
@@ -358,11 +358,6 @@ function ProfileTab(props) {
                 Delete Account
               </Text>
             </Button>
-          </View>
-          <View style={{ height: 50 }}>
-            <Overlay isVisible={overlayVisible} onBackdropPress={toggleOverlay}>
-              <Text style={{ fontSize: 30 }}>Delete account placeholder</Text>
-            </Overlay>
           </View>
         </ScrollView>
       </SafeAreaView>
