@@ -85,17 +85,21 @@ async function deleteAllUserCustomPropCategories(user_id: string) {
 }
 
 async function deleteAllFriendRelations(user_id: string) {
-  const friend_relation_ids = await databases
-    .listDocuments(Constants.MAIN_DB_ID, Constants.FRIEND_COL_ID, [
-      // You might get an error about `or` not existing in `Query`, this is normal
-      // This is because the Appwrite Node SDK doesn't have the type declaration for it *yet*
-      // @ts-ignore: upstream issue
-      Query.or(
-        Query.equal("requester", user_id),
-        Query.equal("requestee", user_id),
-      ),
-    ])
-    .documents.map((doc: any) => doc.$id);
+  const friend_relation_ids = (
+    await databases.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.FRIEND_COL_ID,
+      [
+        // You might get an error about `or` not existing in `Query`, this is normal
+        // This is because the Appwrite Node SDK doesn't have the type declaration for it *yet*
+        // @ts-ignore: upstream issue
+        Query.or([
+          Query.equal("requester", user_id),
+          Query.equal("requestee", user_id),
+        ]),
+      ],
+    )
+  ).documents.map((doc: any) => doc.$id);
 
   for (const friend_relation_id of friend_relation_ids) {
     await databases.deleteDocument(
