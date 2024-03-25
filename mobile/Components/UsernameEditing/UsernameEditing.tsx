@@ -58,8 +58,9 @@ export const UsernameEditing = (props) => {
 
       // if username is already taken
       const isUsernameTaken = await checkUsernameAvailability();
-      if (isUsernameTaken) {
-        setErrorMessage("Username is already taken");
+      if (!isUsernameTaken.ok) {
+        const res_json = await isUsernameTaken.json();
+        setErrorMessage("Error: " + res_json.reason);
         setErrorModalVisible(true);
         return;
       }
@@ -96,18 +97,7 @@ export const UsernameEditing = (props) => {
         username: username,
       }),
     });
-    console.log(username);
-    if (res.ok) {
-      console.log("name saved to database");
-      // return true if username is already taken
-      return false;
-    } else {
-      console.log("error number: " + res.status);
-      const res_json = await res.json();
-      console.log("res json: " + res_json);
-      console.log("res json: " + JSON.stringify(res_json));
-      return true;
-    }
+    return res;
   }
 
   return (

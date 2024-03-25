@@ -23,6 +23,7 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
+import StatisticsTab from "../StatisticsTab";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -373,7 +374,7 @@ function ActivityTab({}) {
   );
 }
 
-function StatisticsTab() {
+function StatsTab() {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -381,10 +382,7 @@ function StatisticsTab() {
         bounces={false}
         contentContainerStyle={styles.scrollViewStyle}
       >
-        <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10 }}>Text Statistics:</Text>
-          <Text style={{ margin: 10 }}>Graph Statistics:</Text>
-        </TouchableOpacity>
+        <StatisticsTab></StatisticsTab>
       </ScrollView>
     </View>
   );
@@ -399,7 +397,7 @@ function ProfileTabs() {
     >
       <Tab.Screen name="Profile" children={(props) => <ProfileTab />} />
       <Tab.Screen name="Activity" children={(props) => <ActivityTab />} />
-      <Tab.Screen name="Statistics" component={StatisticsTab} />
+      <Tab.Screen name="Statistics" component={StatsTab} />
     </Tab.Navigator>
   );
 }
