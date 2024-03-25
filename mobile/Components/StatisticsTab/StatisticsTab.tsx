@@ -207,6 +207,26 @@ const StatisticsTab = () => {
     bookCounts[monthIndex]++;
   });
 
+  //   const labels = [
+  //     "January",
+  //     "February",
+  //     "March",
+  //     "April",
+  //     "May",
+  //     "June",
+  //     "July",
+  //     "August",
+  //     "September",
+  //     "October",
+  //     "November",
+  //     "December",
+  //   ];
+
+  //   const datasets = [
+  //     {
+  //       data: bookCounts,
+  //     },
+  //   ];
   const labels = [
     "January",
     "February",
@@ -224,9 +244,15 @@ const StatisticsTab = () => {
 
   const datasets = [
     {
-      data: bookCounts,
+      data: Array(12).fill(0),
     },
   ];
+
+  labels.forEach((month, index) => {
+    const monthKey = `${index + 1}`.padStart(2, "0");
+    const monthYear = `2024-${monthKey}`;
+    datasets[0].data[index] = booksReadByMonth[monthYear] || 0;
+  });
 
   const data = {
     labels: labels,
