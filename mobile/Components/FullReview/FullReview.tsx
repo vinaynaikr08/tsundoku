@@ -10,7 +10,10 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Account } from "appwrite";
 import { client } from "@/appwrite";
-import { BACKEND_API_CUSTOM_PROPERTY_DATA_URL, BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
+import {
+  BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
+  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
+} from "@/Constants/URLs";
 
 const account = new Account(client);
 
@@ -43,12 +46,16 @@ function FullReview({ route, navigation }) {
         );
 
         const res_json = await res.json();
-        return res_json.results.documents.map((property) => {
-          return {
-            template_id: property.template_id,
-            value: property.value
-          };
-        });
+        if (res.ok) {
+          return res_json.results.documents.map((property) => {
+            return {
+              template_id: property.template_id,
+              value: property.value,
+            };
+          });
+        } else {
+          console.log("error getting raw property data: " + JSON.stringify(res_json));
+        }
       } catch (error) {
         console.error(error);
         // setErrorMessage("An error occurred fetching the books.");
@@ -58,9 +65,27 @@ function FullReview({ route, navigation }) {
 
     async function getCustomProperties() {
       let rawData = await getCustomPropertiesRaw();
-      let processedData;
-      for ( let i = 0; i < rawData.length; i++) {
+      let processedData = [];
+      for (let i = 0; i < rawData.length; i++) {
         const rawProperty = rawData[i];
+        const res = await fetch(
+          `${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}/${rawProperty.template_id}`,
+          {
+            method: "get",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+          },
+        );
+
+        const res_json = await res.json();
+
+        if (res.ok) {
+          processedData[i] = { propertyName: res_json.result.name, value: rawProperty.value };
+        } else {
+          console.log("did not updated: " + JSON.stringify(res_json));
+        }
       }
       return processedData;
     }
@@ -103,11 +128,11 @@ function FullReview({ route, navigation }) {
         <Text style={{ fontSize: 20 }}>{rating}</Text>
         <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={25} />
       </View>
-      {fakeData && (
+      {properties.length != 0 && (
         <View>
           <Divider bold={true} horizontalInset={true} />
           <View style={{ marginBottom: 10 }}>
-            {fakeData.map((item, index) => (
+            {properties.map((item, index) => (
               <View
                 style={{
                   display: "flex",
