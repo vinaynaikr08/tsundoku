@@ -18,7 +18,7 @@ import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustom
 import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
 import { WrappedScreen } from "@/Screens/WrappedScreen";
 import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
-import SearchScreen from "@/Screens/SearchScreen";
+import BookSearchScreen from "@/Screens/BookSearchScreen";
 import DeleteAccount from "@/Screens/DeleteAccount";
 
 const Stack = createNativeStackNavigator();
@@ -77,7 +77,7 @@ function AppNavigation() {
               gestureEnabled: true,
             }}
           />
-          <Stack.Screen name="SearchScreen" component={SearchScreen} />
+          <Stack.Screen name="BookSearchScreen" component={BookSearchScreen} />
           <Stack.Screen name="ProfileScreen" component={Profile} />
           <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
           <Stack.Screen name="EmailEditing" component={EmailEditing} />

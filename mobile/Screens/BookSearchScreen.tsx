@@ -111,7 +111,7 @@ async function getBooks(param) {
   return books;
 }
 
-function SearchScreen(props) {
+function BookSearchScreen(props) {
   const [loading, setLoading] = React.useState(false);
   const [books, setBooks] = React.useState([]);
   const [search, setSearch] = React.useState("");
@@ -272,4 +272,4 @@ function SearchScreen(props) {
   );
 }
 
-export default SearchScreen;
+export default BookSearchScreen;

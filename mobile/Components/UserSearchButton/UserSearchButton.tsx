@@ -2,14 +2,14 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { SearchBar } from "@rneui/base";
 
-const BookSearchButton = ({ navigation, placeholder }) => {
+const UserSearchButton = ({ navigation, placeholder }) => {
   return (
     <View>
       <View style={styles.searchBarView}>
         <View style={{ flex: 10 }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("BookSearchScreen");
+              navigation.navigate("SearchScreen");
             }}
           >
             <SearchBar
@@ -26,7 +26,7 @@ const BookSearchButton = ({ navigation, placeholder }) => {
   );
 };
 
-export default BookSearchButton;
+export default UserSearchButton;
 
 const styles = StyleSheet.create({
   searchBarView: {
