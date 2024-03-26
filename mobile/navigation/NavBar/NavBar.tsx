@@ -144,6 +144,7 @@ function NavBar() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon
+              testID="navbar-profile-screen"
               name="person-circle"
               size={Dimensions.NAVBAR_ICON_SIZE}
               color={color}

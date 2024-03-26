@@ -187,6 +187,7 @@ function ProfileTab(props) {
     <ProfileContext.Provider value={navigation}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
+          testID="profile-tab-scroll-view"
           style={{ flex: 1 }}
           bounces={false}
           contentContainerStyle={styles.scrollViewStyle}
@@ -340,8 +341,9 @@ function ProfileTab(props) {
 
           <Divider />
 
-          <View style={{ paddingTop: 20, alignItems: "center" }}>
+          <View style={{ paddingTop: 20, paddingBottom: 50, alignItems: "center" }}>
             <Button
+              testID="profile-tab-delete-account-button"
               onPress={navigateDeleteAccount}
               color={"red"}
               containerStyle={{ borderRadius: 30 }}

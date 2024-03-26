@@ -41,7 +41,7 @@ function DeleteAccount() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="delete-account-view">
       <Text style={styles.title}>Delete account</Text>
       <Text style={styles.text}>
         Warning: you are attempting to delete your account. This will delete all
@@ -51,6 +51,7 @@ function DeleteAccount() {
       </Text>
       <View style={{ paddingTop: 20, alignItems: "center" }}>
         <CheckBox
+          testID="delete-account-confirm-checkbox"
           checked={confirmed}
           onPress={() => {
             setConfirmed(!confirmed);
@@ -61,6 +62,7 @@ function DeleteAccount() {
       <View style={{ paddingTop: 20, alignItems: "center" }}>
         {!deleting ? (
           <Button
+            testID="delete-account-button"
             onPress={() => {
               setDeleting(true);
               deleteAccount();
