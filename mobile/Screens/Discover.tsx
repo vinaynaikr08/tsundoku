@@ -42,6 +42,7 @@ export const Discover = (props) => {
           <BookSearchButton
             navigation={navigation}
             placeholder={"Search all books"}
+            navigateTo={"BookSearchScreen"}
           />
         </View>
 

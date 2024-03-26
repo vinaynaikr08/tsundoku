@@ -209,7 +209,7 @@ export const Library = (props) => {
           </View>
         </TouchableWithoutFeedback>
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
-          <BookSearchButton navigation={navigation} placeholder={"Search all books"}/>
+          <BookSearchButton navigation={navigation} placeholder={"Search all books"} navigateTo={"BookSearchScreen"}/>
         </View>
         <CarouselTabs />
       </SafeAreaView>
