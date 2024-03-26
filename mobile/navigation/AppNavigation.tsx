@@ -20,6 +20,7 @@ import { WrappedScreen } from "@/Screens/WrappedScreen";
 import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
 import BookSearchScreen from "@/Screens/BookSearchScreen";
 import DeleteAccount from "@/Screens/DeleteAccount";
+import UserSearchScreen from "@/Screens/UserSearchScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -78,6 +79,7 @@ function AppNavigation() {
             }}
           />
           <Stack.Screen name="BookSearchScreen" component={BookSearchScreen} />
+          <Stack.Screen name="UserSearchScreen" component={UserSearchScreen} />
           <Stack.Screen name="ProfileScreen" component={Profile} />
           <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
           <Stack.Screen name="EmailEditing" component={EmailEditing} />

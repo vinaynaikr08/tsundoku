@@ -25,6 +25,8 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import Dimensions from "@/Constants/Dimensions";
+import BookSearchButton from "../BookSearchButton";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -236,6 +238,7 @@ async function getFriends(user_id: string, databases: Databases) {
 function FriendsTab(bookInfo) {
   const [activity, setActivity] = React.useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     refreshActivity();
@@ -263,6 +266,13 @@ function FriendsTab(bookInfo) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={{marginHorizontal: 20}}>
+        <BookSearchButton
+          navigation={navigation}
+          placeholder={"Search all users"}
+          navigateTo={"UserSearchScreen"}
+        />
+      </View>
         {refreshing ? (
           <ActivityIndicator size="large" color="grey" />
         ) : (
