@@ -147,8 +147,7 @@ export default class Backend {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
-    const year = new Date().getFullYear() - 1;
-    const cutoff = new Date(year, 11, 1);
+    const cutoff = new Date(new Date().getFullYear(), 0, 1);
 
     const bookstat_docs = (
       await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
