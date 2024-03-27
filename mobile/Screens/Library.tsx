@@ -35,7 +35,7 @@ export const Library = (props) => {
             navigateTo={"BookSearchScreen"}
           />
         </View>
-        <CarouselTabs navigation={navigation} />
+        <CarouselTabs />
       </SafeAreaView>
     </NavigationContext.Provider>
   );

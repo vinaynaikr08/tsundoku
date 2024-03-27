@@ -12,6 +12,7 @@ import Carousel from "@/Components/Carousel/Carousel";
 import Colors from "@/Constants/Colors";
 import Backend from "@/Backend";
 import useSWR from "swr";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 const backend = new Backend();
@@ -74,21 +75,15 @@ function MyTabBar({ state, descriptors, navigation }) {
   );
 }
 
-function ReadingStatusCarousel({ navigation, status, shelf }) {
+function ReadingStatusCarousel({ status, shelf }) {
   const { data, error, isLoading, mutate } = useSWR(
     status,
     backend.getBooksOfStatus,
   );
 
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      // Screen is focused again, refetch book status
-      mutate();
-    });
-
-    // Return the function to unsubscribe from the event so it gets removed on unmount
-    return unsubscribe;
-  }, [navigation]);
+  useFocusEffect(() => {
+    mutate();
+  });
 
   return (
     <View style={{ flex: 1 }}>
@@ -101,7 +96,7 @@ function ReadingStatusCarousel({ navigation, status, shelf }) {
   );
 }
 
-function LibraryCarouselTabs({ navigation }) {
+function LibraryCarouselTabs() {
   const [shelf, setShelf] = React.useState("Currently Reading");
 
   return (
@@ -113,7 +108,6 @@ function LibraryCarouselTabs({ navigation }) {
         name="Currently Reading"
         children={() => (
           <ReadingStatusCarousel
-            navigation={navigation}
             status="CURRENTLY_READING"
             shelf={shelf}
           />
@@ -128,7 +122,6 @@ function LibraryCarouselTabs({ navigation }) {
         name="Want To Read"
         children={() => (
           <ReadingStatusCarousel
-            navigation={navigation}
             status="WANT_TO_READ"
             shelf={shelf}
           />
@@ -143,7 +136,6 @@ function LibraryCarouselTabs({ navigation }) {
         name="Read"
         children={() => (
           <ReadingStatusCarousel
-            navigation={navigation}
             status="READ"
             shelf={shelf}
           />
@@ -158,7 +150,6 @@ function LibraryCarouselTabs({ navigation }) {
         name="Did Not Finish"
         children={() => (
           <ReadingStatusCarousel
-            navigation={navigation}
             status="DID_NOT_FINISH"
             shelf={shelf}
           />
