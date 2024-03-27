@@ -1,25 +1,92 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Switch } from "react-native"
 import ID from "../../Constants/ID"
 import { Query } from "appwrite";
 import { client } from "../../appwrite";
 import { Databases, Account } from "appwrite";
+import { ID as UID }  from  "appwrite" ;
+import { Permission, Role } from "appwrite";
 
 import Colors from "../../Constants/Colors";
 import { Button } from "react-native-paper";
+import Toast from "react-native-toast-message";
 
 const databases = new Databases(client);
 
-function setNotifs(notif, notifFriend, notifFriendReq) {
-
+function userPermissions(user_id: string) {
+    return [
+      Permission.read(Role.user(user_id)),
+      Permission.update(Role.user(user_id)),
+      Permission.delete(Role.user(user_id)),
+    ];
 }
 
-const NotificationsModal = () => {
-    const [notifArray, setNotifArray] = useState({});
+async function saveNotifs(notif, notifFriend, notifFriendReq, setChanged) {
+    const account = new Account(client);
+    const response = await account.get();
+    let db_query;
+
+    try {
+        const user_id = response.$id;
+        const databases = new Databases(client);
+        db_query = await databases.listDocuments(
+            ID.mainDBID,
+            ID.notificationsCollectionID,
+            [Query.equal("user_id", user_id),],
+        );
+
+        if (db_query.total == 0) {
+            // Create new object
+            let res = await databases.createDocument(
+                ID.mainDBID,
+                ID.notificationsCollectionID,
+                UID.unique(),
+                {
+                    user_id,
+                    notif,
+                    notifFriendReq,
+                    notifFriend,
+                },
+                userPermissions(user_id),
+            );
+        } else {
+            const notification_id = db_query.documents[0].$id;
+            try {
+                await databases.updateDocument(
+                    ID.mainDBID,
+                    ID.notificationsCollectionID,
+                    notification_id,
+                    {
+                        general: notif,
+                        new_follower: notifFriendReq,
+                        friend_reading_status_update: notifFriend,
+                    },
+                    userPermissions(user_id),
+                );
+            } catch (error) {
+                return console.log(error);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+    Toast.show({
+        type: "success",
+        text1: "Notification settings successfully saved!",
+        position: "bottom",
+        visibilityTime: 2000,
+    });
+    setChanged(false);
+    return;
+}
+
+const NotificationsModal = (props) => {
+    const { navigation } = props;
+    const [changed, setChanged] = useState(false);
     const [notif, setNotif] = useState(false);
     const [notifFriend, setNotifFriend] = useState(false);
     const [notifFriendReq, setNotifFriendReq] = useState(false);
-    const [notifAuthor, setNotifAuthor] = useState(false);
+    //const [notifAuthor, setNotifAuthor] = useState(false);
 
     useEffect(() => {
         const account = new Account(client);
@@ -30,17 +97,16 @@ const NotificationsModal = () => {
                 const user_id = response.$id;
                 const databases = new Databases(client);
                 const promise = databases.listDocuments(
-                ID.mainDBID,
-                ID.notificationsCollectionID,
-                [Query.equal("user_id", user_id),],
+                    ID.mainDBID,
+                    ID.notificationsCollectionID,
+                    [Query.equal("user_id", user_id),],
                 );
 
                 promise.then(function (response) {
-                const documents = response.documents[0];
-                setNotifArray(documents);
-                setNotif(documents.general);
-                setNotifFriend(documents.friend_reading_status_update);
-                setNotifFriendReq(documents.new_follower);
+                    const documents = response.documents[0];
+                    setNotif(documents.general);
+                    setNotifFriend(documents.friend_reading_status_update);
+                    setNotifFriendReq(documents.new_follower);
                 })  
             } catch (error) {
                 console.error(error);
@@ -76,7 +142,7 @@ const NotificationsModal = () => {
                         true: Colors.BUTTON_PURPLE,
                         }}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={() => setNotif(!notif)}
+                        onValueChange={() => {setNotif(!notif); setChanged(true); }}
                         value={notif}
                     />
                 </View>
@@ -102,7 +168,7 @@ const NotificationsModal = () => {
                         }}
                         disabled={!notif}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={() => setNotifFriend(!notifFriend)}
+                        onValueChange={() => {setNotifFriend(!notifFriend); setChanged(true);} }
                         value={notifFriend}
                     />
                 </View>
@@ -154,7 +220,7 @@ const NotificationsModal = () => {
                         }}
                         disabled={!notif}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={() => setNotifFriendReq(!notifFriendReq)}
+                        onValueChange={() => {setNotifFriendReq(!notifFriendReq); setChanged(true); }}
                         value={notifFriendReq}
                     />
                 </View>
@@ -163,7 +229,7 @@ const NotificationsModal = () => {
             <View style={{backgroundColor: '#d4d4d4', width: "100%", height: 1, marginTop: 5, marginBottom: 5}}/>
 
             <View style={{marginTop: 20}}>
-                <Button onPress={() => {}} disabled={false} mode={"outlined"}>
+                <Button onPress={() => {saveNotifs(notif, notifFriend, notifFriendReq, setChanged); navigation.goBack()}} disabled={!changed} mode={"outlined"}>
                     <Text>Save Settings</Text>
                 </Button>
             </View>
