@@ -114,7 +114,7 @@ export const Carousel = ({ books, shelf }) => {
                     style={{
                       marginVertical: 10,
                       width: boxWidth,
-                      height: "83%",
+                      height: 300,
                       justifyContent: "center",
                       alignItems: "center",
                       borderRadius: 15,
