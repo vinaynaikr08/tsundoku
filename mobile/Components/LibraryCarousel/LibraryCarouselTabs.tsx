@@ -13,6 +13,7 @@ import Colors from "@/Constants/Colors";
 import Backend from "@/Backend";
 import useSWR from "swr";
 import { useFocusEffect } from "@react-navigation/native";
+import ErrorModal from "../ErrorModal";
 
 const Tab = createMaterialTopTabNavigator();
 const backend = new Backend();
@@ -85,14 +86,37 @@ function ReadingStatusCarousel({ status, shelf }) {
     mutate();
   });
 
-  return (
-    <View style={{ flex: 1 }}>
-      {isLoading ? (
+  if (error) {
+    return (
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "500",
+            textAlign: "center",
+            margin: 10,
+          }}
+        >
+          An error occurred fetching the book statuses.
+        </Text>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1 }}>
         <ActivityIndicator />
-      ) : (
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <View style={{ flex: 1 }}>
         <Carousel books={data} shelf={shelf} />
-      )}
-    </View>
+      </View>
+    </>
   );
 }
 
