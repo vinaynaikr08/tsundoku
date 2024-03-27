@@ -95,7 +95,7 @@ export default class Backend {
     return books;
   }
 
-  public async getBooksOfStatus({
+  public async getBookStatuses({
     status,
     user_id,
   }: {
@@ -107,30 +107,10 @@ export default class Backend {
       user_id = (await account.get()).$id;
     }
 
-    const bookstat_docs = (
-      await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
-        Query.equal("user_id", user_id),
-        Query.equal("status", status),
-      ])
-    ).documents;
+    const bookstat_docs = await this.getBookStatusDocs({ status, user_id });
 
     for (const bookstat_doc of bookstat_docs) {
-      const book_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.bookCollectionID,
-        bookstat_doc.book.$id,
-      );
-
-      books.push({
-        id: book_data.$id,
-        title: book_data.title,
-        author: book_data.authors[0].name,
-        summary: book_data.description,
-        image_url: book_data.editions[0].thumbnail_url,
-        isbn: book_data.editions[0].isbn_13,
-        genre: book_data.genre,
-        pages: book_data.editions[0].page_count,
-      });
+      books.push(await this.getBookData(bookstat_doc.book.$id));
     }
 
     return books;
@@ -149,36 +129,55 @@ export default class Backend {
     }
     const cutoff = new Date(new Date().getFullYear(), 0, 1);
 
-    const bookstat_docs = (
-      await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
-        Query.equal("user_id", user_id),
-        Query.equal("status", status),
-      ])
-    ).documents;
+    const bookstat_docs = await this.getBookStatusDocs({ status, user_id });
 
     for (const bookstat_doc of bookstat_docs) {
       let formatted_date = new Date(bookstat_doc.$updatedAt);
       if (formatted_date < cutoff) {
         continue;
       }
-      const book_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.bookCollectionID,
-        bookstat_doc.book.$id,
-      );
 
-      books.push({
-        id: book_data.$id,
-        title: book_data.title,
-        author: book_data.authors[0].name,
-        summary: book_data.description,
-        image_url: book_data.editions[0].thumbnail_url,
-        isbn: book_data.editions[0].isbn_13,
-        genre: book_data.genre,
-        pages: book_data.editions[0].page_count,
-      });
+      books.push(await this.getBookData(bookstat_doc.book.$id));
     }
 
     return books;
+  }
+
+  private async getBookStatusDocs({
+    status,
+    user_id,
+  }: {
+    status: string;
+    user_id: string | undefined;
+  }): Promise<any> {
+    if (user_id === undefined) {
+      user_id = (await account.get()).$id;
+    }
+
+    return (
+      await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
+        Query.equal("user_id", user_id),
+        Query.equal("status", status),
+      ])
+    ).documents;
+  }
+
+  private async getBookData(id: string) {
+    const book_data = await databases.getDocument(
+      ID.mainDBID,
+      ID.bookCollectionID,
+      id,
+    );
+
+    return {
+      id: book_data.$id,
+      title: book_data.title,
+      author: book_data.authors[0].name,
+      summary: book_data.description,
+      image_url: book_data.editions[0].thumbnail_url,
+      isbn: book_data.editions[0].isbn_13,
+      genre: book_data.genre,
+      pages: book_data.editions[0].page_count,
+    };
   }
 }

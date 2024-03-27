@@ -78,7 +78,7 @@ function MyTabBar({ state, descriptors, navigation }) {
 function ReadingStatusCarousel({ status, shelf }) {
   const { data, error, isLoading, mutate } = useSWR(
     { status },
-    backend.getBooksOfStatus,
+    backend.getBookStatuses,
   );
 
   useFocusEffect(() => {
