@@ -60,30 +60,32 @@ function PropertyInput({ property, propertyData, setPropertyData, index }) {
           onSelect={(selectedItem, index) => {
             handleInputChange(selectedItem);
           }}
-          defaultButtonText={"Select true or false"}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            return item;
-          }}
-          buttonStyle={styles.dropdown4BtnStyle}
-          buttonTextStyle={{ color: Colors.BUTTON_TEXT_GRAY }}
           dropdownOverlayColor={"transparent"}
-          renderDropdownIcon={(isOpened) => {
+          renderButton={(selectedItem, isOpen) => {
             return (
-              <Icon
-                name={
-                  isOpened
-                    ? "chevron-up-circle-outline"
-                    : "chevron-down-circle-outline"
-                }
-                color={Colors.BUTTON_PURPLE}
-                size={25}
-              />
+              <View style={styles.dropdown4BtnStyle}>
+                <Icon
+                  name={
+                    isOpen
+                      ? "chevron-up-circle-outline"
+                      : "chevron-down-circle-outline"
+                  }
+                  color={Colors.BUTTON_PURPLE}
+                  size={25}
+                />
+                <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
+                  {selectedItem || "Select true or false"}
+                </Text>
+              </View>
             );
           }}
-          dropdownIconPosition={"left"}
+          renderItem={(item, index, isSelected) => {
+            return (
+              <View style={styles.dropdownItemStyle}>
+                <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
+              </View>
+            );
+          }}
         />
       </View>
     );
@@ -138,30 +140,32 @@ function PropertyInput({ property, propertyData, setPropertyData, index }) {
           onSelect={(selectedItem, index) => {
             handleInputChange(selectedItem);
           }}
-          defaultButtonText={"Select category"}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            return item;
-          }}
-          buttonStyle={styles.dropdown4BtnStyle}
-          buttonTextStyle={{ color: Colors.BUTTON_TEXT_GRAY }}
           dropdownOverlayColor={"transparent"}
-          renderDropdownIcon={(isOpened) => {
+          renderButton={(selectedItem, isOpen) => {
             return (
-              <Icon
-                name={
-                  isOpened
-                    ? "chevron-up-circle-outline"
-                    : "chevron-down-circle-outline"
-                }
-                color={Colors.BUTTON_PURPLE}
-                size={25}
-              />
+              <View style={styles.dropdown4BtnStyle}>
+                <Icon
+                  name={
+                    isOpen
+                      ? "chevron-up-circle-outline"
+                      : "chevron-down-circle-outline"
+                  }
+                  color={Colors.BUTTON_PURPLE}
+                  size={25}
+                />
+                <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
+                  {selectedItem || "Select category"}
+                </Text>
+              </View>
             );
           }}
-          dropdownIconPosition={"left"}
+          renderItem={(item, index, isSelected) => {
+            return (
+              <View style={styles.dropdownItemStyle}>
+                <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
+              </View>
+            );
+          }}
         />
       </View>
     );
@@ -327,13 +331,17 @@ const styles = StyleSheet.create({
   dropdown4BtnStyle: {
     width: "80%",
     height: 50,
-    backgroundColor: "#FFF",
+    backgroundColor: "white",
     borderRadius: 15,
     borderWidth: 1,
     borderColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
     marginBottom: 12,
     marginTop: 5,
     alignSelf: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+    paddingLeft: 10
   },
   nextButtonText: {
     color: "black",
@@ -347,6 +355,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignSelf: "center",
     marginTop: 10,
+  },
+  dropdownItemStyle: {
+    backgroundColor: Colors.BUTTON_GRAY,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 0.2,
+    borderBottomColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "400",
+    color: "black",
+    textAlign: "center",
   },
 });
 
