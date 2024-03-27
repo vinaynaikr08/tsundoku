@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import { BACKEND_API_URL } from "@/Constants/URLs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
@@ -19,7 +20,6 @@ import { useState } from "react";
 import { Account, Databases, Query } from "appwrite";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
-import { useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -44,11 +44,21 @@ async function getReviews(book_id: string) {
         document.$id,
       );
       avgRating += review_data.star_rating;
-
+      const response = await fetch(
+        `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
+        {
+          method: "GET",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        },
+      );
+      const { name } = await response.json();
       reviews.push({
         rating: review_data.star_rating,
         desc: review_data.description,
-        username: review_data.user_id,
+        username: name,
         id: document.$id,
       });
     }),
