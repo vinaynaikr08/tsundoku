@@ -5,16 +5,11 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
-  Switch,
-  TouchableWithoutFeedback,
-  Keyboard,
   ScrollView,
 } from "react-native";
-import { Query } from "appwrite";
 import { client } from "@/appwrite";
 import { Databases, Account } from "appwrite";
 import Colors from "@/Constants/Colors";
-import ID from "@/Constants/ID";
 import { ProfileContext } from "../../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Divider } from "react-native-paper";
@@ -85,21 +80,11 @@ function MyTabBar({ state, descriptors, navigation, position }) {
     </View>
   );
 }
-const databases = new Databases(client);
 
 function ProfileTab(props) {
   const { setLoggedIn } = React.useContext(LoginStateContext);
-  //   const { navigation } = props;
-  // const { username } = usernameParam;
-  // const { email } = emailParam;
   const { navigation } = useContext(ProfileContext);
   const account = new Account(client);
-  const user_id = account.get();
-  const [booksReadCount, setBooksReadCount] = useState(0);
-  const [booksCurrReadingCount, setBooksCurrReadingCount] = useState(0);
-  const [booksWantToReadCount, setBooksWantToReadCount] = useState(0);
-  const [booksDidNotFinishCount, setBooksDidNotFinishCount] = useState(0);
-  const [overlayVisible, setOverlayVisible] = useState(false);
   const [username, setUsername] = useState(null);
   const [email, setEmail] = useState(null);
   const navigateDeleteAccount = () => {
@@ -122,59 +107,6 @@ function ProfileTab(props) {
       })();
     }, []),
   );
-
-  useEffect(() => {
-    const account = new Account(client);
-    account
-      .get()
-      .then((response) => {
-        const user_id = response.$id;
-        const databases = new Databases(client);
-        const promise = databases.listDocuments(
-          ID.mainDBID,
-          ID.bookStatusCollectionID,
-          [Query.equal("user_id", user_id)],
-        );
-
-        promise.then(
-          function (response) {
-            const documents = response.documents;
-            let readCount = 0;
-            let currReadingCount = 0;
-            let wantToReadCount = 0;
-            let didNotFinishCount = 0;
-            documents.forEach((doc) => {
-              switch (doc.status) {
-                case "READ":
-                  readCount++;
-                  break;
-                case "CURRENTLY_READING":
-                  currReadingCount++;
-                  break;
-                case "WANT_TO_READ":
-                  wantToReadCount++;
-                  break;
-                case "DID_NOT_FINISH":
-                  didNotFinishCount++;
-                  break;
-                default:
-                  break;
-              }
-            });
-            setBooksReadCount(readCount);
-            setBooksCurrReadingCount(currReadingCount);
-            setBooksWantToReadCount(wantToReadCount);
-            setBooksDidNotFinishCount(didNotFinishCount);
-          },
-          function (error) {
-            console.log(error);
-          },
-        );
-      })
-      .catch((error) => {
-        console.error("Error fetching user ID:", error);
-      });
-  }, []);
 
   function signOut() {
     (async () => {
@@ -227,16 +159,6 @@ function ProfileTab(props) {
               />
             </TouchableOpacity>
           </View>
-          <Text style={styles.text}>Books read: {booksReadCount}</Text>
-          <Text style={styles.text}>
-            Books currently reading: {booksCurrReadingCount}
-          </Text>
-          <Text style={styles.text}>
-            Books want to read: {booksWantToReadCount}
-          </Text>
-          <Text style={styles.text}>
-            Books did not finish: {booksDidNotFinishCount}
-          </Text>
           <Divider />
 
           <Button
@@ -341,7 +263,9 @@ function ProfileTab(props) {
 
           <Divider />
 
-          <View style={{ paddingTop: 20, paddingBottom: 50, alignItems: "center" }}>
+          <View
+            style={{ paddingTop: 20, paddingBottom: 50, alignItems: "center" }}
+          >
             <Button
               testID="profile-tab-delete-account-button"
               onPress={navigateDeleteAccount}

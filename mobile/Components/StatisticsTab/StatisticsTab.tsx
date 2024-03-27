@@ -13,7 +13,8 @@ import { client } from "../../appwrite";
 import { Databases, Account } from "appwrite";
 import ID from "../../Constants/ID";
 import { BarChart } from "react-native-chart-kit";
-import { ScreenWidth } from "@rneui/base";
+import { useFocusEffect } from "@react-navigation/native";
+import BookStatusCount from "../BookStatusCount";
 
 const databases = new Databases(client);
 
@@ -49,49 +50,50 @@ const StatisticsTab = () => {
   }
 
   const [activity, setActivity] = useState([]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          const account = new Account(client);
+          const response = await account.get();
+          const user_id = response.$id;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const account = new Account(client);
-        const response = await account.get();
-        const user_id = response.$id;
+          const databases = new Databases(client);
+          const queryResponse = await databases.listDocuments(
+            ID.mainDBID,
+            ID.bookStatusCollectionID,
+            [Query.equal("user_id", user_id)],
+          );
 
-        const databases = new Databases(client);
-        const queryResponse = await databases.listDocuments(
-          ID.mainDBID,
-          ID.bookStatusCollectionID,
-          [Query.equal("user_id", user_id)],
-        );
+          let documents = queryResponse.documents.filter(
+            (doc) => doc.status === "READ",
+          );
 
-        let documents = queryResponse.documents.filter(
-          (doc) => doc.status === "READ",
-        );
+          const updatedActivity = await Promise.all(
+            documents.map(async (document) => {
+              const bookInfo = await getBookInfo(document.book.$id);
+              return {
+                key: document.$id,
+                status: document.status,
+                username: document.user_id,
+                book: bookInfo[0],
+                timestamp: document.$createdAt,
+              };
+            }),
+          );
 
-        const updatedActivity = await Promise.all(
-          documents.map(async (document) => {
-            const bookInfo = await getBookInfo(document.book.$id);
-            return {
-              key: document.$id,
-              status: document.status,
-              username: document.user_id,
-              book: bookInfo[0],
-              timestamp: document.$createdAt,
-            };
-          }),
-        );
+          setActivity(updatedActivity);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setLoading(false);
+        }
+      };
 
-        setActivity(updatedActivity);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+      fetchData();
+    }, []),
+  );
 
   const booksReadByMonth = activity.reduce((acc, cur) => {
     const monthYear = cur.timestamp.substr(0, 7); // timestamp format YYYY-MM-DDTHH:MM:SS
@@ -223,6 +225,7 @@ const StatisticsTab = () => {
               },
             }}
           />
+          <BookStatusCount></BookStatusCount>
         </>
       )}
     </View>

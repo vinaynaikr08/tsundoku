@@ -5,9 +5,6 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
-  Switch,
-  TouchableWithoutFeedback,
-  Keyboard,
   ScrollView,
   Image,
   FlatList,
@@ -19,10 +16,8 @@ import { client } from "@/appwrite";
 import { Databases, Account } from "appwrite";
 import Colors from "@/Constants/Colors";
 import ID from "@/Constants/ID";
-import { ProfileContext } from "../../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import Dimensions from "@/Constants/Dimensions";
 import BookSearchButton from "../BookSearchButton";
@@ -116,46 +111,6 @@ async function getBookInfo(book_id: string) {
   return bookInfo;
 }
 
-// async function getActivity(book_id: string) {
-//   // const activity = [];
-//   let activity = [];
-//   const account = new Account(client);
-//   const uniqueActivity = new Map();
-//   let user_id;
-
-//   try {
-//     user_id = (await account.get()).$id;
-//   } catch (error: any) {
-//     console.warn("An unknown error occurred attempting to fetch user details.");
-//     return activity;
-//   }
-//   let documents = (
-//     await databases.listDocuments(
-//       ID.mainDBID,
-//       ID.bookStatusCollectionID,
-//       // TODO: make it so only friend activity appears
-//       //  [ Query.equal("user_id", user_id) ]
-//     )
-//   ).documents;
-
-//   await Promise.all(
-//     documents.map(async (document) => {
-//       const bookInfo = await getBookInfo(document.book.$id);
-//       // console.log(bookInfo);
-//       activity.push({
-//         key: document.$id,
-//         status: document.status,
-//         username: document.user_id,
-//         book: bookInfo[0],
-//         timestamp: document.$createdAt,
-//       });
-//     }),
-//   );
-//   activity.sort(
-//     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
-//   );
-//   return activity;
-// }
 async function getActivity(book_id: string) {
   let activity = [];
   const account = new Account(client);
@@ -163,7 +118,7 @@ async function getActivity(book_id: string) {
 
   try {
     const user_id = (await account.get()).$id;
-    const friends = await getFriends(user_id, databases); // fetch friends
+    const friends = await getFriends(user_id, databases);
 
     let documents = (
       await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
@@ -266,13 +221,13 @@ function FriendsTab(bookInfo) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={{marginHorizontal: 20}}>
-        <BookSearchButton
-          navigation={navigation}
-          placeholder={"Search all users"}
-          navigateTo={"UserSearchScreen"}
-        />
-      </View>
+        <View style={{ marginHorizontal: 20 }}>
+          <BookSearchButton
+            navigation={navigation}
+            placeholder={"Search all users"}
+            navigateTo={"UserSearchScreen"}
+          />
+        </View>
         {refreshing ? (
           <ActivityIndicator size="large" color="grey" />
         ) : (

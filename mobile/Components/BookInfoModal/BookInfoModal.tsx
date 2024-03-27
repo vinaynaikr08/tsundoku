@@ -160,7 +160,7 @@ export const BookInfoModal = ({ route, navigation }) => {
           }}
         >
           {/* <StatusButtonView /> */}
-          <SelectDropdown
+          {/* <SelectDropdown
             data={Object.values(BOOK_STATE_MAPPING)}
             onSelect={(state) => handleOptionSelect(state)}
             buttonTextAfterSelection={() => {
@@ -198,6 +198,60 @@ export const BookInfoModal = ({ route, navigation }) => {
               );
             }}
             dropdownIconPosition={"left"}
+          /> */}
+          <SelectDropdown
+            data={Object.values(BOOK_STATE_MAPPING)}
+            onSelect={(state) => handleOptionSelect(state)}
+            renderButton={(selectedItem, isOpen) => {
+              return (
+                <View
+                  style={{
+                    backgroundColor:
+                      status === BookState.None
+                        ? Colors.BUTTON_PURPLE
+                        : Colors.BUTTON_GRAY,
+                    // paddingVertical: 5,
+                    paddingBottom: 11,
+                    borderRadius: 13,
+                    width: "28%",
+                    // alignContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <Text style={{ fontSize: 14, color: "black" }}>
+                    {(selectedItem && selectedItem.title) || ""}
+                  </Text>
+                  <Icon
+                    name={
+                      isOpen
+                        ? "chevron-up-circle-outline"
+                        : "chevron-down-circle-outline"
+                    }
+                    color={
+                      status === BookState.None
+                        ? Colors.BUTTON_GRAY
+                        : Colors.BUTTON_PURPLE
+                    }
+                    size={25}
+                  />
+                </View>
+              );
+            }}
+            renderItem={(item, index, isSelected) => {
+              return (
+                <View
+                  style={{
+                    ...styles.dropdownItemStyle,
+                    ...(isSelected && { backgroundColor: "grey" }),
+                  }}
+                >
+                  <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
+                </View>
+              );
+            }}
+            dropdownStyle={styles.dropdownStyle}
+            dropdownOverlayColor={"transparent"}
           />
           <StatusButtonView />
         </View>
@@ -231,6 +285,20 @@ const styles = StyleSheet.create({
     width: "40%",
     backgroundColor: "#d6d6d6",
     borderRadius: 10,
+  },
+  dropdownItemStyle: {
+    backgroundColor: "#d6d6d6",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "400",
+    color: "black",
+    textAlign: "center",
   },
   modalStyle: {
     flex: 1,
