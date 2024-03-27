@@ -1,194 +1,14 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Platform,
-  Image,
-  FlatList,
-  TouchableWithoutFeedback,
-  Keyboard,
-  TouchableOpacity,
-  Dimensions,
-  KeyboardAvoidingView,
-} from "react-native";
+import { View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 
-import BookSearchBar from "@/Components/BookSearchBar";
-import { Divider } from "react-native-paper";
-import { DATA } from "@/Components/BookSearchBar/Genres";
-import { Databases, Query } from "appwrite";
-import { debounce } from "lodash";
-
-import { client } from "@/appwrite";
-import ID from "@/Constants/ID";
-import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 import CarouselTabs from "../Components/LibraryCarousel/LibraryCarouselTabs";
 
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ErrorModal from "@/Components/ErrorModal";
 import BookSearchButton from "@/Components/BookSearchButton";
 
-const databases = new Databases(client);
-
-async function getBooks(
-  param,
-  setErrorMessage,
-  setErrorModalVisible,
-  setLoading,
-) {
-  let books = [];
-
-  //set timeout function for errors
-  const timeout = setTimeout(() => {
-    setErrorMessage("Book request timed out.");
-    setErrorModalVisible(true);
-  }, 10000);
-
-  // Search by books
-  let book_documents;
-  try {
-    const res = await fetch(
-      `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
-    );
-    console.log(await res.json());
-    book_documents = (await res.json()).results.documents;
-  } catch (error: any) {
-    console.error(error);
-  }
-
-  for (const book of book_documents) {
-    if (books.filter((e) => e.id === book.$id).length === 0) {
-      books = [
-        ...books,
-        {
-          id: book.$id,
-          title: book.title,
-          author: book.authors[0].name,
-          summary: book.description,
-          image_url: book.editions[0].thumbnail_url,
-          isbn_10: book.editions[0].isbn_10,
-          isbn_13: book.editions[0].isbn_13,
-          genre: book.genre,
-        },
-      ];
-    }
-  }
-
-  // Search by author
-  const author_documents = (
-    await databases.listDocuments(ID.mainDBID, ID.authorCollectionID, [
-      Query.search("name", param),
-    ])
-  ).documents;
-
-  for (const author of author_documents) {
-    for (const book of author.books) {
-      if (books.filter((e) => e.id === book.$id).length === 0) {
-        books = [
-          ...books,
-          {
-            id: book.$id,
-            title: book.title,
-            author: author.name,
-            summary: book.description,
-            image_url: book.editions[0].thumbnail_url,
-            isbn_10: book.editions[0].isbn_10,
-            isbn_13: book.editions[0].isbn_13,
-            genre: book.genre,
-          },
-        ];
-      }
-    }
-
-    // Search by ISBN_13 and ISBN_10
-    const edition_documents = (
-      await databases.listDocuments(ID.mainDBID, ID.editionCollectionID, [
-        Query.search("isbn_13", param),
-        Query.search("isbn_10", param),
-      ])
-    ).documents;
-
-    for (const edition of edition_documents) {
-      for (const book of edition.books) {
-        if (books.filter((e) => e.id === book.$id).length === 0) {
-          books = [
-            ...books,
-            {
-              id: book.$id,
-              title: book.title,
-              author: author.name,
-              summary: book.description,
-              image_url: edition.thumbnail_url,
-              isbn_10: edition.isbn_10,
-              isbn_13: edition.isbn_13,
-              genre: book.genre,
-            },
-          ];
-        }
-      }
-    }
-  }
-
-  clearTimeout(timeout);
-  setLoading(false);
-
-  return books;
-}
-
 export const Library = (props) => {
-  const windowHeight = Dimensions.get("window").height;
-  const [loading, setLoading] = React.useState(false);
-  const [books, setBooks] = React.useState([]);
-  const [search, setSearch] = React.useState("");
-  const GENRES = DATA();
-  const [errorModalVisible, setErrorModalVisible] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
-
-  const performDebouncedSearch = React.useCallback(
-    debounce(performSearch, 1000),
-    [],
-  );
-
-  function performSearch(query) {
-    if (query.length > 0) {
-      getBooks(query, setErrorMessage, setErrorModalVisible, setLoading)
-        .then((books) => setBooks(books))
-        .catch((error: any) => {
-          console.error(error);
-          setErrorMessage("An error occurred while searching for the books.");
-          setErrorModalVisible(true);
-        });
-    } else {
-      setBooks([]);
-      setLoading(false);
-    }
-  }
-
   const { navigation } = props;
-
-  function checkGenres(value) {
-    let noFilter: boolean = true;
-
-    for (let genre of GENRES) {
-      if (genre.state[0] == true) {
-        noFilter = false;
-      }
-      if (genre.state[1] == true) {
-        noFilter = false;
-      }
-    }
-    if (noFilter) {
-      return true;
-    } else {
-      for (let genre of GENRES) {
-        if (value == genre.title[0]) {
-          return genre.state[0];
-        } else if (value == genre.title[1]) {
-          return genre.state[1];
-        }
-      }
-    }
-  }
 
   return (
     <NavigationContext.Provider value={navigation}>
@@ -209,7 +29,11 @@ export const Library = (props) => {
           </View>
         </TouchableWithoutFeedback>
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
-          <BookSearchButton navigation={navigation} placeholder={"Search all books"} navigateTo={"BookSearchScreen"}/>
+          <BookSearchButton
+            navigation={navigation}
+            placeholder={"Search all books"}
+            navigateTo={"BookSearchScreen"}
+          />
         </View>
         <CarouselTabs />
       </SafeAreaView>
