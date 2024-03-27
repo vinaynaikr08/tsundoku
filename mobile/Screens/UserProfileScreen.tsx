@@ -1,11 +1,18 @@
 import React from "react";
-import { View, Text, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from "react-native";
 import { client } from "../appwrite";
 import { Account } from "appwrite";
 import { ProfileContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import LibraryCarouselTabs from "@/Components/LibraryCarousel/LibraryCarouselTabs";
 
 export const UserProfile = ({ navigation, route }) => {
   const { username, user_id } = route.params;
@@ -42,6 +49,7 @@ export const UserProfile = ({ navigation, route }) => {
           </Text>
         </View>
       </TouchableWithoutFeedback>
+      <LibraryCarouselTabs />
     </SafeAreaView>
   );
 };
