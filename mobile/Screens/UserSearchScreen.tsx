@@ -1,9 +1,8 @@
 import { NavigationContext } from "@/Contexts";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Image,
   FlatList,
   TouchableWithoutFeedback,
   Keyboard,
@@ -14,6 +13,11 @@ import {
 import { Icon, SearchBar } from "@rneui/base";
 import ErrorModal from "@/Components/ErrorModal";
 import { Divider } from "react-native-paper";
+
+import { client } from "@/appwrite";
+import { Databases } from "appwrite";
+import ID from "@/Constants/ID";
+const databases = new Databases(client);
 
 const fakeData = [
   { username: "kaley", user_id: 1 },
@@ -26,6 +30,34 @@ function UserSearchScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = React.useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = React.useState(false);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function getUsers() {
+      const promise = await databases.listDocuments(
+        ID.mainDBID,
+        ID.userDataCollectionID,
+      );
+
+      return promise.documents.map((user) => {
+        return {
+          user_id: user.user_id,
+          username: user.username,
+        };
+      });
+    }
+
+    getUsers()
+      .then((data) => {
+        console.log("data: " + data);
+        setUsers(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setErrorMessage("An error occurred fetching users.");
+        setErrorModalVisible(true);
+      });
+  }, []);
 
   return (
     <NavigationContext.Provider value={navigation}>
@@ -70,14 +102,17 @@ function UserSearchScreen({ navigation }) {
           />
         </View>
         <View style={{ height: "89%" }}>
-          <FlatList
-            data={fakeData.filter(obj => obj.username.includes(search))}
+          {search.length > 0 && <FlatList
+            data={users.filter((obj) => obj.username.includes(search))}
             style={{ flexGrow: 0 }}
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("bookInfoModal", { bookInfo: item })
+                    navigation.navigate("UserProfileScreen", {
+                      username: item.username,
+                      user_id: item.user_id,
+                    })
                   }
                 >
                   <View
@@ -95,11 +130,14 @@ function UserSearchScreen({ navigation }) {
                       </View>
                     </View>
                   </View>
-                  <Divider style={{ backgroundColor: "black" }} horizontalInset />
+                  <Divider
+                    style={{ backgroundColor: "black" }}
+                    horizontalInset
+                  />
                 </TouchableOpacity>
               );
             }}
-          />
+          />}
         </View>
       </SafeAreaView>
       <ErrorModal
