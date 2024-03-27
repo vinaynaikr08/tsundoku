@@ -74,8 +74,21 @@ function MyTabBar({ state, descriptors, navigation }) {
   );
 }
 
-function ReadingStatusCarousel({ status, shelf }) {
-  const { data, error, isLoading } = useSWR(status, backend.getBooksOfStatus);
+function ReadingStatusCarousel({ navigation, status, shelf }) {
+  const { data, error, isLoading, mutate } = useSWR(
+    status,
+    backend.getBooksOfStatus,
+  );
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      // Screen is focused again, refetch book status
+      mutate();
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -88,7 +101,7 @@ function ReadingStatusCarousel({ status, shelf }) {
   );
 }
 
-function LibraryCarouselTabs() {
+function LibraryCarouselTabs({ navigation }) {
   const [shelf, setShelf] = React.useState("Currently Reading");
 
   return (
@@ -99,7 +112,11 @@ function LibraryCarouselTabs() {
       <Tab.Screen
         name="Currently Reading"
         children={() => (
-          <ReadingStatusCarousel status="CURRENTLY_READING" shelf={shelf} />
+          <ReadingStatusCarousel
+            navigation={navigation}
+            status="CURRENTLY_READING"
+            shelf={shelf}
+          />
         )}
         listeners={{
           tabPress: (e) => {
@@ -110,7 +127,11 @@ function LibraryCarouselTabs() {
       <Tab.Screen
         name="Want To Read"
         children={() => (
-          <ReadingStatusCarousel status="WANT_TO_READ" shelf={shelf} />
+          <ReadingStatusCarousel
+            navigation={navigation}
+            status="WANT_TO_READ"
+            shelf={shelf}
+          />
         )}
         listeners={{
           tabPress: (e) => {
@@ -120,7 +141,13 @@ function LibraryCarouselTabs() {
       />
       <Tab.Screen
         name="Read"
-        children={() => <ReadingStatusCarousel status="READ" shelf={shelf} />}
+        children={() => (
+          <ReadingStatusCarousel
+            navigation={navigation}
+            status="READ"
+            shelf={shelf}
+          />
+        )}
         listeners={{
           tabPress: (e) => {
             setShelf("Read");
@@ -130,7 +157,11 @@ function LibraryCarouselTabs() {
       <Tab.Screen
         name="Did Not Finish"
         children={() => (
-          <ReadingStatusCarousel status="DID_NOT_FINISH" shelf={shelf} />
+          <ReadingStatusCarousel
+            navigation={navigation}
+            status="DID_NOT_FINISH"
+            shelf={shelf}
+          />
         )}
         listeners={{
           tabPress: (e) => {
