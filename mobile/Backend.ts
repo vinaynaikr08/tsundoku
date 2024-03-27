@@ -8,7 +8,7 @@ const account = new Account(client);
 const databases = new Databases(client);
 
 export default class Backend {
-  public async totalSearch(param: string): Promise<any> {
+  public totalSearch = async (param: string): Promise<any> => {
     let books = [
       ...(await this.bookSearch(param)),
       ...(await this.authorSearch(param)),
@@ -17,9 +17,9 @@ export default class Backend {
 
     // Search does not guarantee uniqueness, so we must filter out duplicates
     return [...new Map(books.map((v) => [v.id, v])).values()];
-  }
+  };
 
-  public async bookSearch(title: string): Promise<any> {
+  public bookSearch = async (title: string): Promise<any> => {
     const res = await fetch(
       `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title }),
     );
@@ -35,9 +35,9 @@ export default class Backend {
         genre: doc.genre,
       };
     });
-  }
+  };
 
-  public async authorSearch(name: string): Promise<any> {
+  public authorSearch = async (name: string): Promise<any> => {
     let books = [];
     const author_docs = (
       await databases.listDocuments(ID.mainDBID, ID.authorCollectionID, [
@@ -64,9 +64,9 @@ export default class Backend {
     }
 
     return books;
-  }
+  };
 
-  public async isbnSearch(param: string): Promise<any> {
+  public isbnSearch = async (param: string): Promise<any> => {
     let books = [];
     const edition_docs = (
       await databases.listDocuments(ID.mainDBID, ID.editionCollectionID, [
@@ -93,15 +93,15 @@ export default class Backend {
       ];
     }
     return books;
-  }
+  };
 
-  public async getBookStatuses({
+  public getBookStatuses = async ({
     status,
     user_id,
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<any> {
+  }): Promise<any> => {
     let books = [];
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
@@ -114,15 +114,15 @@ export default class Backend {
     }
 
     return books;
-  }
+  };
 
-  public async getBooksOfStatusFromDate({
+  public getBooksOfStatusFromDate = async ({
     status,
     user_id,
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<any> {
+  }): Promise<any> => {
     let books = [];
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
@@ -141,15 +141,15 @@ export default class Backend {
     }
 
     return books;
-  }
+  };
 
-  private async getBookStatusDocs({
+  public getBookStatusDocs = async ({
     status,
     user_id,
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<any> {
+  }): Promise<any> => {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
@@ -160,9 +160,9 @@ export default class Backend {
         Query.equal("status", status),
       ])
     ).documents;
-  }
+  };
 
-  private async getBookData(id: string) {
+  public getBookData = async (id: string) => {
     const book_data = await databases.getDocument(
       ID.mainDBID,
       ID.bookCollectionID,
@@ -179,5 +179,5 @@ export default class Backend {
       genre: book_data.genre,
       pages: book_data.editions[0].page_count,
     };
-  }
+  };
 }
