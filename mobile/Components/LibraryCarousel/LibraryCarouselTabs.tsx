@@ -1,58 +1,20 @@
-import { Text, View, ScrollView, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Databases, Account } from "appwrite";
 import React from "react";
-import { Query } from "appwrite";
 
 import Carousel from "@/Components/Carousel/Carousel";
-import ID from "@/Constants/ID";
 import Colors from "@/Constants/Colors";
-import { client } from "@/appwrite";
+import Backend from "@/Backend";
+import useSWR from "swr";
 
 const Tab = createMaterialTopTabNavigator();
-
-const account = new Account(client);
-const databases = new Databases(client);
-
-async function getBooksOfStatus(status: string) {
-  let books = [];
-  let user_id;
-  try {
-    user_id = (await account.get()).$id;
-  } catch (error: any) {
-    console.warn(
-      "LibraryCarouselTabs: an unknown error occurred attempting to fetch user details.",
-    );
-    return books;
-  }
-  let documents = (
-    await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
-      Query.equal("user_id", user_id),
-      Query.equal("status", status),
-    ])
-  ).documents;
-
-  await Promise.all(
-    documents.map(async (document) => {
-      const book_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.bookCollectionID,
-        document.book.$id,
-      );
-      books.push({
-        id: book_data.$id,
-        title: book_data.title,
-        author: book_data.authors[0].name,
-        summary: book_data.description,
-        image_url: book_data.editions[0].thumbnail_url,
-        isbn: book_data.editions[0].isbn_13,
-        genre: book_data.genre,
-      });
-    }),
-  );
-
-  return books;
-}
+const backend = new Backend();
 
 function MyTabBar({ state, descriptors, navigation }) {
   return (
@@ -113,17 +75,15 @@ function MyTabBar({ state, descriptors, navigation }) {
 }
 
 function ReadingStatusCarousel({ status, shelf }) {
-  const [books, setBooks] = React.useState([]);
-
-  React.useEffect(() => {
-    (async () => {
-      setBooks(await getBooksOfStatus(status));
-    })();
-  }, []);
+  const { data, error, isLoading } = useSWR(status, backend.getBooksOfStatus);
 
   return (
     <View style={{ flex: 1 }}>
-      <Carousel books={books} shelf={shelf} />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <Carousel books={data} shelf={shelf} />
+      )}
     </View>
   );
 }
