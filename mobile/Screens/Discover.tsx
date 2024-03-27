@@ -84,7 +84,7 @@ export const Discover = (props) => {
                   fontWeight: "500",
                 }}
               >
-                Your [insert year] Tsundoku Wrapped is here!
+                Your {new Date().getFullYear()} Tsundoku Wrapped is here!
               </Text>
               <TouchableOpacity
                 style={{

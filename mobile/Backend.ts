@@ -121,6 +121,47 @@ export default class Backend {
         image_url: book_data.editions[0].thumbnail_url,
         isbn: book_data.editions[0].isbn_13,
         genre: book_data.genre,
+        pages: book_data.editions[0].page_count,
+      });
+    }
+
+    return books;
+  }
+
+  public async getBooksOfStatusFromDate(status: string): Promise<any> {
+    let books = [];
+    let user_id = (await account.get()).$id;
+    const year = (new Date().getFullYear()) - 1;
+    const cutoff = new Date(year, 11, 1);
+
+    const bookstat_docs = (
+      await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
+        Query.equal("user_id", user_id),
+        Query.equal("status", status),
+      ])
+    ).documents;
+
+
+    for (const bookstat_doc of bookstat_docs) {
+      let formatted_date = new Date(bookstat_doc.$updatedAt);
+      if (formatted_date < cutoff) {
+        continue;
+      }
+      const book_data = await databases.getDocument(
+        ID.mainDBID,
+        ID.bookCollectionID,
+        bookstat_doc.book.$id,
+      );
+
+      books.push({
+        id: book_data.$id,
+        title: book_data.title,
+        author: book_data.authors[0].name,
+        summary: book_data.description,
+        image_url: book_data.editions[0].thumbnail_url,
+        isbn: book_data.editions[0].isbn_13,
+        genre: book_data.genre,
+        pages: book_data.editions[0].page_count,
       });
     }
 

@@ -1,3 +1,4 @@
+import { Icon } from "@rneui/base";
 import React, {useRef} from "react";
 import {
   Text,
@@ -9,8 +10,8 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import { NavigationContext } from "../Contexts";
-
+import { intro } from "../Components/WrappedBasics/Intro";
+import { pagesRead } from "@/Components/WrappedBasics/PagesRead";
 
 export const WrappedScreen = (props) => {
     const { navigation } = props;
@@ -18,18 +19,22 @@ export const WrappedScreen = (props) => {
     const items = [
         {
             name: "number1",
+            screen: intro(),
             index: 1,
         }, 
         {
             name: "number2",
+            screen: pagesRead(),
             index: 2,
         },  
         {
             name: "number3",
+            screen: intro(),
             index: 3,
         },  
         {
             name: "number4",
+            screen: intro(),
             index: 4,
         }, 
     ]
@@ -49,13 +54,13 @@ export const WrappedScreen = (props) => {
         })(event);
     };
     return (
-        <SafeAreaView style={{height: height}}>
+        <View style={{height: height}}>
             <FlatList
                 data={items}
                 renderItem={({item}) => 
-                    <View style={{backgroundColor: "purple", borderWidth: 10, borderColor: 'white', width: width, alignItems: "center"}}>
-                        <Text style={{color: "white"}}>{item.name}</Text>
-                    </View>
+                <View style={{backgroundColor: "#CBC3E3", width: width, alignItems: "center"}}>
+                    {item.screen}
+                </View>
                 }
                 horizontal
                 pagingEnabled
@@ -63,7 +68,7 @@ export const WrappedScreen = (props) => {
                 showsHorizontalScrollIndicator={false}
                 onScroll={handleOnScroll}
             />
-            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+            <SafeAreaView style={{flexDirection: 'row', width: '100%', justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 25}}>
                 {items.map((item) => {
                     const inputRange = [(item.index - 2) * width, (item.index - 1) * width, (item.index) * width];
                     const dotWidth = scrollX.interpolate({
@@ -72,13 +77,15 @@ export const WrappedScreen = (props) => {
                         extrapolate: "clamp",
                     });
                     return (
-                        <Animated.View key={item.index} style={[{width: 12, height: 12, borderRadius: 6, backgroundColor: "#ccc", marginHorizontal: 3}, {width: dotWidth}]}/>
+                        <Animated.View key={item.index} style={[{width: 12, height: 12, borderRadius: 6, backgroundColor: "black", marginHorizontal: 3}, {width: dotWidth}]}/>
                     )
                 })}
-            </View>
-            <TouchableOpacity onPress={() => navigation.navigate("discover")} style={{height: '10%'}}>
-                <Text>press to go back</Text>
+            </SafeAreaView>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{height: '10%', position: 'absolute', right: 15}}>
+                <SafeAreaView>
+                    <Icon name="close" color="red" size={30}/>
+                </SafeAreaView>
             </TouchableOpacity>
-        </SafeAreaView>
+        </View>
     )
 }
