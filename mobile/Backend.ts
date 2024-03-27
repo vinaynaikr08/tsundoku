@@ -95,9 +95,17 @@ export default class Backend {
     return books;
   }
 
-  public async getBooksOfStatus(status: string): Promise<any> {
+  public async getBooksOfStatus({
+    status,
+    user_id,
+  }: {
+    status: string;
+    user_id: string | undefined;
+  }): Promise<any> {
     let books = [];
-    let user_id = (await account.get()).$id;
+    if (user_id === undefined) {
+      user_id = (await account.get()).$id;
+    }
 
     const bookstat_docs = (
       await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
@@ -128,10 +136,18 @@ export default class Backend {
     return books;
   }
 
-  public async getBooksOfStatusFromDate(status: string): Promise<any> {
+  public async getBooksOfStatusFromDate({
+    status,
+    user_id,
+  }: {
+    status: string;
+    user_id: string | undefined;
+  }): Promise<any> {
     let books = [];
-    let user_id = (await account.get()).$id;
-    const year = (new Date().getFullYear()) - 1;
+    if (user_id === undefined) {
+      user_id = (await account.get()).$id;
+    }
+    const year = new Date().getFullYear() - 1;
     const cutoff = new Date(year, 11, 1);
 
     const bookstat_docs = (
@@ -140,7 +156,6 @@ export default class Backend {
         Query.equal("status", status),
       ])
     ).documents;
-
 
     for (const bookstat_doc of bookstat_docs) {
       let formatted_date = new Date(bookstat_doc.$updatedAt);
