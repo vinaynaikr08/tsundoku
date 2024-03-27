@@ -12,104 +12,15 @@ import {
 import BookSearchBar from "@/Components/BookSearchBar";
 import { Divider } from "react-native-paper";
 import { DATA } from "@/Components/BookSearchBar/Genres";
-import { Databases, Query } from "appwrite";
 import { debounce } from "lodash";
-
-import { client } from "@/appwrite";
-import ID from "@/Constants/ID";
-import { BACKEND_API_BOOK_SEARCH_URL } from "@/Constants/URLs";
 
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ErrorModal from "@/Components/ErrorModal";
 import { Icon } from "@rneui/base";
+import Backend from "@/Backend";
 
-const databases = new Databases(client);
-
-async function getBooks(param) {
-  let books = [];
-
-  // Search by books
-  let book_documents;
-  const res = await fetch(
-    `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title: param }),
-  );
-  book_documents = (await res.json()).results.documents;
-
-  for (const book of book_documents) {
-    if (books.filter((e) => e.id === book.$id).length === 0) {
-      books = [
-        ...books,
-        {
-          id: book.$id,
-          title: book.title,
-          author: book.authors[0].name,
-          summary: book.description,
-          image_url: book.editions[0].thumbnail_url,
-          isbn_10: book.editions[0].isbn_10,
-          isbn_13: book.editions[0].isbn_13,
-          genre: book.genre,
-        },
-      ];
-    }
-  }
-
-  // Search by author
-  const author_documents = (
-    await databases.listDocuments(ID.mainDBID, ID.authorCollectionID, [
-      Query.search("name", param),
-    ])
-  ).documents;
-
-  for (const author of author_documents) {
-    for (const book of author.books) {
-      if (books.filter((e) => e.id === book.$id).length === 0) {
-        books = [
-          ...books,
-          {
-            id: book.$id,
-            title: book.title,
-            author: author.name,
-            summary: book.description,
-            image_url: book.editions[0].thumbnail_url,
-            isbn_10: book.editions[0].isbn_10,
-            isbn_13: book.editions[0].isbn_13,
-            genre: book.genre,
-          },
-        ];
-      }
-    }
-
-    // Search by ISBN_13 and ISBN_10
-    const edition_documents = (
-      await databases.listDocuments(ID.mainDBID, ID.editionCollectionID, [
-        Query.search("isbn_13", param),
-        Query.search("isbn_10", param),
-      ])
-    ).documents;
-
-    for (const edition of edition_documents) {
-      for (const book of edition.books) {
-        if (books.filter((e) => e.id === book.$id).length === 0) {
-          books = [
-            ...books,
-            {
-              id: book.$id,
-              title: book.title,
-              author: author.name,
-              summary: book.description,
-              image_url: edition.thumbnail_url,
-              isbn_10: edition.isbn_10,
-              isbn_13: edition.isbn_13,
-              genre: book.genre,
-            },
-          ];
-        }
-      }
-    }
-  }
-  return books;
-}
+const backend = new Backend();
 
 function BookSearchScreen(props) {
   const [loading, setLoading] = React.useState(false);
@@ -134,7 +45,8 @@ function BookSearchScreen(props) {
         setErrorModalVisible(true);
       }, 10000);
 
-      getBooks(query)
+      backend
+        .totalSearch(query)
         .then((books) => {
           setBooks(books);
         })
@@ -183,10 +95,15 @@ function BookSearchScreen(props) {
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View testID="search-screen-view" style={{flexDirection: 'row', width: '100%'}}>
+          <View
+            testID="search-screen-view"
+            style={{ flexDirection: "row", width: "100%" }}
+          >
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <View style={{marginTop: 5, flexDirection: 'row', marginLeft: 20}}>
-                <Icon name="arrow-back-ios"/>
+              <View
+                style={{ marginTop: 5, flexDirection: "row", marginLeft: 20 }}
+              >
+                <Icon name="arrow-back-ios" />
               </View>
             </TouchableOpacity>
             <Text
@@ -216,7 +133,7 @@ function BookSearchScreen(props) {
             GENRES={GENRES}
           />
         </View>
-        <View style={{height: '89%'}}>
+        <View style={{ height: "89%" }}>
           <FlatList
             data={books.filter((book) => checkGenres(book.genre))}
             style={{ flexGrow: 0 }}
