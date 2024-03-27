@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, Pressable } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Databases, Account } from "appwrite";
-import React, { useEffect } from "react";
+import React from "react";
 import { Query } from "appwrite";
 
 import Carousel from "@/Components/Carousel/Carousel";
@@ -10,8 +10,6 @@ import Colors from "@/Constants/Colors";
 import { client } from "@/appwrite";
 
 const Tab = createMaterialTopTabNavigator();
-
-let shelf = "Currently Reading";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -22,7 +20,9 @@ async function getBooksOfStatus(status: string) {
   try {
     user_id = (await account.get()).$id;
   } catch (error: any) {
-    console.warn("LibraryCarouselTabs: an unknown error occurred attempting to fetch user details.");
+    console.warn(
+      "LibraryCarouselTabs: an unknown error occurred attempting to fetch user details.",
+    );
     return books;
   }
   let documents = (
@@ -112,7 +112,7 @@ function MyTabBar({ state, descriptors, navigation }) {
   );
 }
 
-function ReadingStatusCarousel({ status }) {
+function ReadingStatusCarousel({ status, shelf }) {
   const [books, setBooks] = React.useState([]);
 
   React.useEffect(() => {
@@ -129,9 +129,8 @@ function ReadingStatusCarousel({ status }) {
 }
 
 function LibraryCarouselTabs() {
-  React.useEffect(() => {
-    shelf = "Currently Reading";
-  });
+  const [shelf, setShelf] = React.useState("Currently Reading");
+
   return (
     <Tab.Navigator
       screenOptions={{ swipeEnabled: false }}
@@ -139,37 +138,43 @@ function LibraryCarouselTabs() {
     >
       <Tab.Screen
         name="Currently Reading"
-        children={() => <ReadingStatusCarousel status="CURRENTLY_READING" />}
+        children={() => (
+          <ReadingStatusCarousel status="CURRENTLY_READING" shelf={shelf} />
+        )}
         listeners={{
           tabPress: (e) => {
-            shelf = "Currently Reading";
+            setShelf("Currently Reading");
           },
         }}
       />
       <Tab.Screen
         name="Want To Read"
-        children={() => <ReadingStatusCarousel status="WANT_TO_READ" />}
+        children={() => (
+          <ReadingStatusCarousel status="WANT_TO_READ" shelf={shelf} />
+        )}
         listeners={{
           tabPress: (e) => {
-            shelf = "Want To Read";
+            setShelf("Want To Read");
           },
         }}
       />
       <Tab.Screen
         name="Read"
-        children={() => <ReadingStatusCarousel status="READ" />}
+        children={() => <ReadingStatusCarousel status="READ" shelf={shelf} />}
         listeners={{
           tabPress: (e) => {
-            shelf = "Read";
+            setShelf("Read");
           },
         }}
       />
       <Tab.Screen
         name="Did Not Finish"
-        children={() => <ReadingStatusCarousel status="DID_NOT_FINISH" />}
+        children={() => (
+          <ReadingStatusCarousel status="DID_NOT_FINISH" shelf={shelf} />
+        )}
         listeners={{
           tabPress: (e) => {
-            shelf = "Did Not Finish";
+            setShelf("Did Not Finish");
           },
         }}
       />
