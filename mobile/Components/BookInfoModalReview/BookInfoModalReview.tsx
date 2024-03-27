@@ -96,7 +96,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
           No Reviews
         </Text>
       ) : (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, paddingBottom: 330 }}>
           <FlatList
             data={reviews}
             showsVerticalScrollIndicator={false}
@@ -123,9 +123,12 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
             )}
             renderItem={({ item }) => (
               <View style={{ flex: 1 }}>
-                <TouchableOpacity activeOpacity={1} onPress={() =>
-                  navigation.navigate("bookInfoFullReview", { review: item })
-                }>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() =>
+                    navigation.navigate("bookInfoFullReview", { review: item })
+                  }
+                >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <View style={{ marginRight: 10 }}>
                       <Ionicons
@@ -153,7 +156,13 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                   >
                     {item.desc}
                   </Text>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 30,
+                    }}
+                  >
                     <TouchableOpacity onPress={handleThumbsUpClick}>
                       <View
                         style={{
