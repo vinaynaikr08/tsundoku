@@ -15,15 +15,10 @@ import ErrorModal from "@/Components/ErrorModal";
 import { Divider } from "react-native-paper";
 
 import { client } from "@/appwrite";
-import { Databases } from "appwrite";
+import { Account, Databases, Query } from "appwrite";
 import ID from "@/Constants/ID";
 const databases = new Databases(client);
-
-const fakeData = [
-  { username: "kaley", user_id: 1 },
-  { username: "sarah", user_id: 2 },
-  { username: "sam", user_id: 3 },
-];
+const account = new Account(client);
 
 function UserSearchScreen({ navigation }) {
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
@@ -34,9 +29,11 @@ function UserSearchScreen({ navigation }) {
 
   useEffect(() => {
     async function getUsers() {
+      const user_id = (await account.get()).$id;
       const promise = await databases.listDocuments(
         ID.mainDBID,
         ID.userDataCollectionID,
+        [Query.notEqual("user_id", [user_id])]
       );
 
       return promise.documents.map((user) => {
