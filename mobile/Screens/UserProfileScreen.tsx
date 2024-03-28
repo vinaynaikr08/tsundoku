@@ -32,11 +32,12 @@ function userPermissions(user_id: string) {
   ];
 }
 
-function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption) {
+function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption, setDisabled) {
+  setDisabled(true);
   switch (status) {
     case (0): 
       // Send Friend Request
-      sendFriendRequest(user_id, setStatus, setButton);
+      sendFriendRequest(user_id, setStatus, setButton, setDisabled);
       break;
     case (1):
       // Delete Friend
@@ -44,7 +45,7 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
       break;
     case (2):
       // Friend Request Sent
-      deleteFriend(user_id, status, setStatus, setButton);
+      deleteFriend(user_id, status, setStatus, setButton, setDisabled);
       break;
     case (3):
       // Friend Request Incoming
@@ -53,7 +54,7 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
   }
 }
 
-async function sendFriendRequest(user_id, setStatus, setButton) {
+async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
   const account = new Account(client);
   const current_user_id =  (await account.get()).$id;
   const promise = databases.createDocument(
@@ -79,12 +80,14 @@ async function sendFriendRequest(user_id, setStatus, setButton) {
       position: "bottom",
       visibilityTime: 2000,
     });
+    setDisabled(false);
   }, function (error) {
-      console.log(error); // Failure
+    console.log(error); // Failure
+    setDisabled(false);
   });
 }
 
-async function deleteFriend(user_id, status, setStatus, setButton) {
+async function deleteFriend(user_id, status, setStatus, setButton, setDisabled) {
   const account = new Account(client);
   account
     .get()
@@ -143,12 +146,14 @@ async function deleteFriend(user_id, status, setStatus, setButton) {
               });
               break;
           }
+          setDisabled(false);
           // no status
           setStatus(0);
           setButton("Send Friend Request");
           
         }, function (error) {
-            console.log(error); // Failure
+          console.log(error); // Failure
+          setDisabled(false);
         });
       });
     });
@@ -214,9 +219,10 @@ export const UserProfile = ({ navigation, route }) => {
   const [friend, setFriend] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
-
+  const [disabled, setDisabled] = useState(false);
   React.useEffect(() => {
     const account = new Account(client);
+    let status_1;
     account
       .get()
       .then((response) => {
@@ -238,42 +244,48 @@ export const UserProfile = ({ navigation, route }) => {
             
           ],
         );
+
         promise.then(function (response) {
           const documents = response.documents;
           if (documents.length == 0) {
             // no status
-            setStatus(0);
+            status_1 = 0;
           } else {
+            console.log(documents[0]);
             if (documents[0].status == "ACCEPTED") {
               // friends
-              setStatus(1);
+              status_1 = 1;
             } else if (documents[0].requester == current_user_id) {
               // pending out
-              setStatus(2);
+              status_1 = 2;
             } else {
               // pending in
-              setStatus(3);
+              status_1 = 3;
             }
           }
+        }).then(() =>{
+          setStatus(status_1);
+          switch (status_1) {
+            case (0): 
+              setButton("Send Friend Request");
+              break;
+            case (1):
+              setButton("Delete Friend");
+              setFriend(true);
+              break;
+            case (2):
+              setButton("Friend Request Sent");
+              break;
+            case (3):
+              setButton("Friend Request Incoming");
+              break;
+          }
+          setLoading(false);
+          console.log(status_1);
         });
       });
-    switch (status) {
-      case (0): 
-        setButton("Send Friend Request");
-        break;
-      case (1):
-        setButton("Delete Friend");
-        setFriend(true);
-        break;
-      case (2):
-        setButton("Friend Request Sent");
-        break;
-      case (3):
-        setButton("Friend Request Incoming");
-        break;
-    }
-    setLoading(false);
   }, []);
+  console.log(button);
 
   return (
     <NavigationContext.Provider value={navigation}>
@@ -311,7 +323,7 @@ export const UserProfile = ({ navigation, route }) => {
 
               <View style={{alignItems: 'flex-start'}}>
                 <View style={{ backgroundColor: friend ? 'red' : Colors.BUTTON_PURPLE, borderColor: 'gray', borderWidth: 1, justifyContent: 'center', alignItems: 'center', borderRadius: 10, marginBottom: 20, marginLeft: 20}}>
-                  <TouchableOpacity style={{padding: 10, paddingLeft: 15, paddingRight: 15}} onPress={() => handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption)}>
+                  <TouchableOpacity disabled={disabled} style={{padding: 10, paddingLeft: 15, paddingRight: 15}} onPress={() => handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption, setDisabled)}>
                     <Text style={{color: 'white'}}>{button}</Text>
                   </TouchableOpacity> 
                 </View>
