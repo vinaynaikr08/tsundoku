@@ -14,6 +14,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { intro } from "../Components/WrappedBasics/Intro";
 import { pagesRead } from "@/Components/WrappedBasics/PagesRead";
 import { favoriteGenre } from "@/Components/WrappedBasics/FavoriteGenre";
+import { genrePieChart } from "@/Components/WrappedBasics/GenrePieChart";
 import Backend from "@/Backend";
 import useSWR from "swr";
 

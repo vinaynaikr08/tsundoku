@@ -1,9 +1,5 @@
-import React, { useEffect, useState} from "react";
+import React from "react";
 import { SafeAreaView, Text, } from "react-native"
-import Backend from "@/Backend";
-import useSWR from "swr";
-
-const backend = new Backend();
 
 const genres: Array<string> = [
   "Antiques & Collectibles",
@@ -73,7 +69,6 @@ function getGenres(data) {
     for (let i = 0; i < 53; i++) {
       if (genres[i] == element.genre) {
         counter[i]++;
-        console.log(element.genre);
       }
     }
   });
@@ -81,11 +76,16 @@ function getGenres(data) {
   let mostRead = [{ind: "Young Adult Fiction", count: 0}, {ind: "Fiction", count: 0}, {ind: "Art", count: 0}];
 
   for (let i = 0; i < 53; i++) {
-
     if (counter[i] > mostRead[0].count) {
+      mostRead[2].ind = mostRead[1].ind;
+      mostRead[2].count = mostRead[1].count;
+      mostRead[1].ind = mostRead[0].ind;
+      mostRead[1].count = mostRead[0].count;
       mostRead[0].ind = genres[i];
       mostRead[0].count = counter[i];
     } else if (counter[i] > mostRead[1].count) {
+      mostRead[2].ind = mostRead[1].ind;
+      mostRead[2].count = mostRead[1].count;
       mostRead[1].ind = genres[i];
       mostRead[1].count = counter[i];
     } else if (counter[i] > mostRead[2].count) {
@@ -99,11 +99,10 @@ function getGenres(data) {
 
 export function favoriteGenre(data) {
   const genreArray = getGenres(data);
-  console.log(genreArray);
   return (
     <SafeAreaView style={{width: '70%', height: '100%', justifyContent: 'center'}}>
       <Text style={{fontSize: 25, textAlign: 'center'}}>Your top genres this year were: {"\n"}</Text>
-      <Text style={{fontSize: 30, textAlign: 'center'}}>1. {genreArray[1].ind} {'\n'}2. {genreArray[0].ind} {'\n'}3. {genreArray[2].ind} {'\n'}</Text>
+      <Text style={{fontSize: 30, textAlign: 'center'}}>1. {genreArray[0].ind}: {genreArray[0].count} {'\n'}2. {genreArray[1].ind}: {genreArray[1].count} {'\n'}3. {genreArray[2].ind}: {genreArray[2].count}</Text>
     </SafeAreaView>
   );
 } 
