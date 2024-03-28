@@ -67,6 +67,9 @@ function CreateCustomProperty({ navigation }) {
   }
 
   const saveCustomProperty = async () => {
+    if (name.length == 0 || type.length == 0) {
+      return;
+    }
     const account = new Account(client);
 
     let res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}`, {
