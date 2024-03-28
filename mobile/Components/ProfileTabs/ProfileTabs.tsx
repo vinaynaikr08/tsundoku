@@ -19,8 +19,9 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import StatisticsTab from "../StatisticsTab";
-import { registerIndieID, unregisterIndieDevice } from 'native-notify';
-import axios from 'axios';
+import { registerIndieID, unregisterIndieDevice } from "native-notify";
+import axios from "axios";
+import { BACKEND_API_URL } from "@/Constants/URLs";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -92,30 +93,71 @@ function ProfileTab(props) {
   const navigateDeleteAccount = () => {
     navigation.navigate("DeleteAccount");
   };
-
   useFocusEffect(
     React.useCallback(() => {
-      (async () => {
-        const account = new Account(client);
-        account
-          .get()
-          .then((response) => {
-            setUsername(response.name);
-            setEmail(response.email);
-          })
-          .catch((error) => {
-            console.error("Error fetching user ID:", error);
-          });
-      })();
+      const fetchData = async () => {
+        try {
+          const account = new Account(client);
+          const response = await account.get();
+          setEmail(response.email);
+          const fetchedUserId = response.$id;
+          const fetchedUsername = await getUsername(fetchedUserId);
+          setUsername(fetchedUsername);
+        } catch (error) {
+          console.error("Error fetching user ID or username:", error);
+        }
+      };
+
+      fetchData();
     }, []),
   );
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     (async () => {
+  //       const account = new Account(client);
+  //       account
+  //         .get()
+  //         .then((response) => {
+  //           // setUsername(response.name);
+  //           const fetchedUserId = response.$id;
+  //           const fetchedUsername = await getUsername(fetchedUserId);
+  //           setUsername(fetchedUsername);
+  //           setEmail(response.email);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error fetching user ID:", error);
+  //         });
+  //     })();
+  //   }, []),
+  // );
+
+  async function getUsername(user_id) {
+    try {
+      const response = await fetch(
+        `${BACKEND_API_URL}/v0/users/${user_id}/name`,
+        {
+          method: "GET",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        },
+      );
+      const usernameData = await response.json();
+      return usernameData.name;
+    } catch (error) {
+      console.error("Error fetching username:", error);
+      throw error;
+    }
+  }
 
   function signOut() {
     (async () => {
       await account.deleteSessions();
       account.get().then((response) => {
-        unregisterIndieDevice(response.$id, 20437, 'yoXi9lQ377rDWZeu0R8IdW');
-      })
+        unregisterIndieDevice(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
+      });
     })();
     setLoggedIn(false);
   }

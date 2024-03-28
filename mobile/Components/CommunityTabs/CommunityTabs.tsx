@@ -122,6 +122,7 @@ async function getActivity(book_id: string) {
     let documents = (
       await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
         Query.equal("user_id", friends),
+        Query.orderDesc("$createdAt"),
       ])
     ).documents;
 

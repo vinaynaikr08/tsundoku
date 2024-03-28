@@ -1,6 +1,6 @@
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
-import { BACKEND_API_USERNAME_URL } from "@/Constants/URLs";
+import { BACKEND_API_URL, BACKEND_API_USERNAME_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
 import { StatusBar } from "expo-status-bar";
@@ -19,11 +19,12 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 const account = new Account(client);
 
 export const UsernameEditing = (props) => {
-  const [username, setUsername] = React.useState(null);
+  const [username, setUsername] = React.useState("");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -44,6 +45,23 @@ export const UsernameEditing = (props) => {
         console.error("Error fetching user ID:", error);
       });
   }, []);
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const account = new Account(client);
+  //         const response = await account.get();
+  //         const fetchedUserId = response.$id;
+  //         const fetchedUsername = await getUsername(fetchedUserId);
+  //         setUsername(fetchedUsername);
+  //       } catch (error) {
+  //         console.error("Error fetching user ID or username:", error);
+  //       }
+  //     };
+
+  //     fetchData();
+  //   }, []),
+  // );
 
   const handleSaveUsername = async () => {
     try {
@@ -55,29 +73,21 @@ export const UsernameEditing = (props) => {
       }
 
       // if username is already taken
-      const isUsernameTaken = await checkUsernameAvailability();
-      if (!isUsernameTaken.ok) {
-        const res_json = await isUsernameTaken.json();
+      const res = await checkUsernameAvailability();
+      if (!res.ok) {
+        const res_json = await res.json();
         setErrorMessage("Error: " + res_json.reason);
         setErrorModalVisible(true);
         return;
       } else {
-        const res_json = await isUsernameTaken.json();
+        const res_json = await res.json();
         console.log(res_json);
       }
-      // change to userdata update username
+
+      // change update
       const promise = account.updateName(username);
       setUsername(username);
-
-      promise.then(
-        function (response) {
-          console.log(response);
-          navigation.navigate("Profile");
-        },
-        function (error) {
-          console.log(error);
-        },
-      );
+      navigation.navigate("Profile");
     } catch (error) {
       console.error("Error saving username:", error);
       setErrorMessage("An error occurred while saving the username");
@@ -101,6 +111,41 @@ export const UsernameEditing = (props) => {
     return res;
   }
 
+  // async function getUsername() {
+  //   const response = await fetch(
+  //     `${BACKEND_API_URL}/v0/users/${user_id}/name`,
+  //     {
+  //       method: "GET",
+  //       headers: new Headers({
+  //         "Content-Type": "application/json",
+  //         Authorization: "Bearer " + (await account.createJWT()).jwt,
+  //       }),
+  //     },
+  //   );
+  //   console.log(response);
+  //   const username = await response.json();
+  //   return username;
+  // }
+  async function getUsername(user_id) {
+    try {
+      const response = await fetch(
+        `${BACKEND_API_URL}/v0/users/${user_id}/name`,
+        {
+          method: "GET",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        },
+      );
+      const usernameData = await response.json();
+      return usernameData.name;
+    } catch (error) {
+      console.error("Error fetching username:", error);
+      throw error;
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -122,8 +167,7 @@ export const UsernameEditing = (props) => {
               value={username}
               onChangeText={setUsername}
               placeholder="username"
-              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR}
-              //   keyboardType="email-address"
+              placeholderTextColor={"grey"}
               returnKeyType="done"
               autoCapitalize="none"
             />
