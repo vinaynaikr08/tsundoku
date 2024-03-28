@@ -69,7 +69,8 @@ function ManageFriendsModal ({ navigation }) {
         })
         .then(async () => {
             try {
-                for (const friendId of friends) {
+                for (let i = 0; i < friends.length; i++) {
+                    const friendId = friends[i];
                     const response = await fetch(
                         `${BACKEND_API_URL}/v0/users/${friendId}/name`,
                         {
@@ -137,7 +138,7 @@ function ManageFriendsModal ({ navigation }) {
                 user_id: item.id,
               });
             }}>
-                <View style={{ marginLeft: 20}}>
+                <View style={{ marginLeft: 20, marginTop: 10}}>
                   <View style={{flexDirection: 'row'}}>
                     <Text style={{ fontSize: 17, marginBottom: 10, flex: 7}}>{item.username}</Text>
                     <TouchableOpacity style={{flex: 1}} onPress={() => setConfirmation(true)}>
@@ -153,7 +154,7 @@ function ManageFriendsModal ({ navigation }) {
                 >
                   <Text style={{textAlign: 'center', fontSize: 20, paddingBottom: 10}}>Remove {item.username} from friend list?</Text>
                     <View style={{flexDirection: 'row', }}>
-                      <Button title="Delete" color={'red'} onPress={ () => deleteFriend(documentIds[index], confirmation)}/>
+                      <Button title="Delete" color={'red'} onPress={ () => deleteFriend(documentIds[index], setConfirmation)}/>
                     </View>
                 </Overlay>
             </TouchableOpacity>

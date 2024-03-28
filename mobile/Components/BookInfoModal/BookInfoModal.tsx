@@ -73,10 +73,12 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
 
 async function sendNotificationToFriends(state, title) {
   let friends = [];
+  let name = "";
   account
     .get()
     .then((response) => {
       const user_id = response.$id;
+      name = response.name;
       const databases = new Databases(client);
       const promise = databases.listDocuments(
         ID.mainDBID,
@@ -134,18 +136,6 @@ async function sendNotificationToFriends(state, title) {
               if (!statuses) {
                 continue;
               }
-
-              const response = await fetch(
-                `${BACKEND_API_URL}/v0/users/${friendId}/name`,
-                {
-                  method: "GET",
-                  headers: new Headers({
-                      "Content-Type": "application/json",
-                      Authorization: "Bearer " + (await account.createJWT()).jwt,
-                  }),
-                },
-              );
-              const name = await response.json();
               backend.sendNotification(friendId, name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
           }
         } catch (error) {
