@@ -17,8 +17,8 @@ import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
 import { Account, AppwriteException } from "appwrite";
-import { registerIndieID, unregisterIndieDevice } from 'native-notify';
-import axios from 'axios';
+import { registerIndieID, unregisterIndieDevice } from "native-notify";
+import axios from "axios";
 
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
@@ -26,11 +26,8 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 const account = new Account(client);
 
 export const SignIn = () => {
-  // TODO: unset dummy credentials before demo!
-  const [email, setEmail] = React.useState(
-    "bookymcbookface@tsundoku.ericswpark.com",
-  );
-  const [password, setPassword] = React.useState("demoaccount12345");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -47,7 +44,7 @@ export const SignIn = () => {
           .get()
           .then((response) => {
             setLoggedIn(true);
-            registerIndieID(response.$id, 20437, 'yoXi9lQ377rDWZeu0R8IdW');
+            registerIndieID(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
             setLoading(false);
           })
           .catch((error: any) => {
