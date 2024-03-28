@@ -119,7 +119,7 @@ function RecommendedCarousel() {
         "Yellowface",
         "A Tempest of Tea",
       ];
-      let book_data = [];
+      const book_data = [];
 
       for (const book_title of book_titles) {
         book_data.push(...(await getBooks(book_title)));

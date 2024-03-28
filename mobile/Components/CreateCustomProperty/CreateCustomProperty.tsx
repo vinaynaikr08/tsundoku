@@ -72,7 +72,7 @@ function CreateCustomProperty({ navigation }) {
     }
     const account = new Account(client);
 
-    let res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}`, {
+    const res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}`, {
       method: "post",
       headers: new Headers({
         "Content-Type": "application/json",

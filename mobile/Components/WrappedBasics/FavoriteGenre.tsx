@@ -59,7 +59,7 @@ const genres: Array<string> = [
 
 function getGenres(data) {
   const counter = Array(53).fill(0);
-  let i = 0;
+  const i = 0;
 
   if (data == undefined) {
     return counter;
@@ -73,7 +73,7 @@ function getGenres(data) {
     }
   });
 
-  let mostRead = [{ind: "Young Adult Fiction", count: 0}, {ind: "Fiction", count: 0}, {ind: "Art", count: 0}];
+  const mostRead = [{ind: "Young Adult Fiction", count: 0}, {ind: "Fiction", count: 0}, {ind: "Art", count: 0}];
 
   for (let i = 0; i < 53; i++) {
     if (counter[i] > mostRead[0].count) {

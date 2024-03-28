@@ -70,7 +70,7 @@ function ManageFriendsModal ({ navigation }) {
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [friendNames, setFriendNames] = useState([]);
   let friends = [];
-  let friend_name = [];
+  const friend_name = [];
   const [documentIds, setDocumentIds] = useState([]);
   const [confirmation, setConfirmation] = useState(false);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
@@ -213,6 +213,6 @@ function ManageFriendsModal ({ navigation }) {
       />
     </View>
   );
-};
+}
 
 export default ManageFriendsModal;

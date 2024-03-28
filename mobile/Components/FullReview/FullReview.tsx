@@ -68,8 +68,8 @@ function FullReview({ route, navigation }) {
     }
 
     async function getCustomProperties() {
-      let rawData = await getCustomPropertiesRaw();
-      let processedData = [];
+      const rawData = await getCustomPropertiesRaw();
+      const processedData = [];
       for (let i = 0; i < rawData.length; i++) {
         const rawProperty = rawData[i];
         const res = await fetch(

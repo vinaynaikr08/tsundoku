@@ -28,9 +28,9 @@ const databases = new Databases(client);
 let avgRating = 0;
 
 async function getReviews(book_id: string) {
-  let reviews = [];
+  const reviews = [];
   avgRating = 0;
-  let documents = (
+  const documents = (
     await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
       Query.equal("book", book_id),
     ])
@@ -245,7 +245,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
 };
 
 function createStars(rating, size) {
-  let stars = [];
+  const stars = [];
 
   for (let i = 0; i < 5; i++) {
     stars.push(

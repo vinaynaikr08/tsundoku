@@ -37,7 +37,7 @@ async function saveNotifs(notif, notifFriend, notifFriendReq, setChanged) {
 
         if (db_query.total == 0) {
             // Create new object
-            let res = await databases.createDocument(
+            const res = await databases.createDocument(
                 ID.mainDBID,
                 ID.notificationsCollectionID,
                 UID.unique(),

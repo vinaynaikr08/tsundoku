@@ -19,7 +19,7 @@ const BookSearchBar = ({
   };
 
   function clearFilter() {
-    for (var value of GENRES) {
+    for (const value of GENRES) {
       value.setter[0](false);
       value.setter[1](false);
     }

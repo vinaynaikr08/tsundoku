@@ -21,7 +21,7 @@ const databases = new Databases(client);
 const StatisticsTab = () => {
   const [loading, setLoading] = React.useState(true); // State variable to track loading status
   async function getBookInfo(book_id: string) {
-    let bookInfo = [];
+    const bookInfo = [];
     const account = new Account(client);
     let user_id;
     try {
@@ -65,7 +65,7 @@ const StatisticsTab = () => {
             [Query.equal("user_id", user_id)],
           );
 
-          let documents = queryResponse.documents.filter(
+          const documents = queryResponse.documents.filter(
             (doc) => doc.status === "READ",
           );
 

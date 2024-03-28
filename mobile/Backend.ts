@@ -11,7 +11,7 @@ const databases = new Databases(client);
 
 export default class Backend {
   public totalSearch = async (param: string): Promise<any> => {
-    let books = [
+    const books = [
       ...(await this.bookSearch(param)),
       ...(await this.authorSearch(param)),
       ...(await this.isbnSearch(param)),
@@ -104,7 +104,7 @@ export default class Backend {
     status: string;
     user_id: string | undefined;
   }): Promise<any> => {
-    let books = [];
+    const books = [];
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
@@ -125,7 +125,7 @@ export default class Backend {
     status: string;
     user_id: string | undefined;
   }): Promise<any> => {
-    let books = [];
+    const books = [];
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
@@ -134,7 +134,7 @@ export default class Backend {
     const bookstat_docs = await this.getBookStatusDocs({ status, user_id });
 
     for (const bookstat_doc of bookstat_docs) {
-      let formatted_date = new Date(bookstat_doc.$updatedAt);
+      const formatted_date = new Date(bookstat_doc.$updatedAt);
       if (formatted_date < cutoff) {
         continue;
       }

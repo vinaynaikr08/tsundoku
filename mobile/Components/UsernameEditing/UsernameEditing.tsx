@@ -98,7 +98,7 @@ export const UsernameEditing = (props) => {
   };
 
   async function checkUsernameAvailability() {
-    let res = await fetch(`${BACKEND_API_USERNAME_URL}`, {
+    const res = await fetch(`${BACKEND_API_USERNAME_URL}`, {
       method: "PATCH",
       headers: new Headers({
         "Content-Type": "application/json",

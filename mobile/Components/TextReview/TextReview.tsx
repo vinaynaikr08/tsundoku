@@ -43,7 +43,7 @@ function TextReview({ route, navigation }) {
   const saveReview = async () => {
     const account = new Account(client);
 
-    let res = await fetch(`${BACKEND_API_REVIEW_URL}`, {
+    const res = await fetch(`${BACKEND_API_REVIEW_URL}`, {
       method: "post",
       headers: new Headers({
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ function TextReview({ route, navigation }) {
 
     for (let i = 0; i < propertyData.length; i++) {
       const property = propertyData[i];
-      let custom_res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`, {
+      const custom_res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`, {
         method: "post",
         headers: new Headers({
           "Content-Type": "application/json",

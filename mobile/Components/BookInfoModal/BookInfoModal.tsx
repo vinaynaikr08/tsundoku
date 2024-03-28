@@ -57,7 +57,7 @@ function BookStateLookup(s: string): BookState | null {
 
 async function getBookStatus(book_id: string): Promise<BookState | null> {
   const user_id = (await account.get()).$id;
-  let documents = (
+  const documents = (
     await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
       Query.equal("user_id", user_id),
       Query.equal("book", book_id),

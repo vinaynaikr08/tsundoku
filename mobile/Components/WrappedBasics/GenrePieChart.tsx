@@ -108,7 +108,7 @@ function processData(data) {
   }
   let temp = head;
 
-  let green = 139;
+  const green = 139;
   let i = 0;
   const item = 32;
   const colors = [
@@ -148,7 +148,7 @@ function processData(data) {
 }
 
 export function genrePieChart(unprocessedData) {
-  let data = processData(unprocessedData);
+  const data = processData(unprocessedData);
   const chartConfig = {
     backgroundColor: "#e26a00",
     backgroundGradientFrom: "#fb8c00",

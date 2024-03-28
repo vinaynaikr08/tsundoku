@@ -18,7 +18,7 @@ function DeleteAccount() {
 
   async function deleteAccount() {
     try {
-      let res = await fetch(`${BACKEND_API_USER_URL}`, {
+      const res = await fetch(`${BACKEND_API_USER_URL}`, {
         method: "DELETE",
         headers: new Headers({
           "Content-Type": "application/json",

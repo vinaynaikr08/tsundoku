@@ -41,7 +41,7 @@ const ShelfModal = ({ route, navigation }) => {
   function checkGenres(value) {
     let noFilter: boolean = true;
 
-    for (let genre of GENRES) {
+    for (const genre of GENRES) {
       if (genre.state[0] == true) {
         noFilter = false;
       }
@@ -52,7 +52,7 @@ const ShelfModal = ({ route, navigation }) => {
     if (noFilter) {
       return true;
     } else {
-      for (let genre of GENRES) {
+      for (const genre of GENRES) {
         if (value == genre.title[0]) {
           return genre.state[0];
         } else if (value == genre.title[1]) {

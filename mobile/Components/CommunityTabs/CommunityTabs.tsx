@@ -85,7 +85,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 const databases = new Databases(client);
 
 async function getBookInfo(book_id: string) {
-  let bookInfo = [];
+  const bookInfo = [];
   const account = new Account(client);
   let user_id;
   try {
@@ -111,7 +111,7 @@ async function getBookInfo(book_id: string) {
 }
 
 async function getActivity(book_id: string) {
-  let activity = [];
+  const activity = [];
   const account = new Account(client);
   const databases = new Databases(client);
 
@@ -119,7 +119,7 @@ async function getActivity(book_id: string) {
     const user_id = (await account.get()).$id;
     const friends = await getFriends(user_id, databases);
     if (friends.length == 0) return activity;
-    let documents = (
+    const documents = (
       await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
         Query.equal("user_id", friends),
         Query.orderDesc("$createdAt"),
