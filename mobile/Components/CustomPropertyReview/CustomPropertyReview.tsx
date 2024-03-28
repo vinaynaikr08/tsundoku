@@ -24,7 +24,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 const account = new Account(client);
 
 function PropertyInput({ property, propertyData, setPropertyData, index }) {
-  let [newProperty, setNewProperty] = React.useState("");
+  let newProperty;
   const [categories, setCategories] = React.useState(null);
   const booleanCategories = ["true", "false"];
   const handleInputChange = (value: string) => {
@@ -43,8 +43,7 @@ function PropertyInput({ property, propertyData, setPropertyData, index }) {
         <Text style={styles.propertyInput}>{property.name}</Text>
         <TextInput
           style={styles.categoryInput}
-          onChangeText={setNewProperty}
-          onEndEditing={() => handleInputChange(newProperty)}
+          onChangeText={(value) => handleInputChange(value)}
           value={newProperty}
           placeholder="Input a number"
           placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
