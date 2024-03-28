@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -19,8 +19,7 @@ import BookStatusCount from "../BookStatusCount";
 const databases = new Databases(client);
 
 const StatisticsTab = () => {
-  const [loading, setLoading] = useState(true); // State variable to track loading status
-  const [act, setAct] = useState([]);
+  const [loading, setLoading] = React.useState(true); // State variable to track loading status
   async function getBookInfo(book_id: string) {
     let bookInfo = [];
     const account = new Account(client);
@@ -49,7 +48,7 @@ const StatisticsTab = () => {
     return bookInfo;
   }
 
-  const [activity, setActivity] = useState([]);
+  const [activity, setActivity] = React.useState([]);
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {

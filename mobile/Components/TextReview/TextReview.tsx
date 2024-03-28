@@ -1,29 +1,28 @@
+import { BookInfoContext } from "@/Contexts";
+import { Account } from "appwrite";
 import * as React from "react";
+import { useContext, useState } from "react";
 import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  TouchableWithoutFeedback,
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import Modal from "react-native-modal";
-import Colors from "../../Constants/Colors";
-import { useContext, useState } from "react";
-import { Account, Databases, ID } from "appwrite";
-import { client } from "../../appwrite";
-import { BookInfoContext } from "@/Contexts";
 import Toast from "react-native-toast-message";
-import {
-  BACKEND_API_REVIEW_URL,
-  BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
-} from "../../Constants/URLs";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import Colors from "../../Constants/Colors";
+import {
+  BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
+  BACKEND_API_REVIEW_URL,
+} from "../../Constants/URLs";
+import { client } from "../../appwrite";
 
 function TextReview({ route, navigation }) {
   const { rating, propertyData } = route.params;
@@ -82,7 +81,10 @@ function TextReview({ route, navigation }) {
       const custom_res_json = await custom_res.json();
 
       if (custom_res.ok) {
-        console.log("custom properties saved to database: " + JSON.stringify(custom_res_json));
+        console.log(
+          "custom properties saved to database: " +
+            JSON.stringify(custom_res_json),
+        );
       } else {
         console.log(
           "error saving custom properties: " + JSON.stringify(custom_res_json),

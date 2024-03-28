@@ -1,24 +1,24 @@
 import React from "react";
 import {
-  View,
-  Text,
-  Image,
   FlatList,
-  TouchableWithoutFeedback,
+  Image,
   Keyboard,
+  Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 import BookSearchBar from "@/Components/BookSearchBar";
-import { Divider } from "react-native-paper";
 import { DATA } from "@/Components/BookSearchBar/Genres";
 import { debounce } from "lodash";
+import { Divider } from "react-native-paper";
 
-import { NavigationContext } from "../Contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Backend from "@/Backend";
 import ErrorModal from "@/Components/ErrorModal";
 import { Icon } from "@rneui/base";
-import Backend from "@/Backend";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContext } from "../Contexts";
 
 const backend = new Backend();
 
@@ -70,7 +70,7 @@ function BookSearchScreen(props) {
   function checkGenres(value) {
     let noFilter: boolean = true;
 
-    for (let genre of GENRES) {
+    for (const genre of GENRES) {
       if (genre.state[0] == true) {
         noFilter = false;
       }
@@ -81,7 +81,7 @@ function BookSearchScreen(props) {
     if (noFilter) {
       return true;
     } else {
-      for (let genre of GENRES) {
+      for (const genre of GENRES) {
         if (value == genre.title[0]) {
           return genre.state[0];
         } else if (value == genre.title[1]) {

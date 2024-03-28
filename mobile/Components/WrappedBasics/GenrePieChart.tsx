@@ -1,6 +1,6 @@
 import React from "react";
-import { SafeAreaView, Dimensions, View, Text } from "react-native"
-import { PieChart } from "react-native-chart-kit"
+import { SafeAreaView, Dimensions, View, Text } from "react-native";
+import { PieChart } from "react-native-chart-kit";
 
 const genres: Array<string> = [
   "Antiques & Collectibles",
@@ -56,14 +56,14 @@ const genres: Array<string> = [
   "Language Arts & Disciplines",
   "Young Adult Nonfiction",
   "Law",
-]
+];
 
 class ListNode {
   data: any;
   next: any;
   constructor(data) {
-    this.data = data
-    this.next = null                
+    this.data = data;
+    this.next = null;
   }
 }
 
@@ -71,9 +71,9 @@ function processData(data) {
   if (data == undefined) {
     return [];
   }
-  let counter = Array(53).fill(0);
+  const counter = Array(53).fill(0);
 
-  data.forEach(element => {
+  data.forEach((element) => {
     for (let i = 0; i < 53; i++) {
       if (genres[i] == element.genre) {
         counter[i]++;
@@ -81,12 +81,12 @@ function processData(data) {
     }
   });
 
-  let new_data = Array(6);
+  const new_data = Array(6);
 
-  let head = new ListNode({name: genres[0], count: counter[0]});
+  let head = new ListNode({ name: genres[0], count: counter[0] });
 
   for (let i = 1; i < 53; i++) {
-    let temp = new ListNode({name: genres[i], count: counter[i]});
+    const temp = new ListNode({ name: genres[i], count: counter[i] });
     let temp1 = head;
     let prev = head;
     while (temp1 != null) {
@@ -111,7 +111,14 @@ function processData(data) {
   let green = 139;
   let i = 0;
   const item = 32;
-  const colors = ["#AD7A99", "#B2CEDE", "#8CDFD6", "#6DC0D5", "#5A716A", "#104547"];
+  const colors = [
+    "#AD7A99",
+    "#B2CEDE",
+    "#8CDFD6",
+    "#6DC0D5",
+    "#5A716A",
+    "#104547",
+  ];
 
   for (i = 0; i < 5; i++) {
     new_data[i] = {
@@ -119,8 +126,8 @@ function processData(data) {
       population: temp.data.count,
       color: colors[i],
       legendFontColor: "#7F7F7F",
-      legendFontSize: 15
-    }
+      legendFontSize: 15,
+    };
     temp = temp.next;
   }
 
@@ -130,12 +137,12 @@ function processData(data) {
     temp = temp.next;
   }
   new_data[5] = {
-    name: 'Other',
+    name: "Other",
     population: count,
     color: colors[i],
     legendFontColor: "#7F7F7F",
-    legendFontSize: 15
-  }
+    legendFontSize: 15,
+  };
 
   return new_data;
 }
@@ -149,17 +156,24 @@ export function genrePieChart(unprocessedData) {
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     style: {
-      borderRadius: 0
+      borderRadius: 0,
     },
     propsForDots: {
       r: "6",
       strokeWidth: "2",
-      stroke: "#ffa726"
-    }
+      stroke: "#ffa726",
+    },
   };
-  const {width, height} = Dimensions.get('screen'); 
+  const { width, height } = Dimensions.get("screen");
   return (
-    <SafeAreaView style={{height: height, width: width, justifyContent: 'center', alignItems: 'center'}}>
+    <SafeAreaView
+      style={{
+        height: height,
+        width: width,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <View>
         <PieChart
           data={data}
@@ -174,18 +188,26 @@ export function genrePieChart(unprocessedData) {
           absolute
         />
       </View>
-      <View style={{height: height / 3}}>
+      <View style={{ height: height / 3 }}>
         {data.map((genre, index) => {
           return (
-            <View key={index} style={{flexDirection: 'row'}}>
-              <View style={{width: 20, height: 20, borderRadius: 10, backgroundColor: genre.color, marginRight: 5, marginBottom: 5}}/>
+            <View key={index} style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 10,
+                  backgroundColor: genre.color,
+                  marginRight: 5,
+                  marginBottom: 5,
+                }}
+              />
               <Text>{genre.population} </Text>
               <Text>{genre.name}</Text>
             </View>
           );
         })}
       </View>
-      
     </SafeAreaView>
   );
-} 
+}

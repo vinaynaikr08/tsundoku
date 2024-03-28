@@ -1,19 +1,18 @@
-import {
-  Text,
-  View,
-  ScrollView,
-  Pressable,
-  ActivityIndicator,
-} from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 
+import Backend from "@/Backend";
 import Carousel from "@/Components/Carousel/Carousel";
 import Colors from "@/Constants/Colors";
-import Backend from "@/Backend";
-import useSWR from "swr";
 import { useFocusEffect } from "@react-navigation/native";
-import ErrorModal from "../ErrorModal";
+import useSWR from "swr";
 
 const Tab = createMaterialTopTabNavigator();
 const backend = new Backend();
@@ -120,7 +119,7 @@ function ReadingStatusCarousel({ status, shelf, user_id }) {
   );
 }
 
-function LibraryCarouselTabs({user_id}) {
+function LibraryCarouselTabs({ user_id }) {
   const [shelf, setShelf] = React.useState("Currently Reading");
 
   return (
@@ -131,7 +130,11 @@ function LibraryCarouselTabs({user_id}) {
       <Tab.Screen
         name="Currently Reading"
         children={() => (
-          <ReadingStatusCarousel status="CURRENTLY_READING" shelf={shelf} user_id={user_id} />
+          <ReadingStatusCarousel
+            status="CURRENTLY_READING"
+            shelf={shelf}
+            user_id={user_id}
+          />
         )}
         listeners={{
           tabPress: (e) => {
@@ -142,7 +145,11 @@ function LibraryCarouselTabs({user_id}) {
       <Tab.Screen
         name="Want To Read"
         children={() => (
-          <ReadingStatusCarousel status="WANT_TO_READ" shelf={shelf} user_id={user_id} />
+          <ReadingStatusCarousel
+            status="WANT_TO_READ"
+            shelf={shelf}
+            user_id={user_id}
+          />
         )}
         listeners={{
           tabPress: (e) => {
@@ -152,7 +159,13 @@ function LibraryCarouselTabs({user_id}) {
       />
       <Tab.Screen
         name="Read"
-        children={() => <ReadingStatusCarousel status="READ" shelf={shelf} user_id={user_id}/>}
+        children={() => (
+          <ReadingStatusCarousel
+            status="READ"
+            shelf={shelf}
+            user_id={user_id}
+          />
+        )}
         listeners={{
           tabPress: (e) => {
             setShelf("Read");
@@ -162,7 +175,11 @@ function LibraryCarouselTabs({user_id}) {
       <Tab.Screen
         name="Did Not Finish"
         children={() => (
-          <ReadingStatusCarousel status="DID_NOT_FINISH" shelf={shelf} user_id={user_id}/>
+          <ReadingStatusCarousel
+            status="DID_NOT_FINISH"
+            shelf={shelf}
+            user_id={user_id}
+          />
         )}
         listeners={{
           tabPress: (e) => {

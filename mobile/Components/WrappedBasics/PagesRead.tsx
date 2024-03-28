@@ -13,10 +13,10 @@ function pageCounter(data) {
 }
 
 export function pagesRead(data) {
-  let pages = pageCounter(data).toLocaleString();
+  const pages = pageCounter(data).toLocaleString();
   return (
     <SafeAreaView style={{width: '70%', height: '100%', justifyContent: 'center'}}>
       <Text style={{fontSize: 25, textAlign: 'center'}}>This year, you read {'\n'} {pages} pages!</Text>
     </SafeAreaView>
   );
-} 
+}

@@ -58,7 +58,7 @@ const genres: Array<string> = [
 ]
 
 function getGenres(data) {
-  let counter = Array(53).fill(0);
+  const counter = Array(53).fill(0);
   let i = 0;
 
   if (data == undefined) {
@@ -105,4 +105,4 @@ export function favoriteGenre(data) {
       <Text style={{fontSize: 30, textAlign: 'center'}}>1. {genreArray[0].ind}: {genreArray[0].count} {'\n'}2. {genreArray[1].ind}: {genreArray[1].count} {'\n'}3. {genreArray[2].ind}: {genreArray[2].count}</Text>
     </SafeAreaView>
   );
-} 
+}

@@ -1,33 +1,33 @@
+import ErrorModal from "@/Components/ErrorModal";
 import { NavigationContext } from "@/Contexts";
-import React, { useEffect, useState } from "react";
+import { Icon, SearchBar } from "@rneui/base";
+import React from "react";
 import {
-  View,
-  Text,
   FlatList,
-  TouchableWithoutFeedback,
   Keyboard,
-  TouchableOpacity,
   SafeAreaView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { Icon, SearchBar } from "@rneui/base";
-import ErrorModal from "@/Components/ErrorModal";
 import { Divider } from "react-native-paper";
 
+import ID from "@/Constants/ID";
 import { client } from "@/appwrite";
 import { Account, Databases, Query } from "appwrite";
-import ID from "@/Constants/ID";
 const databases = new Databases(client);
 const account = new Account(client);
 
 function UserSearchScreen({ navigation }) {
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getUsers() {
       const user_id = (await account.get()).$id;
       const promise = await databases.listDocuments(

@@ -1,27 +1,26 @@
-import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 
-import NavBar from "./NavBar/NavBar";
-import { SignIn } from "../Screens/SignIn";
-import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
-import TextReview from "../Components/TextReview/TextReview";
-import BookInfoModal from "../Components/BookInfoModal/BookInfoModal";
-import ShelfModal from "../Components/ShelfModal/ShelfModal";
-import NotificationsModal from "../Components/Notifications/NotificationsModal";
-import ManageFriendsModal from "@/Components/ManageFriends/ManageFriendsModal";
-import Review from "../Components/Review/Review";
-import { LoginStateContext } from "@/Providers/LoginStateProvider";
-import UsernameEditing from "@/Components/UsernameEditing";
-import { Profile } from "@/Screens/ProfileScreen";
-import EmailEditing from "@/Components/EmailEditing";
-import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
 import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
-import { WrappedScreen } from "@/Screens/WrappedScreen";
+import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
+import EmailEditing from "@/Components/EmailEditing";
+import ManageFriendsModal from "@/Components/ManageFriends/ManageFriendsModal";
+import UsernameEditing from "@/Components/UsernameEditing";
 import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
+import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import BookSearchScreen from "@/Screens/BookSearchScreen";
 import DeleteAccount from "@/Screens/DeleteAccount";
-import UserSearchScreen from "@/Screens/UserSearchScreen";
+import { Profile } from "@/Screens/ProfileScreen";
 import { UserProfile } from "@/Screens/UserProfileScreen";
+import UserSearchScreen from "@/Screens/UserSearchScreen";
+import { WrappedScreen } from "@/Screens/WrappedScreen";
+import NotificationsModal from "../Components/Notifications/NotificationsModal";
+import Review from "../Components/Review/Review";
+import ShelfModal from "../Components/ShelfModal/ShelfModal";
+import TextReview from "../Components/TextReview/TextReview";
+import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
+import { SignIn } from "../Screens/SignIn";
+import NavBar from "./NavBar/NavBar";
 
 const Stack = createNativeStackNavigator();
 

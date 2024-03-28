@@ -1,19 +1,18 @@
 import Colors from "@/Constants/Colors";
-import { BookInfoWrapperContext } from "@/Contexts";
-import { useNavigation } from "@react-navigation/native";
-import * as React from "react";
-import { useContext } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { Divider } from "react-native-paper";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { Account } from "appwrite";
-import { client } from "@/appwrite";
 import {
   BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
   BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
 } from "@/Constants/URLs";
+import { BookInfoWrapperContext } from "@/Contexts";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
+import * as React from "react";
+import { useContext } from "react";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Divider } from "react-native-paper";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const account = new Account(client);
 

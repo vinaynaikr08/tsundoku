@@ -1,23 +1,21 @@
+import Colors from "@/Constants/Colors";
 import {
-  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
   BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL,
+  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
 } from "@/Constants/URLs";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
 import * as React from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
   Alert,
   Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { Account } from "appwrite";
-import { client } from "@/appwrite";
-import Colors from "@/Constants/Colors";
 import { ScrollView } from "react-native-gesture-handler";
-import { useContext } from "react";
-import { BookInfoContext } from "@/Contexts";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 

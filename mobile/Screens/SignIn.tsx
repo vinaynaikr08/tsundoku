@@ -1,23 +1,23 @@
-import React from "react";
+import { Icon } from "@rneui/themed";
+import { Account, AppwriteException } from "appwrite";
 import { StatusBar } from "expo-status-bar";
+import { registerIndieID } from "native-notify";
+import React from "react";
 import {
+  ActivityIndicator,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
   StyleSheet,
   Text,
-  View,
-  Pressable,
   TextInput,
-  Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
-  Modal,
-  ActivityIndicator,
+  View,
 } from "react-native";
 import Colors from "../Constants/Colors";
-import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
-import { Account, AppwriteException } from "appwrite";
-import { registerIndieID } from "native-notify";
 
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";

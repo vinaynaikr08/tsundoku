@@ -1,30 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  TextInput,
-  Keyboard,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
-  Modal,
-  ActivityIndicator,
-  TouchableOpacity,
-} from "react-native";
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
-import { Databases, Account } from "appwrite";
-import { client } from "@/appwrite";
-import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import { BACKEND_API_USERNAME_URL } from "@/Constants/URLs";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import {
+  ActivityIndicator,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 const account = new Account(client);
 
 export const UsernameEditing = (props) => {
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = React.useState(null);
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -33,7 +32,7 @@ export const UsernameEditing = (props) => {
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  useEffect(() => {
+  React.useEffect(() => {
     const account = new Account(client);
     account
       .get()

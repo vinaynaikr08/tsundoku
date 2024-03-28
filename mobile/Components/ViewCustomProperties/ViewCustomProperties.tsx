@@ -1,14 +1,21 @@
-import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
-import * as React from "react";
-import { View, Text, StyleSheet, Button, Pressable, Alert, ActivityIndicator } from "react-native";
-import { Account } from "appwrite";
-import { client } from "@/appwrite";
 import Colors from "@/Constants/Colors";
+import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
+import * as React from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 const account = new Account(client);
 
-function ViewCustomProperties({navigation}) {
+function ViewCustomProperties({ navigation }) {
   const [properties, setProperties] = React.useState([]);
   const [propertiesChanged, setPropertiesChanged] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
@@ -42,14 +49,18 @@ function ViewCustomProperties({navigation}) {
 
   function deletePropertyAlert(id) {
     console.log("id in delete alert: " + id);
-    Alert.alert("Delete property?", "This will delete all data associated with this property.", [
-      { text: "Cancel", style: "cancel", onPress: () => {} },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: () => deleteProperty(id),
-      },
-    ]);
+    Alert.alert(
+      "Delete property?",
+      "This will delete all data associated with this property.",
+      [
+        { text: "Cancel", style: "cancel", onPress: () => {} },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteProperty(id),
+        },
+      ],
+    );
   }
 
   React.useEffect(() => {
@@ -142,24 +153,21 @@ function ViewCustomProperties({navigation}) {
                   }}
                 >
                   <Pressable
-                    onPress={() => navigation.navigate("editCustomProperty", { propertyInfo: item, setPropertiesChanged: setPropertiesChanged })}
+                    onPress={() =>
+                      navigation.navigate("editCustomProperty", {
+                        propertyInfo: item,
+                        setPropertiesChanged: setPropertiesChanged,
+                      })
+                    }
                     style={styles.buttonStyle}
                   >
-                    <Text
-                      style={styles.buttonTextStyle}
-                    >
-                      Edit
-                    </Text>
+                    <Text style={styles.buttonTextStyle}>Edit</Text>
                   </Pressable>
                   <Pressable
                     onPress={() => deletePropertyAlert(item.id)}
                     style={styles.buttonStyle}
                   >
-                    <Text
-                      style={styles.buttonTextStyle}
-                    >
-                      Delete
-                    </Text>
+                    <Text style={styles.buttonTextStyle}>Delete</Text>
                   </Pressable>
                 </View>
               </View>

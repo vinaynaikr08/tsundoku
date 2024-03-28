@@ -1,29 +1,27 @@
 import Colors from "@/Constants/Colors";
+import {
+  BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL,
+  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
+} from "@/Constants/URLs";
+import Slider from "@react-native-community/slider";
+import { Account } from "appwrite";
 import * as React from "react";
 import { useState } from "react";
 import {
+  Alert,
+  Keyboard,
+  Pressable,
+  StyleSheet,
   Text,
   TextInput,
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
   TouchableOpacity,
-  Alert,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import SelectDropdown from "react-native-select-dropdown";
-import Slider from "@react-native-community/slider";
-import {
-  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
-  BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL,
-} from "@/Constants/URLs";
-import { Account } from "appwrite";
-import { client } from "../../appwrite";
 import Toast from "react-native-toast-message";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { client } from "../../appwrite";
 
 function CategoryInputs({ numCategories, categories, setCategories }) {
   let category;
@@ -85,11 +83,13 @@ function CreateCustomProperty({ navigation }) {
 
     if (res.ok) {
       const res_json = await res.json();
-      console.log("custom property saved to database: " + JSON.stringify(res_json));
+      console.log(
+        "custom property saved to database: " + JSON.stringify(res_json),
+      );
 
       if (type == "CATEGORICAL") {
         console.log("template id: " + JSON.stringify(res_json.template_id));
-        let categories_res = await fetch(
+        const categories_res = await fetch(
           `${BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL}`,
           {
             method: "post",
@@ -152,7 +152,7 @@ function CreateCustomProperty({ navigation }) {
         />
         <SelectDropdown
           data={propertyTypes}
-          onSelect={(selectedItem, index) => {
+          onSelect={(selectedItem) => {
             setType(selectedItem);
           }}
           dropdownOverlayColor={"transparent"}
@@ -276,14 +276,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 10,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   dropdownItemStyle: {
     backgroundColor: Colors.BUTTON_GRAY,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderBottomWidth: 0.2,
-    borderBottomColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR
+    borderBottomColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
   },
   dropdownButtonTxtStyle: {
     flex: 1,

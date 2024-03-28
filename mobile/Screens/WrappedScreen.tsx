@@ -1,22 +1,21 @@
-import { Icon } from "@rneui/base";
-import React, { useRef } from "react";
-import {
-  Text,
-  View,
-  Pressable,
-  FlatList,
-  SafeAreaView,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-} from "react-native";
-import { ActivityIndicator } from "react-native-paper";
-import { intro } from "../Components/WrappedBasics/Intro";
-import { pagesRead } from "@/Components/WrappedBasics/PagesRead";
+import Backend from "@/Backend";
 import { favoriteGenre } from "@/Components/WrappedBasics/FavoriteGenre";
 import { genrePieChart } from "@/Components/WrappedBasics/GenrePieChart";
-import Backend from "@/Backend";
+import { pagesRead } from "@/Components/WrappedBasics/PagesRead";
+import { Icon } from "@rneui/base";
+import React from "react";
+import {
+  Animated,
+  Dimensions,
+  FlatList,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import useSWR from "swr";
+import { intro } from "../Components/WrappedBasics/Intro";
 
 const backend = new Backend();
 
@@ -51,7 +50,7 @@ export const WrappedScreen = (props) => {
       index: 4,
     },
   ];
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const scrollX = React.useRef(new Animated.Value(0)).current;
   const handleOnScroll = (event) => {
     Animated.event(
       [

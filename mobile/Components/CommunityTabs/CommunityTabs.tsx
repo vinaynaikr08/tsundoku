@@ -1,27 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  FlatList,
-  RefreshControl,
-  ActivityIndicator,
-} from "react-native";
-import { Query } from "appwrite";
-import { client } from "@/appwrite";
-import { Databases, Account } from "appwrite";
 import Colors from "@/Constants/Colors";
-import ID from "@/Constants/ID";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { BACKEND_API_URL } from "@/Constants/URLs";
 import Dimensions from "@/Constants/Dimensions";
-import BookSearchButton from "../BookSearchButton";
+import ID from "@/Constants/ID";
+import { BACKEND_API_URL } from "@/Constants/URLs";
+import { client } from "@/appwrite";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useNavigation } from "@react-navigation/native";
+import { Account, Databases, Query } from "appwrite";
+import React from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import BookSearchButton from "../BookSearchButton";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -192,10 +191,10 @@ async function getFriends(user_id: string, databases: Databases) {
 
 function FriendsTab(bookInfo) {
   const [activity, setActivity] = React.useState([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     refreshActivity();
   }, []);
 
