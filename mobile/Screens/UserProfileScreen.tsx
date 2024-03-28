@@ -42,6 +42,7 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
     case (1):
       // Delete Friend
       setShowDeleteOption(true);
+      console.log("here");
       break;
     case (2):
       // Friend Request Sent
@@ -70,7 +71,7 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
   );
 
   promise.then(function (response) {
-    console.log(response); // Success
+    // Success
     // pending out
     setStatus(2);
     setButton("Friend Request Sent") 
@@ -87,7 +88,7 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
   });
 }
 
-async function deleteFriend(user_id, status, setStatus, setButton, setDisabled) {
+async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend?) {
   const account = new Account(client);
   account
     .get()
@@ -119,7 +120,7 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled) 
           doc_id,
         );
         promise_1.then(function (response_1) {
-          console.log(response_1); // Success
+          // Success
           switch (status) {
             case 1:
               Toast.show({
@@ -128,6 +129,7 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled) 
                 position: "bottom",
                 visibilityTime: 2000,
               });
+              setFriend(false);
               break;
             case 2:
               Toast.show({
@@ -147,6 +149,7 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled) 
               break;
           }
           setDisabled(false);
+          
           // no status
           setStatus(0);
           setButton("Send Friend Request");
@@ -159,7 +162,7 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled) 
     });
 }
 
-async function acceptFriend(user_id, setStatus, setButton) {
+async function acceptFriend(user_id, setStatus, setButton, setFriend, setDisabled) {
   const account = new Account(client);
   account
     .get()
@@ -194,9 +197,11 @@ async function acceptFriend(user_id, setStatus, setButton) {
           }
         );
         promise_1.then(function (response_1) {
-          console.log(response_1); // Success
+          // Success
           // friends
+          setDisabled(false);
           setStatus(1);
+          setFriend(true);
           setButton("Delete Friend");
           Toast.show({
             type: "success",
@@ -251,7 +256,6 @@ export const UserProfile = ({ navigation, route }) => {
             // no status
             status_1 = 0;
           } else {
-            console.log(documents[0]);
             if (documents[0].status == "ACCEPTED") {
               // friends
               status_1 = 1;
@@ -281,11 +285,9 @@ export const UserProfile = ({ navigation, route }) => {
               break;
           }
           setLoading(false);
-          console.log(status_1);
-        });
+        }).catch((error) => console.log(error));
       });
   }, []);
-  console.log(button);
 
   return (
     <NavigationContext.Provider value={navigation}>
@@ -337,24 +339,24 @@ export const UserProfile = ({ navigation, route }) => {
         </View>}
         <Overlay
           isVisible={showMenu}
-          onBackdropPress={() => setShowMenu(false)}
+          onBackdropPress={() => {setShowMenu(false); setDisabled(false)}}
           overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '70%', height: '20%', borderRadius: 10}}
         >
           <Text style={{fontSize: 20, paddingBottom: 10}}>Accept Friend Request?</Text>
           <View style={{flexDirection: 'row', }}>
-            <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => acceptFriend(user_id, setStatus, setButton)}/>
-            <Button title="Decline" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton, setDisabled)}/>
+            <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => {acceptFriend(user_id, setStatus, setButton, setFriend, setDisabled); setShowMenu(false)}}/>
+            <Button title="Decline" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled); setShowMenu(false)}}/>
           </View>
         </Overlay>
         
         <Overlay
           isVisible={showDeleteOption}
-          onBackdropPress={() => setShowDeleteOption(false)}
+          onBackdropPress={() => {setShowDeleteOption(false); setDisabled(false)}}
           overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '60%', height: '20%', borderRadius: 10}}
         >
           <Text style={{fontSize: 20, paddingBottom: 10}}>Delete Friend?</Text>
           <View style={{flexDirection: 'row', }}>
-            <Button title="Delete" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton, setDisabled)}/>
+            <Button title="Delete" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend); setShowDeleteOption(false)}}/>
           </View>
         </Overlay>
         

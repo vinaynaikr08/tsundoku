@@ -164,7 +164,7 @@ async function getActivity(book_id: string) {
 
     return activity;
   } catch (error: any) {
-    console.warn("An unknown error occurred attempting to fetch user details.");
+    console.log("An unknown error occurred attempting to fetch user details.");
     return activity;
   }
 }
