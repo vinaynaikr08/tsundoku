@@ -44,7 +44,7 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
       break;
     case (2):
       // Friend Request Sent
-      deleteFriend(user_id, setStatus, setButton);
+      deleteFriend(user_id, status, setStatus, setButton);
       break;
     case (3):
       // Friend Request Incoming
@@ -84,7 +84,7 @@ async function sendFriendRequest(user_id, setStatus, setButton) {
   });
 }
 
-async function deleteFriend(user_id, setStatus, setButton) {
+async function deleteFriend(user_id, status, setStatus, setButton) {
   const account = new Account(client);
   account
     .get()
@@ -117,15 +117,36 @@ async function deleteFriend(user_id, setStatus, setButton) {
         );
         promise_1.then(function (response_1) {
           console.log(response_1); // Success
+          switch (status) {
+            case 1:
+              Toast.show({
+                type: "success",
+                text1: "Friend Removed",
+                position: "bottom",
+                visibilityTime: 2000,
+              });
+              break;
+            case 2:
+              Toast.show({
+                type: "success",
+                text1: "Friend Request Cancelled",
+                position: "bottom",
+                visibilityTime: 2000,
+              });
+              break;
+            case 3:
+              Toast.show({
+                type: "success",
+                text1: "Friend Request Declined",
+                position: "bottom",
+                visibilityTime: 2000,
+              });
+              break;
+          }
           // no status
           setStatus(0);
           setButton("Send Friend Request");
-          Toast.show({
-            type: "success",
-            text1: "Friend Request Cancelled",
-            position: "bottom",
-            visibilityTime: 2000,
-          });
+          
         }, function (error) {
             console.log(error); // Failure
         });
@@ -307,7 +328,7 @@ export const UserProfile = ({ navigation, route }) => {
           <Text style={{fontSize: 20, paddingBottom: 10}}>Accept Friend Request?</Text>
           <View style={{flexDirection: 'row', }}>
             <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => acceptFriend(user_id, setStatus, setButton)}/>
-            <Button title="Decline" color={'red'} onPress={ () => deleteFriend(user_id, setStatus, setButton)}/>
+            <Button title="Decline" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton)}/>
           </View>
         </Overlay>
         
@@ -318,7 +339,7 @@ export const UserProfile = ({ navigation, route }) => {
         >
           <Text style={{fontSize: 20, paddingBottom: 10}}>Delete Friend?</Text>
           <View style={{flexDirection: 'row', }}>
-            <Button title="Delete" color={'red'} onPress={ () => deleteFriend(user_id, setStatus, setButton)}/>
+            <Button title="Delete" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton)}/>
           </View>
         </Overlay>
         

@@ -8,17 +8,42 @@ import { BACKEND_API_URL } from "@/Constants/URLs";
 import { Icon } from "@rneui/base";
 import { ActivityIndicator, Divider} from "react-native-paper";
 import ErrorModal from "../ErrorModal";
+import { Overlay, Button } from "@rneui/base";
+import Toast from "react-native-toast-message";
 
 const databases = new Databases(client);
 
-const ManageFriendsModal = () => {
+async function deleteFriend(doc_id, setConfirmation) {
+  
+  const promise = databases.deleteDocument(
+    ID.mainDBID,
+    ID.friendsCollectionID,
+    doc_id,
+  );
+  promise.then(function (response_1) {
+    console.log(response_1); // Success
+    Toast.show({
+      type: "success",
+      text1: "Friend Removed",
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+    setConfirmation(false);
+  }, function (error) {
+      console.log(error); // Failure
+  });
+}
+
+function ManageFriendsModal ({ navigation }) {
   //const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [friendNames, setFriendNames] = useState(null);
   let friends = [];
-  let friendName = [];
+  let friend_name = [];
+  const [documentIds, setDocumentIds] = useState([]);
+  const [confirmation, setConfirmation] = useState(false);
   useEffect(() => {
     const account = new Account(client);
     account
@@ -39,7 +64,8 @@ const ManageFriendsModal = () => {
         promise.then(function (response) {
           const documents = response.documents;
           const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
-          friends = filtered.map((friend) => (user_id == friend.requestee) ? friend.requester : friend.requestee)
+          friends = filtered.map((friend) => (user_id == friend.requestee) ? friend.requester : friend.requestee);
+          setDocumentIds(filtered.map((element) => element.$id));
         })
         .then(async () => {
             try {
@@ -55,10 +81,10 @@ const ManageFriendsModal = () => {
                         },
                     );
                     const name = await response.json();
-                    friendName.push(name.name);
+                    friend_name.push({username: name.name, id: friendId});
                 }
                 setLoading(false);
-                setFriendNames(friendName);
+                setFriendNames(friend_name);
             } catch (error) {
                 setErrorMessage("Error fetching friends");
                 setErrorModalVisible(true);
@@ -69,7 +95,7 @@ const ManageFriendsModal = () => {
       .catch((error) => {
         console.error("Error fetching user ID:", error);
       });
-  }, []);
+  }, [confirmation]);
   return (
     <View style={{ alignItems: "center", paddingTop: 20 }}>
       <Text style={{ fontSize: 25 }}>Manage Friends</Text>
@@ -102,18 +128,34 @@ const ManageFriendsModal = () => {
           flex: 1,
           marginBottom: 0,
         }}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
-            <TouchableOpacity activeOpacity={1}>
+            <TouchableOpacity onPress={() => {
+              navigation.goBack();
+              navigation.navigate("UserProfileScreen", {
+                username: item.username,
+                user_id: item.id,
+              });
+            }}>
                 <View style={{ marginLeft: 20}}>
                   <View style={{flexDirection: 'row'}}>
-                    <Text style={{ fontSize: 17, marginBottom: 10, flex: 7 }}>{item}</Text>
-                    <View style={{flex: 1}}>
+                    <Text style={{ fontSize: 17, marginBottom: 10, flex: 7}}>{item.username}</Text>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => setConfirmation(true)}>
                       <Icon name="clear" color="red"/>
-                    </View>
+                    </TouchableOpacity>
                   </View>
                   <Divider/>
                 </View>
+                <Overlay
+                  isVisible={confirmation}
+                  onBackdropPress={() => setConfirmation(false)}
+                  overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '60%', height: '20%', borderRadius: 10}}
+                >
+                  <Text style={{textAlign: 'center', fontSize: 20, paddingBottom: 10}}>Remove {item.username} from friend list?</Text>
+                    <View style={{flexDirection: 'row', }}>
+                      <Button title="Delete" color={'red'} onPress={ () => deleteFriend(documentIds[index], confirmation)}/>
+                    </View>
+                </Overlay>
             </TouchableOpacity>
           );
         }}
