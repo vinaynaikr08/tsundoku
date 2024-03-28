@@ -24,6 +24,7 @@ const account = new Account(client);
 
 export const EmailEditing = (props) => {
   const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -54,16 +55,7 @@ export const EmailEditing = (props) => {
         return;
       }
 
-      // if email is already taken
-      //   const isEmailTaken = await checkUsernameAvailability(username);
-      //   if (isEmailTaken) {
-      //     setErrorMessage("Email is already taken");
-      //     setErrorModalVisible(true);
-      //     return;
-      //   }
-
-      // dummy email
-      const promise = account.updateEmail(email, "demoaccount12345");
+      const promise = account.updateEmail(email, password);
       setEmail(email);
 
       promise.then(
@@ -72,12 +64,20 @@ export const EmailEditing = (props) => {
           navigation.navigate("Profile");
         },
         function (error) {
-          console.log(error);
+          console.log(error.type);
+          if (error.type === "user_target_already_exists") {
+            setErrorMessage(
+              "The email is already in use. Choose another email.",
+            );
+          } else {
+            setErrorMessage("An error occurred while saving the email.");
+          }
+          setErrorModalVisible(true);
         },
       );
     } catch (error) {
       console.error("Error saving email:", error);
-      setErrorMessage("An error occurred while saving the email");
+      setErrorMessage("An error occurred while saving the email.");
       setErrorModalVisible(true);
     } finally {
       setLoading(false);
@@ -105,8 +105,23 @@ export const EmailEditing = (props) => {
               value={email}
               onChangeText={setEmail}
               placeholder="email"
-              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR}
+              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR_DARK}
               keyboardType="email-address"
+              returnKeyType="done"
+              autoCapitalize="none"
+            />
+          </View>
+          <Text style={styles.text}>
+            For security, please type in your password below.
+          </Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="password"
+              placeholderTextColor={Colors.TYPE_PLACEHOLDER_TEXT_COLOR_DARK}
+              secureTextEntry={true}
               returnKeyType="done"
               autoCapitalize="none"
             />
@@ -196,7 +211,7 @@ const styles = StyleSheet.create({
   text: {
     margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
-    color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
+    //color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
     textAlign: "left",
     marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
     marginRight: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
