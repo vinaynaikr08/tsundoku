@@ -22,7 +22,6 @@ const backend = new Backend();
 
 function getData() {
   const { data } = useSWR({ status: "READ" }, backend.getBooksOfStatusFromDate);
-  while (data == undefined) {}
   return data;
 }
 
@@ -48,7 +47,7 @@ export const WrappedScreen = (props) => {
     },
     {
       name: "number4",
-      screen: intro(),
+      screen: genrePieChart(data),
       index: 4,
     },
   ];
@@ -72,7 +71,10 @@ export const WrappedScreen = (props) => {
   return (
     <View style={{ height: height }}>
       {data === undefined ? (
-        <ActivityIndicator />
+        <SafeAreaView style={{ height: height, backgroundColor: "#CBC3E3", width: width, alignItems: 'center', justifyContent: "center" }}>
+          <Text style={{fontSize: 25, paddingBottom: 10}}>Loading Wrapped...</Text>
+          <ActivityIndicator />
+        </SafeAreaView>
       ) : (
         <View>
           <FlatList

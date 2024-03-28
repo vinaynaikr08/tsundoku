@@ -175,9 +175,9 @@ export function genrePieChart(unprocessedData) {
         />
       </View>
       <View style={{height: height / 3}}>
-        {data.map((genre) => {
+        {data.map((genre, index) => {
           return (
-            <View style={{flexDirection: 'row'}}>
+            <View key={index} style={{flexDirection: 'row'}}>
               <View style={{width: 20, height: 20, borderRadius: 10, backgroundColor: genre.color, marginRight: 5, marginBottom: 5}}/>
               <Text>{genre.population} </Text>
               <Text>{genre.name}</Text>
