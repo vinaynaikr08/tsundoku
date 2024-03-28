@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Query } from "appwrite";
 import { client } from "../../appwrite";
@@ -34,6 +34,10 @@ async function deleteFriend(doc_id, setConfirmation) {
   });
 }
 
+function handleIndNotifs() {
+
+}
+
 function ManageFriendsModal ({ navigation }) {
   //const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,6 +48,7 @@ function ManageFriendsModal ({ navigation }) {
   let friend_name = [];
   const [documentIds, setDocumentIds] = useState([]);
   const [confirmation, setConfirmation] = useState(false);
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
   useEffect(() => {
     const account = new Account(client);
     account
@@ -64,13 +69,14 @@ function ManageFriendsModal ({ navigation }) {
         promise.then(function (response) {
           const documents = response.documents;
           const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
-          friends = filtered.map((friend) => (user_id == friend.requestee) ? friend.requester : friend.requestee);
+          friends = filtered.map((friend) => (user_id == friend.requestee) ? {id: friend.requester, notifs: friend.requester_notifs} : {id: friend.requestee, notifs: friend.requestee_notifs});
           setDocumentIds(filtered.map((element) => element.$id));
         })
         .then(async () => {
             try {
                 for (let i = 0; i < friends.length; i++) {
-                    const friendId = friends[i];
+                    const friendId = friends[i].id;
+                    const notifs = friends[i].notifs;
                     const response = await fetch(
                         `${BACKEND_API_URL}/v0/users/${friendId}/name`,
                         {
@@ -82,7 +88,7 @@ function ManageFriendsModal ({ navigation }) {
                         },
                     );
                     const name = await response.json();
-                    friend_name.push({username: name.name, id: friendId});
+                    friend_name.push({username: name.name, id: friendId, notifs: notifs});
                 }
                 setLoading(false);
                 setFriendNames(friend_name);
@@ -140,7 +146,10 @@ function ManageFriendsModal ({ navigation }) {
             }}>
                 <View style={{ marginLeft: 20, marginTop: 10}}>
                   <View style={{flexDirection: 'row'}}>
-                    <Text style={{ fontSize: 17, marginBottom: 10, flex: 7}}>{item.username}</Text>
+                    <Text style={{ fontSize: 17, marginBottom: 10, flex: 6}}>{item.username}</Text>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => {handleIndNotifs(); item.notifs = !item.notifs; forceUpdate();}}>
+                      {item.notifs ? <Icon name="notifications" color="purple"/> : <Icon name="notifications-off" color="purple"/>}
+                    </TouchableOpacity>
                     <TouchableOpacity style={{flex: 1}} onPress={() => setConfirmation(true)}>
                       <Icon name="clear" color="red"/>
                     </TouchableOpacity>
