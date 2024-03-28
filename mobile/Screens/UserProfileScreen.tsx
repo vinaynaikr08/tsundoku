@@ -331,7 +331,10 @@ export const UserProfile = ({ navigation, route }) => {
             </View>
           </View>
         </TouchableWithoutFeedback>
-        <LibraryCarouselTabs user_id={user_id} />
+        {friend ? <LibraryCarouselTabs user_id={user_id}/> : 
+        <View style={{paddingLeft: 10}}>
+          <Text>You must be friends to view the other person's shelf!</Text>
+        </View>}
         <Overlay
           isVisible={showMenu}
           onBackdropPress={() => setShowMenu(false)}
