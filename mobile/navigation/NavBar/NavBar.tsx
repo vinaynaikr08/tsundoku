@@ -1,69 +1,20 @@
-import { View, Text, Button, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 import { Library } from "../../Screens/Library";
-import { SignIn } from "../../Screens/SignIn";
 import { Profile } from "../../Screens/ProfileScreen";
-import TrackModal from "../../Components/TrackModal";
-import { NavigationContainer } from "@react-navigation/native";
-import { useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "react-native-vector-icons/Entypo";
 import { Community } from "../../Screens/CommunityScreen";
 import Book from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/Ionicons";
-import Modal from "react-native-modal";
-import StarRating from "../../Components/StarRating/StarRating";
-import TextReview from "../../Components/TextReview/TextReview";
 import { Discover } from "../../Screens/Discover";
 
 const BottomBar = createBottomTabNavigator();
-
-function InitialLaunchScreen() {
-  return (
-    <View style={{ flex: 1 }}>
-      <InitialLaunchScreen />
-    </View>
-  );
-}
-
-function SignInScreen() {
-  return (
-    <View style={{ flex: 1 }}>
-      <SignIn />
-    </View>
-  );
-}
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Library />
-    </View>
-  );
-}
-
-function DiscoverScreen() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Discover />
-    </View>
-  );
-}
-
 function TrackScreen() {
   return null;
-}
-
-function SocialScreen() {
-  return <Community />;
-}
-
-function ProfileScreen() {
-  return <Profile />;
 }
 
 function NavBar() {
@@ -153,7 +104,6 @@ function NavBar() {
         }}
       />
     </BottomBar.Navigator>
-    //<TrackModal isVisible={isTrackModalVisible} onClose={toggleTrackModal} />
   );
 }
 
