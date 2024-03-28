@@ -20,9 +20,11 @@ import { ID as UID }  from  "appwrite" ;
 import { Permission, Role } from "appwrite";
 import Toast from "react-native-toast-message";
 import { Overlay, Button } from "@rneui/base";
+import Backend from "@/Backend";
 
 
 const databases = new Databases(client);
+const backend = new Backend();
 
 function userPermissions(user_id: string) {
   return [
@@ -57,7 +59,9 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
 
 async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
   const account = new Account(client);
-  const current_user_id =  (await account.get()).$id;
+  const info = await account.get();
+  const current_user_id =  info.$id;
+  const name = info.name;
   const promise = databases.createDocument(
     ID.mainDBID,
     ID.friendsCollectionID,
@@ -81,6 +85,38 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
       position: "bottom",
       visibilityTime: 2000,
     });
+    // get notification settings
+    try {
+        const promise = databases.listDocuments(
+            ID.mainDBID,
+            ID.notificationsCollectionID,
+            [Query.equal("user_id", user_id),],
+        );
+
+        promise.then(function (response) {
+          const documents = response.documents;
+          if (documents.length == 0) {
+            const promise1 = databases.createDocument(
+              ID.mainDBID,
+              ID.notificationsCollectionID,
+              UID.unique(),
+              {
+                user_id: user_id,
+                general: true,
+                new_follower: true,
+                friend_reading_status_update: true,
+              },
+            );
+            backend.sendNotification(user_id, "Friend Request", name + " has sent you a friend request!");
+          } else {
+            if (documents[0].general && documents[0].new_follower) {
+              backend.sendNotification(user_id, "Friend Request", name + " has sent you a friend request!");
+            }
+          }
+        });
+    } catch (error) {
+        console.log(error);
+    }
     setDisabled(false);
   }, function (error) {
     console.log(error); // Failure
