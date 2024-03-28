@@ -1,0 +1,7 @@
+# Ignore E2E test files
+
+e2e/*.js
+
+# Ignore gradle helper script
+
+gradle.js
