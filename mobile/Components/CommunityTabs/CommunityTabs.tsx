@@ -4,7 +4,6 @@ import ID from "@/Constants/ID";
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useNavigation } from "@react-navigation/native";
 import { Account, Databases, Query } from "appwrite";
 import React from "react";
 import {
@@ -21,6 +20,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchButton from "../BookSearchButton";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -118,7 +118,7 @@ async function getActivity(book_id: string) {
   try {
     const user_id = (await account.get()).$id;
     const friends = await getFriends(user_id, databases);
-
+    if (friends.length == 0) return activity;
     let documents = (
       await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
         Query.equal("user_id", friends),
@@ -194,9 +194,12 @@ function FriendsTab(bookInfo) {
   const [refreshing, setRefreshing] = React.useState(false);
   const navigation = useNavigation();
 
-  React.useEffect(() => {
-    refreshActivity();
-  }, []);
+  // useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
+      refreshActivity();
+    }, []),
+  );
 
   const refreshActivity = async () => {
     setRefreshing(true);

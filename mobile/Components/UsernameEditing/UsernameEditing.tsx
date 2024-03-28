@@ -48,7 +48,6 @@ export const UsernameEditing = (props) => {
   const handleSaveUsername = async () => {
     try {
       setLoading(true);
-
       if (!username.trim()) {
         setErrorMessage("Username cannot be empty");
         setErrorModalVisible(true);
@@ -62,8 +61,11 @@ export const UsernameEditing = (props) => {
         setErrorMessage("Error: " + res_json.reason);
         setErrorModalVisible(true);
         return;
+      } else {
+        const res_json = await isUsernameTaken.json();
+        console.log(res_json);
       }
-
+      // change to userdata update username
       const promise = account.updateName(username);
       setUsername(username);
 
