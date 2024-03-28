@@ -1,31 +1,15 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import { client } from "../appwrite";
-import { Account } from "appwrite";
+import { View, Text, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { ProfileContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
+import useSWR from "swr";
+import Backend from "@/Backend";
 
+const backend = new Backend();
 
 export const Profile = (props) => {
-  const [username, setUsername] = React.useState(null);
-
-  React.useEffect(() => {
-    const account = new Account(client);
-    account
-      .get()
-      .then((response) => {
-        setUsername(response.name);
-      })
-      .catch((error) => {
-        console.error("Error fetching user ID: ", error);
-      });
-  }, []);
+  const { data, error, isLoading } = useSWR("", backend.getAccountName);
 
   return (
     <ProfileContext.Provider value={props}>
@@ -41,7 +25,7 @@ export const Profile = (props) => {
                 fontSize: 21,
               }}
             >
-              {username}
+              {data || "Profile"}
             </Text>
           </View>
         </TouchableWithoutFeedback>

@@ -182,6 +182,10 @@ export default class Backend {
     };
   };
 
+  public getAccountName = async () => {
+    return (await account.get()).name;
+  };
+
   public sendNotification = (user_id, title, message) => {
     axios.post(`https://app.nativenotify.com/api/indie/notification`, {
       subID: user_id,
