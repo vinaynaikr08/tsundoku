@@ -30,29 +30,37 @@ function UserSearchScreen({ navigation }) {
 
   React.useEffect(() => {
     async function getUsers() {
-      const user_id = (await account.get()).$id;
-      const promise = await databases.listDocuments(
-        ID.mainDBID,
-        ID.userDataCollectionID,
-        [Query.notEqual("user_id", [user_id])]
-      );
+      try {
+        const user_id = (await account.get()).$id;
+        const promise = await databases.listDocuments(
+          ID.mainDBID,
+          ID.userDataCollectionID,
+          [Query.notEqual("user_id", [user_id])],
+        );
 
-      return promise.documents.map((user) => {
-        return {
-          user_id: user.user_id,
-          username: user.username,
-        };
-      });
+        return promise.documents.map((user) => {
+          return {
+            user_id: user.user_id,
+            username: user.username,
+          };
+        });
+      } catch (error) {
+        console.error(error);
+        setErrorMessage("An error occurred fetching users.");
+        setErrorModalVisible(true);
+      }
     }
 
     getUsers()
       .then((data) => {
         console.log("data: " + data);
         setUsers(data);
-        setLowercaseUsers(data.map(user => ({
-          ...user,
-          username: user.username.toLowerCase()
-      })));
+        setLowercaseUsers(
+          data.map((user) => ({
+            ...user,
+            username: user.username.toLowerCase(),
+          })),
+        );
       })
       .catch((error) => {
         console.error(error);
@@ -104,42 +112,46 @@ function UserSearchScreen({ navigation }) {
           />
         </View>
         <View style={{ height: "89%" }}>
-          {search.length > 0 && <FlatList
-            data={lowercaseUsers.filter((obj) => obj.username.includes(search.toLowerCase()))}
-            style={{ flexGrow: 0 }}
-            renderItem={({ item }) => {
-              return (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("UserProfileScreen", {
-                      username: item.username,
-                      user_id: item.user_id,
-                    })
-                  }
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                    }}
+          {search.length > 0 && (
+            <FlatList
+              data={lowercaseUsers.filter((obj) =>
+                obj.username.includes(search.toLowerCase()),
+              )}
+              style={{ flexGrow: 0 }}
+              renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("UserProfileScreen", {
+                        username: item.username,
+                        user_id: item.user_id,
+                      })
+                    }
                   >
-                    <View style={{ paddingLeft: 20, width: "80%" }}>
-                      <View style={{ flexDirection: "row" }}>
-                        <Text style={{ fontSize: 20, flexShrink: 1 }}>
-                          {item.username}
-                        </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        paddingTop: 10,
+                        paddingBottom: 10,
+                      }}
+                    >
+                      <View style={{ paddingLeft: 20, width: "80%" }}>
+                        <View style={{ flexDirection: "row" }}>
+                          <Text style={{ fontSize: 20, flexShrink: 1 }}>
+                            {item.username}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                  <Divider
-                    style={{ backgroundColor: "black" }}
-                    horizontalInset
-                  />
-                </TouchableOpacity>
-              );
-            }}
-          />}
+                    <Divider
+                      style={{ backgroundColor: "black" }}
+                      horizontalInset
+                    />
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          )}
         </View>
       </SafeAreaView>
       <ErrorModal
