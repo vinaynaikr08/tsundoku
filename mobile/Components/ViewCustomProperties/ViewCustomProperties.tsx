@@ -1,6 +1,6 @@
 import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
 import * as React from "react";
-import { View, Text, StyleSheet, Button, Pressable, Alert } from "react-native";
+import { View, Text, StyleSheet, Button, Pressable, Alert, ActivityIndicator } from "react-native";
 import { Account } from "appwrite";
 import { client } from "@/appwrite";
 import Colors from "@/Constants/Colors";
@@ -11,6 +11,7 @@ const account = new Account(client);
 function ViewCustomProperties({navigation}) {
   const [properties, setProperties] = React.useState([]);
   const [propertiesChanged, setPropertiesChanged] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
 
   async function deleteProperty(id) {
     try {
@@ -87,9 +88,11 @@ function ViewCustomProperties({navigation}) {
     getCustomProperty()
       .then((data) => {
         setProperties(data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
         // setErrorMessage("An error occurred fetching the recommended books.");
         // setErrorModalVisible(true);
       });
@@ -98,6 +101,13 @@ function ViewCustomProperties({navigation}) {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <Text style={styles.title}>Your Custom Properties</Text>
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color={Colors.BUTTON_PURPLE}
+          style={{ marginTop: 50 }}
+        />
+      )}
       {properties && (
         <View>
           <View style={{ marginBottom: 20 }}>

@@ -3,7 +3,7 @@ import { BookInfoWrapperContext } from "@/Contexts";
 import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
 import { useContext } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Divider } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -27,6 +27,7 @@ function FullReview({ route, navigation }) {
   const { review } = route.params;
   const rating = review.rating / 4;
   const [properties, setProperties] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function getCustomPropertiesRaw() {
@@ -93,9 +94,11 @@ function FullReview({ route, navigation }) {
     getCustomProperties()
       .then((data) => {
         setProperties(data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
         // setErrorMessage("An error occurred fetching the recommended books.");
         // setErrorModalVisible(true);
       });
@@ -128,6 +131,13 @@ function FullReview({ route, navigation }) {
         <Text style={{ fontSize: 20 }}>{rating}</Text>
         <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={25} />
       </View>
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color={Colors.BUTTON_PURPLE}
+          style={{ marginTop: 5 }}
+        />
+      )}
       {properties.length != 0 && (
         <View>
           <Divider bold={true} horizontalInset={true} />
