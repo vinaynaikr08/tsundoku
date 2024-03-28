@@ -92,6 +92,35 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
     }
   };
 
+  const renderReviewDescription = (desc) => {
+    if (desc.length > 200) {
+      return (
+        <>
+          <Text
+            style={{
+              fontSize: 15,
+              margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+            }}
+          >
+            {desc.substring(0, 200)}...
+            <Text style={{ color: "#a3a3a3" }}> Read more</Text>
+          </Text>
+        </>
+      );
+    } else {
+      return (
+        <Text
+          style={{
+            fontSize: 15,
+            margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+          }}
+        >
+          {desc}
+        </Text>
+      );
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {reviews.length === 0 ? (
@@ -158,14 +187,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                       </View>
                     </View>
                   </View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-                    }}
-                  >
-                    {item.desc}
-                  </Text>
+                  {renderReviewDescription(item.desc)}
                   <View
                     style={{
                       flexDirection: "row",
