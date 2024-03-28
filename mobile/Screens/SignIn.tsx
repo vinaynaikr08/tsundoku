@@ -17,8 +17,7 @@ import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
 import { Account, AppwriteException } from "appwrite";
-import { registerIndieID, unregisterIndieDevice } from "native-notify";
-import axios from "axios";
+import { registerIndieID } from "native-notify";
 
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
