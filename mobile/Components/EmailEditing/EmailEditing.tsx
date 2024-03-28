@@ -70,7 +70,9 @@ export const EmailEditing = (props) => {
               "The email is already in use. Choose another email.",
             );
           } else {
-            setErrorMessage("An error occurred while saving the email.");
+            setErrorMessage(
+              "An error occurred while saving the email: " + error.message,
+            );
           }
           setErrorModalVisible(true);
         },
