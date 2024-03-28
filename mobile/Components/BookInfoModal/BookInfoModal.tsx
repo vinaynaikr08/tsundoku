@@ -133,7 +133,7 @@ async function sendNotificationToFriends(state, title) {
               if (general) {
                 if (statuses) {
                   if (friend.notif) {
-                    backend.sendNotification(friend.id, name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
+                    backend.sendNotification(friend.id, "status_update", name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
                   }
                 }
               }

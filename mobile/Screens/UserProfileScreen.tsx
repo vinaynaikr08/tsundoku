@@ -107,10 +107,10 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
                 friend_reading_status_update: true,
               },
             );
-            backend.sendNotification(user_id, "Friend Request", name + " has sent you a friend request!");
+            backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
           } else {
             if (documents[0].general && documents[0].new_follower) {
-              backend.sendNotification(user_id, "Friend Request", name + " has sent you a friend request!");
+              backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
             }
           }
         });

@@ -3,6 +3,7 @@ import { Account, Databases, Query } from "appwrite";
 import { client } from "@/appwrite";
 import { BACKEND_API_BOOK_SEARCH_URL } from "./Constants/URLs";
 import ID from "./Constants/ID";
+import { ID as UID } from "appwrite";
 import axios from "axios";
 
 const account = new Account(client);
@@ -186,7 +187,23 @@ export default class Backend {
     return (await account.get()).name;
   };
 
-  public sendNotification = (user_id, title, message) => {
+  public sendNotification = (user_id, type, title, message) => {
+    try {
+      const response = databases.createDocument(
+        ID.mainDBID,
+        ID.notificationDataCenterCollectionID,
+        UID.unique(),
+        {
+          user_id: user_id,
+          type: type,
+          title: title,
+          description: message,
+        },
+      )
+    } catch (error) {
+      console.log(error);
+    }
+
     axios.post(`https://app.nativenotify.com/api/indie/notification`, {
       subID: user_id,
       appId: 20437,

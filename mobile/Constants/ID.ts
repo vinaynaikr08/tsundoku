@@ -7,5 +7,6 @@ export default {
   reviewsCollectionID: "65da5ff3979f452f63d8",
   friendsCollectionID: "65fc3f9558b3e30d29fc",
   notificationsCollectionID: "65ff3a08b53ad5d29439",
-  userDataCollectionID: "65fdc51412724c49c0d3"
+  userDataCollectionID: "65fdc51412724c49c0d3",
+  notificationDataCenterCollectionID: "6605f045065f55f96bca",
 };
