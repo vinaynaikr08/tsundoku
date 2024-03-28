@@ -10,8 +10,37 @@ import { ActivityIndicator, Divider} from "react-native-paper";
 import ErrorModal from "../ErrorModal";
 import { Overlay, Button } from "@rneui/base";
 import Toast from "react-native-toast-message";
+import { debounce } from "lodash";
 
 const databases = new Databases(client);
+
+async function updateNotifications(doc_ids, in_or_out, friends) {
+  const account = new Account(client);
+  const user_id = (await account.get()).$id;
+  for (let i = 0; i < doc_ids.length; i++) {
+    if (in_or_out[0] == 1) {
+      await databases.updateDocument(
+        ID.mainDBID,
+        ID.friendsCollectionID,
+        doc_ids[i],
+        {
+          requester_notifs: friends[i].notifs,
+        }
+      )
+    }
+    else {
+      await databases.updateDocument(
+        ID.mainDBID,
+        ID.friendsCollectionID,
+        doc_ids[i],
+        {
+          requestee_notifs: friends[i].notifs,
+        }
+      )
+    }
+  }
+  console.log('notifications saved');
+}
 
 async function deleteFriend(doc_id, setConfirmation) {
   
@@ -34,21 +63,19 @@ async function deleteFriend(doc_id, setConfirmation) {
   });
 }
 
-function handleIndNotifs() {
-
-}
-
 function ManageFriendsModal ({ navigation }) {
   //const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorModalVisible, setErrorModalVisible] = useState(false);
-  const [friendNames, setFriendNames] = useState(null);
+  const [friendNames, setFriendNames] = useState([]);
   let friends = [];
   let friend_name = [];
   const [documentIds, setDocumentIds] = useState([]);
   const [confirmation, setConfirmation] = useState(false);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
+  const [inOut, setInOut] = useState([]);
+
   useEffect(() => {
     const account = new Account(client);
     account
@@ -69,8 +96,11 @@ function ManageFriendsModal ({ navigation }) {
         promise.then(function (response) {
           const documents = response.documents;
           const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
-          friends = filtered.map((friend) => (user_id == friend.requestee) ? {id: friend.requester, notifs: friend.requester_notifs} : {id: friend.requestee, notifs: friend.requestee_notifs});
+          friends = filtered.map((friend) => (user_id == friend.requestee) ? 
+          {id: friend.requester, notifs: friend.requester_notifs, in_or_out: 1, } : 
+          {id: friend.requestee, notifs: friend.requestee_notifs, in_or_out: 2, });
           setDocumentIds(filtered.map((element) => element.$id));
+          setInOut(friends.map((element) => element.in_or_out));
         })
         .then(async () => {
             try {
@@ -88,7 +118,7 @@ function ManageFriendsModal ({ navigation }) {
                         },
                     );
                     const name = await response.json();
-                    friend_name.push({username: name.name, id: friendId, notifs: notifs});
+                    friend_name.push({username: name.name, id: friendId, notifs: notifs, });
                 }
                 setLoading(false);
                 setFriendNames(friend_name);
@@ -103,6 +133,11 @@ function ManageFriendsModal ({ navigation }) {
         console.error("Error fetching user ID:", error);
       });
   }, [confirmation]);
+
+  const debounceUpdates = React.useCallback(
+    debounce(updateNotifications, 5000),
+    [],
+  );
   return (
     <View style={{ alignItems: "center", paddingTop: 20 }}>
       <Text style={{ fontSize: 25 }}>Manage Friends</Text>
@@ -147,7 +182,7 @@ function ManageFriendsModal ({ navigation }) {
                 <View style={{ marginLeft: 20, marginTop: 10}}>
                   <View style={{flexDirection: 'row'}}>
                     <Text style={{ fontSize: 17, marginBottom: 10, flex: 6}}>{item.username}</Text>
-                    <TouchableOpacity style={{flex: 1}} onPress={() => {handleIndNotifs(); item.notifs = !item.notifs; forceUpdate();}}>
+                    <TouchableOpacity style={{flex: 1}} onPress={() => {debounceUpdates(documentIds, inOut, friendNames); item.notifs = !item.notifs; forceUpdate();}}>
                       {item.notifs ? <Icon name="notifications" color="purple"/> : <Icon name="notifications-off" color="purple"/>}
                     </TouchableOpacity>
                     <TouchableOpacity style={{flex: 1}} onPress={() => setConfirmation(true)}>
