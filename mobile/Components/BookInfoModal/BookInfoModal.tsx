@@ -307,6 +307,7 @@ const styles = StyleSheet.create({
     width: "110%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    // paddingHorizontal: 50,
     marginLeft: Dimensions.BOOK_INFO_MODAL_MARGIN_LEFT,
     marginRight: Dimensions.BOOK_INFO_MODAL_MARGIN_RIGHT,
   },
@@ -330,6 +331,8 @@ const styles = StyleSheet.create({
   bookTitleText: {
     fontSize: Dimensions.BOOK_INFO_MODAL_TITLE_FONT_SIZE,
     fontWeight: "bold",
+    maxWidth: "90%",
+    textAlign: "center",
     marginBottom: Dimensions.BOOK_INFO_MODAL_TITLE_MARGIN_BOT,
   },
   bookAuthorText: {
