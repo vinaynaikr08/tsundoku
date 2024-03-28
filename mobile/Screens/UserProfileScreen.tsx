@@ -340,7 +340,7 @@ export const UserProfile = ({ navigation, route }) => {
           <Text style={{fontSize: 20, paddingBottom: 10}}>Accept Friend Request?</Text>
           <View style={{flexDirection: 'row', }}>
             <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => acceptFriend(user_id, setStatus, setButton)}/>
-            <Button title="Decline" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton)}/>
+            <Button title="Decline" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton, setDisabled)}/>
           </View>
         </Overlay>
         
@@ -351,7 +351,7 @@ export const UserProfile = ({ navigation, route }) => {
         >
           <Text style={{fontSize: 20, paddingBottom: 10}}>Delete Friend?</Text>
           <View style={{flexDirection: 'row', }}>
-            <Button title="Delete" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton)}/>
+            <Button title="Delete" color={'red'} onPress={ () => deleteFriend(user_id, status, setStatus, setButton, setDisabled)}/>
           </View>
         </Overlay>
         
