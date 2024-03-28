@@ -93,11 +93,11 @@ async function sendNotificationToFriends(state, title) {
       promise.then(function (response) {
         const documents = response.documents;
         const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
-        friends = filtered.map((friend) => (user_id == friend.requestee) ? friend.requester : friend.requestee);
+        friends = filtered.map((friend) => (user_id == friend.requestee) ? {id: friend.requester, notif: friend.requester_notifs} : {id: friend.requestee, notif: friend.requestee_notifs});
       })
       .then(async () => {
         try {
-          for (const friendId of friends) {
+          for (const friend of friends) {
               let general = true;
               let statuses = true;
               // get notification settings
@@ -105,7 +105,7 @@ async function sendNotificationToFriends(state, title) {
                   const promise = databases.listDocuments(
                       ID.mainDBID,
                       ID.notificationsCollectionID,
-                      [Query.equal("user_id", friendId),],
+                      [Query.equal("user_id", friend.id),],
                   );
 
                   promise.then(function (response) {
@@ -116,7 +116,7 @@ async function sendNotificationToFriends(state, title) {
                           ID.notificationsCollectionID,
                           UID.unique(),
                           {
-                            user_id: friendId,
+                            user_id: friend.id,
                             general: true,
                             new_follower: true,
                             friend_reading_status_update: true,
@@ -130,13 +130,13 @@ async function sendNotificationToFriends(state, title) {
               } catch (error) {
                   console.log(error);
               }
-              if (!general) {
-                continue;
+              if (general) {
+                if (statuses) {
+                  if (friend.notif) {
+                    backend.sendNotification(friend.id, name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
+                  }
+                }
               }
-              if (!statuses) {
-                continue;
-              }
-              backend.sendNotification(friendId, name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
           }
         } catch (error) {
           console.log(error);

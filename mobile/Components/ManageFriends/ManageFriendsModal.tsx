@@ -24,7 +24,7 @@ async function updateNotifications(doc_ids, in_or_out, friends) {
         ID.friendsCollectionID,
         doc_ids[i],
         {
-          requester_notifs: friends[i].notifs,
+          requestee_notifs: friends[i].notifs,
         }
       )
     }
@@ -34,7 +34,7 @@ async function updateNotifications(doc_ids, in_or_out, friends) {
         ID.friendsCollectionID,
         doc_ids[i],
         {
-          requestee_notifs: friends[i].notifs,
+          requester_notifs: friends[i].notifs,
         }
       )
     }
@@ -97,8 +97,8 @@ function ManageFriendsModal ({ navigation }) {
           const documents = response.documents;
           const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
           friends = filtered.map((friend) => (user_id == friend.requestee) ? 
-          {id: friend.requester, notifs: friend.requester_notifs, in_or_out: 1, } : 
-          {id: friend.requestee, notifs: friend.requestee_notifs, in_or_out: 2, });
+          {id: friend.requester, notifs: friend.requestee_notifs, in_or_out: 1, } : 
+          {id: friend.requestee, notifs: friend.requester_notifs, in_or_out: 2, });
           setDocumentIds(filtered.map((element) => element.$id));
           setInOut(friends.map((element) => element.in_or_out));
         })
