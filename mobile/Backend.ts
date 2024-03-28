@@ -3,8 +3,7 @@ import { Account, Databases, Query } from "appwrite";
 import { client } from "@/appwrite";
 import { BACKEND_API_BOOK_SEARCH_URL } from "./Constants/URLs";
 import ID from "./Constants/ID";
-import { registerIndieID, unregisterIndieDevice } from 'native-notify';
-import axios from 'axios';
+import axios from "axios";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -183,13 +182,13 @@ export default class Backend {
     };
   };
 
-  public sendNotification(user_id, title, message, ) {
+  public sendNotification = (user_id, title, message) => {
     axios.post(`https://app.nativenotify.com/api/indie/notification`, {
       subID: user_id,
       appId: 20437,
-      appToken: 'yoXi9lQ377rDWZeu0R8IdW',
+      appToken: "yoXi9lQ377rDWZeu0R8IdW",
       title: title,
-      message: message
+      message: message,
     });
-  }
+  };
 }
