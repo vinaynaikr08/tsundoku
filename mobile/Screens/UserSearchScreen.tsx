@@ -49,7 +49,10 @@ function UserSearchScreen({ navigation }) {
       .then((data) => {
         console.log("data: " + data);
         setUsers(data);
-        setLowercaseUsers(data.map((obj) => obj.username.toLowerCase()));
+        setLowercaseUsers(data.map(user => ({
+          ...user,
+          username: user.username.toLowerCase()
+      })));
       })
       .catch((error) => {
         console.error(error);
@@ -102,7 +105,7 @@ function UserSearchScreen({ navigation }) {
         </View>
         <View style={{ height: "89%" }}>
           {search.length > 0 && <FlatList
-            data={users.filter((obj) => obj.username.includes(search.toLowerCase()))}
+            data={lowercaseUsers.filter((obj) => obj.username.includes(search.toLowerCase()))}
             style={{ flexGrow: 0 }}
             renderItem={({ item }) => {
               return (
