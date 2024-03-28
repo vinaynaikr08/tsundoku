@@ -158,7 +158,7 @@ const NotificationsModal = (props) => {
                 width: "100%",
             }}>
                 <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
-                    Friends post reviews
+                    Friends update status
                 </Text>
                 <View style={{ flex: 2 }}>
                     <Switch

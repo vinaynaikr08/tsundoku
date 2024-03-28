@@ -7,7 +7,7 @@ import BookInfoTabs from "../BookInfoTabs";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Databases, Account } from "appwrite";
-import { Query } from "appwrite";
+import { Query, Permission, Role } from "appwrite";
 import { client } from "@/appwrite";
 import ID from "@/Constants/ID";
 import Toast from "react-native-toast-message";
@@ -16,10 +16,20 @@ import { BACKEND_API_BOOK_STATUS_URL } from "@/Constants/URLs";
 import { BookInfoWrapperContext } from "@/Contexts";
 import Backend from "@/Backend";
 import { BACKEND_API_URL } from "@/Constants/URLs";
+import { ID as UID }  from  "appwrite" ;
+
 
 const account = new Account(client);
 const databases = new Databases(client);
 const backend = new Backend();
+
+function userPermissions(user_id: string) {
+  return [
+    Permission.read(Role.user(user_id)),
+    Permission.update(Role.user(user_id)),
+    Permission.delete(Role.user(user_id)),
+  ];
+}
 
 enum BookState {
   WantToRead = "WANT_TO_READ",
@@ -86,6 +96,45 @@ async function sendNotificationToFriends(state, title) {
       .then(async () => {
         try {
           for (const friendId of friends) {
+              let general = true;
+              let statuses = true;
+              // get notification settings
+              try {
+                  const promise = databases.listDocuments(
+                      ID.mainDBID,
+                      ID.notificationsCollectionID,
+                      [Query.equal("user_id", friendId),],
+                  );
+
+                  promise.then(function (response) {
+                      const documents = response.documents;
+                      if (documents.length == 0) {
+                        const promise1 = databases.createDocument(
+                          ID.mainDBID,
+                          ID.notificationsCollectionID,
+                          UID.unique(),
+                          {
+                            user_id: friendId,
+                            general: true,
+                            new_follower: true,
+                            friend_reading_status_update: true,
+                          },
+                        );
+                      } else {
+                        general = documents[0].general;
+                        statuses = documents[0].friend_reading_status_update;
+                      }
+                    });
+              } catch (error) {
+                  console.log(error);
+              }
+              if (!general) {
+                continue;
+              }
+              if (!statuses) {
+                continue;
+              }
+
               const response = await fetch(
                 `${BACKEND_API_URL}/v0/users/${friendId}/name`,
                 {
