@@ -1,7 +1,7 @@
 import { Account, Databases, Query } from "appwrite";
 
 import { client } from "@/appwrite";
-import { BACKEND_API_BOOK_SEARCH_URL } from "./Constants/URLs";
+import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_URL } from "./Constants/URLs";
 import ID from "./Constants/ID";
 import { ID as UID } from "appwrite";
 import axios from "axios";
@@ -106,7 +106,7 @@ export default class Backend {
   }): Promise<any> => {
     const books = [];
     if (user_id === undefined) {
-      user_id = (await account.get()).$id;
+      user_id = await this.getUserId();
     }
 
     const bookstat_docs = await this.getBookStatusDocs({ status, user_id });
@@ -116,6 +116,10 @@ export default class Backend {
     }
 
     return books;
+  };
+
+  public getUserId = async () => {
+    return (await account.get()).$id;
   };
 
   public getBooksOfStatusFromDate = async ({
@@ -183,6 +187,25 @@ export default class Backend {
     };
   };
 
+  public getUsername = async ({ user_id }: { user_id: string | undefined }) => {
+    if (user_id === undefined) {
+      user_id = (await account.get()).$id;
+    }
+
+    const response = await fetch(
+      `${BACKEND_API_URL}/v0/users/${user_id}/name`,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      },
+    );
+
+    return (await response.json()).name;
+  };
+
   public getAccountName = async () => {
     return (await account.get()).name;
   };
@@ -199,7 +222,7 @@ export default class Backend {
           title: title,
           description: message,
         },
-      )
+      );
     } catch (error) {
       console.log(error);
     }

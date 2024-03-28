@@ -1,6 +1,7 @@
+import Backend from "@/Backend";
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
-import { BACKEND_API_URL, BACKEND_API_USERNAME_URL } from "@/Constants/URLs";
+import { BACKEND_API_USERNAME_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
 import { StatusBar } from "expo-status-bar";
@@ -19,49 +20,29 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 
 const account = new Account(client);
+const backend = new Backend();
 
 export const UsernameEditing = (props) => {
   const [username, setUsername] = React.useState("");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  let user_id;
   const { navigation } = props;
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
   React.useEffect(() => {
-    const account = new Account(client);
-    account
-      .get()
-      .then((response) => {
-        user_id = response.$id;
-        setUsername(response.name);
-      })
-      .catch((error) => {
-        console.error("Error fetching user ID:", error);
-      });
+    (async () => {
+      try {
+        const username = await backend.getUsername({ user_id: undefined });
+        setUsername(username);
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    })();
   }, []);
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const fetchData = async () => {
-  //       try {
-  //         const account = new Account(client);
-  //         const response = await account.get();
-  //         const fetchedUserId = response.$id;
-  //         const fetchedUsername = await getUsername(fetchedUserId);
-  //         setUsername(fetchedUsername);
-  //       } catch (error) {
-  //         console.error("Error fetching user ID or username:", error);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }, []),
-  // );
 
   const handleSaveUsername = async () => {
     try {
@@ -109,41 +90,6 @@ export const UsernameEditing = (props) => {
       }),
     });
     return res;
-  }
-
-  // async function getUsername() {
-  //   const response = await fetch(
-  //     `${BACKEND_API_URL}/v0/users/${user_id}/name`,
-  //     {
-  //       method: "GET",
-  //       headers: new Headers({
-  //         "Content-Type": "application/json",
-  //         Authorization: "Bearer " + (await account.createJWT()).jwt,
-  //       }),
-  //     },
-  //   );
-  //   console.log(response);
-  //   const username = await response.json();
-  //   return username;
-  // }
-  async function getUsername(user_id) {
-    try {
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/users/${user_id}/name`,
-        {
-          method: "GET",
-          headers: new Headers({
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (await account.createJWT()).jwt,
-          }),
-        },
-      );
-      const usernameData = await response.json();
-      return usernameData.name;
-    } catch (error) {
-      console.error("Error fetching username:", error);
-      throw error;
-    }
   }
 
   return (
