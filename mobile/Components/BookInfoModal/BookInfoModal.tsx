@@ -14,9 +14,12 @@ import Toast from "react-native-toast-message";
 import { ActivityIndicator } from "react-native-paper";
 import { BACKEND_API_BOOK_STATUS_URL } from "@/Constants/URLs";
 import { BookInfoWrapperContext } from "@/Contexts";
+import Backend from "@/Backend";
+import { BACKEND_API_URL } from "@/Constants/URLs";
 
 const account = new Account(client);
 const databases = new Databases(client);
+const backend = new Backend();
 
 enum BookState {
   WantToRead = "WANT_TO_READ",
@@ -58,6 +61,58 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
   }
 }
 
+async function sendNotificationToFriends(state, title) {
+  let friends = [];
+  account
+    .get()
+    .then((response) => {
+      const user_id = response.$id;
+      const databases = new Databases(client);
+      const promise = databases.listDocuments(
+        ID.mainDBID,
+        ID.friendsCollectionID,
+        [
+          Query.or([
+            Query.equal("requester", user_id),
+            Query.equal("requestee", user_id),
+          ]),
+        ],
+      );
+      promise.then(function (response) {
+        const documents = response.documents;
+        const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
+        friends = filtered.map((friend) => (user_id == friend.requestee) ? friend.requester : friend.requestee);
+      })
+      .then(async () => {
+        try {
+          for (const friendId of friends) {
+              const response = await fetch(
+                `${BACKEND_API_URL}/v0/users/${friendId}/name`,
+                {
+                  method: "GET",
+                  headers: new Headers({
+                      "Content-Type": "application/json",
+                      Authorization: "Bearer " + (await account.createJWT()).jwt,
+                  }),
+                },
+              );
+              const name = await response.json();
+              backend.sendNotification(friendId, name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user ID:", error);
+      });
+    })
+    .catch((error) => {
+      console.log("Error fetching user ID:", error);
+    });
+
+}
+
 export const BookInfoModal = ({ route, navigation }) => {
   const bookInfo = useContext(BookInfoWrapperContext);
   const [status, setStatus] = React.useState<BookState | null>(null);
@@ -97,9 +152,10 @@ export const BookInfoModal = ({ route, navigation }) => {
     }
   };
 
-  const handleOptionSelect = (state: any) => {
+  const handleOptionSelect = (state: any, title: any) => {
     setStatus(BookStateLookup(state));
     saveStatus(BookStateLookup(state));
+    sendNotificationToFriends(state, title);
   };
 
   function StatusButtonView() {
@@ -201,7 +257,7 @@ export const BookInfoModal = ({ route, navigation }) => {
           /> */}
           <SelectDropdown
             data={Object.values(BOOK_STATE_MAPPING)}
-            onSelect={(state) => handleOptionSelect(state)}
+            onSelect={(state) => handleOptionSelect(state, bookInfo.title)}
             renderButton={(selectedItem, isOpen) => {
               return (
                 <View

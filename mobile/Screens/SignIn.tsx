@@ -17,6 +17,8 @@ import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
 import { Account, AppwriteException } from "appwrite";
+import { registerIndieID, unregisterIndieDevice } from 'native-notify';
+import axios from 'axios';
 
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
@@ -43,8 +45,9 @@ export const SignIn = () => {
       .then(() => {
         account
           .get()
-          .then(() => {
+          .then((response) => {
             setLoggedIn(true);
+            registerIndieID(response.$id, 20437, 'yoXi9lQ377rDWZeu0R8IdW');
             setLoading(false);
           })
           .catch((error: any) => {

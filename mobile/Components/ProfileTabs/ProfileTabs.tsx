@@ -19,6 +19,8 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useFocusEffect } from "@react-navigation/native";
 import StatisticsTab from "../StatisticsTab";
+import { registerIndieID, unregisterIndieDevice } from 'native-notify';
+import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -111,6 +113,9 @@ function ProfileTab(props) {
   function signOut() {
     (async () => {
       await account.deleteSessions();
+      account.get().then((response) => {
+        unregisterIndieDevice(response.$id, 20437, 'yoXi9lQ377rDWZeu0R8IdW');
+      })
     })();
     setLoggedIn(false);
   }
