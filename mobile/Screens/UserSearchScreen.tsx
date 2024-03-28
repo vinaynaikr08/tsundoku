@@ -1,7 +1,7 @@
 import ErrorModal from "@/Components/ErrorModal";
 import { NavigationContext } from "@/Contexts";
 import { Icon, SearchBar } from "@rneui/base";
-import React from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   Keyboard,
@@ -26,6 +26,7 @@ function UserSearchScreen({ navigation }) {
   const [search, setSearch] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [users, setUsers] = React.useState([]);
+  const [lowercaseUsers, setLowercaseUsers] = useState([]);
 
   React.useEffect(() => {
     async function getUsers() {
@@ -48,6 +49,7 @@ function UserSearchScreen({ navigation }) {
       .then((data) => {
         console.log("data: " + data);
         setUsers(data);
+        setLowercaseUsers(data.map((obj) => obj.username.toLowerCase()));
       })
       .catch((error) => {
         console.error(error);
@@ -100,7 +102,7 @@ function UserSearchScreen({ navigation }) {
         </View>
         <View style={{ height: "89%" }}>
           {search.length > 0 && <FlatList
-            data={users.filter((obj) => obj.username.includes(search))}
+            data={users.filter((obj) => obj.username.includes(search.toLowerCase()))}
             style={{ flexGrow: 0 }}
             renderItem={({ item }) => {
               return (
