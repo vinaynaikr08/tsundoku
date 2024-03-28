@@ -31,6 +31,10 @@ function FullReview({ route, navigation }) {
   React.useEffect(() => {
     async function getCustomPropertiesRaw() {
       try {
+        const user_id = (await account.get()).$id;
+        if (user_id != review.user_id) {
+          return [];
+        }
         const res = await fetch(
           `${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}?` +
             new URLSearchParams({

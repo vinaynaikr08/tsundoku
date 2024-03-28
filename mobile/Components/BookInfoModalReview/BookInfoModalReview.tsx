@@ -60,6 +60,7 @@ async function getReviews(book_id: string) {
         desc: review_data.description,
         username: name,
         id: document.$id,
+        user_id: review_data.user_id
       });
     }),
   );
