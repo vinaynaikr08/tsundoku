@@ -82,21 +82,22 @@ export const Community = (props) => {
           isVisible={isOverlayVisible}
           onBackdropPress={() => setOverlayVisible(false)}
           statusBarTranslucent
-          overlayStyle={{width: 300, height: 500, backgroundColor: "white", borderRadius: 15}}
+          overlayStyle={{width: 300, height: 600, backgroundColor: "white", borderRadius: 15}}
         >
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: 20, marginTop: 5}}>Notifications</Text>
             <View style={{width: 300, height: 1, backgroundColor: '#d3d3d3', marginTop: 20}}/>
-            <View style={{height: 440}}>
+            <View style={{height: 540}}>
               <FlatList
               data={notifs.reverse()}
+              showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={() =>
-                <View style={{width: 300, height: 1, backgroundColor: '#d3d3d3'}}/>
+                <View style={{width: '100%', height: 1, backgroundColor: '#d3d3d3', alignSelf: 'center'}}/>
               }
               renderItem={(item) => {
                 return (
-                  <View style={{marginTop: 10, marginBottom: 10}}>
-                    <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 2}}>{item.item.title}</Text>
+                  <View style={{marginTop: 10, marginBottom: 10, paddingRight: 10, paddingLeft: 10}}>
+                    <Text style={{fontWeight: 'bold', fontSize: 18, marginBottom: 2}}>{item.item.title}</Text>
                     <Text>{item.item.description}</Text>
                     <Text>{new Date(item.item.$createdAt).toLocaleString()}</Text>
                   </View>
