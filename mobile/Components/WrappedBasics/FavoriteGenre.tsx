@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, Text, } from "react-native"
 
-const genres: Array<string> = [
+const genres: string[] = [
   "Antiques & Collectibles",
   "Literary Collections",
   "Architecture",

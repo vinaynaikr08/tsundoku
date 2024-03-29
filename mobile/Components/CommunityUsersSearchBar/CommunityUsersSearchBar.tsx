@@ -2,7 +2,7 @@ import { Divider, SearchBar } from "@rneui/base";
 import React from "react";
 import { View } from "react-native";
 
-export const genresSelected: Array<string> = [
+export const genresSelected: string[] = [
   "YOUNG ADULT FICTION",
   "ANTIQUES & COLLECTIBLES",
   "LITERARY COLLECTIONS",

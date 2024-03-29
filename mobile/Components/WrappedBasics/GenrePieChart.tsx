@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaView, Dimensions, View, Text } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 
-const genres: Array<string> = [
+const genres: string[] = [
   "Antiques & Collectibles",
   "Literary Collections",
   "Architecture",

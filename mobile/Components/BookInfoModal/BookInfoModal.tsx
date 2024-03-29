@@ -276,7 +276,7 @@ export const BookInfoModal = ({ route, navigation }) => {
                   }}
                 >
                   <Text style={{ fontSize: 14, color: "black" }}>
-                    {(selectedItem && selectedItem.title) || ""}
+                    {(selectedItem?.title) || ""}
                   </Text>
                   <Icon
                     name={

@@ -194,10 +194,13 @@ function FriendsTab(bookInfo) {
   const [refreshing, setRefreshing] = React.useState(false);
   const navigation = useNavigation();
 
-  // useEffect(() => {
   useFocusEffect(
     React.useCallback(() => {
-      refreshActivity();
+      try {
+        refreshActivity();
+      } catch (error) {
+        console.error("Error refreshing in FriendsTab " + error);
+      }
     }, []),
   );
 

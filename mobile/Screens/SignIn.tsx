@@ -58,10 +58,7 @@ export const SignIn = () => {
       })
       .catch((error: any) => {
         setLoading(false);
-        if (
-          error instanceof AppwriteException &&
-          (error as AppwriteException).code === 429
-        ) {
+        if (error instanceof AppwriteException && error.code === 429) {
           setErrorMessage(
             "Too many incorrect sign-in attempts. Try again later.",
           );
