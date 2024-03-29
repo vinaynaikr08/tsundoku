@@ -62,66 +62,100 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
   const info = await account.get();
   const current_user_id =  info.$id;
   const name = info.name;
-  const promise = databases.createDocument(
-    ID.mainDBID,
-    ID.friendsCollectionID,
-    UID.unique(),
-    {
-      requester: current_user_id,
-      requestee: user_id,
-      status: "PENDING"
-    },
-    userPermissions(current_user_id),
-  );
+  try {
 
-  promise.then(function (response) {
-    // Success
-    // pending out
-    setStatus(2);
-    setButton("Friend Request Sent") 
-    Toast.show({
-      type: "success",
-      text1: "Friend Request Sent",
-      position: "bottom",
-      visibilityTime: 2000,
-    });
-    // get notification settings
-    try {
-        const promise = databases.listDocuments(
-            ID.mainDBID,
-            ID.notificationsCollectionID,
-            [Query.equal("user_id", user_id),],
-        );
+    const rest = await databases.listDocuments(
+      ID.mainDBID,
+      ID.friendsCollectionID,
+      [
+        Query.or([
+          Query.and([
+            Query.equal("requester", current_user_id),
+            Query.equal("requestee", user_id),
+          ]),
+          Query.and([
+            Query.equal("requester", user_id),
+            Query.equal("requestee", current_user_id),
+          ]),
+        ])
+      ],
+    );
 
-        promise.then(function (response) {
-          const documents = response.documents;
-          if (documents.length == 0) {
-            const promise1 = databases.createDocument(
+    if (rest.documents.length !== 0) {
+      Toast.show({
+        type: "error",
+        text1: "Already Friends or Friend Request Sent/Incoming",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+      setDisabled(false);
+      return;
+    }
+
+    const promise = databases.createDocument(
+      ID.mainDBID,
+      ID.friendsCollectionID,
+      UID.unique(),
+      {
+        requester: current_user_id,
+        requestee: user_id,
+        status: "PENDING"
+      },
+      userPermissions(current_user_id),
+    );
+
+    promise.then(function (response) {
+      // Success
+      // pending out
+      setStatus(2);
+      setButton("Friend Request Sent") 
+      Toast.show({
+        type: "success",
+        text1: "Friend Request Sent",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+      // get notification settings
+      try {
+          const promise = databases.listDocuments(
               ID.mainDBID,
               ID.notificationsCollectionID,
-              UID.unique(),
-              {
-                user_id: user_id,
-                general: true,
-                new_follower: true,
-                friend_reading_status_update: true,
-              },
-            );
-            backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
-          } else {
-            if (documents[0].general && documents[0].new_follower) {
+              [Query.equal("user_id", user_id),],
+          );
+
+          promise.then(function (response) {
+            const documents = response.documents;
+            if (documents.length == 0) {
+              const promise1 = databases.createDocument(
+                ID.mainDBID,
+                ID.notificationsCollectionID,
+                UID.unique(),
+                {
+                  user_id: user_id,
+                  general: true,
+                  new_follower: true,
+                  friend_reading_status_update: true,
+                },
+              );
               backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
+            } else {
+              if (documents[0].general && documents[0].new_follower) {
+                backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
+              }
             }
-          }
-        });
-    } catch (error) {
-        console.log(error);
-    }
+          });
+      } catch (error) {
+          console.log(error);
+      }
+      setDisabled(false);
+    }, function (error) {
+      console.log(error); // Failure
+      setDisabled(false);
+    });
+  } catch (error) {
+    console.error(error);
     setDisabled(false);
-  }, function (error) {
-    console.log(error); // Failure
-    setDisabled(false);
-  });
+  }
 }
 
 async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend?) {
