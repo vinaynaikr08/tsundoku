@@ -73,7 +73,7 @@ function getGenres(data) {
     }
   });
 
-  const mostRead = [{ind: "Young Adult Fiction", count: 0}, {ind: "Fiction", count: 0}, {ind: "Art", count: 0}];
+  const mostRead = [{ind: "Young Adult Fiction", count: -1}, {ind: "Fiction", count: -1}, {ind: "Art", count: -1}];
 
   for (let i = 0; i < 53; i++) {
     if (counter[i] > mostRead[0].count) {
