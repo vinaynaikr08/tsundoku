@@ -1,9 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
-import NavBar from "./navigation/NavBar";
-import AppNavigation from "./navigation/AppNavigation";
+import registerNNPushToken from "native-notify";
 import Toast from "react-native-toast-message";
 import LoginStateProvider from "./Providers/LoginStateProvider";
-import registerNNPushToken from "native-notify";
+import AppNavigation from "./navigation/AppNavigation";
 
 export default function App() {
   registerNNPushToken(20437, "yoXi9lQ377rDWZeu0R8IdW");

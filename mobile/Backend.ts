@@ -9,8 +9,19 @@ import axios from "axios";
 const account = new Account(client);
 const databases = new Databases(client);
 
+interface Book {
+  id: string
+  title: string
+  author: string
+  summary: string
+  image_url: string
+  isbn_10: string
+  isbn_13: string
+  genre: string
+}
+
 export default class Backend {
-  public totalSearch = async (param: string): Promise<any> => {
+  public totalSearch = async (param: string): Promise<Book[]> => {
     const books = [
       ...(await this.bookSearch(param)),
       ...(await this.authorSearch(param)),
@@ -21,7 +32,7 @@ export default class Backend {
     return [...new Map(books.map((v) => [v.id, v])).values()];
   };
 
-  public bookSearch = async (title: string): Promise<any> => {
+  public bookSearch = async (title: string): Promise<Book[]> => {
     const res = await fetch(
       `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title }),
     );
@@ -39,7 +50,7 @@ export default class Backend {
     });
   };
 
-  public authorSearch = async (name: string): Promise<any> => {
+  public authorSearch = async (name: string): Promise<Book[]> => {
     let books = [];
     const author_docs = (
       await databases.listDocuments(ID.mainDBID, ID.authorCollectionID, [
@@ -68,7 +79,7 @@ export default class Backend {
     return books;
   };
 
-  public isbnSearch = async (param: string): Promise<any> => {
+  public isbnSearch = async (param: string): Promise<Book[]> => {
     let books = [];
     const edition_docs = (
       await databases.listDocuments(ID.mainDBID, ID.editionCollectionID, [
@@ -103,7 +114,7 @@ export default class Backend {
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<any> => {
+  }) => {
     const books = [];
     if (user_id === undefined) {
       user_id = await this.getUserId();
@@ -128,7 +139,7 @@ export default class Backend {
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<any> => {
+  }) => {
     const books = [];
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
@@ -155,7 +166,7 @@ export default class Backend {
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<any> => {
+  }) => {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
@@ -212,7 +223,8 @@ export default class Backend {
 
   public sendNotification = (user_id, type, title, message) => {
     try {
-      const response = databases.createDocument(
+      // TODO: this should be an await call
+      databases.createDocument(
         ID.mainDBID,
         ID.notificationDataCenterCollectionID,
         UID.unique(),

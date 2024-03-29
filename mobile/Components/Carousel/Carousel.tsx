@@ -22,15 +22,6 @@ type bookInfo = {
   image_url: string;
 };
 
-const BookCard = (
-  { title, author, id, image_url }: bookInfo,
-  navigation: any,
-) => (
-  <Image style={styles.card} resizeMode="cover" source={{ uri: image_url }} />
-  // <View style={styles.card}>
-  // </View>
-);
-
 export const Carousel = ({ books, shelf }) => {
   const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;

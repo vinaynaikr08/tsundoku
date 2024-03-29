@@ -4,6 +4,7 @@ import ID from "@/Constants/ID";
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Account, Databases, Query } from "appwrite";
 import React from "react";
 import {
@@ -18,9 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchButton from "../BookSearchButton";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -222,9 +221,9 @@ function FriendsTab(bookInfo) {
   }, []);
 
   return (
-    <View style={{ flex: 1, }}>
+    <View style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        <View style={{ marginHorizontal: 20,  }}>
+        <View style={{ marginHorizontal: 20 }}>
           <BookSearchButton
             navigation={navigation}
             placeholder={"Search all users"}
