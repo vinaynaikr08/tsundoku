@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableWithoutFeedback, Keyboard, TouchableOpacity, FlatList } from "react-native";
+import React from "react";
+import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
 
 import CarouselTabs from "../Components/LibraryCarousel/LibraryCarouselTabs";
 
-import { NavigationContext } from "../Contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchButton from "@/Components/BookSearchButton";
-
+import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContext } from "../Contexts";
 
 export const Library = (props) => {
   const { navigation } = props;
@@ -15,7 +14,7 @@ export const Library = (props) => {
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View testID="library-screen-view" style={{flexDirection: 'row'}}>
+          <View testID="library-screen-view" style={{ flexDirection: "row" }}>
             <Text
               style={{
                 marginLeft: 20,
@@ -27,7 +26,7 @@ export const Library = (props) => {
             >
               Library
             </Text>
-          </View>    
+          </View>
         </TouchableWithoutFeedback>
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>
           <BookSearchButton
@@ -36,7 +35,7 @@ export const Library = (props) => {
             navigateTo={"BookSearchScreen"}
           />
         </View>
-        <CarouselTabs user_id={undefined}/>
+        <CarouselTabs user_id={undefined} />
       </SafeAreaView>
     </NavigationContext.Provider>
   );

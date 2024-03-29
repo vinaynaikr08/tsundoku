@@ -1,27 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import { client } from "@/appwrite";
-import { Databases, Account } from "appwrite";
 import Colors from "@/Constants/Colors";
-import { ProfileContext } from "../../Contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Divider } from "react-native-paper";
-import { Button, Icon, Overlay } from "@rneui/themed";
-import { LoginStateContext } from "@/Providers/LoginStateProvider";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useFocusEffect } from "@react-navigation/native";
-import StatisticsTab from "../StatisticsTab";
-import { registerIndieID, unregisterIndieDevice } from "native-notify";
-import axios from "axios";
 import { BACKEND_API_URL } from "@/Constants/URLs";
+import { LoginStateContext } from "@/Providers/LoginStateProvider";
+import { client } from "@/appwrite";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { useFocusEffect } from "@react-navigation/native";
+import { Button, Icon } from "@rneui/themed";
+import { Account } from "appwrite";
+import { unregisterIndieDevice } from "native-notify";
+import React, { useContext, useState } from "react";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Divider } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { ProfileContext } from "../../Contexts";
+import StatisticsTab from "../StatisticsTab";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -157,15 +156,14 @@ function ProfileTab(props) {
       try {
         console.log("here sign out");
         await account.deleteSessions();
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
       }
     })();
     try {
       account.get().then((response) => {
         unregisterIndieDevice(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
-      }); 
+      });
     } catch (error) {
       console.log(error);
     }

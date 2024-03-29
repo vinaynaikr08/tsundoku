@@ -1,18 +1,15 @@
-import * as React from "react";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import React from "react";
 import {
-  Button,
-  FlatList,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
-  Pressable,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import BookInfoModalReview from "../BookInfoModalReview";
 
 const Tab = createMaterialTopTabNavigator();
@@ -138,7 +135,13 @@ function BookInfoTabs({ bookInfo, navigation }) {
       />
       <Tab.Screen
         name="Reviews"
-        children={(props) => <BookReviewsTab bookInfo={bookInfo} navigation={navigation} {...props} />}
+        children={(props) => (
+          <BookReviewsTab
+            bookInfo={bookInfo}
+            navigation={navigation}
+            {...props}
+          />
+        )}
       />
       <Tab.Screen name="My Notes" component={MyNotesTab} />
     </Tab.Navigator>

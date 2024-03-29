@@ -1,20 +1,18 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Image,
-  StyleSheet,
-} from "react-native";
-import React from "react";
-import { useState, useContext } from "react";
-import BookSearchBar from "../BookSearchBar";
 import { Divider } from "@rneui/base";
+import React from "react";
+import {
+  FlatList,
+  Image,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import BookSearchBar from "../BookSearchBar";
 
 import { DATA } from "../BookSearchBar/Genres";
-import { toStyleSheet } from "styled-components/native";
 
 function checkTitle(value, search) {
   return value.title.toUpperCase().includes(search.toUpperCase());
@@ -25,12 +23,12 @@ function checkAuthor(value, search) {
 }
 
 function checkISBN(value, search) {
-  return value.isbn.toUpperCase().includes(search.toUpperCase()); 
+  return value.isbn.toUpperCase().includes(search.toUpperCase());
 }
 
 const ShelfModal = ({ route, navigation }) => {
   const { bookData, shelf } = route.params;
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = React.useState("");
 
   const updateSearch = (search) => {
     setSearch(search);
@@ -71,22 +69,14 @@ const ShelfModal = ({ route, navigation }) => {
   }, [navigation]);
 
   return (
-    <View
-      style={styles.modalContainer}
-    >
+    <View style={styles.modalContainer}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View
-          style={styles.grayBarContainer}
-        >
-          <View
-            style={styles.grayBar}
-          />
+        <View style={styles.grayBarContainer}>
+          <View style={styles.grayBar} />
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View
-          style={styles.titleContainer}
-        >
+        <View style={styles.titleContainer}>
           <Text style={{ fontWeight: "bold", fontSize: 30 }}>{shelf}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -104,13 +94,13 @@ const ShelfModal = ({ route, navigation }) => {
 
       <Divider style={styles.sectionDivider} />
 
-      <View
-        style={styles.resultsContainer}
-      >
+      <View style={styles.resultsContainer}>
         <FlatList
           data={bookData.filter(
             (e) =>
-              (checkTitle(e, search) || checkAuthor(e, search) || checkISBN(e, search)) &&
+              (checkTitle(e, search) ||
+                checkAuthor(e, search) ||
+                checkISBN(e, search)) &&
               checkGenres(e.genre),
           )}
           scrollEventThrottle={1}
@@ -224,16 +214,17 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     width: "80%",
   },
-  resultDivider: { 
-    paddingTop: 8, 
+  resultDivider: {
+    paddingTop: 8,
     paddingBottom: 8,
-    width: '90%',
+    width: "90%",
   },
   sectionDivider: {
-    paddingTop: 0, 
-    paddingBottom: 0, 
-    width: '94%', 
-    position: "absolute", 
-    top: 133, 
-    left: '3%'},
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: "94%",
+    position: "absolute",
+    top: 133,
+    left: "3%",
+  },
 });

@@ -1,19 +1,17 @@
+import Colors from "@/Constants/Colors";
+import { useFocusEffect } from "@react-navigation/native";
+import { Account, Databases, Query } from "appwrite";
 import React from "react";
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
   ActivityIndicator,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import Colors from "@/Constants/Colors";
-import { Query } from "appwrite";
-import { client } from "../../appwrite";
-import { Databases, Account } from "appwrite";
-import ID from "../../Constants/ID";
 import { BarChart } from "react-native-chart-kit";
-import { useFocusEffect } from "@react-navigation/native";
+import ID from "../../Constants/ID";
+import { client } from "../../appwrite";
 import BookStatusCount from "../BookStatusCount";
 
 const databases = new Databases(client);

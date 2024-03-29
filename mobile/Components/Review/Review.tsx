@@ -1,10 +1,9 @@
-import * as React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import TextReview from "../TextReview/TextReview";
-import StarRating from "../StarRating/StarRating";
 import { BookInfoContext } from "@/Contexts";
 import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
 import CustomPropertyReview from "../CustomPropertyReview/CustomPropertyReview";
+import StarRating from "../StarRating/StarRating";
+import TextReview from "../TextReview/TextReview";
 
 const Stack = createStackNavigator();
 
@@ -19,7 +18,10 @@ function Review({ route }) {
           }}
         >
           <Stack.Screen name="starRatingModal" component={StarRating} />
-          <Stack.Screen name="customPropertyModal" component={CustomPropertyReview} />
+          <Stack.Screen
+            name="customPropertyModal"
+            component={CustomPropertyReview}
+          />
           <Stack.Screen name="textReviewModal" component={TextReview} />
         </Stack.Group>
       </Stack.Navigator>

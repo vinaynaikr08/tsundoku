@@ -5,7 +5,7 @@ import {
 } from "@/Constants/URLs";
 import Slider from "@react-native-community/slider";
 import { Account } from "appwrite";
-import * as React from "react";
+import React from "react";
 import { useState } from "react";
 import {
   Alert,

@@ -1,26 +1,30 @@
-import React, {useState, useReducer} from "react";
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-  TouchableOpacity,
-} from "react-native";
-import { client } from "../appwrite";
-import { Databases, Account, Query } from "appwrite";
-import { NavigationContext, ProfileContext } from "../Contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import LibraryCarouselTabs from "@/Components/LibraryCarousel/LibraryCarouselTabs";
-import ID from "../Constants/ID";
-import Colors from "@/Constants/Colors";
-import { ActivityIndicator } from "react-native-paper";
-import { ID as UID }  from  "appwrite" ;
-import { Permission, Role } from "appwrite";
-import Toast from "react-native-toast-message";
-import { Overlay, Button } from "@rneui/base";
 import Backend from "@/Backend";
-
+import LibraryCarouselTabs from "@/Components/LibraryCarousel/LibraryCarouselTabs";
+import Colors from "@/Constants/Colors";
+import { Button, Overlay } from "@rneui/base";
+import {
+  Account,
+  Databases,
+  Permission,
+  Query,
+  Role,
+  ID as UID,
+} from "appwrite";
+import React, { useReducer, useState } from "react";
+import {
+  Keyboard,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { ActivityIndicator } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import ID from "../Constants/ID";
+import { NavigationContext } from "../Contexts";
+import { client } from "../appwrite";
 
 const databases = new Databases(client);
 const backend = new Backend();
@@ -33,22 +37,30 @@ function userPermissions(user_id: string) {
   ];
 }
 
-function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption, setDisabled) {
+function handleOnClick(
+  user_id,
+  setStatus,
+  status,
+  setButton,
+  setShowMenu,
+  setShowDeleteOption,
+  setDisabled,
+) {
   setDisabled(true);
   switch (status) {
-    case (0): 
+    case 0:
       // Send Friend Request
       sendFriendRequest(user_id, setStatus, setButton, setDisabled);
       break;
-    case (1):
+    case 1:
       // Delete Friend
       setShowDeleteOption(true);
       break;
-    case (2):
+    case 2:
       // Friend Request Sent
       deleteFriend(user_id, status, setStatus, setButton, setDisabled);
       break;
-    case (3):
+    case 3:
       // Friend Request Incoming
       setShowMenu(true);
       break;
@@ -58,10 +70,9 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
 async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
   const account = new Account(client);
   const info = await account.get();
-  const current_user_id =  info.$id;
+  const current_user_id = info.$id;
   const name = info.name;
   try {
-
     const rest = await databases.listDocuments(
       ID.mainDBID,
       ID.friendsCollectionID,
@@ -75,7 +86,7 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
             Query.equal("requester", user_id),
             Query.equal("requestee", current_user_id),
           ]),
-        ])
+        ]),
       ],
     );
 
@@ -97,93 +108,113 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
       {
         requester: current_user_id,
         requestee: user_id,
-        status: "PENDING"
+        status: "PENDING",
       },
       userPermissions(current_user_id),
     );
 
-    promise.then(function (response) {
-      // Success
-      // pending out
-      setStatus(2);
-      setButton("Friend Request Sent") 
-      Toast.show({
-        type: "success",
-        text1: "Friend Request Sent",
-        position: "bottom",
-        visibilityTime: 2000,
-      });
-      // get notification settings
-      try {
+    promise.then(
+      function (response) {
+        // Success
+        // pending out
+        setStatus(2);
+        setButton("Friend Request Sent");
+        Toast.show({
+          type: "success",
+          text1: "Friend Request Sent",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
+        // get notification settings
+        try {
           const promise = databases.listDocuments(
-              ID.mainDBID,
-              ID.notificationsCollectionID,
-              [Query.equal("user_id", user_id),],
+            ID.mainDBID,
+            ID.notificationsCollectionID,
+            [Query.equal("user_id", user_id)],
           );
 
-          promise.then(function (response) {
-            const documents = response.documents;
-            if (documents.length == 0) {
-              const promise1 = databases.createDocument(
-                ID.mainDBID,
-                ID.notificationsCollectionID,
-                UID.unique(),
-                {
-                  user_id: user_id,
-                  general: true,
-                  new_follower: true,
-                  friend_reading_status_update: true,
-                },
-              );
-              backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
-            } else {
-              if (documents[0].general && documents[0].new_follower) {
-                backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
+          promise
+            .then(function (response) {
+              const documents = response.documents;
+              if (documents.length == 0) {
+                const promise1 = databases.createDocument(
+                  ID.mainDBID,
+                  ID.notificationsCollectionID,
+                  UID.unique(),
+                  {
+                    user_id: user_id,
+                    general: true,
+                    new_follower: true,
+                    friend_reading_status_update: true,
+                  },
+                );
+                backend.sendNotification(
+                  user_id,
+                  "friend_req",
+                  "Friend Request",
+                  name + " has sent you a friend request!",
+                );
+              } else {
+                if (documents[0].general && documents[0].new_follower) {
+                  backend.sendNotification(
+                    user_id,
+                    "friend_req",
+                    "Friend Request",
+                    name + " has sent you a friend request!",
+                  );
+                }
               }
-            }
-          }).catch((error) => {
-            console.log(error);
-          });
-      } catch (error) {
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } catch (error) {
           console.log(error);
-      }
-      setDisabled(false);
-    }, function (error) {
-      console.log(error); // Failure
-      setDisabled(false);
-    });
+        }
+        setDisabled(false);
+      },
+      function (error) {
+        console.log(error); // Failure
+        setDisabled(false);
+      },
+    );
   } catch (error) {
     console.error(error);
     setDisabled(false);
   }
 }
 
-async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend?) {
+async function deleteFriend(
+  user_id,
+  status,
+  setStatus,
+  setButton,
+  setDisabled,
+  setFriend?,
+) {
   const account = new Account(client);
-  account
-    .get()
-    .then((response) => {
-      const current_user_id = response.$id;
-      const promise = databases.listDocuments(
-        ID.mainDBID,
-        ID.friendsCollectionID,
-        [
-          Query.or([
-            Query.and([
-              Query.equal("requester", current_user_id),
-              Query.equal("requestee", user_id),
-            ]),
-            Query.and([
-              Query.equal("requester", user_id),
-              Query.equal("requestee", current_user_id),
-            ]),
-          ])
-          
-        ],
-      );
-      promise.then(function (response) {
+  account.get().then((response) => {
+    const current_user_id = response.$id;
+    const promise = databases.listDocuments(
+      ID.mainDBID,
+      ID.friendsCollectionID,
+      [
+        Query.or([
+          Query.and([
+            Query.equal("requester", current_user_id),
+            Query.equal("requestee", user_id),
+          ]),
+          Query.and([
+            Query.equal("requester", user_id),
+            Query.equal("requestee", current_user_id),
+          ]),
+        ]),
+      ],
+    );
+    promise
+      .then(function (response) {
         const documents = response.documents;
-        let promise_1 = null
+        let promise_1 = null;
         try {
           const doc_id = documents[0].$id;
           promise_1 = databases.deleteDocument(
@@ -202,46 +233,49 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, 
           return;
         }
 
-        promise_1.then(function (response_1) {
-          // Success
-          switch (status) {
-            case 1:
-              Toast.show({
-                type: "success",
-                text1: "Friend Removed",
-                position: "bottom",
-                visibilityTime: 2000,
-              });
-              setFriend(false);
-              break;
-            case 2:
-              Toast.show({
-                type: "success",
-                text1: "Friend Request Cancelled",
-                position: "bottom",
-                visibilityTime: 2000,
-              });
-              break;
-            case 3:
-              Toast.show({
-                type: "success",
-                text1: "Friend Request Declined",
-                position: "bottom",
-                visibilityTime: 2000,
-              });
-              break;
-          }
-          setDisabled(false);
-          
-          // no status
-          setStatus(0);
-          setButton("Send Friend Request");
-          
-        }, function (error) {
-          console.log(error); // Failure
-          setDisabled(false);
-        });
-      }).catch((error) => {
+        promise_1.then(
+          function (response_1) {
+            // Success
+            switch (status) {
+              case 1:
+                Toast.show({
+                  type: "success",
+                  text1: "Friend Removed",
+                  position: "bottom",
+                  visibilityTime: 2000,
+                });
+                setFriend(false);
+                break;
+              case 2:
+                Toast.show({
+                  type: "success",
+                  text1: "Friend Request Cancelled",
+                  position: "bottom",
+                  visibilityTime: 2000,
+                });
+                break;
+              case 3:
+                Toast.show({
+                  type: "success",
+                  text1: "Friend Request Declined",
+                  position: "bottom",
+                  visibilityTime: 2000,
+                });
+                break;
+            }
+            setDisabled(false);
+
+            // no status
+            setStatus(0);
+            setButton("Send Friend Request");
+          },
+          function (error) {
+            console.log(error); // Failure
+            setDisabled(false);
+          },
+        );
+      })
+      .catch((error) => {
         Toast.show({
           type: "error",
           text1: "Friend Request was Removed",
@@ -250,14 +284,96 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, 
         });
         setDisabled(false);
       });
-    });
+  });
 }
 
-async function acceptFriend(user_id, setStatus, setButton, setFriend, setDisabled) {
+async function acceptFriend(
+  user_id,
+  setStatus,
+  setButton,
+  setFriend,
+  setDisabled,
+) {
   const account = new Account(client);
-  account
-    .get()
-    .then((response) => {
+  account.get().then((response) => {
+    const current_user_id = response.$id;
+    const promise = databases.listDocuments(
+      ID.mainDBID,
+      ID.friendsCollectionID,
+      [
+        Query.or([
+          Query.and([
+            Query.equal("requester", current_user_id),
+            Query.equal("requestee", user_id),
+          ]),
+          Query.and([
+            Query.equal("requester", user_id),
+            Query.equal("requestee", current_user_id),
+          ]),
+        ]),
+      ],
+    );
+    promise.then(function (response) {
+      const documents = response.documents;
+      let promise_1 = null;
+      try {
+        const doc_id = documents[0].$id;
+        promise_1 = databases.updateDocument(
+          ID.mainDBID,
+          ID.friendsCollectionID,
+          doc_id,
+          {
+            status: "ACCEPTED",
+          },
+        );
+      } catch (error) {
+        Toast.show({
+          type: "error",
+          text1: "Friend Request was Removed",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
+        setDisabled(false);
+        return;
+      }
+      promise_1.then(
+        function (response_1) {
+          // Success
+          // friends
+          setDisabled(false);
+          setStatus(1);
+          setFriend(true);
+          setButton("Delete Friend");
+          Toast.show({
+            type: "success",
+            text1: "Friend Request Accepted",
+            position: "bottom",
+            visibilityTime: 2000,
+          });
+        },
+        function (error) {
+          console.log(error); // Failure
+        },
+      );
+    });
+  });
+}
+
+export const UserProfile = ({ navigation, route }) => {
+  const [update, forceUpdate] = useReducer((x) => x + 1, 0);
+  const { username, user_id } = route.params;
+  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState(0);
+  const [button, setButton] = useState("");
+  const [friend, setFriend] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showDeleteOption, setShowDeleteOption] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  React.useEffect(() => {
+    console.log("updated");
+    const account = new Account(client);
+    let status_1;
+    account.get().then((response) => {
       const current_user_id = response.$id;
       const promise = databases.listDocuments(
         ID.mainDBID,
@@ -272,90 +388,12 @@ async function acceptFriend(user_id, setStatus, setButton, setFriend, setDisable
               Query.equal("requester", user_id),
               Query.equal("requestee", current_user_id),
             ]),
-          ])
-          
+          ]),
         ],
       );
-      promise.then(function (response) {
-        const documents = response.documents;
-        let promise_1 = null;
-        try {
-          const doc_id = documents[0].$id;
-          promise_1 = databases.updateDocument(
-            ID.mainDBID,
-            ID.friendsCollectionID,
-            doc_id,
-            {
-              status: "ACCEPTED",
-            }
-          );
-        } catch (error) {
-          Toast.show({
-            type: "error",
-            text1: "Friend Request was Removed",
-            position: "bottom",
-            visibilityTime: 2000,
-          });
-          setDisabled(false);
-          return;
-        }
-        promise_1.then(function (response_1) {
-          // Success
-          // friends
-          setDisabled(false);
-          setStatus(1);
-          setFriend(true);
-          setButton("Delete Friend");
-          Toast.show({
-            type: "success",
-            text1: "Friend Request Accepted",
-            position: "bottom",
-            visibilityTime: 2000,
-          });
-        }, function (error) {
-            console.log(error); // Failure
-        });
-      });
-    });
-}
 
-export const UserProfile = ({ navigation, route }) => {
-  const [update, forceUpdate] = useReducer(x => x + 1, 0);
-  const { username, user_id } = route.params;
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState(0);
-  const [button, setButton] = useState("");
-  const [friend, setFriend] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [showDeleteOption, setShowDeleteOption] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  React.useEffect(() => {
-    console.log('updated');
-    const account = new Account(client);
-    let status_1;
-    account
-      .get()
-      .then((response) => {
-        const current_user_id = response.$id;
-        const promise = databases.listDocuments(
-          ID.mainDBID,
-          ID.friendsCollectionID,
-          [
-            Query.or([
-              Query.and([
-                Query.equal("requester", current_user_id),
-                Query.equal("requestee", user_id),
-              ]),
-              Query.and([
-                Query.equal("requester", user_id),
-                Query.equal("requestee", current_user_id),
-              ]),
-            ])
-            
-          ],
-        );
-
-        promise.then(function (response) {
+      promise
+        .then(function (response) {
           const documents = response.documents;
           if (documents.length == 0) {
             // no status
@@ -372,103 +410,209 @@ export const UserProfile = ({ navigation, route }) => {
               status_1 = 3;
             }
           }
-        }).then(() =>{
+        })
+        .then(() => {
           setStatus(status_1);
           setFriend(false);
           switch (status_1) {
-            case (0): 
+            case 0:
               setButton("Send Friend Request");
               break;
-            case (1):
+            case 1:
               setButton("Delete Friend");
               setFriend(true);
               break;
-            case (2):
+            case 2:
               setButton("Friend Request Sent");
               break;
-            case (3):
+            case 3:
               setButton("Friend Request Incoming");
               break;
           }
           setLoading(false);
-        }).catch((error) => console.log(error));
-      });
+        })
+        .catch((error) => console.log(error));
+    });
   }, [update]);
 
   return (
     <NavigationContext.Provider value={navigation}>
-      {loading ? <ActivityIndicator/> :
-      <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View>
-            <TouchableOpacity
-              style={{
-                margin: 15,
-                marginBottom: 10,
-                marginLeft: 10,
-                alignSelf: "flex-start",
-              }}
-              onPress={() => navigation.pop()}
-            >
-              <Ionicons name={"chevron-back"} color="black" size={25} />
-            </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
+          <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+          >
             <View>
-              <View style={{flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    marginLeft: 20,
-                    marginBottom: 5,
-                    marginTop: 5,
-                    fontWeight: "700",
-                    fontSize: 21,
-                  }}
-                >
-                  {username}
-                </Text>
+              <TouchableOpacity
+                style={{
+                  margin: 15,
+                  marginBottom: 10,
+                  marginLeft: 10,
+                  alignSelf: "flex-start",
+                }}
+                onPress={() => navigation.pop()}
+              >
+                <Ionicons name={"chevron-back"} color="black" size={25} />
+              </TouchableOpacity>
+              <View>
+                <View style={{ flexDirection: "row" }}>
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      marginBottom: 5,
+                      marginTop: 5,
+                      fontWeight: "700",
+                      fontSize: 21,
+                    }}
+                  >
+                    {username}
+                  </Text>
 
-                {friend && <View>
-                  <Text style={{color: "green"}}>friend</Text>
-                </View>}
-              </View>
+                  {friend && (
+                    <View>
+                      <Text style={{ color: "green" }}>friend</Text>
+                    </View>
+                  )}
+                </View>
 
-              <View style={{alignItems: 'flex-start'}}>
-                <View style={{ backgroundColor: friend ? 'red' : Colors.BUTTON_PURPLE, borderColor: 'gray', borderWidth: 1, justifyContent: 'center', alignItems: 'center', borderRadius: 10, marginBottom: 20, marginLeft: 20}}>
-                  <TouchableOpacity disabled={disabled} style={{padding: 10, paddingLeft: 15, paddingRight: 15}} onPress={() => {forceUpdate(); handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption, setDisabled);}}>
-                    <Text style={{color: 'white'}}>{button}</Text>
-                  </TouchableOpacity> 
+                <View style={{ alignItems: "flex-start" }}>
+                  <View
+                    style={{
+                      backgroundColor: friend ? "red" : Colors.BUTTON_PURPLE,
+                      borderColor: "gray",
+                      borderWidth: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 10,
+                      marginBottom: 20,
+                      marginLeft: 20,
+                    }}
+                  >
+                    <TouchableOpacity
+                      disabled={disabled}
+                      style={{ padding: 10, paddingLeft: 15, paddingRight: 15 }}
+                      onPress={() => {
+                        forceUpdate();
+                        handleOnClick(
+                          user_id,
+                          setStatus,
+                          status,
+                          setButton,
+                          setShowMenu,
+                          setShowDeleteOption,
+                          setDisabled,
+                        );
+                      }}
+                    >
+                      <Text style={{ color: "white" }}>{button}</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-        {friend ? <LibraryCarouselTabs user_id={user_id}/> : 
-        <View style={{paddingLeft: 20}}>
-          <Text>You must be friends to view the other person's shelf!</Text>
-        </View>}
-        <Overlay
-          isVisible={showMenu}
-          onBackdropPress={() => {setShowMenu(false); setDisabled(false)}}
-          overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '60%', height: '15%', borderRadius: 10}}
-        >
-          <Text style={{fontSize: 20, paddingBottom: 10}}>Accept Friend Request?</Text>
-          <View style={{flexDirection: 'row', }}>
-            <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => {acceptFriend(user_id, setStatus, setButton, setFriend, setDisabled); setShowMenu(false); forceUpdate()}}/>
-            <Button title="Decline" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled); setShowMenu(false); forceUpdate();}}/>
-          </View>
-        </Overlay>
-        
-        <Overlay
-          isVisible={showDeleteOption}
-          onBackdropPress={() => {setShowDeleteOption(false); setDisabled(false)}}
-          overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '50%', height: '15%', borderRadius: 10}}
-        >
-          <Text style={{fontSize: 20, paddingBottom: 10}}>Delete Friend?</Text>
-          <View style={{flexDirection: 'row', }}>
-            <Button title="Delete" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend); setShowDeleteOption(false); forceUpdate()}}/>
-          </View>
-        </Overlay>
-        
-      </SafeAreaView>}
+          </TouchableWithoutFeedback>
+          {friend ? (
+            <LibraryCarouselTabs user_id={user_id} />
+          ) : (
+            <View style={{ paddingLeft: 20 }}>
+              <Text>You must be friends to view the other person's shelf!</Text>
+            </View>
+          )}
+          <Overlay
+            isVisible={showMenu}
+            onBackdropPress={() => {
+              setShowMenu(false);
+              setDisabled(false);
+            }}
+            overlayStyle={{
+              backgroundColor: "white",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "60%",
+              height: "15%",
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, paddingBottom: 10 }}>
+              Accept Friend Request?
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Button
+                title="Accept"
+                color={"green"}
+                style={{ marginRight: 10 }}
+                onPress={() => {
+                  acceptFriend(
+                    user_id,
+                    setStatus,
+                    setButton,
+                    setFriend,
+                    setDisabled,
+                  );
+                  setShowMenu(false);
+                  forceUpdate();
+                }}
+              />
+              <Button
+                title="Decline"
+                color={"red"}
+                onPress={() => {
+                  deleteFriend(
+                    user_id,
+                    status,
+                    setStatus,
+                    setButton,
+                    setDisabled,
+                  );
+                  setShowMenu(false);
+                  forceUpdate();
+                }}
+              />
+            </View>
+          </Overlay>
+
+          <Overlay
+            isVisible={showDeleteOption}
+            onBackdropPress={() => {
+              setShowDeleteOption(false);
+              setDisabled(false);
+            }}
+            overlayStyle={{
+              backgroundColor: "white",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "50%",
+              height: "15%",
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20, paddingBottom: 10 }}>
+              Delete Friend?
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <Button
+                title="Delete"
+                color={"red"}
+                onPress={() => {
+                  deleteFriend(
+                    user_id,
+                    status,
+                    setStatus,
+                    setButton,
+                    setDisabled,
+                    setFriend,
+                  );
+                  setShowDeleteOption(false);
+                  forceUpdate();
+                }}
+              />
+            </View>
+          </Overlay>
+        </SafeAreaView>
+      )}
     </NavigationContext.Provider>
   );
 };

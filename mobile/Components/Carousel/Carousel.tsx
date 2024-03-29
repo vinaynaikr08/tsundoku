@@ -1,28 +1,18 @@
+import React, { useContext, useRef, useState } from "react";
 import {
   Animated,
-  Dimensions,
   FlatList,
+  Image,
+  Pressable,
   StyleSheet,
   Text,
-  View,
-  Button,
-  Pressable,
-  Image,
-  ImageBackground,
   TouchableOpacity,
+  View,
 } from "react-native";
-import React, { useContext } from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
 
 import Colors from "../../Constants/Colors";
-import ShelfModal from "../ShelfModal";
-import { useNavigation } from "@react-navigation/native";
 
 import { NavigationContext } from "../../Contexts";
-import {
-  BACKEND_API_AUTHOR_SEARCH_URL,
-  BACKEND_API_BOOK_SEARCH_URL,
-} from "../../Constants/URLs";
 
 type bookInfo = {
   title: string;
@@ -135,21 +125,26 @@ export const Carousel = ({ books, shelf }) => {
             );
           }}
         />
-        {books.length > 0 && <View
-          style={{
-            backgroundColor: "white",
-            alignSelf: "center",
-          }}
-        >
-          <Pressable
-            onPress={() =>
-              navigation.navigate("shelfModal", { bookData: books, shelf: shelf })
-            }
-            style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
+        {books.length > 0 && (
+          <View
+            style={{
+              backgroundColor: "white",
+              alignSelf: "center",
+            }}
           >
-            <Text>View All</Text>
-          </Pressable>
-        </View>}
+            <Pressable
+              onPress={() =>
+                navigation.navigate("shelfModal", {
+                  bookData: books,
+                  shelf: shelf,
+                })
+              }
+              style={{ backgroundColor: Colors.BUTTON_GRAY, padding: 10 }}
+            >
+              <Text>View All</Text>
+            </Pressable>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -175,7 +170,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
-    
   },
   title: {
     fontSize: 30,
@@ -196,7 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     textAlign: "center",
-    margin: 10
+    margin: 10,
   },
 });
 

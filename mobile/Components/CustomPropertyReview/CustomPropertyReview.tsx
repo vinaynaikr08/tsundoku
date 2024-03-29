@@ -5,7 +5,7 @@ import {
 } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
-import * as React from "react";
+import React from "react";
 import {
   Alert,
   Pressable,
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 10,
-    paddingLeft: 10
+    paddingLeft: 10,
   },
   nextButtonText: {
     color: "black",
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderBottomWidth: 0.2,
-    borderBottomColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR
+    borderBottomColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
   },
   dropdownButtonTxtStyle: {
     flex: 1,
