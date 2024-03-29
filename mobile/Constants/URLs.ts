@@ -12,5 +12,5 @@ export const BACKEND_API_CUSTOM_PROPERTY_CATEGORIES_URL = `${BACKEND_API_URL}/v0
 export const BACKEND_API_CUSTOM_PROPERTY_DATA_URL = `${BACKEND_API_URL}/v0/custom_property/data`;
 export const BACKEND_API_FRIEND_URL = `${BACKEND_API_URL}/v0/friends`;
 
-export const BACKEND_API_USER_URL = `${BACKEND_API_URL}/v0/users/`;
+export const BACKEND_API_USER_URL = `${BACKEND_API_URL}/v0/users`;
 export const BACKEND_API_USERNAME_URL = `${BACKEND_API_URL}/v0/users/username`;
