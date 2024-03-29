@@ -2,7 +2,10 @@ const sdk = require("node-appwrite");
 
 import { NextRequest, NextResponse } from "next/server";
 
-import { construct_development_api_response } from "../../../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../../../dev_api_response";
 import { checkUserToken } from "../../../userContext";
 import { client } from "@/app/appwrite";
 import { AppwriteException } from "node-appwrite";
@@ -30,12 +33,13 @@ export async function GET(
       response_name: "name",
     });
   } catch (error: any) {
-    if ((error as AppwriteException).message === "user_not_found") {
+    // @ts-ignore: Appwrite types stuff
+    if ((error as AppwriteException).type === "user_not_found") {
       return construct_development_api_response({
         message: "The specified user ID cannot be found.",
         status_code: 404,
       });
     }
-    throw error;
+    return handle_error(error);
   }
 }
