@@ -159,7 +159,7 @@ async function getActivity(book_id: string) {
 
     activity.sort(
       (a, b) =>
-        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
 
     return activity;
