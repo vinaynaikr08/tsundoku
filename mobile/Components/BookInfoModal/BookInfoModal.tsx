@@ -122,20 +122,23 @@ async function sendNotificationToFriends(state, title) {
                             friend_reading_status_update: true,
                           },
                         );
+                        general = true;
+                        statuses = true;
                       } else {
                         general = documents[0].general;
                         statuses = documents[0].friend_reading_status_update;
+                        console.log(documents[0]);
+                      }
+                      if (general) {
+                        if (statuses) {
+                          if (friend.notif) {
+                            backend.sendNotification(friend.id, "status_update", name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
+                          }
+                        }
                       }
                     });
               } catch (error) {
                   console.log(error);
-              }
-              if (general) {
-                if (statuses) {
-                  if (friend.notif) {
-                    backend.sendNotification(friend.id, "status_update", name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
-                  }
-                }
               }
           }
         } catch (error) {

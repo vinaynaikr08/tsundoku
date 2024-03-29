@@ -18,7 +18,7 @@ async function updateNotifications(doc_ids, in_or_out, friends) {
   const account = new Account(client);
   const user_id = (await account.get()).$id;
   for (let i = 0; i < doc_ids.length; i++) {
-    if (in_or_out[0] == 1) {
+    if (in_or_out[i] == 1) {
       await databases.updateDocument(
         ID.mainDBID,
         ID.friendsCollectionID,
@@ -135,7 +135,7 @@ function ManageFriendsModal ({ navigation }) {
   }, [confirmation]);
 
   const debounceUpdates = React.useCallback(
-    debounce(updateNotifications, 5000),
+    debounce(updateNotifications, 3000),
     [],
   );
   return (
