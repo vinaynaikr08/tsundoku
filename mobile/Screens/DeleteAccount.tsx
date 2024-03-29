@@ -52,7 +52,7 @@ function DeleteAccount() {
         });
       } else {
         console.error("Error deleting account");
-        console.error(`${res.status} - ${JSON.stringify(res.json())}`);
+        console.error(`${res.status} - ${res}`);
       }
     } catch (error: any) {
       console.error(error);
