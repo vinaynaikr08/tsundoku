@@ -8,11 +8,13 @@ import { client } from "@/appwrite";
 import { Button, CheckBox } from "@rneui/base";
 import { BACKEND_API_USER_URL } from "@/Constants/URLs";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
+import Toast from "react-native-toast-message";
 
 const account = new Account(client);
 
 function DeleteAccount() {
-  const { setLoggedIn } = React.useContext(LoginStateContext);
+  const { setLoggedIn, refreshLoginState } =
+    React.useContext(LoginStateContext);
   const [confirmed, setConfirmed] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
@@ -29,7 +31,15 @@ function DeleteAccount() {
       if (res.ok) {
         account.deleteSessions();
         setLoggedIn(false);
+        Toast.show({
+          type: "success",
+          text1: "Your account was successfully deleted! See you again soon!",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
       } else {
+        // User might have stale auth
+        refreshLoginState();
         console.error("Error deleting account");
         console.error(`${res.status} - ${JSON.stringify(res.json())}`);
       }
