@@ -254,46 +254,6 @@ export const BookInfoModal = ({ route, navigation }) => {
             padding: 0,
           }}
         >
-          {/* <StatusButtonView /> */}
-          {/* <SelectDropdown
-            data={Object.values(BOOK_STATE_MAPPING)}
-            onSelect={(state) => handleOptionSelect(state)}
-            buttonTextAfterSelection={() => {
-              return "";
-            }}
-            defaultButtonText={""}
-            buttonStyle={{
-              backgroundColor:
-                status === BookState.None
-                  ? Colors.BUTTON_PURPLE
-                  : Colors.BUTTON_GRAY,
-              paddingVertical: 5,
-              borderRadius: 13,
-              width: "28%",
-              height: "100%",
-            }}
-            dropdownStyle={styles.dropdownStyle}
-            dropdownOverlayColor={"transparent"}
-            rowTextStyle={{ fontSize: 14 }}
-            renderDropdownIcon={(isOpened) => {
-              return (
-                <Icon
-                  name={
-                    isOpened
-                      ? "chevron-up-circle-outline"
-                      : "chevron-down-circle-outline"
-                  }
-                  color={
-                    status === BookState.None
-                      ? Colors.BUTTON_GRAY
-                      : Colors.BUTTON_PURPLE
-                  }
-                  size={25}
-                />
-              );
-            }}
-            dropdownIconPosition={"left"}
-          /> */}
           <SelectDropdown
             data={Object.values(BOOK_STATE_MAPPING)}
             onSelect={(state) => handleOptionSelect(state, bookInfo.title)}
@@ -305,11 +265,9 @@ export const BookInfoModal = ({ route, navigation }) => {
                       status === BookState.None
                         ? Colors.BUTTON_PURPLE
                         : Colors.BUTTON_GRAY,
-                    // paddingVertical: 5,
                     paddingBottom: 11,
                     borderRadius: 13,
                     width: "28%",
-                    // alignContent: "center",
                     alignItems: "center",
                     height: "100%",
                   }}

@@ -1,27 +1,22 @@
+import ID from "@/Constants/ID";
+import { BACKEND_API_URL } from "@/Constants/URLs";
+import { client } from "@/appwrite";
+import { Account, Databases, Query } from "appwrite";
 import * as React from "react";
+import { useState } from "react";
 import {
-  Button,
+  ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
-  Pressable,
   TouchableOpacity,
-  SafeAreaView,
+  View,
 } from "react-native";
-import { BACKEND_API_URL } from "@/Constants/URLs";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Colors from "../../Constants/Colors";
-import Dimensions from "../../Constants/Dimensions";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useState } from "react";
-import { Account, Databases, Query } from "appwrite";
-import { client } from "@/appwrite";
-import ID from "@/Constants/ID";
-
-const Tab = createMaterialTopTabNavigator();
+import useSWR from "swr";
+import Colors from "../../Constants/Colors";
+import Dimensions from "../../Constants/Dimensions";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -60,7 +55,7 @@ async function getReviews(book_id: string) {
         desc: review_data.description,
         username: name,
         id: document.$id,
-        user_id: review_data.user_id
+        user_id: review_data.user_id,
       });
     }),
   );
@@ -70,13 +65,8 @@ async function getReviews(book_id: string) {
 }
 
 export const BookInfoModalReview = ({ bookInfo, navigation }) => {
-  const [reviews, setReviews] = React.useState([]);
+  const { data, error, isLoading } = useSWR(bookInfo.id, getReviews);
 
-  React.useEffect(() => {
-    (async () => {
-      setReviews(await getReviews(bookInfo.id));
-    })();
-  }, []);
   const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
   const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
 
@@ -122,9 +112,17 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      {reviews.length === 0 ? (
+      {data.length === 0 ? (
         <Text
           style={{
             fontSize: 20,
@@ -138,7 +136,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
       ) : (
         <View style={{ flex: 1, paddingBottom: 330 }}>
           <FlatList
-            data={reviews}
+            data={data}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.username}
             ListHeaderComponent={() => (
