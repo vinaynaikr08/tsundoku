@@ -13,12 +13,25 @@ import Toast from "react-native-toast-message";
 const account = new Account(client);
 
 function DeleteAccount() {
-  const { setLoggedIn, refreshLoginState } =
+  const { loggedIn, setLoggedIn, refreshLoginState } =
     React.useContext(LoginStateContext);
   const [confirmed, setConfirmed] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
   async function deleteAccount() {
+    // User might have stale auth
+    refreshLoginState();
+
+    if (!loggedIn) {
+      Toast.show({
+        type: "error",
+        text1:
+          "Your session expired. Please sign-in again to proceed with account deletion.",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+      return;
+    }
     try {
       const res = await fetch(`${BACKEND_API_USER_URL}`, {
         method: "DELETE",
@@ -38,8 +51,6 @@ function DeleteAccount() {
           visibilityTime: 2000,
         });
       } else {
-        // User might have stale auth
-        refreshLoginState();
         console.error("Error deleting account");
         console.error(`${res.status} - ${JSON.stringify(res.json())}`);
       }
