@@ -19,8 +19,12 @@ export async function DELETE(_request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
+  console.log(`Got request to delete account with JWT ${authToken}`);
+
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
+
+  console.log(`Auth check succeeded. Proceeding to delete...`);
 
   try {
     // Delete all user data
