@@ -23,7 +23,7 @@ const account = new Account(client);
 
 function PropertyInput({ property, propertyData, setPropertyData, index }) {
   let newProperty;
-  const [categories, setCategories] = React.useState(null);
+  const [categories, setCategories] = React.useState([]);
   const booleanCategories = ["true", "false"];
   const handleInputChange = (value: string) => {
     const newPropertyData = [...propertyData];
