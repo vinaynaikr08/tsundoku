@@ -32,12 +32,15 @@ function DeleteAccount() {
       });
       return;
     }
+
     try {
+      const jwt = (await account.createJWT()).jwt;
+      console.log(`Attempting to delete account with JWT ${jwt}...`);
       const res = await fetch(`${BACKEND_API_USER_URL}`, {
         method: "DELETE",
         headers: new Headers({
           "Content-Type": "application/json",
-          Authorization: "Bearer " + (await account.createJWT()).jwt,
+          Authorization: "Bearer " + jwt,
         }),
       });
 
@@ -51,8 +54,8 @@ function DeleteAccount() {
           visibilityTime: 2000,
         });
       } else {
-        console.error("Error deleting account");
-        console.error(`${res.status} - ${res}`);
+        console.error("Error deleting account!");
+        console.error(`${res.status} - ${await res.json()}`);
       }
     } catch (error: any) {
       console.error(error);
