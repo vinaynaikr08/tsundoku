@@ -10,7 +10,6 @@ import {
   FlatList,
 
 } from "react-native";
-import { DATA } from "@/Components/BookSearchBar/Genres";
 import { Databases, Query, Account } from "appwrite";
 import { client } from "@/appwrite";
 import CommunityTabs from "../Components/CommunityTabs/CommunityTabs";

@@ -222,9 +222,9 @@ function FriendsTab(bookInfo) {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1, }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        <View style={{ marginHorizontal: 20 }}>
+        <View style={{ marginHorizontal: 20,  }}>
           <BookSearchButton
             navigation={navigation}
             placeholder={"Search all users"}
@@ -325,7 +325,7 @@ function FriendsTab(bookInfo) {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
