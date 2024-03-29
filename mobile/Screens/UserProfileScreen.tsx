@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useReducer} from "react";
 import {
   View,
   Text,
@@ -10,7 +10,6 @@ import { client } from "../appwrite";
 import { Databases, Account, Query } from "appwrite";
 import { NavigationContext, ProfileContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProfileTabs from "@/Components/ProfileTabs/ProfileTabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LibraryCarouselTabs from "@/Components/LibraryCarousel/LibraryCarouselTabs";
 import ID from "../Constants/ID";
@@ -44,7 +43,6 @@ function handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setSh
     case (1):
       // Delete Friend
       setShowDeleteOption(true);
-      console.log("here");
       break;
     case (2):
       // Friend Request Sent
@@ -84,7 +82,7 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
     if (rest.documents.length !== 0) {
       Toast.show({
         type: "error",
-        text1: "Already Friends or Friend Request Sent/Incoming",
+        text1: "Already Friends or Pending Request",
         position: "bottom",
         visibilityTime: 2000,
       });
@@ -143,6 +141,8 @@ async function sendFriendRequest(user_id, setStatus, setButton, setDisabled) {
                 backend.sendNotification(user_id, "friend_req", "Friend Request", name + " has sent you a friend request!");
               }
             }
+          }).catch((error) => {
+            console.log(error);
           });
       } catch (error) {
           console.log(error);
@@ -183,12 +183,25 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, 
       );
       promise.then(function (response) {
         const documents = response.documents;
-        const doc_id = documents[0].$id;
-        const promise_1 = databases.deleteDocument(
-          ID.mainDBID,
-          ID.friendsCollectionID,
-          doc_id,
-        );
+        let promise_1 = null
+        try {
+          const doc_id = documents[0].$id;
+          promise_1 = databases.deleteDocument(
+            ID.mainDBID,
+            ID.friendsCollectionID,
+            doc_id,
+          );
+        } catch (error) {
+          Toast.show({
+            type: "error",
+            text1: "Friend Request was Removed",
+            position: "bottom",
+            visibilityTime: 2000,
+          });
+          setDisabled(false);
+          return;
+        }
+
         promise_1.then(function (response_1) {
           // Success
           switch (status) {
@@ -228,6 +241,14 @@ async function deleteFriend(user_id, status, setStatus, setButton, setDisabled, 
           console.log(error); // Failure
           setDisabled(false);
         });
+      }).catch((error) => {
+        Toast.show({
+          type: "error",
+          text1: "Friend Request was Removed",
+          position: "bottom",
+          visibilityTime: 2000,
+        });
+        setDisabled(false);
       });
     });
 }
@@ -257,15 +278,27 @@ async function acceptFriend(user_id, setStatus, setButton, setFriend, setDisable
       );
       promise.then(function (response) {
         const documents = response.documents;
-        const doc_id = documents[0].$id;
-        const promise_1 = databases.updateDocument(
-          ID.mainDBID,
-          ID.friendsCollectionID,
-          doc_id,
-          {
-            status: "ACCEPTED",
-          }
-        );
+        let promise_1 = null;
+        try {
+          const doc_id = documents[0].$id;
+          promise_1 = databases.updateDocument(
+            ID.mainDBID,
+            ID.friendsCollectionID,
+            doc_id,
+            {
+              status: "ACCEPTED",
+            }
+          );
+        } catch (error) {
+          Toast.show({
+            type: "error",
+            text1: "Friend Request was Removed",
+            position: "bottom",
+            visibilityTime: 2000,
+          });
+          setDisabled(false);
+          return;
+        }
         promise_1.then(function (response_1) {
           // Success
           // friends
@@ -287,6 +320,7 @@ async function acceptFriend(user_id, setStatus, setButton, setFriend, setDisable
 }
 
 export const UserProfile = ({ navigation, route }) => {
+  const [update, forceUpdate] = useReducer(x => x + 1, 0);
   const { username, user_id } = route.params;
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState(0);
@@ -296,6 +330,7 @@ export const UserProfile = ({ navigation, route }) => {
   const [showDeleteOption, setShowDeleteOption] = useState(false);
   const [disabled, setDisabled] = useState(false);
   React.useEffect(() => {
+    console.log('updated');
     const account = new Account(client);
     let status_1;
     account
@@ -339,6 +374,7 @@ export const UserProfile = ({ navigation, route }) => {
           }
         }).then(() =>{
           setStatus(status_1);
+          setFriend(false);
           switch (status_1) {
             case (0): 
               setButton("Send Friend Request");
@@ -357,7 +393,7 @@ export const UserProfile = ({ navigation, route }) => {
           setLoading(false);
         }).catch((error) => console.log(error));
       });
-  }, []);
+  }, [update]);
 
   return (
     <NavigationContext.Provider value={navigation}>
@@ -376,26 +412,28 @@ export const UserProfile = ({ navigation, route }) => {
             >
               <Ionicons name={"chevron-back"} color="black" size={25} />
             </TouchableOpacity>
-            <View style={{flexDirection: 'row'}}>
-              <Text
-                style={{
-                  marginLeft: 20,
-                  marginBottom: 15,
-                  marginTop: 5,
-                  fontWeight: "700",
-                  fontSize: 21,
-                }}
-              >
-                {username}
-              </Text>
+            <View>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    marginLeft: 20,
+                    marginBottom: 5,
+                    marginTop: 5,
+                    fontWeight: "700",
+                    fontSize: 21,
+                  }}
+                >
+                  {username}
+                </Text>
 
-              {friend && <View>
-                <Text style={{color: "green"}}>friend</Text>
-              </View>}
+                {friend && <View>
+                  <Text style={{color: "green"}}>friend</Text>
+                </View>}
+              </View>
 
               <View style={{alignItems: 'flex-start'}}>
                 <View style={{ backgroundColor: friend ? 'red' : Colors.BUTTON_PURPLE, borderColor: 'gray', borderWidth: 1, justifyContent: 'center', alignItems: 'center', borderRadius: 10, marginBottom: 20, marginLeft: 20}}>
-                  <TouchableOpacity disabled={disabled} style={{padding: 10, paddingLeft: 15, paddingRight: 15}} onPress={() => handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption, setDisabled)}>
+                  <TouchableOpacity disabled={disabled} style={{padding: 10, paddingLeft: 15, paddingRight: 15}} onPress={() => {forceUpdate(); handleOnClick(user_id, setStatus, status, setButton, setShowMenu, setShowDeleteOption, setDisabled);}}>
                     <Text style={{color: 'white'}}>{button}</Text>
                   </TouchableOpacity> 
                 </View>
@@ -404,29 +442,29 @@ export const UserProfile = ({ navigation, route }) => {
           </View>
         </TouchableWithoutFeedback>
         {friend ? <LibraryCarouselTabs user_id={user_id}/> : 
-        <View style={{paddingLeft: 10}}>
+        <View style={{paddingLeft: 20}}>
           <Text>You must be friends to view the other person's shelf!</Text>
         </View>}
         <Overlay
           isVisible={showMenu}
           onBackdropPress={() => {setShowMenu(false); setDisabled(false)}}
-          overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '70%', height: '20%', borderRadius: 10}}
+          overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '60%', height: '15%', borderRadius: 10}}
         >
           <Text style={{fontSize: 20, paddingBottom: 10}}>Accept Friend Request?</Text>
           <View style={{flexDirection: 'row', }}>
-            <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => {acceptFriend(user_id, setStatus, setButton, setFriend, setDisabled); setShowMenu(false)}}/>
-            <Button title="Decline" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled); setShowMenu(false)}}/>
+            <Button title="Accept" color={'green'} style={{marginRight: 10}} onPress={ () => {acceptFriend(user_id, setStatus, setButton, setFriend, setDisabled); setShowMenu(false); forceUpdate()}}/>
+            <Button title="Decline" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled); setShowMenu(false); forceUpdate();}}/>
           </View>
         </Overlay>
         
         <Overlay
           isVisible={showDeleteOption}
           onBackdropPress={() => {setShowDeleteOption(false); setDisabled(false)}}
-          overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '60%', height: '20%', borderRadius: 10}}
+          overlayStyle={{backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', width: '50%', height: '15%', borderRadius: 10}}
         >
           <Text style={{fontSize: 20, paddingBottom: 10}}>Delete Friend?</Text>
           <View style={{flexDirection: 'row', }}>
-            <Button title="Delete" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend); setShowDeleteOption(false)}}/>
+            <Button title="Delete" color={'red'} onPress={ () => {deleteFriend(user_id, status, setStatus, setButton, setDisabled, setFriend); setShowDeleteOption(false); forceUpdate()}}/>
           </View>
         </Overlay>
         
