@@ -137,7 +137,7 @@ function LibraryCarouselTabs({ user_id }) {
           />
         )}
         listeners={{
-          tabPress: (e) => {
+          tabPress: () => {
             setShelf("Currently Reading");
           },
         }}
@@ -152,7 +152,7 @@ function LibraryCarouselTabs({ user_id }) {
           />
         )}
         listeners={{
-          tabPress: (e) => {
+          tabPress: () => {
             setShelf("Want To Read");
           },
         }}
@@ -167,7 +167,7 @@ function LibraryCarouselTabs({ user_id }) {
           />
         )}
         listeners={{
-          tabPress: (e) => {
+          tabPress: () => {
             setShelf("Read");
           },
         }}
@@ -182,7 +182,7 @@ function LibraryCarouselTabs({ user_id }) {
           />
         )}
         listeners={{
-          tabPress: (e) => {
+          tabPress: () => {
             setShelf("Did Not Finish");
           },
         }}
