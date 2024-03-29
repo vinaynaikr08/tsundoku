@@ -1,35 +1,22 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
-import styled from "styled-components/native";
-import Dimensions from "../../Constants/Dimensions";
-import Colors from "../../Constants/Colors";
-import BookInfoTabs from "../BookInfoTabs";
-import SelectDropdown from "react-native-select-dropdown";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Databases, Account } from "appwrite";
-import { Query, Permission, Role } from "appwrite";
-import { client } from "@/appwrite";
+import Backend from "@/Backend";
 import ID from "@/Constants/ID";
-import Toast from "react-native-toast-message";
-import { ActivityIndicator } from "react-native-paper";
 import { BACKEND_API_BOOK_STATUS_URL } from "@/Constants/URLs";
 import { BookInfoWrapperContext } from "@/Contexts";
-import Backend from "@/Backend";
-import { BACKEND_API_URL } from "@/Constants/URLs";
-import { ID as UID }  from  "appwrite" ;
-
+import { client } from "@/appwrite";
+import { Account, Databases, Query, ID as UID } from "appwrite";
+import React from "react";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
+import SelectDropdown from "react-native-select-dropdown";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import styled from "styled-components/native";
+import Colors from "../../Constants/Colors";
+import Dimensions from "../../Constants/Dimensions";
+import BookInfoTabs from "../BookInfoTabs";
 
 const account = new Account(client);
 const databases = new Databases(client);
 const backend = new Backend();
-
-function userPermissions(user_id: string) {
-  return [
-    Permission.read(Role.user(user_id)),
-    Permission.update(Role.user(user_id)),
-    Permission.delete(Role.user(user_id)),
-  ];
-}
 
 enum BookState {
   WantToRead = "WANT_TO_READ",
@@ -90,73 +77,86 @@ async function sendNotificationToFriends(state, title) {
           ]),
         ],
       );
-      promise.then(function (response) {
-        const documents = response.documents;
-        const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
-        friends = filtered.map((friend) => (user_id == friend.requestee) ? {id: friend.requester, notif: friend.requester_notifs} : {id: friend.requestee, notif: friend.requestee_notifs});
-      })
-      .then(async () => {
-        try {
-          for (const friend of friends) {
+      promise
+        .then(function (response) {
+          const documents = response.documents;
+          const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
+          friends = filtered.map((friend) =>
+            user_id == friend.requestee
+              ? { id: friend.requester, notif: friend.requester_notifs }
+              : { id: friend.requestee, notif: friend.requestee_notifs },
+          );
+        })
+        .then(async () => {
+          try {
+            for (const friend of friends) {
               let general = true;
               let statuses = true;
               // get notification settings
               try {
-                  const promise = databases.listDocuments(
+                const promise = databases.listDocuments(
+                  ID.mainDBID,
+                  ID.notificationsCollectionID,
+                  [Query.equal("user_id", friend.id)],
+                );
+
+                promise.then(function (response) {
+                  const documents = response.documents;
+                  if (documents.length == 0) {
+                    const promise1 = databases.createDocument(
                       ID.mainDBID,
                       ID.notificationsCollectionID,
-                      [Query.equal("user_id", friend.id),],
-                  );
-
-                  promise.then(function (response) {
-                      const documents = response.documents;
-                      if (documents.length == 0) {
-                        const promise1 = databases.createDocument(
-                          ID.mainDBID,
-                          ID.notificationsCollectionID,
-                          UID.unique(),
-                          {
-                            user_id: friend.id,
-                            general: true,
-                            new_follower: true,
-                            friend_reading_status_update: true,
-                          },
+                      UID.unique(),
+                      {
+                        user_id: friend.id,
+                        general: true,
+                        new_follower: true,
+                        friend_reading_status_update: true,
+                      },
+                    );
+                    general = true;
+                    statuses = true;
+                  } else {
+                    general = documents[0].general;
+                    statuses = documents[0].friend_reading_status_update;
+                    console.log(documents[0]);
+                  }
+                  if (general) {
+                    if (statuses) {
+                      if (friend.notif) {
+                        backend.sendNotification(
+                          friend.id,
+                          "status_update",
+                          name + " has updated " + title + "!",
+                          name +
+                            " has set the status of " +
+                            title +
+                            " to " +
+                            state,
                         );
-                        general = true;
-                        statuses = true;
-                      } else {
-                        general = documents[0].general;
-                        statuses = documents[0].friend_reading_status_update;
-                        console.log(documents[0]);
                       }
-                      if (general) {
-                        if (statuses) {
-                          if (friend.notif) {
-                            backend.sendNotification(friend.id, "status_update", name + " has updated " + title + "!", name + " has set the status of " + title + " to " + state);
-                          }
-                        }
-                      }
-                    });
+                    }
+                  }
+                });
               } catch (error) {
-                  console.log(error);
+                console.log(error);
               }
+            }
+          } catch (error) {
+            console.log(error);
           }
-        } catch (error) {
-          console.log(error);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user ID:", error);
-      });
+        })
+        .catch((error) => {
+          console.error("Error fetching user ID:", error);
+        });
     })
     .catch((error) => {
       console.log("Error fetching user ID:", error);
     });
-
 }
 
 export const BookInfoModal = ({ route, navigation }) => {
-  const bookInfo = useContext(BookInfoWrapperContext);
+  const bookInfo = React.useContext(BookInfoWrapperContext);
   const [status, setStatus] = React.useState<BookState | null>(null);
 
   React.useEffect(() => {
