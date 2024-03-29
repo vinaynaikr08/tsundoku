@@ -91,18 +91,18 @@ export async function POST(request: NextRequest) {
         // You might get an error about `or` not existing in `Query`, this is normal
         // This is because the Appwrite Node SDK doesn't have the type declaration for it *yet*
         // @ts-ignore: upstream issue
-        Query.or(
+        Query.or([
           // @ts-ignore: upstream issue
-          Query.or(
+          Query.or([
             Query.equal("requester", user_id),
             Query.equal("requestee", requestee_id),
-          ),
+          ]),
           // @ts-ignore: upstream issue
-          Query.or(
+          Query.or([
             Query.equal("requester", requestee_id),
             Query.equal("requestee", user_id),
-          ),
-        ),
+          ]),
+        ]),
       ],
     );
   } catch (error: any) {
