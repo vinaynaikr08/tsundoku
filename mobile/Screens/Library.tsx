@@ -6,6 +6,8 @@ import CarouselTabs from "../Components/LibraryCarousel/LibraryCarouselTabs";
 import { NavigationContext } from "../Contexts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookSearchButton from "@/Components/BookSearchButton";
+import { Icon } from "@rneui/base";
+import Colors from "@/Constants/Colors";
 
 export const Library = (props) => {
   const { navigation } = props;
@@ -14,7 +16,7 @@ export const Library = (props) => {
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={{ flexGrow: 1, backgroundColor: "white" }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View testID="library-screen-view">
+          <View testID="library-screen-view" style={{flexDirection: 'row'}}>
             <Text
               style={{
                 marginLeft: 20,
@@ -22,10 +24,14 @@ export const Library = (props) => {
                 marginTop: 5,
                 fontWeight: "700",
                 fontSize: 21,
+                flex: 5
               }}
             >
               Library
             </Text>
+            <View style={{flex: 1, marginTop: 5}}>
+              <Icon name="notifications" ></Icon>
+            </View>
           </View>
         </TouchableWithoutFeedback>
         <View style={{ paddingLeft: 10, paddingBottom: 10, paddingRight: 10 }}>

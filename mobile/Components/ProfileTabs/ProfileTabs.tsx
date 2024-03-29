@@ -154,11 +154,21 @@ function ProfileTab(props) {
 
   function signOut() {
     (async () => {
-      await account.deleteSessions();
+      try {
+        console.log("here sign out");
+        await account.deleteSessions();
+      }
+      catch (error) {
+        console.log(error);
+      }
+    })();
+    try {
       account.get().then((response) => {
         unregisterIndieDevice(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
-      });
-    })();
+      }); 
+    } catch (error) {
+      console.log(error);
+    }
     setLoggedIn(false);
   }
 
@@ -290,7 +300,7 @@ function ProfileTab(props) {
 
           <Divider />
 
-          <TouchableOpacity onPress={signOut}>
+          <TouchableOpacity onPress={() => signOut()}>
             <View
               style={{
                 flexDirection: "row",
