@@ -36,7 +36,6 @@ export const Community = (props) => {
       .get()
       .then((response) => {
         const user_id = response.$id;
-        console.log('dis you ' + user_id);
         const promise = databases.listDocuments(
           ID.mainDBID,
           ID.notificationDataCenterCollectionID,
