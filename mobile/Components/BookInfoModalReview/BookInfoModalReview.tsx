@@ -31,34 +31,40 @@ async function getReviews(book_id: string) {
     ])
   ).documents;
 
-  await Promise.all(
-    documents.map(async (document) => {
-      const review_data = await databases.getDocument(
-        ID.mainDBID,
-        ID.reviewsCollectionID,
-        document.$id,
-      );
-      avgRating += review_data.star_rating;
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
-        {
-          method: "GET",
-          headers: new Headers({
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (await account.createJWT()).jwt,
-          }),
-        },
-      );
-      const { name } = await response.json();
-      reviews.push({
-        rating: review_data.star_rating,
-        desc: review_data.description,
-        username: name,
-        id: document.$id,
-        user_id: review_data.user_id,
-      });
-    }),
-  );
+  for (const document of documents) {
+    const review_data = await databases.getDocument(
+      ID.mainDBID,
+      ID.reviewsCollectionID,
+      document.$id,
+    );
+    avgRating += review_data.star_rating;
+    const response = await fetch(
+      `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      },
+    );
+    const res_json = await response.json();
+    if (res_json.name === undefined) {
+      console.log(`Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`)
+    }
+    const name = res_json.name || "Anonymous";
+
+    const review = {
+      rating: review_data.star_rating,
+      desc: review_data.description,
+      username: name,
+      id: document.$id,
+      user_id: review_data.user_id,
+    };
+
+    reviews.push(review);
+  }
+
   avgRating = avgRating / reviews.length;
 
   return reviews;
@@ -112,7 +118,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return (
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <ActivityIndicator />
