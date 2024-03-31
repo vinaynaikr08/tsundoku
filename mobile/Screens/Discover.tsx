@@ -17,9 +17,7 @@ import BookSearchButton from "@/Components/BookSearchButton";
 
 const windowHeight = Dimensions.get("window").height;
 
-export const Discover = (props) => {
-  const { navigation } = props;
-
+export const Discover = ({ navigation }) => {
   return (
     <NavigationContext.Provider value={navigation}>
       <SafeAreaView style={styles.safeArea}>

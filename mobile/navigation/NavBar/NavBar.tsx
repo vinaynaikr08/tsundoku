@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { Discover } from "../../Screens/Discover";
 
 const BottomBar = createBottomTabNavigator();
+
 function TrackScreen() {
   return null;
 }
