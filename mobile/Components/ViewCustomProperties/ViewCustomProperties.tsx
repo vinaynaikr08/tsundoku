@@ -1,8 +1,10 @@
 import Colors from "@/Constants/Colors";
 import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Account } from "appwrite";
-import * as React from "react";
+import React from "react";
+import { ViewCustomPropertiesWrapperStackParamList } from "../ViewCustomPropertiesWrapper";
 import {
   ActivityIndicator,
   Alert,
@@ -13,14 +15,19 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
+type Props = NativeStackScreenProps<
+  ViewCustomPropertiesWrapperStackParamList,
+  "ViewCustomProperties"
+>;
+
 const account = new Account(client);
 
-function ViewCustomProperties({ navigation }) {
-  const [properties, setProperties] = React.useState([]);
+function ViewCustomProperties({ navigation }: Props) {
+  const [properties, setProperties] = React.useState<any[]>([]);
   const [propertiesChanged, setPropertiesChanged] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
 
-  async function deleteProperty(id) {
+  async function deleteProperty(id: any) {
     try {
       const res = await fetch(
         `${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}/${id}`,
@@ -47,7 +54,7 @@ function ViewCustomProperties({ navigation }) {
     }
   }
 
-  function deletePropertyAlert(id) {
+  function deletePropertyAlert(id: string) {
     console.log("id in delete alert: " + id);
     Alert.alert(
       "Delete property?",
@@ -82,7 +89,7 @@ function ViewCustomProperties({ navigation }) {
         );
 
         const res_json = await res.json();
-        return res_json.results.documents.map((property) => {
+        return res_json.results.documents.map((property: { $id: any; name: any; type: any; }) => {
           return {
             id: property.$id,
             name: property.name,
@@ -154,7 +161,7 @@ function ViewCustomProperties({ navigation }) {
                 >
                   <Pressable
                     onPress={() =>
-                      navigation.navigate("editCustomProperty", {
+                      navigation.navigate("EditCustomProperty", {
                         propertyInfo: item,
                         setPropertiesChanged: setPropertiesChanged,
                       })

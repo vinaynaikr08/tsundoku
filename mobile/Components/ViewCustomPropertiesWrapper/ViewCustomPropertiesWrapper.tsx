@@ -1,22 +1,33 @@
-import * as React from "react";
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ViewCustomProperties from "../ViewCustomProperties/ViewCustomProperties";
 import EditCustomProperty from "../EditCustomProperty/EditCustomProperty";
 
-const Stack = createStackNavigator();
+export type ViewCustomPropertiesWrapperStackParamList = {
+  ViewCustomProperties: undefined;
+  EditCustomProperty: { propertyInfo: any; setPropertiesChanged: any };
+};
+
+const Stack = createStackNavigator<ViewCustomPropertiesWrapperStackParamList>();
 
 function ViewCustomPropertiesWrapper() {
   return (
-      <Stack.Navigator>
-        <Stack.Group
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="customPropertyList" component={ViewCustomProperties} />
-          <Stack.Screen name="editCustomProperty" component={EditCustomProperty} />
-        </Stack.Group>
-      </Stack.Navigator>
+    <Stack.Navigator>
+      <Stack.Group
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen
+          name="ViewCustomProperties"
+          component={ViewCustomProperties}
+        />
+        <Stack.Screen
+          name="EditCustomProperty"
+          component={EditCustomProperty}
+        />
+      </Stack.Group>
+    </Stack.Navigator>
   );
 }
 
