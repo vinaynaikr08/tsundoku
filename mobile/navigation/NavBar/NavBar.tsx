@@ -42,7 +42,7 @@ function NavBar() {
         name="home"
         component={Library}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Home
               name="home"
               size={Dimensions.NAVBAR_ICON_SIZE}
@@ -55,7 +55,7 @@ function NavBar() {
         name="discover"
         component={Discover}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Book
               name="book"
               size={Dimensions.NAVBAR_ICON_SIZE}
@@ -67,21 +67,21 @@ function NavBar() {
       <BottomBar.Screen
         name="+"
         component={TrackScreen}
-        listeners={({ navigation }) => ({
+        listeners={({}) => ({
           tabPress: (e) => {
             e.preventDefault();
             toggleTrackModal();
           },
         })}
         options={{
-          tabBarIcon: ({ color, size }) => <PlusIcon />,
+          tabBarIcon: ({}) => <PlusIcon />,
         }}
       />
       <BottomBar.Screen
         name="social"
         component={Community}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Icon
               name="share-social-outline"
               size={Dimensions.NAVBAR_ICON_SIZE}
@@ -94,7 +94,7 @@ function NavBar() {
         name="profile"
         component={Profile}
         options={{
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Icon
               testID="navbar-profile-screen"
               name="person-circle"

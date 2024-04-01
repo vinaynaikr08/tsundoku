@@ -20,70 +20,8 @@ import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ProfileContext } from "../../Contexts";
-import StatisticsTab from "../StatisticsTab";
 
-const Tab = createMaterialTopTabNavigator();
-
-function MyTabBar({ state, descriptors, navigation, position }) {
-  return (
-    <View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        bounces={false}
-        contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 15 }}
-      >
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-                ? options.title
-                : route.name;
-          const isFocused = state.index === index;
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-            });
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
-          return (
-            <Pressable
-              key={index}
-              onPress={onPress}
-              style={{
-                flex: 1,
-                marginHorizontal: 5,
-                backgroundColor: isFocused
-                  ? Colors.BUTTON_PURPLE
-                  : Colors.BUTTON_GRAY,
-                borderRadius: 25,
-                padding: 10,
-                paddingHorizontal: 15,
-                height: 40,
-              }}
-            >
-              <Text
-                style={{
-                  fontWeight: "600",
-                  color: isFocused ? "white" : "#777777",
-                }}
-              >
-                {label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
-}
-
-function ProfileTab(props) {
+function ManageProfile(props) {
   const { setLoggedIn } = React.useContext(LoginStateContext);
   const { navigation } = useContext(ProfileContext);
   const account = new Account(client);
@@ -327,43 +265,7 @@ function ProfileTab(props) {
   );
 }
 
-function ActivityTab({}) {
-  return (
-    <View style={{ flex: 1 }}>
-      {/* <BookInfoModalReview bookInfo={bookInfo} /> */}
-    </View>
-  );
-}
-
-function StatsTab() {
-  return (
-    <View style={{ flex: 1 }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        bounces={false}
-        contentContainerStyle={styles.scrollViewStyle}
-      >
-        <StatisticsTab></StatisticsTab>
-      </ScrollView>
-    </View>
-  );
-}
-
-function ProfileTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={{ animationEnabled: false }}
-      tabBar={(props) => <MyTabBar {...props} />}
-      sceneContainerStyle={{ backgroundColor: "transparent" }}
-    >
-      <Tab.Screen name="Profile" children={(props) => <ProfileTab />} />
-      <Tab.Screen name="Activity" children={(props) => <ActivityTab />} />
-      <Tab.Screen name="Statistics" component={StatsTab} />
-    </Tab.Navigator>
-  );
-}
-
-export default ProfileTabs;
+export default ManageProfile;
 
 const styles = StyleSheet.create({
   scrollViewStyle: {

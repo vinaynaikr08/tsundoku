@@ -24,14 +24,18 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
 const account = new Account(client);
 
-export const SignIn = () => {
+export const SignIn = (props) => {
   const [email, setEmail] = React.useState("");
+  const { navigation } = props;
   const [password, setPassword] = React.useState("");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const { setLoggedIn } = React.useContext(LoginStateContext);
 
+  const handleCreateAccount = () => {
+    navigation.navigate("create_account");
+  };
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -107,6 +111,9 @@ export const SignIn = () => {
               autoCapitalize="none"
             />
           </View>
+          <Pressable onPress={handleCreateAccount}>
+            <Text style={styles.createAccountText}>no account? create one</Text>
+          </Pressable>
           <Pressable
             testID="sign-in-signin-arrow"
             onPress={() => {
@@ -171,6 +178,14 @@ const styles = StyleSheet.create({
     margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT,
     color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
+    textAlign: "left",
+    marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
+    marginRight: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
+  },
+  createAccountText: {
+    margin: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_MARGIN,
+    fontSize: 17,
+    color: "#0544ff",
     textAlign: "left",
     marginLeft: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,
     marginRight: Dimensions.INITIAL_LAUNCH_SCREEN_TEXT_SIDE_MARGIN,

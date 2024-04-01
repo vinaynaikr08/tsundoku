@@ -20,6 +20,7 @@ import ShelfModal from "../Components/ShelfModal/ShelfModal";
 import TextReview from "../Components/TextReview/TextReview";
 import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
 import { SignIn } from "../Screens/SignIn";
+import { CreateAccount } from "../Screens/CreateAccount";
 import NavBar from "./NavBar/NavBar";
 
 const Stack = createNativeStackNavigator();
@@ -33,6 +34,7 @@ function AppNavigation() {
         <>
           <Stack.Screen name="initial_launch" component={InitialLaunchScreen} />
           <Stack.Screen name="sign_in" component={SignIn} />
+          <Stack.Screen name="create_account" component={CreateAccount} />
         </>
       ) : (
         <>
