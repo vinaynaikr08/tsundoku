@@ -21,6 +21,7 @@ import TextReview from "../Components/TextReview/TextReview";
 import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
 import { SignIn } from "../Screens/SignIn";
 import { CreateAccount } from "../Screens/CreateAccount";
+import ManageProfile from "@/Components/ManageProfile";
 import NavBar from "./NavBar/NavBar";
 
 const Stack = createNativeStackNavigator();
@@ -54,6 +55,7 @@ function AppNavigation() {
             <Stack.Screen name="shelfModal" component={ShelfModal} />
             <Stack.Screen name="notifModal" component={NotificationsModal} />
             <Stack.Screen name="manageFriends" component={ManageFriendsModal} />
+            <Stack.Screen name="manageProfile" component={ManageProfile} />
             <Stack.Screen
               name="createCustomProperty"
               options={{ gestureEnabled: false }}

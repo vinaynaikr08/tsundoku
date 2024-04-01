@@ -18,9 +18,9 @@ import {
 } from "react-native";
 import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ProfileContext } from "../../Contexts";
 import StatisticsTab from "../StatisticsTab";
+import ManageProfile from "../ManageProfile";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -87,49 +87,9 @@ function ProfileTab(props) {
   const { setLoggedIn } = React.useContext(LoginStateContext);
   const { navigation } = useContext(ProfileContext);
   const account = new Account(client);
-  const [username, setUsername] = useState(null);
-  const [email, setEmail] = useState(null);
   const navigateDeleteAccount = () => {
     navigation.navigate("DeleteAccount");
   };
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchData = async () => {
-        try {
-          const account = new Account(client);
-          const response = await account.get();
-          setEmail(response.email);
-          const fetchedUserId = response.$id;
-          const fetchedUsername = await getUsername(fetchedUserId);
-          setUsername(fetchedUsername);
-        } catch (error) {
-          console.error("Error fetching user ID or username:", error);
-        }
-      };
-
-      fetchData();
-    }, []),
-  );
-
-  async function getUsername(user_id) {
-    try {
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/users/${user_id}/name`,
-        {
-          method: "GET",
-          headers: new Headers({
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (await account.createJWT()).jwt,
-          }),
-        },
-      );
-      const usernameData = await response.json();
-      return usernameData.name;
-    } catch (error) {
-      console.error("Error fetching username:", error);
-      throw error;
-    }
-  }
 
   function signOut() {
     (async () => {
@@ -160,40 +120,7 @@ function ProfileTab(props) {
           contentContainerStyle={styles.scrollViewStyle}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.userInfoRow}>
-            <Text style={styles.userInfoText}>Username: {username}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("UsernameEditing");
-              }}
-            >
-              <MaterialIcons
-                name="edit"
-                size={22}
-                color={Colors.BUTTON_PURPLE}
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.userInfoRow}>
-            <Text
-              style={styles.userInfoText}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              Email: {email}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("EmailEditing");
-              }}
-            >
-              <MaterialIcons
-                name="edit"
-                size={22}
-                color={Colors.BUTTON_PURPLE}
-              />
-            </TouchableOpacity>
-          </View>
+          <ManageProfile navigation={navigation} />
           <Divider />
 
           <Button
