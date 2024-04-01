@@ -60,41 +60,43 @@ function ManageProfile({ navigation }) {
 
   return (
     <ProfileContext.Provider value={navigation}>
-      <ScrollView
-        testID="profile-tab-scroll-view"
-        style={{ flex: 1 }}
-        bounces={false}
-        contentContainerStyle={styles.scrollViewStyle}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.userInfoRow}>
-          <Text style={styles.userInfoText}>Username: {username}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("UsernameEditing");
-            }}
-          >
-            <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.userInfoRow}>
-          <Text
-            style={styles.userInfoText}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            Email: {email}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("EmailEditing");
-            }}
-          >
-            <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
-          </TouchableOpacity>
-        </View>
-        <Divider />
-      </ScrollView>
+      <View style={styles.userInfoRow}>
+        <Text style={styles.userInfoText}>Username: {username}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("UsernameEditing");
+          }}
+        >
+          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.userInfoRow}>
+        <Text
+          style={styles.userInfoText}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Email: {email}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("EmailEditing");
+          }}
+        >
+          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.userInfoRow}>
+        <Text style={styles.userInfoText}>Bio: {username}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("UsernameEditing");
+          }}
+        >
+          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+        </TouchableOpacity>
+      </View>
+      <Divider />
     </ProfileContext.Provider>
   );
 }
@@ -117,6 +119,7 @@ const styles = StyleSheet.create({
   },
   userInfoText: {
     fontSize: 20,
-    margin: 20,
+    marginLeft: 20,
+    margin: 12,
   },
 });

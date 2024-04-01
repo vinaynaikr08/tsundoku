@@ -3,7 +3,7 @@ import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { Account, Databases, Query } from "appwrite";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -20,11 +20,9 @@ import Dimensions from "../../Constants/Dimensions";
 
 const account = new Account(client);
 const databases = new Databases(client);
-let avgRating = 0;
 
 async function getReviews(book_id: string) {
   const reviews = [];
-  avgRating = 0;
   const documents = (
     await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
       Query.equal("book", book_id),
@@ -37,7 +35,6 @@ async function getReviews(book_id: string) {
       ID.reviewsCollectionID,
       document.$id,
     );
-    avgRating += review_data.star_rating;
     const response = await fetch(
       `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
       {
@@ -50,7 +47,9 @@ async function getReviews(book_id: string) {
     );
     const res_json = await response.json();
     if (res_json.name === undefined) {
-      console.log(`Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`)
+      console.log(
+        `Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`,
+      );
     }
     const name = res_json.name || "Anonymous";
 
@@ -64,29 +63,51 @@ async function getReviews(book_id: string) {
 
     reviews.push(review);
   }
-
-  avgRating = avgRating / reviews.length;
-
   return reviews;
 }
 
 export const BookInfoModalReview = ({ bookInfo, navigation }) => {
   const { data, error, isLoading } = useSWR(bookInfo.id, getReviews);
+  const [averageRating, setAverageRating] = useState(0);
 
-  const [thumbsUpClicked, setThumbsUpClicked] = useState(false);
-  const [thumbsDownClicked, setThumbsDownClicked] = useState(false);
-
-  const handleThumbsUpClick = () => {
-    setThumbsUpClicked(!thumbsUpClicked);
-    if (thumbsDownClicked) {
-      setThumbsDownClicked(false);
+  useEffect(() => {
+    if (!isLoading && data) {
+      let totalRating = 0;
+      data.forEach((review) => {
+        totalRating += review.rating;
+      });
+      const avgRating = totalRating / data.length;
+      setAverageRating(avgRating);
     }
+  }, [data, isLoading]);
+
+  const [thumbsUpClicked, setThumbsUpClicked] = useState([]);
+  const [thumbsDownClicked, setThumbsDownClicked] = useState([]);
+
+  const handleThumbsUpClick = (index: number) => {
+    const newThumbsUpClicked = [...thumbsUpClicked];
+    newThumbsUpClicked[index] = !newThumbsUpClicked[index];
+    if (newThumbsUpClicked[index] && thumbsDownClicked[index]) {
+      setThumbsDownClicked((prev) => {
+        const newThumbsDownClicked = [...prev];
+        newThumbsDownClicked[index] = false;
+        return newThumbsDownClicked;
+      });
+    }
+    setThumbsUpClicked(newThumbsUpClicked);
   };
-  const handleThumbsDownClick = () => {
-    setThumbsDownClicked(!thumbsDownClicked);
-    if (thumbsUpClicked) {
-      setThumbsUpClicked(false);
+
+  const handleThumbsDownClick = (index: number) => {
+    const newThumbsDownClicked = [...thumbsDownClicked];
+    newThumbsDownClicked[index] = !newThumbsDownClicked[index];
+    if (newThumbsDownClicked[index] && thumbsUpClicked[index]) {
+      setThumbsUpClicked((prev) => {
+        const newThumbsUpClicked = [...prev];
+        newThumbsUpClicked[index] = false;
+        return newThumbsUpClicked;
+      });
     }
+    setThumbsDownClicked(newThumbsDownClicked);
   };
 
   const renderReviewDescription = (desc) => {
@@ -156,7 +177,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                 <Text
                   style={{ fontSize: 20, fontWeight: "bold", marginRight: 5 }}
                 >
-                  Overall Rating: {(avgRating / 4).toFixed(2)}
+                  Overall Rating: {(averageRating / 4).toFixed(2)}
                 </Text>
                 <FontAwesome
                   name={"star"}
@@ -165,7 +186,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                 />
               </View>
             )}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <View style={{ flex: 1 }}>
                 <TouchableOpacity
                   activeOpacity={1}
@@ -200,25 +221,32 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                       marginBottom: 30,
                     }}
                   >
-                    <TouchableOpacity onPress={handleThumbsUpClick}>
+                    <TouchableOpacity
+                      onPress={() => handleThumbsUpClick(index)}
+                    >
                       <View
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
                           marginLeft: 10,
-                          marginTop: 10,
                         }}
                       >
                         <FontAwesome
-                          name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
+                          name={
+                            thumbsUpClicked[index] ? "thumbs-up" : "thumbs-o-up"
+                          }
                           color={
-                            thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"
+                            thumbsUpClicked[index]
+                              ? Colors.BUTTON_PURPLE
+                              : "grey"
                           }
                           size={30}
                         />
                       </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handleThumbsDownClick}>
+                    <TouchableOpacity
+                      onPress={() => handleThumbsDownClick(index)}
+                    >
                       <View
                         style={{
                           flexDirection: "row",
@@ -228,10 +256,14 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                       >
                         <FontAwesome
                           name={
-                            thumbsDownClicked ? "thumbs-down" : "thumbs-o-down"
+                            thumbsDownClicked[index]
+                              ? "thumbs-down"
+                              : "thumbs-o-down"
                           }
                           color={
-                            thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"
+                            thumbsDownClicked[index]
+                              ? Colors.BUTTON_PURPLE
+                              : "grey"
                           }
                           size={30}
                         />
