@@ -4,13 +4,7 @@ import { client } from "@/appwrite";
 import { useFocusEffect } from "@react-navigation/native";
 import { Account } from "appwrite";
 import React, { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Divider } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ProfileContext } from "../../Contexts";
