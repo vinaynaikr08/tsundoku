@@ -58,7 +58,7 @@
     "patch-package": "^8.0.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.3",
-    "typescript-eslint": "^7.4.0"
+    "typescript-eslint": "^7.5.0"
   },
   "private": true
 }
