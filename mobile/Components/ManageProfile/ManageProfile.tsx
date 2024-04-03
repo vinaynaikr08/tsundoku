@@ -84,7 +84,7 @@ function ManageProfile({ navigation }) {
         <Text style={styles.userInfoText}>Bio: {username}</Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("UsernameEditing");
+            navigation.navigate("AboutMeEditing");
           }}
         >
           <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />

@@ -18,6 +18,7 @@ import NotificationsModal from "../Components/Notifications/NotificationsModal";
 import Review from "../Components/Review/Review";
 import ShelfModal from "../Components/ShelfModal/ShelfModal";
 import TextReview from "../Components/TextReview/TextReview";
+import AboutMeEditing from "@/Components/AboutMeEditing";
 import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
 import { SignIn } from "../Screens/SignIn";
 import { CreateAccount } from "../Screens/CreateAccount";
@@ -88,6 +89,7 @@ function AppNavigation() {
           <Stack.Screen name="UserProfileScreen" component={UserProfile} />
           <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
           <Stack.Screen name="EmailEditing" component={EmailEditing} />
+          <Stack.Screen name="AboutMeEditing" component={AboutMeEditing} />
           <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
         </>
       )}
