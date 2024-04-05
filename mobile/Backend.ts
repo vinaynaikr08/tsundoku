@@ -57,6 +57,46 @@ interface BookSearchAPIResponseDocumentEdition {
   isbn_13: string;
 }
 
+interface AuthorSearchAppwriteResponseDocument {
+  name: string;
+  books: AuthorSearchAppwriteResponseDocumentBook[];
+}
+
+interface AuthorSearchAppwriteResponseDocumentBook {
+  $id: string;
+  title: string;
+  description: string;
+  editions: AuthorSearchAppwriteResponseDocumentEdition[];
+  genre: string;
+}
+
+interface AuthorSearchAppwriteResponseDocumentEdition {
+  page_count: number;
+  publisher: string;
+  thumbnail_url: string;
+  isbn_10: string;
+  isbn_13: string;
+}
+
+interface ISBNSearchAppwriteResponseDocument {
+  books: ISBNSearchAppwriteResponseDocumentBook;
+  thumbnail_url: string;
+  isbn_10: string;
+  isbn_13: string;
+}
+
+interface ISBNSearchAppwriteResponseDocumentBook {
+  $id: string;
+  title: string;
+  authors: ISBNSearchAppwriteResponseDocumentAuthor[];
+  description: string;
+  genre: string;
+}
+
+interface ISBNSearchAppwriteResponseDocumentAuthor {
+  name: string;
+}
+
 export default class Backend {
   public totalSearch = async (param: string): Promise<Book[]> => {
     const books = [
@@ -92,12 +132,12 @@ export default class Backend {
   };
 
   public authorSearch = async (name: string): Promise<Book[]> => {
-    let books = [];
+    let books: Book[] = [];
     const author_docs = (
       await databases.listDocuments(ID.mainDBID, ID.authorCollectionID, [
         Query.search("name", name),
       ])
-    ).documents;
+    ).documents as unknown as AuthorSearchAppwriteResponseDocument[];
 
     for (const author_doc of author_docs) {
       for (const book_doc of author_doc.books) {
@@ -121,7 +161,7 @@ export default class Backend {
   };
 
   public isbnSearch = async (param: string): Promise<Book[]> => {
-    let books = [];
+    let books: Book[] = [];
     const edition_docs = (
       await databases.listDocuments(ID.mainDBID, ID.editionCollectionID, [
         Query.or([
@@ -129,7 +169,7 @@ export default class Backend {
           Query.search("isbn_10", param),
         ]),
       ])
-    ).documents;
+    ).documents as unknown as ISBNSearchAppwriteResponseDocument[];
 
     for (const edition_doc of edition_docs) {
       books = [
@@ -164,7 +204,7 @@ export default class Backend {
     const bookstat_docs = await this.getBookStatusDocs({ status, user_id });
 
     for (const bookstat_doc of bookstat_docs) {
-      books.push(await this.getBookData(bookstat_doc.book.$id));
+      books.push(await this.getBookData(bookstat_doc.book.$id as string));
     }
 
     return books;
