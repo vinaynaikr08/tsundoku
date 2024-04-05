@@ -3,10 +3,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ViewCustomProperties from "../ViewCustomProperties/ViewCustomProperties";
 import EditCustomProperty from "../EditCustomProperty/EditCustomProperty";
 
-export type ViewCustomPropertiesWrapperStackParamList = {
+export interface ViewCustomPropertiesWrapperStackParamList {
   ViewCustomProperties: undefined;
   EditCustomProperty: { propertyInfo: any; setPropertiesChanged: any };
-};
+}
 
 const Stack = createStackNavigator<ViewCustomPropertiesWrapperStackParamList>();
 
