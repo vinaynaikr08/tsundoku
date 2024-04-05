@@ -22,6 +22,7 @@ services:
       - TSUNDOKU_BACKEND_APPWRITE_FRIEND_COL_ID
       - TSUNDOKU_BACKEND_APPWRITE_USERDATA_COL_ID
       - TSUNDOKU_BACKEND_APPWRITE_NOTIFICATION_PREF_COL_ID
+      - TSUNDOKU_BACKEND_APPWRITE_PRIVATE_NOTES_COL_ID
   nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:latest
     restart: unless-stopped
