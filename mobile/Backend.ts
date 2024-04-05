@@ -10,14 +10,51 @@ const account = new Account(client);
 const databases = new Databases(client);
 
 interface Book {
-  id: string
-  title: string
-  author: string
-  summary: string
-  image_url: string
-  isbn_10: string
-  isbn_13: string
-  genre: string
+  id: string;
+  title: string;
+  author: string;
+  summary: string;
+  image_url: string;
+  isbn_10: string;
+  isbn_13: string;
+  genre: string;
+}
+
+interface BookSearchAPIResponse {
+  message: string;
+  results: BookSearchAPIResponseResult;
+}
+
+interface BookSearchAPIResponseResult {
+  total: number;
+  documents: BookSearchAPIResponseDocument[];
+}
+
+interface BookSearchAPIResponseDocument {
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  title: string;
+  google_books_id: string;
+  description: string;
+  authors: BookSearchAPIResponseDocumentAuthor[];
+  editions: BookSearchAPIResponseDocumentEdition[];
+  genre: string;
+}
+
+interface BookSearchAPIResponseDocumentAuthor {
+  name: string;
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+}
+
+interface BookSearchAPIResponseDocumentEdition {
+  page_count: number;
+  publisher: string;
+  thumbnail_url: string;
+  isbn_10: string;
+  isbn_13: string;
 }
 
 export default class Backend {
@@ -34,10 +71,12 @@ export default class Backend {
 
   public bookSearch = async (title: string): Promise<Book[]> => {
     const res = await fetch(
-      `${BACKEND_API_BOOK_SEARCH_URL}?` + new URLSearchParams({ title }),
+      `${BACKEND_API_BOOK_SEARCH_URL}?${new URLSearchParams({ title }).toString()}`,
     );
-    return (await res.json()).results.documents.map((doc) => {
-      return {
+    const res_json = (await res.json()) as BookSearchAPIResponse;
+
+    const books = res_json.results.documents.map(
+      (doc: BookSearchAPIResponseDocument) => ({
         id: doc.$id,
         title: doc.title,
         author: doc.authors[0].name,
@@ -46,8 +85,10 @@ export default class Backend {
         isbn_10: doc.editions[0].isbn_10,
         isbn_13: doc.editions[0].isbn_13,
         genre: doc.genre,
-      };
-    });
+      }),
+    );
+
+    return books;
   };
 
   public authorSearch = async (name: string): Promise<Book[]> => {
