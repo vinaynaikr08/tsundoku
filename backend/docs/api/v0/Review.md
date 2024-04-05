@@ -67,3 +67,35 @@ Note: one of the optional parameters must be supplied.
 - `400` - if none of the optional parameters were supplied
 - `401` - if the auth token was not supplied or is invalid
 - `404` - if the specified ID does not correspond to a book review entry
+
+## Get votes of review by ID
+
+`host/api/v0/reviews/[review_id]/vote`
+
+### Method
+
+`GET`
+
+### Returns
+
+- `200` - request was successful
+- `400` - if the specified review ID does not correspond to a book review entry
+- `401` - if the auth token was not supplied or is invalid
+- `404` - if the user did not cast a vote for the specified review ID
+
+## Cast vote for review by ID
+
+### Method
+
+`POST`
+
+### Body parameters (**required**)
+
+- `vote` enum - either `UPVOTE` or `DOWNVOTE`
+
+### Returns
+
+- `200` - request was successful
+- `400` - if the specified review ID does not correspond to a book review entry
+- `401` - if the auth token was not supplied or is invalid, or if the required parameter is not supplied
+- `404` - if the user did not cast a vote for the specified review ID

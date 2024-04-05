@@ -6,12 +6,12 @@ import { AppwriteException } from "node-appwrite";
 
 const database = new sdk.Databases(client);
 
-export async function checkBookExists(book_id: string): Promise<boolean> {
+export async function checkReviewExists(review_id: string): Promise<boolean> {
   try {
     await database.getDocument(
       Constants.MAIN_DB_ID,
-      Constants.BOOK_COL_ID,
-      book_id,
+      Constants.REVIEW_COL_ID,
+      review_id,
     );
     return true;
   } catch (error: any) {
