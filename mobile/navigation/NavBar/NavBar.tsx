@@ -67,14 +67,14 @@ function NavBar() {
       <BottomBar.Screen
         name="+"
         component={TrackScreen}
-        listeners={({}) => ({
+        listeners={() => ({
           tabPress: (e) => {
             e.preventDefault();
             toggleTrackModal();
           },
         })}
         options={{
-          tabBarIcon: ({}) => <PlusIcon />,
+          tabBarIcon: () => <PlusIcon />,
         }}
       />
       <BottomBar.Screen
