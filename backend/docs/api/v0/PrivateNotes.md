@@ -16,6 +16,10 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 
 `GET`
 
+### Search parameters (optional)
+
+- `book_id`
+
 ### Example
 
 `host/api/v0/private_notes`

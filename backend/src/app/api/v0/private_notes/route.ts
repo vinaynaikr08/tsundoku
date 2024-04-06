@@ -17,12 +17,14 @@ import { getOrFailAuthTokens } from "../helpers";
 
 const database = new sdk.Databases(client);
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const authToken = getOrFailAuthTokens();
   if (authToken instanceof NextResponse) return authToken;
 
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
+
+  const book_id = request.nextUrl.searchParams.get("book_id") as string;
 
   const { userDB } = getUserContextDBAccount(authToken);
 
@@ -31,6 +33,7 @@ export async function GET() {
     db_query = await userDB.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.PRIVATE_NOTES_COL_ID,
+      book_id ? [Query.equal("book_id", book_id)] : undefined,
     );
   } catch (error: any) {
     return handle_error(error);
