@@ -1,6 +1,12 @@
 import Colors from "@/Constants/Colors";
 import * as React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
@@ -74,23 +80,37 @@ function PrivateNotes({ navigation, bookInfo }) {
   }, []);
 
   return (
-    <ScrollView style={{ backgroundColor: "white", marginTop: 10 }}>
-      {privateNote.note == "null" && (
-        <Text style={{ marginBottom: 10, alignSelf: "center" }}>
-          You have no private notes!
-        </Text>
-      )}
-      {privateNote.note != "null" && <Text>{privateNote.note}</Text>}
-      <Pressable
-        onPress={() =>
-          navigation.navigate("EditPrivateNotes", {
-            noteId: privateNote.note == "null" ? null : privateNote.id,
-          })
-        }
-        style={styles.saveButton}
-      >
-        <Text style={styles.saveButtonText}>Edit</Text>
-      </Pressable>
+    <ScrollView
+      style={{
+        flex: 1,
+      }}
+      contentContainerStyle={{
+        paddingBottom: 330,
+        marginBottom: 100,
+        paddingHorizontal: 5,
+        backgroundColor: "white",
+      }}
+      showsVerticalScrollIndicator={false}
+      scrollEnabled
+    >
+      <View>
+        {privateNote.note == "null" && (
+          <Text style={{ marginBottom: 10, alignSelf: "center" }}>
+            You have no private notes!
+          </Text>
+        )}
+        {privateNote.note != "null" && <Text>{privateNote.note}</Text>}
+        <Pressable
+          onPress={() =>
+            navigation.navigate("EditPrivateNotes", {
+              noteId: privateNote.note == "null" ? null : privateNote.id,
+            })
+          }
+          style={styles.saveButton}
+        >
+          <Text style={styles.saveButtonText}>Edit</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
@@ -101,6 +121,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 20,
     marginBottom: 10,
+    marginTop: 10,
     borderRadius: 10,
     width: "25%",
     alignSelf: "center",
