@@ -9,4 +9,5 @@ export default {
   notificationsCollectionID: "65ff3a08b53ad5d29439",
   userDataCollectionID: "65fdc51412724c49c0d3",
   notificationDataCenterCollectionID: "6605f045065f55f96bca",
+  wrappedsCollectionID: "661192d60003b3158d4a",
 };

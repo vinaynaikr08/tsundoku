@@ -96,7 +96,7 @@ export const Discover = ({ navigation }) => {
                   alignSelf: "center",
                   borderRadius: 15,
                 }}
-                onPress={() => navigation.navigate("wrappedScreen")}
+                onPress={() => navigation.navigate("wrappedScreen", {year: new Date().getFullYear()})}
               >
                 <Text
                   style={{

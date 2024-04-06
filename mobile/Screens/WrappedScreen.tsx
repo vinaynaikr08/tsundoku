@@ -19,39 +19,42 @@ import { intro } from "../Components/WrappedBasics/Intro";
 
 const backend = new Backend();
 
-function getData() {
-  const { data } = useSWR({ status: "READ" }, backend.getBooksOfStatusFromDate);
+function getData(year: any) {
+  const { data } = useSWR({ user_id: undefined, year: year }, backend.getWrapped);
   return data;
 }
 
-export const WrappedScreen = (props) => {
-  const { navigation } = props;
+export const WrappedScreen = ({ navigation, route }: any) => {
+  const { year } = route.params;
   const { width, height } = Dimensions.get("screen");
-  const data = getData();
+
+  const data : any = getData(year);
+  console.log(data);
+
   const items = [
     {
       name: "number1",
-      screen: intro(),
+      screen: intro(year),
       index: 1,
     },
     {
       name: "number2",
-      screen: pagesRead(data),
+      screen: data !== undefined && pagesRead(data.pages),
       index: 2,
     },
     {
       name: "number3",
-      screen: favoriteGenre(data),
+      screen: data !== undefined && favoriteGenre(data.genre_arr),
       index: 3,
     },
     {
       name: "number4",
-      screen: genrePieChart(data),
+      screen: data !== undefined && genrePieChart(data.genre_arr),
       index: 4,
     },
   ];
   const scrollX = React.useRef(new Animated.Value(0)).current;
-  const handleOnScroll = (event) => {
+  const handleOnScroll = (event: any) => {
     Animated.event(
       [
         {

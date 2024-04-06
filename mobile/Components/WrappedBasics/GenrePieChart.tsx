@@ -61,19 +61,19 @@ const genres: string[] = [
 class ListNode {
   data: any;
   next: any;
-  constructor(data) {
+  constructor(data: any) {
     this.data = data;
     this.next = null;
   }
 }
 
-function processData(data) {
+function processData(data: any) {
   if (data == undefined) {
     return [];
   }
   const counter = Array(53).fill(0);
 
-  data.forEach((element) => {
+  data.forEach((element: any) => {
     for (let i = 0; i < 53; i++) {
       if (genres[i] == element.genre) {
         counter[i]++;
@@ -108,9 +108,7 @@ function processData(data) {
   }
   let temp = head;
 
-  const green = 139;
   let i = 0;
-  const item = 32;
   const colors = [
     "#AD7A99",
     "#B2CEDE",
@@ -147,8 +145,36 @@ function processData(data) {
   return new_data;
 }
 
-export function genrePieChart(unprocessedData) {
-  const data = processData(unprocessedData);
+export function genrePieChart(unprocessedData: any) {
+  const colors = [
+    "#AD7A99",
+    "#B2CEDE",
+    "#8CDFD6",
+    "#6DC0D5",
+    "#5A716A",
+    "#104547",
+  ];
+
+  const data = Array(6);
+  let i = 0;
+  for (i = 0; i < 5; i++) {
+    data[i] = {
+      name: genres[unprocessedData[i].index],
+      population: unprocessedData[i].population,
+      color: colors[i],
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15,
+    };
+  }
+
+  data[5] = {
+    name: "Other",
+    population: unprocessedData[5].population,
+    color: colors[5],
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  };
+
   const chartConfig = {
     backgroundColor: "#e26a00",
     backgroundGradientFrom: "#fb8c00",
@@ -164,7 +190,9 @@ export function genrePieChart(unprocessedData) {
       stroke: "#ffa726",
     },
   };
+
   const { width, height } = Dimensions.get("screen");
+
   return (
     <SafeAreaView
       style={{

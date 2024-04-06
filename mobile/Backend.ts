@@ -5,9 +5,19 @@ import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_URL } from "./Constants/URLs";
 import ID from "./Constants/ID";
 import { ID as UID } from "appwrite";
 import axios from "axios";
+import Genres from "./Constants/Genres";
 
 const account = new Account(client);
 const databases = new Databases(client);
+
+class ListNode {
+  data: any;
+  next: any;
+  constructor(data: any) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
 interface Book {
   id: string;
@@ -241,6 +251,159 @@ export default class Backend {
     return books;
   };
 
+  
+  public getWrapped = async ({
+    user_id,
+    year,
+  } : {
+    user_id: string | undefined;
+    year: number;
+  }) => {
+
+    if (user_id === undefined) {
+      user_id = (await account.get()).$id;
+    }
+    const wrapped_docs = (
+      await databases.listDocuments(ID.mainDBID, ID.wrappedsCollectionID, [
+        Query.and([
+          Query.equal("user_id", user_id),
+          Query.equal("year", year),
+        ]),
+      ])
+    ).documents;
+    if (wrapped_docs === undefined) {
+      const book_data = this.getBooksOfStatusFromDate({status: "READ", user_id: user_id});
+      const data : any = this.processGenreData(book_data);      
+      const ret = {year: year, pages: data.pages, genre_arr: data.genres};
+
+      // create document
+      await databases.createDocument(
+        ID.mainDBID,
+        ID.wrappedsCollectionID,
+        UID.unique(),
+        {
+          user_id: user_id,
+          year: year,
+          pages_read: data.pages,
+          genre_one: data.genres[0].index,
+          genre_two: data.genres[1].index,
+          genre_three: data.genres[2].index,
+          genre_four: data.genres[3].index,
+          genre_five: data.genres[4].index,
+          genre_one_count: data.genres[0].population,
+          genre_two_count: data.genres[1].population,
+          genre_three_count: data.genres[2].population,
+          genre_four_count: data.genres[3].population,
+          genre_five_count: data.genres[4].population,
+          genre_other_count: data.genres[5].population,
+        },
+      );
+      return ret;
+    } else if (wrapped_docs.length == 0) {
+      const book_data = await this.getBooksOfStatusFromDate({status: "READ", user_id: user_id});
+      const data : any = this.processGenreData(book_data);
+      const ret = {year: year, pages: data.pages, genre_arr: data.genres};
+
+      // create document
+      const res = await databases.createDocument(
+        ID.mainDBID,
+        ID.wrappedsCollectionID,
+        UID.unique(),
+        {
+          user_id: user_id,
+          year: year,
+          pages_read: data.pages,
+          genre_one: data.genres[0].index,
+          genre_two: data.genres[1].index,
+          genre_three: data.genres[2].index,
+          genre_four: data.genres[3].index,
+          genre_five: data.genres[4].index,
+          genre_one_count: data.genres[0].population,
+          genre_two_count: data.genres[1].population,
+          genre_three_count: data.genres[2].population,
+          genre_four_count: data.genres[3].population,
+          genre_five_count: data.genres[4].population,
+          genre_other_count: data.genres[5].population,
+        },
+      );
+      return ret;
+    } else {
+      const genre_arr = [{index: wrapped_docs[0].genre_one, population: wrapped_docs[0].genre_one_count}, {index: wrapped_docs[0].genre_two, population: wrapped_docs[0].genre_two_count},
+      {index: wrapped_docs[0].genre_three, population: wrapped_docs[0].genre_three_count}, {index: wrapped_docs[0].genre_four, population: wrapped_docs[0].genre_four_count},
+      {index: wrapped_docs[0].genre_five, population: wrapped_docs[0].genre_five_count}, {name: "Other", population: wrapped_docs[0].genre_other_count}, ];
+      return {year: year, pages: wrapped_docs[0].pages_read, genre_arr: genre_arr};
+    }
+  }
+  
+  private processGenreData(data: any) {
+    if (data == undefined) {
+      return [];
+    }
+    const counter = Array(53).fill(0);
+    let pages = 0;
+
+    data.forEach((element: any) => {
+      for (let i = 0; i < 53; i++) {
+        pages += element.pages;
+
+        if (Genres.genres[i] == element.genre) {
+          counter[i]++;
+        }
+      }
+    });
+
+    const new_data = Array(6);
+  
+    let head = new ListNode({ name: Genres.genres[0], count: counter[0] });
+  
+    for (let i = 1; i < 53; i++) {
+      const temp = new ListNode({ index: i, count: counter[i] });
+      let temp1 = head;
+      let prev = head;
+      while (temp1 != null) {
+        if (temp.data.count > temp1.data.count) {
+          break;
+        }
+        prev = temp1;
+        temp1 = temp1.next;
+      }
+      if (temp1 == null) {
+        prev.next = temp;
+      } else if (temp1 == head) {
+        head = temp;
+        temp.next = prev;
+      } else {
+        temp.next = prev.next;
+        prev.next = temp;
+      }
+    }
+    let temp = head;
+  
+    let i = 0;
+  
+    for (i = 0; i < 5; i++) {
+      new_data[i] = {
+        index: temp.data.index,
+        population: temp.data.count,
+      };
+      temp = temp.next;
+    }
+  
+    let count = 0;
+    while (temp != null) {
+      count += temp.data.count;
+      temp = temp.next;
+    }
+    new_data[5] = {
+      name: "Other",
+      population: count,
+    };
+
+    const thing = {pages: pages, genres: new_data};
+  
+    return thing;
+  }
+
   public getBookStatusDocs = async ({
     status,
     user_id,
@@ -302,7 +465,7 @@ export default class Backend {
     return (await account.get()).name;
   };
 
-  public sendNotification = (user_id, type, title, message) => {
+  public sendNotification = (user_id: any, type: any, title: any, message: any) => {
     try {
       // TODO: this should be an await call
       databases.createDocument(

@@ -57,7 +57,7 @@ const genres: string[] = [
   "Law",
 ]
 
-function getGenres(data) {
+function getGenres(data: any) {
   const counter = Array(53).fill(0);
   const i = 0;
 
@@ -65,7 +65,7 @@ function getGenres(data) {
     return counter;
   }
 
-  data.forEach(element => {
+  data.forEach((element: any) => {
     for (let i = 0; i < 53; i++) {
       if (genres[i] == element.genre) {
         counter[i]++;
@@ -97,12 +97,11 @@ function getGenres(data) {
   return mostRead;
 }
 
-export function favoriteGenre(data) {
-  const genreArray = getGenres(data);
+export function favoriteGenre(data: any) {
   return (
     <SafeAreaView style={{width: '70%', height: '100%', justifyContent: 'center'}}>
       <Text style={{fontSize: 25, textAlign: 'center'}}>Your top genres this year were: {"\n"}</Text>
-      <Text style={{fontSize: 30, textAlign: 'center'}}>1. {genreArray[0].ind}: {genreArray[0].count} {'\n'}2. {genreArray[1].ind}: {genreArray[1].count} {'\n'}3. {genreArray[2].ind}: {genreArray[2].count}</Text>
+      <Text style={{fontSize: 30, textAlign: 'center'}}>1. {genres[data[0].index]}: {data[0].population} {'\n'}2. {genres[data[1].index]}: {data[1].population} {'\n'}3. {genres[data[2].index]}: {data[2].population}</Text>
     </SafeAreaView>
   );
 }
