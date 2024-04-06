@@ -95,7 +95,7 @@ function PrivateNotes({ navigation, bookInfo }) {
     >
       <View>
         {privateNote.note == "null" && (
-          <Text style={{ marginBottom: 10, alignSelf: "center" }}>
+          <Text style={{ alignSelf: "center" }}>
             You have no private notes!
           </Text>
         )}
