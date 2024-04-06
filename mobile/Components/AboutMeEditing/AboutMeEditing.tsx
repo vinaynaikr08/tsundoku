@@ -68,12 +68,13 @@ export const AboutMeEditing = (props) => {
 
       if (!res.ok) {
         const res_json = await res.json();
+        console.log(res_json);
         setErrorMessage("Error: " + res_json.reason);
         setErrorModalVisible(true);
         return;
       } else {
         const res_json = await res.json();
-        console.log(res_json);
+        // console.log(res_json.message);
       }
 
       //   const promise = account.updateName(bio);

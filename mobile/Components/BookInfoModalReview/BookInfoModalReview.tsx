@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 
@@ -35,6 +35,7 @@ async function getReviews(book_id: string) {
       ID.reviewsCollectionID,
       document.$id,
     );
+    // console.log(review_data);
     const response = await fetch(
       `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
       {
@@ -45,20 +46,38 @@ async function getReviews(book_id: string) {
         }),
       },
     );
+    const votesResponse = await fetch(
+      `${BACKEND_API_URL}/v0/reviews/${document.$id}/vote`,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      },
+    );
+    const votesData = await votesResponse.json();
+    const upvotes = votesData.filter((vote) => vote.vote === "UPVOTE").length;
+    const downvotes = votesData.filter(
+      (vote) => vote.vote === "DOWNVOTE",
+    ).length;
+
     const res_json = await response.json();
+    // console.log(res_json);
     if (res_json.name === undefined) {
       console.log(
         `Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`,
       );
     }
     const name = res_json.name || "Anonymous";
-
     const review = {
       rating: review_data.star_rating,
       desc: review_data.description,
       username: name,
       id: document.$id,
       user_id: review_data.user_id,
+      upvotes,
+      downvotes,
     };
 
     reviews.push(review);
@@ -84,20 +103,49 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
   const [thumbsUpClicked, setThumbsUpClicked] = useState([]);
   const [thumbsDownClicked, setThumbsDownClicked] = useState([]);
 
-  const handleThumbsUpClick = (index: number) => {
+  const handleThumbsUpClick = async (index: number) => {
     const newThumbsUpClicked = [...thumbsUpClicked];
+    // data[index].upvotes++;
     newThumbsUpClicked[index] = !newThumbsUpClicked[index];
     if (newThumbsUpClicked[index] && thumbsDownClicked[index]) {
       setThumbsDownClicked((prev) => {
         const newThumbsDownClicked = [...prev];
         newThumbsDownClicked[index] = false;
+        // data[index].upvotes--;
         return newThumbsDownClicked;
       });
     }
     setThumbsUpClicked(newThumbsUpClicked);
+    // const reviewId = data[index].id;
+    // try {
+    //   const res = await fetch(`${BACKEND_API_URL}/reviews/${reviewId}/vote`, {
+    //     method: "POST",
+    //     headers: new Headers({
+    //       "Content-Type": "application/json",
+    //       Authorization: "Bearer " + (await account.createJWT()).jwt,
+    //     }),
+    //     body: JSON.stringify({ vote: "UPVOTE" }),
+    //   });
+    //   if (res.ok) {
+    //     const updatedData = [...data];
+    //     updatedData[index].upvotes++;
+
+    //     setThumbsUpClicked((prevThumbsUpClicked) => {
+    //       const newThumbsUpClicked = [...prevThumbsUpClicked];
+    //       newThumbsUpClicked[index] = true;
+    //       return newThumbsUpClicked;
+    //     });
+
+    //     mutate(bookInfo.id, updatedData, false);
+    //   } else {
+    //     // Handle error
+    //   }
+    // } catch (error) {
+    //   console.error("Error casting vote:", error);
+    // }
   };
 
-  const handleThumbsDownClick = (index: number) => {
+  const handleThumbsDownClick = async (index: number) => {
     const newThumbsDownClicked = [...thumbsDownClicked];
     newThumbsDownClicked[index] = !newThumbsDownClicked[index];
     if (newThumbsDownClicked[index] && thumbsUpClicked[index]) {
@@ -108,6 +156,31 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
       });
     }
     setThumbsDownClicked(newThumbsDownClicked);
+    // const reviewId = data[index].id;
+    // try {
+    //   const res = await fetch(`${BACKEND_API_URL}/reviews/${reviewId}/vote`, {
+    //     method: "POST",
+    //     headers: new Headers({
+    //       "Content-Type": "application/json",
+    //       Authorization: "Bearer " + (await account.createJWT()).jwt,
+    //     }),
+    //     body: JSON.stringify({ vote: "DOWNVOTE" }),
+    //   });
+    //   if (res.ok) {
+    //     const updatedData = [...data];
+    //     updatedData[index].downvotes++; // Increment downvotes locally
+    //     setThumbsDownClicked((prev) => {
+    //       const newThumbsDownClicked = [...prev];
+    //       newThumbsDownClicked[index] = true;
+    //       return newThumbsDownClicked;
+    //     });
+    //     mutate(bookInfo.id, updatedData, false);
+    //   } else {
+    //     // Handle error
+    //   }
+    // } catch (error) {
+    //   console.error("Error casting vote:", error);
+    // }
   };
 
   const renderReviewDescription = (desc) => {
@@ -242,6 +315,9 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                           }
                           size={30}
                         />
+                        <Text style={{ marginLeft: 5 }}>
+                          {item.upvotes || 0}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -267,6 +343,9 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                           }
                           size={30}
                         />
+                        <Text style={{ marginLeft: 5 }}>
+                          {item.downvotes || 0}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   </View>

@@ -1,5 +1,5 @@
 import Colors from "@/Constants/Colors";
-import { BACKEND_API_URL } from "@/Constants/URLs";
+import { BACKEND_API_URL, BACKEND_API_USER_ABOUT_ME } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { useFocusEffect } from "@react-navigation/native";
 import { Account } from "appwrite";
@@ -12,6 +12,7 @@ import { ProfileContext } from "../../Contexts";
 function ManageProfile({ navigation }) {
   const account = new Account(client);
   const [username, setUsername] = useState(null);
+  const [bio, setBio] = useState(null);
   const [email, setEmail] = useState(null);
   useFocusEffect(
     React.useCallback(() => {
@@ -52,6 +53,24 @@ function ManageProfile({ navigation }) {
     }
   }
 
+  async function getBio() {
+    try {
+      const res = await fetch(`${BACKEND_API_USER_ABOUT_ME}`, {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      });
+      const res_json = await res.json();
+      console.log(res_json || "none");
+      // setBio(bio);
+      setBio(res_json.about_me_bio);
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  }
+
   return (
     <ProfileContext.Provider value={navigation}>
       <View style={styles.userInfoRow}>
@@ -81,7 +100,13 @@ function ManageProfile({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.userInfoRow}>
-        <Text style={styles.userInfoText}>Bio: {username}</Text>
+        <Text
+          style={styles.userInfoText}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Bio: {bio ? bio : <Text style={{ color: "grey" }}>none</Text>}
+        </Text>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("AboutMeEditing");
