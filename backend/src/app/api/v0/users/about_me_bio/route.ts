@@ -58,20 +58,10 @@ export async function PATCH(request: NextRequest) {
   }
 
   if (!userdata_id) {
-    try {
-      // Create new userdata entry
-      await databases.createDocument(
-        Constants.MAIN_DB_ID,
-        Constants.USERDATA_COL_ID,
-        ID.unique(),
-        {
-          user_id,
-          about_me_bio,
-        },
-      );
-    } catch (error: any) {
-      return handle_error(error);
-    }
+    return construct_development_api_response({
+      message: `No UserData entry found. The user account must have a username to proceed.`,
+      status_code: 404,
+    });
   } else {
     try {
       // Update existing userdata entry

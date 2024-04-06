@@ -87,6 +87,8 @@ To query about me bios of other users, supply a user ID in the search parameter 
 
 ### Update
 
+Warning: you will not be able to set the about me bio if the `UserData` object does not exist. This means the user account must have a `username` set in order to proceed.
+
 #### Method
 
 `PATCH`
@@ -100,6 +102,7 @@ To query about me bios of other users, supply a user ID in the search parameter 
 - `200` - request was successful
 - `400` - if the required parameters are not supplied or are invalid
 - `401` - if the auth token was not supplied or is invalid
+- `404` - the associated `UserData` entry was not found
 
 ## Name query
 
