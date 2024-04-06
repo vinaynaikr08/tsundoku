@@ -11,6 +11,7 @@ import {
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 import BookInfoModalReview from "../BookInfoModalReview";
+import PrivateNotes from "../PrivateNotes/PrivateNotes";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -100,25 +101,10 @@ function BookReviewsTab({ bookInfo, navigation }) {
   );
 }
 
-function MyNotesTab() {
+function MyNotesTab({bookInfo, navigation}) {
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        bounces={false}
-        contentContainerStyle={styles.scrollViewStyle}
-      >
-        <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN }}>
-            An epic historical military fantasy, inspired by the bloody history
-            of China’s twentieth century and filled with treachery and magic.
-            When Rin aced the Keju—the Empire-wide test to find the most
-            talented youth to learn at the Academies—it was a shock to everyone:
-            to the test officials, who couldn’t believe a war orphan from
-            Rooster Province could pass without cheating.
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      <PrivateNotes navigation={navigation} />
     </View>
   );
 }
@@ -143,7 +129,13 @@ function BookInfoTabs({ bookInfo, navigation }) {
           />
         )}
       />
-      <Tab.Screen name="My Notes" component={MyNotesTab} />
+      <Tab.Screen name="My Notes" children={(props) => (
+          <MyNotesTab
+            bookInfo={bookInfo}
+            navigation={navigation}
+            {...props}
+          />
+        )} />
     </Tab.Navigator>
   );
 }
