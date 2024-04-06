@@ -24,6 +24,8 @@ function ManageProfile({ navigation }) {
           const fetchedUserId = response.$id;
           const fetchedUsername = await getUsername(fetchedUserId);
           setUsername(fetchedUsername);
+          const fetchedBio = await getBio();
+          setBio(fetchedBio);
         } catch (error) {
           console.error("Error fetching user ID or username:", error);
         }
@@ -63,9 +65,8 @@ function ManageProfile({ navigation }) {
         }),
       });
       const res_json = await res.json();
-      console.log(res_json || "none");
-      // setBio(bio);
-      setBio(res_json.about_me_bio);
+      console.log(res_json);
+      return res_json.about_me_bio;
     } catch (error) {
       console.error("Error fetching username:", error);
     }
