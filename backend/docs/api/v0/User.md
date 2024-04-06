@@ -33,7 +33,7 @@ To query usernames of other users, supply a user ID in the search parameter `use
 
 `GET`
 
-#### Search parameters (**optional**)
+#### Search parameters (optional)
 
 - `user_id`
 
@@ -75,7 +75,7 @@ To query about me bios of other users, supply a user ID in the search parameter 
 
 `GET`
 
-#### Search parameters (**optional**)
+#### Search parameters (optional)
 
 - `user_id`
 
