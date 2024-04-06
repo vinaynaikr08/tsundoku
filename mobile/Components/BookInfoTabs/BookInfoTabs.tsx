@@ -104,7 +104,7 @@ function BookReviewsTab({ bookInfo, navigation }) {
 function MyNotesTab({bookInfo, navigation}) {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <PrivateNotes navigation={navigation} />
+      <PrivateNotes navigation={navigation} bookInfo={bookInfo} />
     </View>
   );
 }

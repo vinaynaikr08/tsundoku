@@ -11,77 +11,135 @@ import {
   TextInput,
   Pressable,
   Alert,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
+import { BACKEND_API_PRIVATE_NOTES } from "@/Constants/URLs";
+import Toast from "react-native-toast-message";
+import { BookInfoWrapperContext } from "@/Contexts";
 
-function EditPrivateNotes({ navigation }) {
+const account = new Account(client);
+
+function EditPrivateNotes({ route, navigation }) {
+  const { noteId } = route.params;
+  const bookInfo = React.useContext(BookInfoWrapperContext);
+  const [loading, setLoading] = React.useState(false);
   const [text, setText] = React.useState("");
+
+  React.useEffect(() => {
+    async function getPrivateNote() {
+      try {
+        const res = await fetch(
+          `${BACKEND_API_PRIVATE_NOTES}?` +
+            new URLSearchParams({
+              book_id: bookInfo.id,
+            }),
+          {
+            method: "get",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+          },
+        );
+
+        const res_json = await res.json();
+        if (res.ok) {
+          return res_json.results.documents[0].notes;
+        } else {
+          console.log(
+            "error getting raw property data: " + JSON.stringify(res_json),
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the books.");
+        // setErrorModalVisible(true);
+      }
+    }
+
+    if (noteId != null) {
+      getPrivateNote()
+      .then((data) => {
+        setText(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+        // setErrorMessage("An error occurred fetching the recommended books.");
+        // setErrorModalVisible(true);
+      });
+    }
+  }, []);
+
   function dismiss() {
     Alert.alert("Discard private note?", "You have unsaved changes.", [
       { text: "Don't leave", style: "cancel", onPress: () => {} },
       {
         text: "Discard",
         style: "destructive",
-        onPress: () => navigation.navigate("navbar"),
+        onPress: () => navigation.pop(),
       },
     ]);
   }
 
-  const saveReview = async () => {
-    // const account = new Account(client);
-    // const res = await fetch(`${BACKEND_API_REVIEW_URL}`, {
-    //   method: "post",
-    //   headers: new Headers({
-    //     "Content-Type": "application/json",
-    //     Authorization: "Bearer " + (await account.createJWT()).jwt,
-    //   }),
-    //   body: JSON.stringify({
-    //     book_id: bookInfo.id,
-    //     star_rating: rating,
-    //     description: text,
-    //   }),
-    // });
-    // if (res.ok) {
-    //   const res_json = await res.json();
-    //   console.log("review saved to database: " + res_json);
-    // } else {
-    //   console.log("error number: " + res.status);
-    //   console.log("error: " + res.statusText);
-    // }
-    // for (let i = 0; i < propertyData.length; i++) {
-    //   const property = propertyData[i];
-    //   const custom_res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`, {
-    //     method: "post",
-    //     headers: new Headers({
-    //       "Content-Type": "application/json",
-    //       Authorization: "Bearer " + (await account.createJWT()).jwt,
-    //     }),
-    //     body: JSON.stringify({
-    //       book_id: bookInfo.id,
-    //       template_id: property.template_id,
-    //       value: property.value,
-    //     }),
-    //   });
-    //   const custom_res_json = await custom_res.json();
-    //   if (custom_res.ok) {
-    //     console.log(
-    //       "custom properties saved to database: " +
-    //         JSON.stringify(custom_res_json),
-    //     );
-    //   } else {
-    //     console.log(
-    //       "error saving custom properties: " + JSON.stringify(custom_res_json),
-    //     );
-    //   }
-    // }
-    // Toast.show({
-    //   type: "success",
-    //   text1: "Review successfully saved!",
-    //   position: "bottom",
-    //   visibilityTime: 2000,
-    // });
-    // navigation.navigate("navbar");
+  const savePrivateNote = async () => {
+    const account = new Account(client);
+    if (noteId != null) {
+      const res = await fetch(`${BACKEND_API_PRIVATE_NOTES}/${noteId}`, {
+        method: "patch",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({
+          notes: text,
+        }),
+      });
+      const res_json = await res.json();
+      if (res.ok) {
+        console.log("private note updated in database: " + res_json);
+      } else {
+        console.log("error number: " + res.status);
+        console.log("error: " + JSON.stringify(res_json));
+      }
+      Toast.show({
+        type: "success",
+        text1: "Private note updated!",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+    } else {
+      const res = await fetch(`${BACKEND_API_PRIVATE_NOTES}`, {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({
+          book_id: bookInfo.id,
+          notes: text,
+        }),
+      });
+      const res_json = await res.json();
+      if (res.ok) {
+        console.log("private note saved to database: " + res_json);
+      } else {
+        console.log("error number: " + res.status);
+        console.log("error: " + JSON.stringify(res_json));
+      }
+      Toast.show({
+        type: "success",
+        text1: "Private note created!",
+        position: "bottom",
+        visibilityTime: 2000,
+      });
+    }
+
+    navigation.navigate("navbar");
   };
 
   return (
@@ -120,10 +178,10 @@ function EditPrivateNotes({ navigation }) {
             numberOfLines={4}
           />
         </KeyboardAvoidingView>
-        <Pressable onPress={saveReview} style={styles.saveButton}>
+        <Pressable onPress={savePrivateNote} style={styles.saveButton}>
           <Text style={styles.saveButtonText}>Save</Text>
         </Pressable>
-        <Pressable onPress={() => navigation.pop()} style={styles.backButton}>
+        <Pressable onPress={() => dismiss()} style={styles.backButton}>
           <Text style={styles.backButtonText}>Back</Text>
         </Pressable>
       </View>
