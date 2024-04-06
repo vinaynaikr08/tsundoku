@@ -17,6 +17,18 @@ export function getOrFailAuthTokens() {
   return authToken;
 }
 
+export function getAuthTokens(): string | null {
+  const authToken = (headers().get("authorization") || "")
+    .split("Bearer ")
+    .at(1);
+
+  if (!authToken) {
+    return null;
+  }
+
+  return authToken;
+}
+
 export function getRequiredSearchParamOrFail(
   request: NextRequest,
   param_name: string,

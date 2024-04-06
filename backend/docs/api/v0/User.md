@@ -27,13 +27,20 @@ This endpoint allows you to query the username of the current user.
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
+To query usernames of other users, supply a user ID in the search parameter `user_id`.
+
 #### Method
 
 `GET`
 
+#### Search parameters (**optional**)
+
+- `user_id`
+
 #### Returns
 
 - `200` - request was successful
+- `400` - if neither the auth token nor the user ID was provided
 - `401` - if the auth token was not supplied or is invalid
 
 ### Update
@@ -52,7 +59,6 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 - `400` - if the required parameters are not supplied or are invalid
 - `401` - if the auth token was not supplied or is invalid
 
-
 ## About me biography
 
 ### Query
@@ -63,13 +69,20 @@ This endpoint allows you to query the about me biography of the current user.
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
+To query about me bios of other users, supply a user ID in the search parameter `user_id`.
+
 #### Method
 
 `GET`
 
+#### Search parameters (**optional**)
+
+- `user_id`
+
 #### Returns
 
 - `200` - request was successful
+- `400` - if neither the auth token nor the user ID was provided
 - `401` - if the auth token was not supplied or is invalid
 
 ### Update
@@ -87,7 +100,6 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 - `200` - request was successful
 - `400` - if the required parameters are not supplied or are invalid
 - `401` - if the auth token was not supplied or is invalid
-
 
 ## Name query
 

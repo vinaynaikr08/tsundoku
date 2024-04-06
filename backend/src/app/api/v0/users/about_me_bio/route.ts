@@ -14,8 +14,8 @@ import { Get } from "../UserDataCommon";
 
 const databases = new sdk.Databases(client);
 
-export async function GET() {
-  return await Get("about_me_bio");
+export async function GET(request: NextRequest) {
+  return await Get(request, "about_me_bio");
 }
 
 export async function PATCH(request: NextRequest) {
