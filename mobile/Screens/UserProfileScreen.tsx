@@ -10,7 +10,7 @@ import {
   Role,
   ID as UID,
 } from "appwrite";
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   Keyboard,
   Text,
@@ -25,6 +25,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ID from "../Constants/ID";
 import { NavigationContext } from "../Contexts";
 import { client } from "../appwrite";
+import { BACKEND_API_USER_ABOUT_ME } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 const backend = new Backend();
@@ -359,12 +360,42 @@ async function acceptFriend(
   });
 }
 
+async function getBio(userId) {
+  const account = new Account(client);
+  try {
+    const res = await fetch(
+      `${BACKEND_API_USER_ABOUT_ME}?` +
+        new URLSearchParams({
+          user_id: userId,
+        }),
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          // Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      },
+    );
+    if (res.ok) {
+      const res_json = await res.json();
+      return res_json.about_me_bio;
+    } else {
+      console.error("Error fetching bio:", res.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching bio:", error);
+    return null;
+  }
+}
+
 export const UserProfile = ({ navigation, route }) => {
   const [update, forceUpdate] = useReducer((x) => x + 1, 0);
   const { username, user_id } = route.params;
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState(0);
   const [button, setButton] = useState("");
+  const [bio, setBio] = useState("");
   const [friend, setFriend] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
@@ -434,6 +465,16 @@ export const UserProfile = ({ navigation, route }) => {
         .catch((error) => console.log(error));
     });
   }, [update]);
+
+  useEffect(() => {
+    (async () => {
+      const fetchedBio = await getBio(user_id);
+      if (fetchedBio !== null) {
+        setBio(fetchedBio);
+      }
+      setLoading(false);
+    })();
+  }, [user_id]);
 
   return (
     <NavigationContext.Provider value={navigation}>
@@ -510,6 +551,10 @@ export const UserProfile = ({ navigation, route }) => {
                       <Text style={{ color: "white" }}>{button}</Text>
                     </TouchableOpacity>
                   </View>
+                  <Text style={{ marginLeft: 20, marginBottom: 10 }}>
+                    About Me:{" "}
+                    {bio ? bio : <Text style={{ color: "grey" }}>none</Text>}
+                  </Text>
                 </View>
               </View>
             </View>

@@ -44,8 +44,7 @@ export const AboutMeEditing = (props) => {
           }),
         });
         const res_json = await res.json();
-        console.log(res_json);
-        setBio(bio);
+        setBio(res_json.about_me_bio);
       } catch (error) {
         console.error("Error fetching username:", error);
       }
@@ -54,6 +53,11 @@ export const AboutMeEditing = (props) => {
 
   const handleSaveBio = async () => {
     try {
+      if (bio.length > 50) {
+        setErrorMessage("Error: Bio exceeds the 50 character limit");
+        setErrorModalVisible(true);
+        return;
+      }
       setLoading(true);
       const res = await fetch(`${BACKEND_API_USER_ABOUT_ME}`, {
         method: "PATCH",

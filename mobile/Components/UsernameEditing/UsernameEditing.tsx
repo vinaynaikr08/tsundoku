@@ -65,7 +65,6 @@ export const UsernameEditing = (props) => {
         console.log(res_json);
       }
 
-      // change update
       const promise = account.updateName(username);
       setUsername(username);
       navigation.navigate("Profile");
