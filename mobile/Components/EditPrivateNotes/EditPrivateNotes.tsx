@@ -60,7 +60,7 @@ function EditPrivateNotes({ route, navigation }) {
       }
     }
 
-    if (noteId != null) {
+    if (noteId != "null") {
       getPrivateNote()
       .then((data) => {
         setText(data);
@@ -88,7 +88,7 @@ function EditPrivateNotes({ route, navigation }) {
 
   const savePrivateNote = async () => {
     const account = new Account(client);
-    if (noteId != null) {
+    if (noteId != "null") {
       const res = await fetch(`${BACKEND_API_PRIVATE_NOTES}/${noteId}`, {
         method: "patch",
         headers: new Headers({

@@ -11,6 +11,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
 import { BACKEND_API_PRIVATE_NOTES } from "@/Constants/URLs";
+import { useNavigation } from "@react-navigation/native";
 
 const account = new Account(client);
 
@@ -19,7 +20,23 @@ interface NoteData {
   id: string;
 }
 
-function PrivateNotes({ navigation, bookInfo }) {
+interface Book {
+  id: string;
+  title: string;
+  author: string;
+  summary: string;
+  image_url: string;
+  isbn_10: string;
+  isbn_13: string;
+  genre: string;
+}
+
+interface Props {
+  bookInfo: Book
+}
+
+const PrivateNotes: React.FC<Props> = ({ bookInfo }) => {
+  const navigation = useNavigation();
   const [privateNote, setPrivateNote] = React.useState<NoteData>({
     note: "",
     id: "",
@@ -102,9 +119,15 @@ function PrivateNotes({ navigation, bookInfo }) {
         {privateNote.note != "null" && <Text>{privateNote.note}</Text>}
         <Pressable
           onPress={() =>
-            navigation.navigate("EditPrivateNotes", {
-              noteId: privateNote.note == "null" ? null : privateNote.id,
-            })
+            {if (privateNote.id == "null") {
+              navigation.navigate("EditPrivateNotes", {
+                noteId: "null"
+              })
+            } else {
+              navigation.navigate("EditPrivateNotes", {
+                noteId: privateNote.id
+              })
+            }}
           }
           style={styles.saveButton}
         >
