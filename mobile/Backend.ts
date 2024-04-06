@@ -247,7 +247,7 @@ export default class Backend {
   }: {
     status: string;
     user_id: string | undefined;
-  }) => {
+  }): Promise<unknown> => {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }

@@ -14,14 +14,6 @@ import Colors from "../../Constants/Colors";
 
 import { NavigationContext } from "../../Contexts";
 
-interface bookInfo {
-  title: string;
-  author: string;
-  id: string;
-  summary: string;
-  image_url: string;
-}
-
 export const Carousel = ({ books, shelf }) => {
   const navigation = useContext(NavigationContext);
   const pan = useRef(new Animated.ValueXY()).current;
