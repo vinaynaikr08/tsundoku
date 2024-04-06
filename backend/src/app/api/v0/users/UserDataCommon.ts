@@ -24,9 +24,12 @@ export async function Get(request: NextRequest, field_name: string) {
   }
 
   try {
-    user_id = user_id
-      ? user_id
-      : (request.nextUrl.searchParams.get("user_id") as string);
+    const search_user_id = request.nextUrl.searchParams.get(
+      "user_id",
+    ) as string;
+    if (search_user_id) {
+      user_id = search_user_id;
+    }
   } catch (error) {
     return construct_development_api_response({
       message: "Bad request supplied.",
