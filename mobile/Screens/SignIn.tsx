@@ -21,10 +21,14 @@ import Dimensions from "../Constants/Dimensions";
 
 import { client } from "@/appwrite";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
+import { AppNavigationStackParamList } from "@/navigation/AppNavigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 const account = new Account(client);
 
-export const SignIn = ({ navigation }) => {
+type Props = NativeStackScreenProps<AppNavigationStackParamList, "sign_in">;
+
+export const SignIn = ({ navigation }: Props) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
