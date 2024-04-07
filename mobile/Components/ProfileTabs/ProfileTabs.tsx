@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Button, Icon } from "@rneui/themed";
 import { Account } from "appwrite";
 import { unregisterIndieDevice } from "native-notify";
-import React, { useContext } from "react";
+import React from "react";
 import {
   Pressable,
   ScrollView,
@@ -83,7 +83,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 
 function ProfileTab(props) {
   const { setLoggedIn } = React.useContext(LoginStateContext)!;
-  const { navigation } = useContext(ProfileContext);
+  const { navigation } = React.useContext(ProfileContext);
   const account = new Account(client);
   const navigateDeleteAccount = () => {
     navigation.navigate("DeleteAccount");
