@@ -1,13 +1,11 @@
 import Colors from "@/Constants/Colors";
-import { BACKEND_API_URL } from "@/Constants/URLs";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
 import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useFocusEffect } from "@react-navigation/native";
 import { Button, Icon } from "@rneui/themed";
 import { Account } from "appwrite";
 import { unregisterIndieDevice } from "native-notify";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   Pressable,
   ScrollView,
@@ -19,8 +17,8 @@ import {
 import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ProfileContext } from "../../Contexts";
-import StatisticsTab from "../StatisticsTab";
 import ManageProfile from "../ManageProfile";
+import StatisticsTab from "../StatisticsTab";
 
 const Tab = createMaterialTopTabNavigator();
 
