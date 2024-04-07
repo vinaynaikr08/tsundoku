@@ -5,9 +5,15 @@ import { StyleSheet, Text, View, Pressable } from "react-native";
 import Colors from "../Constants/Colors";
 import { Icon } from "@rneui/themed";
 import Dimensions from "../Constants/Dimensions";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { AppNavigationStackParamList } from "@/navigation/AppNavigation";
 
-export const InitialLaunchScreen = (props) => {
-  const { navigation } = props;
+type Props = NativeStackScreenProps<
+  AppNavigationStackParamList,
+  "initial_launch"
+>;
+
+function InitialLaunchScreen({ navigation }: Props) {
   function launchStart() {
     // TODO: Implement
     navigation.navigate("sign_in");
@@ -23,7 +29,10 @@ export const InitialLaunchScreen = (props) => {
         up with other unread books
       </Text>
 
-      <Pressable onPress={launchStart} testID="initial-launch-screen-launch-start-arrow">
+      <Pressable
+        onPress={launchStart}
+        testID="initial-launch-screen-launch-start-arrow"
+      >
         <Icon
           style={styles.icon}
           name={"arrow-forward"}
@@ -34,7 +43,9 @@ export const InitialLaunchScreen = (props) => {
       <StatusBar style="auto" />
     </View>
   );
-};
+}
+
+export default InitialLaunchScreen;
 
 const styles = StyleSheet.create({
   container: {

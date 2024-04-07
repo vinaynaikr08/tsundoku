@@ -19,7 +19,7 @@ import Review from "../Components/Review/Review";
 import ShelfModal from "../Components/ShelfModal/ShelfModal";
 import TextReview from "../Components/TextReview/TextReview";
 import AboutMeEditing from "@/Components/AboutMeEditing";
-import { InitialLaunchScreen } from "../Screens/InitialLaunchScreen";
+import InitialLaunchScreen from "../Screens/InitialLaunchScreen";
 import { SignIn } from "../Screens/SignIn";
 import { CreateAccount } from "../Screens/CreateAccount";
 import ManageProfile from "@/Components/ManageProfile";
