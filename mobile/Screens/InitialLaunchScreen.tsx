@@ -50,10 +50,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.INITIAL_LAUNCH_SCREEN_BG_PINK,
     justifyContent: "center",
-    marginBottom: -100,
+    marginBottom: Dimensions.INITIAL_LAUNCH_SCREEN_BOTTOM_MARGIN,
   },
   title: {
-    marginTop: 350,
+    marginTop: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE_TOP_MARGIN,
     textAlign: "center",
     fontSize: Dimensions.INITIAL_LAUNCH_SCREEN_TITLE,
     color: Colors.INITIAL_LAUNCH_SCREEN_TEXT_WHITE,
