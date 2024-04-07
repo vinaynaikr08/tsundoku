@@ -5,27 +5,38 @@ import { Account } from "appwrite";
 
 const account = new Account(client);
 
-export const LoginStateContext = React.createContext(null);
-
-function checkLoggedIn(setLoggedIn) {
-  account.get()
-  .then(() => {
-    setLoggedIn(true);
-  }).catch(() => {
-    setLoggedIn(false);
-  })
+export interface LoginStateContextType {
+  loggedIn: boolean;
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshLoginState: () => void;
 }
 
-function LoginStateProvider({ children }) {
+export const LoginStateContext =
+  React.createContext<LoginStateContextType | null>(null);
+
+function checkLoggedIn(
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
+) {
+  account
+    .get()
+    .then(() => {
+      setLoggedIn(true);
+    })
+    .catch(() => {
+      setLoggedIn(false);
+    });
+}
+
+function LoginStateProvider({ children }: { children: React.ReactNode }) {
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   function refreshLoginState() {
     checkLoggedIn(setLoggedIn);
   }
 
-  React.useEffect(()=> {
+  React.useEffect(() => {
     refreshLoginState();
-  }, [])
+  }, []);
 
   return (
     <LoginStateContext.Provider
