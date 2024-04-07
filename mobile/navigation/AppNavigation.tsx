@@ -25,7 +25,35 @@ import { CreateAccount } from "../Screens/CreateAccount";
 import ManageProfile from "@/Components/ManageProfile";
 import NavBar from "./NavBar/NavBar";
 
-const Stack = createNativeStackNavigator();
+export interface AppNavigationStackParamList {
+  // Workaround for interfaces not being indexed by Typescript
+  //  See https://www.reddit.com/r/typescript/comments/r9e75x/confusion_in_why_a_type_is_valid_but_not_an/
+  //  for more information.
+  [k: string]: object | undefined;
+  initial_launch: undefined;
+  sign_in: undefined;
+  create_account: undefined;
+  review: undefined;
+  bookInfoModal: undefined;
+  shelfModal: undefined;
+  notifModal: undefined;
+  manageFriends: undefined;
+  manageProfile: undefined;
+  createCustomProperty: undefined;
+  viewCustomProperties: undefined;
+  textReviewModal: undefined;
+  wrappedScreen: undefined;
+  BookSearchScreen: undefined;
+  UserSearchScreen: undefined;
+  ProfileScreen: undefined;
+  UserProfileScreen: undefined;
+  UsernameEditing: undefined;
+  EmailEditing: undefined;
+  AboutMeEditing: undefined;
+  DeleteAccount: undefined;
+}
+
+const Stack = createNativeStackNavigator<AppNavigationStackParamList>();
 
 function AppNavigation() {
   const { loggedIn } = React.useContext(LoginStateContext)!;
