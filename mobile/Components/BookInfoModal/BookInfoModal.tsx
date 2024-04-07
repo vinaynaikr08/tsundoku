@@ -136,9 +136,13 @@ export const BookInfoModal = ({ route, navigation }) => {
   const [status, setStatus] = React.useState<BookState | null>(null);
 
   React.useEffect(() => {
-    (async () => {
-      setStatus(await getBookStatus(bookInfo.id));
-    })();
+    const fetchInitialBookStatus = async () => {
+      if (bookInfo) {
+        setStatus(await getBookStatus(bookInfo.id));
+      }
+    };
+
+    fetchInitialBookStatus().catch(console.error);
   }, []);
 
   const saveStatus = async (newStatus) => {
