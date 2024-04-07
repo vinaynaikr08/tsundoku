@@ -157,6 +157,24 @@ function ProfileTab(props) {
               View My Custom Properties
             </Text>
           </Button>
+          <Button
+            onPress={() => navigation.navigate("addManualBook")}
+            color={Colors.BUTTON_PURPLE}
+            containerStyle={{ borderRadius: 30, marginTop: 10 }}
+          >
+            <Text
+              style={{
+                color: "white",
+                paddingRight: 5,
+                fontSize: 17,
+                paddingTop: 5,
+                paddingBottom: 5,
+                alignSelf: "center",
+              }}
+            >
+              Add New Book
+            </Text>
+          </Button>
 
           <Divider style={{marginTop: 10}}/>
 

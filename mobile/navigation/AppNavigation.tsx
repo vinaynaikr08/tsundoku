@@ -25,6 +25,7 @@ import { SignIn } from "../Screens/SignIn";
 import { CreateAccount } from "../Screens/CreateAccount";
 import ManageProfile from "@/Components/ManageProfile";
 import NavBar from "./NavBar/NavBar";
+import AddManualBook from "@/Components/AddManualBook/AddManualBook";
 
 export interface AppNavigationStackParamList {
   // Workaround for interfaces not being indexed by Typescript
@@ -95,6 +96,11 @@ function AppNavigation() {
             <Stack.Screen
               name="viewCustomProperties"
               component={ViewCustomPropertiesWrapper}
+            />
+            <Stack.Screen
+              name="addManualBook"
+              //options={{ gestureEnabled: false }}
+              component={AddManualBook}
             />
           </Stack.Group>
           <Stack.Screen

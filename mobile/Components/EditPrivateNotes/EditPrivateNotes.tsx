@@ -19,10 +19,12 @@ import { Account } from "appwrite";
 import { BACKEND_API_PRIVATE_NOTES } from "@/Constants/URLs";
 import Toast from "react-native-toast-message";
 import { BookInfoWrapperContext } from "@/Contexts";
+import { useNavigation } from "@react-navigation/native";
 
 const account = new Account(client);
 
-function EditPrivateNotes({ route, navigation }) {
+function EditPrivateNotes({ route }) {
+  const navigation = useNavigation();
   const { noteId } = route.params;
   const bookInfo = React.useContext(BookInfoWrapperContext);
   const [loading, setLoading] = React.useState(false);
