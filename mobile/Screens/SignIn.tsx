@@ -34,7 +34,7 @@ export const SignIn = ({ navigation }: Props) => {
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { setLoggedIn } = React.useContext(LoginStateContext);
+  const { setLoggedIn } = React.useContext(LoginStateContext)!;
 
   const handleCreateAccount = () => {
     navigation.navigate("create_account");
