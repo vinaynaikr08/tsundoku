@@ -24,9 +24,8 @@ import { LoginStateContext } from "@/Providers/LoginStateProvider";
 
 const account = new Account(client);
 
-export const SignIn = (props) => {
+export const SignIn = ({ navigation }) => {
   const [email, setEmail] = React.useState("");
-  const { navigation } = props;
   const [password, setPassword] = React.useState("");
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
