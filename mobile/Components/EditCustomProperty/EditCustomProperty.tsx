@@ -1,6 +1,6 @@
 import Colors from "@/Constants/Colors";
 import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
-import * as React from "react";
+import React from "react";
 import {
   Text,
   View,
