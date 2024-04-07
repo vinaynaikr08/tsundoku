@@ -5,6 +5,7 @@ import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
 import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
 import EmailEditing from "@/Components/EmailEditing";
 import ManageFriendsModal from "@/Components/ManageFriends/ManageFriendsModal";
+import PastWrappeds from "@/Components/PastWrappeds";
 import UsernameEditing from "@/Components/UsernameEditing";
 import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
@@ -84,6 +85,7 @@ function AppNavigation() {
             <Stack.Screen name="shelfModal" component={ShelfModal} />
             <Stack.Screen name="notifModal" component={NotificationsModal} />
             <Stack.Screen name="manageFriends" component={ManageFriendsModal} />
+            <Stack.Screen name="pastWrappeds" component={PastWrappeds} />
             <Stack.Screen name="manageProfile" component={ManageProfile} />
             <Stack.Screen
               name="createCustomProperty"

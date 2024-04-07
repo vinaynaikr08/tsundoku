@@ -158,6 +158,30 @@ function ProfileTab(props) {
             </Text>
           </Button>
 
+          <Divider style={{marginTop: 10}}/>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("pastWrappeds")}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                paddingTop: 12,
+                paddingBottom: 12,
+                width: "100%",
+              }}
+            >
+              <Text style={{ fontSize: 20, paddingLeft: 20, flex: 9 }}>
+                Past Wrappeds
+              </Text>
+              <View style={{ flex: 2 }}>
+                <Icon name="event-repeat" color={Colors.BUTTON_PURPLE} size={30} />
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <Divider />
+
           <TouchableOpacity
             onPress={() => navigation.navigate("manageFriends")}
           >
@@ -179,6 +203,7 @@ function ProfileTab(props) {
           </TouchableOpacity>
 
           <Divider />
+
           <TouchableOpacity onPress={() => navigation.navigate("notifModal")}>
             <View
               style={{
