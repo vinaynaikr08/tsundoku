@@ -53,7 +53,7 @@ export const SignIn = ({ navigation }: Props) => {
             registerIndieID(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
             setLoading(false);
           })
-          .catch((error: any) => {
+          .catch((error) => {
             setLoading(false);
             if (error instanceof Error) {
               setErrorMessage(error.message);
@@ -63,7 +63,7 @@ export const SignIn = ({ navigation }: Props) => {
             }
           });
       })
-      .catch((error: any) => {
+      .catch((error) => {
         setLoading(false);
         if (error instanceof AppwriteException && error.code === 429) {
           setErrorMessage(
