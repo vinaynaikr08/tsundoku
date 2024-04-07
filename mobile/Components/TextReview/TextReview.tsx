@@ -64,8 +64,7 @@ function TextReview({ route, navigation }) {
       console.log("error: " + res.statusText);
     }
 
-    for (let i = 0; i < propertyData.length; i++) {
-      const property = propertyData[i];
+    for (const property of propertyData) {
       const custom_res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`, {
         method: "post",
         headers: new Headers({
