@@ -82,7 +82,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 }
 
 function ProfileTab(props) {
-  const { setLoggedIn } = React.useContext(LoginStateContext);
+  const { setLoggedIn } = React.useContext(LoginStateContext)!;
   const { navigation } = useContext(ProfileContext);
   const account = new Account(client);
   const navigateDeleteAccount = () => {
