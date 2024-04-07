@@ -274,7 +274,7 @@ export const BookInfoModal = ({ route, navigation }) => {
                 </View>
               );
             }}
-            renderItem={(item, index, isSelected) => {
+            renderItem={(item, _index, isSelected) => {
               return (
                 <View
                   style={{
@@ -396,16 +396,6 @@ const styles = StyleSheet.create({
 export interface ColorProps {
   color: string;
 }
-
-const ButtonContainer = styled.View<{ padding: number }>`
-  flex-direction: row;
-  width: 37%;
-  border-radius: 13px;
-  background-color: ${Colors.BUTTON_PURPLE};
-  align-items: center;
-  margin-bottom: 10px;
-  padding: ${({ padding }) => `0 ${padding}px`};
-`;
 
 const ReadingStatusButton = styled.TouchableOpacity<ColorProps>`
   height: 45px;
