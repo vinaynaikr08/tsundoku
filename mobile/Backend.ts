@@ -465,10 +465,9 @@ export default class Backend {
     return (await account.get()).name;
   };
 
-  public sendNotification = (user_id: any, type: any, title: any, message: any) => {
+  public sendNotification = async (user_id: string, type: any, title: string, message: string) => {
     try {
-      // TODO: this should be an await call
-      databases.createDocument(
+      await databases.createDocument(
         ID.mainDBID,
         ID.notificationDataCenterCollectionID,
         UID.unique(),
@@ -483,7 +482,7 @@ export default class Backend {
       console.log(error);
     }
 
-    axios.post(`https://app.nativenotify.com/api/indie/notification`, {
+    await axios.post(`https://app.nativenotify.com/api/indie/notification`, {
       subID: user_id,
       appId: 20437,
       appToken: "yoXi9lQ377rDWZeu0R8IdW",

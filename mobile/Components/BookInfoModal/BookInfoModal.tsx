@@ -58,101 +58,77 @@ async function getBookStatus(book_id: string): Promise<BookState | null> {
   }
 }
 
-async function sendNotificationToFriends(state, title) {
+async function sendNotificationToFriends(state, title: string) {
   let friends = [];
-  let name = "";
-  account
-    .get()
-    .then((response) => {
-      const user_id = response.$id;
-      name = response.name;
-      const databases = new Databases(client);
-      const promise = databases.listDocuments(
-        ID.mainDBID,
-        ID.friendsCollectionID,
-        [
-          Query.or([
-            Query.equal("requester", user_id),
-            Query.equal("requestee", user_id),
-          ]),
-        ],
-      );
-      promise
-        .then(function (response) {
-          const documents = response.documents;
-          const filtered = documents.filter((doc) => doc.status == "ACCEPTED");
-          friends = filtered.map((friend) =>
-            user_id == friend.requestee
-              ? { id: friend.requester, notif: friend.requester_notifs }
-              : { id: friend.requestee, notif: friend.requestee_notifs },
-          );
-        })
-        .then(async () => {
-          try {
-            for (const friend of friends) {
-              let general = true;
-              let statuses = true;
-              // get notification settings
-              try {
-                const promise = databases.listDocuments(
-                  ID.mainDBID,
-                  ID.notificationsCollectionID,
-                  [Query.equal("user_id", friend.id)],
-                );
 
-                promise.then(function (response) {
-                  const documents = response.documents;
-                  if (documents.length == 0) {
-                    const promise1 = databases.createDocument(
-                      ID.mainDBID,
-                      ID.notificationsCollectionID,
-                      UID.unique(),
-                      {
-                        user_id: friend.id,
-                        general: true,
-                        new_follower: true,
-                        friend_reading_status_update: true,
-                      },
-                    );
-                    general = true;
-                    statuses = true;
-                  } else {
-                    general = documents[0].general;
-                    statuses = documents[0].friend_reading_status_update;
-                    console.log(documents[0]);
-                  }
-                  if (general) {
-                    if (statuses) {
-                      if (friend.notif) {
-                        backend.sendNotification(
-                          friend.id,
-                          "status_update",
-                          name + " has updated " + title + "!",
-                          name +
-                            " has set the status of " +
-                            title +
-                            " to " +
-                            state,
-                        );
-                      }
-                    }
-                  }
-                });
-              } catch (error) {
-                console.log(error);
-              }
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user ID:", error);
-        });
-    })
-    .catch((error) => {
-      console.log("Error fetching user ID:", error);
-    });
+  const account_ret = await account.get();
+  const user_id = account_ret.$id;
+  const name = account_ret.name;
+
+  const friend_docs = (
+    await databases.listDocuments(ID.mainDBID, ID.friendsCollectionID, [
+      Query.or([
+        Query.equal("requester", user_id),
+        Query.equal("requestee", user_id),
+      ]),
+    ])
+  ).documents;
+
+  const filtered = friend_docs.filter((doc) => doc.status == "ACCEPTED");
+  friends = filtered.map((friend) =>
+    user_id == friend.requestee
+      ? { id: friend.requester, notif: friend.requester_notifs }
+      : { id: friend.requestee, notif: friend.requestee_notifs },
+  );
+
+  try {
+    for (const friend of friends) {
+      let general = true;
+      let statuses = true;
+
+      // Get notification settings
+      try {
+        const notification_docs = (
+          await databases.listDocuments(
+            ID.mainDBID,
+            ID.notificationsCollectionID,
+            [Query.equal("user_id", friend.id)],
+          )
+        ).documents;
+
+        if (notification_docs.length == 0) {
+          await databases.createDocument(
+            ID.mainDBID,
+            ID.notificationsCollectionID,
+            UID.unique(),
+            {
+              user_id: friend.id,
+              general: true,
+              new_follower: true,
+              friend_reading_status_update: true,
+            },
+          );
+          general = true;
+          statuses = true;
+        } else {
+          general = notification_docs[0].general;
+          statuses = notification_docs[0].friend_reading_status_update;
+        }
+        if (general && statuses && friend.notif) {
+          await backend.sendNotification(
+            friend.id,
+            "status_update",
+            name + " has updated " + title + "!",
+            name + " has set the status of " + title + " to " + state,
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export const BookInfoModal = ({ route, navigation }) => {
@@ -276,7 +252,7 @@ export const BookInfoModal = ({ route, navigation }) => {
                   }}
                 >
                   <Text style={{ fontSize: 14, color: "black" }}>
-                    {(selectedItem?.title) || ""}
+                    {selectedItem?.title || ""}
                   </Text>
                   <Icon
                     name={
