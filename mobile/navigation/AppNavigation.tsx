@@ -28,7 +28,7 @@ import NavBar from "./NavBar/NavBar";
 const Stack = createNativeStackNavigator();
 
 function AppNavigation() {
-  const { loggedIn } = React.useContext(LoginStateContext);
+  const { loggedIn } = React.useContext(LoginStateContext)!;
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
