@@ -1,12 +1,12 @@
 import React from "react";
 
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Pressable } from "react-native";
-import Colors from "../Constants/Colors";
-import { Icon } from "@rneui/themed";
-import Dimensions from "../Constants/Dimensions";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AppNavigationStackParamList } from "@/navigation/AppNavigation";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Icon } from "@rneui/themed";
+import { StatusBar } from "expo-status-bar";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import Colors from "../Constants/Colors";
+import Dimensions from "../Constants/Dimensions";
 
 type Props = NativeStackScreenProps<
   AppNavigationStackParamList,
@@ -15,9 +15,7 @@ type Props = NativeStackScreenProps<
 
 function InitialLaunchScreen({ navigation }: Props) {
   function launchStart() {
-    // TODO: Implement
     navigation.navigate("sign_in");
-    // console.log("Open setup");
   }
 
   return (
