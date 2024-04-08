@@ -39,44 +39,32 @@ export const SignIn = ({ navigation }: Props) => {
   const handleCreateAccount = () => {
     navigation.navigate("create_account");
   };
+
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const handleSignIn = () => {
-    account
-      .createEmailPasswordSession(email, password)
-      .then(() => {
-        account
-          .get()
-          .then((response) => {
-            setLoggedIn(true);
-            registerIndieID(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
-            setLoading(false);
-          })
-          .catch((error) => {
-            setLoading(false);
-            if (error instanceof Error) {
-              setErrorMessage(error.message);
-              setErrorModalVisible(true);
-            } else {
-              throw error;
-            }
-          });
-      })
-      .catch((error) => {
-        setLoading(false);
-        if (error instanceof AppwriteException && error.code === 429) {
-          setErrorMessage(
-            "Too many incorrect sign-in attempts. Try again later.",
-          );
-          setErrorModalVisible(true);
-        } else if (error instanceof Error) {
-          setErrorMessage(error.message);
-          setErrorModalVisible(true);
-        } else {
-          throw error;
-        }
-      });
+
+  const handleSignIn = async () => {
+    try {
+      await account.createEmailPasswordSession(email, password);
+      const account_res = await account.get();
+      setLoggedIn(true);
+      await registerIndieID(account_res.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
+    } catch (error) {
+      if (error instanceof AppwriteException && error.code === 429) {
+        setErrorMessage(
+          "Too many incorrect sign-in attempts. Try again later.",
+        );
+        setErrorModalVisible(true);
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
+        setErrorModalVisible(true);
+      } else {
+        throw error;
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -121,7 +109,7 @@ export const SignIn = ({ navigation }: Props) => {
             testID="sign-in-signin-arrow"
             onPress={() => {
               setLoading(true);
-              handleSignIn();
+              void handleSignIn();
             }}
           >
             {loading ? (
