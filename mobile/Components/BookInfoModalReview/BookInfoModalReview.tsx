@@ -21,6 +21,70 @@ import Dimensions from "../../Constants/Dimensions";
 const account = new Account(client);
 const databases = new Databases(client);
 
+// async function getReviews(book_id: string) {
+//   const reviews = [];
+//   const documents = (
+//     await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
+//       Query.equal("book", book_id),
+//     ])
+//   ).documents;
+
+//   for (const document of documents) {
+//     const review_data = await databases.getDocument(
+//       ID.mainDBID,
+//       ID.reviewsCollectionID,
+//       document.$id,
+//     );
+//     // console.log(review_data);
+//     const response = await fetch(
+//       `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
+//       {
+//         method: "GET",
+//         headers: new Headers({
+//           "Content-Type": "application/json",
+//           Authorization: "Bearer " + (await account.createJWT()).jwt,
+//         }),
+//       },
+//     );
+//     const votesResponse = await fetch(
+//       `${BACKEND_API_URL}/v0/reviews/${document.$id}/vote`,
+//       {
+//         method: "GET",
+//         headers: new Headers({
+//           "Content-Type": "application/json",
+//           Authorization: "Bearer " + (await account.createJWT()).jwt,
+//         }),
+//       },
+//     );
+//     const votesData = await votesResponse.json();
+//     const upvotes = votesData.filter((vote) => vote.vote === "UPVOTE").length;
+//     const downvotes = votesData.filter(
+//       (vote) => vote.vote === "DOWNVOTE",
+//     ).length;
+
+//     const res_json = await response.json();
+//     // console.log(res_json);
+//     if (res_json.name === undefined) {
+//       console.log(
+//         `Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`,
+//       );
+//     }
+//     const name = res_json.name || "Anonymous";
+//     const review = {
+//       rating: review_data.star_rating,
+//       desc: review_data.description,
+//       username: name,
+//       id: document.$id,
+//       user_id: review_data.user_id,
+//       upvotes,
+//       downvotes,
+//     };
+
+//     reviews.push(review);
+//   }
+//   return reviews;
+// }
+
 async function getReviews(book_id: string) {
   const reviews = [];
   const documents = (
@@ -30,59 +94,75 @@ async function getReviews(book_id: string) {
   ).documents;
 
   for (const document of documents) {
-    const review_data = await databases.getDocument(
-      ID.mainDBID,
-      ID.reviewsCollectionID,
-      document.$id,
-    );
-    // console.log(review_data);
-    const response = await fetch(
-      `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
-      {
-        method: "GET",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + (await account.createJWT()).jwt,
-        }),
-      },
-    );
-    const votesResponse = await fetch(
-      `${BACKEND_API_URL}/v0/reviews/${document.$id}/vote`,
-      {
-        method: "GET",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + (await account.createJWT()).jwt,
-        }),
-      },
-    );
-    const votesData = await votesResponse.json();
-    const upvotes = votesData.filter((vote) => vote.vote === "UPVOTE").length;
-    const downvotes = votesData.filter(
-      (vote) => vote.vote === "DOWNVOTE",
-    ).length;
+    try {
+      const [review_data, votesData] = await Promise.all([
+        databases.getDocument(
+          ID.mainDBID,
+          ID.reviewsCollectionID,
+          document.$id,
+        ),
+        fetchVotesData(document.$id),
+      ]);
 
-    const res_json = await response.json();
-    // console.log(res_json);
-    if (res_json.name === undefined) {
-      console.log(
-        `Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`,
-      );
+      const response = await fetchUserData(review_data.user_id);
+
+      const name = response.name || "Anonymous";
+      const upvotes = votesData
+        ? votesData.filter((vote) => vote.vote === "UPVOTE").length
+        : 0;
+      const downvotes = votesData
+        ? votesData.filter((vote) => vote.vote === "DOWNVOTE").length
+        : 0;
+
+      const review = {
+        rating: review_data.star_rating,
+        desc: review_data.description,
+        username: name,
+        id: document.$id,
+        user_id: review_data.user_id,
+        upvotes,
+        downvotes,
+      };
+
+      reviews.push(review);
+    } catch (error) {
+      console.error("Error fetching review:", error);
     }
-    const name = res_json.name || "Anonymous";
-    const review = {
-      rating: review_data.star_rating,
-      desc: review_data.description,
-      username: name,
-      id: document.$id,
-      user_id: review_data.user_id,
-      upvotes,
-      downvotes,
-    };
-
-    reviews.push(review);
   }
   return reviews;
+}
+
+async function fetchUserData(userId) {
+  const response = await fetch(`${BACKEND_API_URL}/v0/users/${userId}/name`, {
+    method: "GET",
+    headers: new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + (await account.createJWT()).jwt,
+    }),
+  });
+  return response.json();
+}
+
+async function fetchVotesData(reviewId) {
+  try {
+    const votesResponse = await fetch(
+      `${BACKEND_API_URL}/v0/reviews/${reviewId}/vote`,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      },
+    );
+    if (!votesResponse.ok) {
+      throw new Error(`Failed to fetch votes data for review ${reviewId}`);
+    }
+    return votesResponse.json();
+  } catch (error) {
+    console.error("Error fetching votes data:", error);
+    return [];
+  }
 }
 
 export const BookInfoModalReview = ({ bookInfo, navigation }) => {
