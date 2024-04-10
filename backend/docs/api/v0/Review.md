@@ -72,6 +72,10 @@ Note: one of the optional parameters must be supplied.
 
 `host/api/v0/reviews/[review_id]/vote`
 
+This endpoint returns the aggregated vote count, as well as the vote status of the current user. You may also modify the vote of the current user.
+
+All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
+
 ### Method
 
 `GET`
