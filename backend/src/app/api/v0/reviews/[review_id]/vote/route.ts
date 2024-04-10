@@ -76,7 +76,7 @@ export async function GET(
       response_data: {
         upvotes,
         downvotes,
-        user_voted
+        user_voted,
       },
     });
   }
@@ -126,6 +126,10 @@ export async function POST(
 
   if (db_query.total == 0) {
     createReviewVote({ user_id, review_id, vote, database });
+
+    return construct_development_api_response({
+      message: `The review vote was successfully cast.`,
+    });
   } else {
     try {
       await userDB.updateDocument(
@@ -139,9 +143,9 @@ export async function POST(
     } catch (error) {
       handle_error(error);
     }
-  }
 
-  return construct_development_api_response({
-    message: `The review vote cast was updated.`,
-  });
+    return construct_development_api_response({
+      message: `The review vote cast was updated.`,
+    });
+  }
 }
