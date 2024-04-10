@@ -3,9 +3,12 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
+import { captureConsoleIntegration } from "@sentry/integrations";
 
 Sentry.init({
   dsn: "https://46ca56d013274aa741b8e01770b795f4@o4506822527483904.ingest.sentry.io/4506822529581056",
+
+  integrations: [captureConsoleIntegration()],
 
   // Adjust this value in production, or use tracesSampler for greater control
   tracesSampleRate: 1,
