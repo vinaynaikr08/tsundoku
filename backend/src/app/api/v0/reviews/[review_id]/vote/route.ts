@@ -39,7 +39,7 @@ export async function GET(
 
   let db_query: any;
   try {
-    db_query = await userDB.listDocuments(
+    db_query = await database.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.REVIEW_VOTES_COL_ID,
       [Query.equal("user_id", user_id), Query.equal("review_id", review_id)],
@@ -54,10 +54,30 @@ export async function GET(
       status_code: 404,
     });
   } else {
+    let upvotes = 0;
+    let downvotes = 0;
+    let user_voted = null;
+
+    for (const doc of db_query.documents) {
+      if (doc.user_id === user_id) {
+        user_voted = doc.vote;
+      }
+
+      if (doc.vote === "UPVOTE") {
+        upvotes++;
+      } else if (doc.vote === "DOWNVOTE") {
+        downvotes++;
+      }
+    }
+
     return construct_development_api_response({
       message: `Review vote results for: ${review_id}`,
       response_name: "results",
-      response_data: db_query,
+      response_data: {
+        upvotes,
+        downvotes,
+        user_voted
+      },
     });
   }
 }
