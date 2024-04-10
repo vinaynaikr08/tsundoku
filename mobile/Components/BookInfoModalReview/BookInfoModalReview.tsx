@@ -52,12 +52,8 @@ async function getReviews(book_id: string): Promise<Review[]> {
       const response = await fetchUserData(review_data.user_id as string);
 
       const name: string = (response.name as string) || "Anonymous";
-      const upvotes: number = votesData
-        ? votesData.filter((vote) => vote.vote === "UPVOTE").length
-        : 0;
-      const downvotes: number = votesData
-        ? votesData.filter((vote) => vote.vote === "DOWNVOTE").length
-        : 0;
+      const upvotes: number = votesData.upvotes || 0;
+      const downvotes: number = votesData.downvotes || 0;
 
       const review = {
         rating: review_data.star_rating as number,
@@ -101,8 +97,8 @@ async function fetchVotesData(reviewId: string) {
       },
     );
     if (!votesResponse.ok) {
+      if (votesResponse.status == 404) return 0;
       console.error(await votesResponse.json());
-      throw new Error(`Failed to fetch votes data for review ${reviewId}`);
     }
     return votesResponse.json();
   } catch (error) {
