@@ -2,8 +2,7 @@ import ID from "@/Constants/ID";
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { Account, Databases, Query } from "appwrite";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -14,78 +13,24 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 
 const account = new Account(client);
 const databases = new Databases(client);
 
-// async function getReviews(book_id: string) {
-//   const reviews = [];
-//   const documents = (
-//     await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
-//       Query.equal("book", book_id),
-//     ])
-//   ).documents;
+interface Review {
+  rating: number;
+  desc: string;
+  username: string;
+  id: string;
+  user_id: string;
+  upvotes: number;
+  downvotes: number;
+}
 
-//   for (const document of documents) {
-//     const review_data = await databases.getDocument(
-//       ID.mainDBID,
-//       ID.reviewsCollectionID,
-//       document.$id,
-//     );
-//     // console.log(review_data);
-//     const response = await fetch(
-//       `${BACKEND_API_URL}/v0/users/${review_data.user_id}/name`,
-//       {
-//         method: "GET",
-//         headers: new Headers({
-//           "Content-Type": "application/json",
-//           Authorization: "Bearer " + (await account.createJWT()).jwt,
-//         }),
-//       },
-//     );
-//     const votesResponse = await fetch(
-//       `${BACKEND_API_URL}/v0/reviews/${document.$id}/vote`,
-//       {
-//         method: "GET",
-//         headers: new Headers({
-//           "Content-Type": "application/json",
-//           Authorization: "Bearer " + (await account.createJWT()).jwt,
-//         }),
-//       },
-//     );
-//     const votesData = await votesResponse.json();
-//     const upvotes = votesData.filter((vote) => vote.vote === "UPVOTE").length;
-//     const downvotes = votesData.filter(
-//       (vote) => vote.vote === "DOWNVOTE",
-//     ).length;
-
-//     const res_json = await response.json();
-//     // console.log(res_json);
-//     if (res_json.name === undefined) {
-//       console.log(
-//         `Warning: the user with ID ${review_data.user_id} was not found in the system, possibly because the username was not set.`,
-//       );
-//     }
-//     const name = res_json.name || "Anonymous";
-//     const review = {
-//       rating: review_data.star_rating,
-//       desc: review_data.description,
-//       username: name,
-//       id: document.$id,
-//       user_id: review_data.user_id,
-//       upvotes,
-//       downvotes,
-//     };
-
-//     reviews.push(review);
-//   }
-//   return reviews;
-// }
-
-async function getReviews(book_id: string) {
+async function getReviews(book_id: string): Promise<Review[]> {
   const reviews = [];
   const documents = (
     await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
@@ -104,22 +49,22 @@ async function getReviews(book_id: string) {
         fetchVotesData(document.$id),
       ]);
 
-      const response = await fetchUserData(review_data.user_id);
+      const response = await fetchUserData(review_data.user_id as string);
 
-      const name = response.name || "Anonymous";
-      const upvotes = votesData
+      const name: string = (response.name as string) || "Anonymous";
+      const upvotes: number = votesData
         ? votesData.filter((vote) => vote.vote === "UPVOTE").length
         : 0;
-      const downvotes = votesData
+      const downvotes: number = votesData
         ? votesData.filter((vote) => vote.vote === "DOWNVOTE").length
         : 0;
 
       const review = {
-        rating: review_data.star_rating,
-        desc: review_data.description,
+        rating: review_data.star_rating as number,
+        desc: review_data.description as string,
         username: name,
         id: document.$id,
-        user_id: review_data.user_id,
+        user_id: review_data.user_id as string,
         upvotes,
         downvotes,
       };
@@ -132,7 +77,7 @@ async function getReviews(book_id: string) {
   return reviews;
 }
 
-async function fetchUserData(userId) {
+async function fetchUserData(userId: string): Promise<unknown> {
   const response = await fetch(`${BACKEND_API_URL}/v0/users/${userId}/name`, {
     method: "GET",
     headers: new Headers({
@@ -143,7 +88,7 @@ async function fetchUserData(userId) {
   return response.json();
 }
 
-async function fetchVotesData(reviewId) {
+async function fetchVotesData(reviewId: string) {
   try {
     const votesResponse = await fetch(
       `${BACKEND_API_URL}/v0/reviews/${reviewId}/vote`,
@@ -156,6 +101,7 @@ async function fetchVotesData(reviewId) {
       },
     );
     if (!votesResponse.ok) {
+      console.error(await votesResponse.json());
       throw new Error(`Failed to fetch votes data for review ${reviewId}`);
     }
     return votesResponse.json();
@@ -166,10 +112,10 @@ async function fetchVotesData(reviewId) {
 }
 
 export const BookInfoModalReview = ({ bookInfo, navigation }) => {
-  const { data, error, isLoading } = useSWR(bookInfo.id, getReviews);
-  const [averageRating, setAverageRating] = useState(0);
+  const { data, error, isLoading, mutate } = useSWR(bookInfo.id, getReviews);
+  const [averageRating, setAverageRating] = React.useState(0);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isLoading && data) {
       let totalRating = 0;
       data.forEach((review) => {
@@ -180,8 +126,8 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
     }
   }, [data, isLoading]);
 
-  const [thumbsUpClicked, setThumbsUpClicked] = useState([]);
-  const [thumbsDownClicked, setThumbsDownClicked] = useState([]);
+  const [thumbsUpClicked, setThumbsUpClicked] = React.useState([]);
+  const [thumbsDownClicked, setThumbsDownClicked] = React.useState([]);
 
   const handleThumbsUpClick = async (index: number) => {
     const newThumbsUpClicked = [...thumbsUpClicked];
@@ -196,33 +142,6 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
       });
     }
     setThumbsUpClicked(newThumbsUpClicked);
-    // const reviewId = data[index].id;
-    // try {
-    //   const res = await fetch(`${BACKEND_API_URL}/reviews/${reviewId}/vote`, {
-    //     method: "POST",
-    //     headers: new Headers({
-    //       "Content-Type": "application/json",
-    //       Authorization: "Bearer " + (await account.createJWT()).jwt,
-    //     }),
-    //     body: JSON.stringify({ vote: "UPVOTE" }),
-    //   });
-    //   if (res.ok) {
-    //     const updatedData = [...data];
-    //     updatedData[index].upvotes++;
-
-    //     setThumbsUpClicked((prevThumbsUpClicked) => {
-    //       const newThumbsUpClicked = [...prevThumbsUpClicked];
-    //       newThumbsUpClicked[index] = true;
-    //       return newThumbsUpClicked;
-    //     });
-
-    //     mutate(bookInfo.id, updatedData, false);
-    //   } else {
-    //     // Handle error
-    //   }
-    // } catch (error) {
-    //   console.error("Error casting vote:", error);
-    // }
   };
 
   const handleThumbsDownClick = async (index: number) => {
@@ -236,31 +155,6 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
       });
     }
     setThumbsDownClicked(newThumbsDownClicked);
-    // const reviewId = data[index].id;
-    // try {
-    //   const res = await fetch(`${BACKEND_API_URL}/reviews/${reviewId}/vote`, {
-    //     method: "POST",
-    //     headers: new Headers({
-    //       "Content-Type": "application/json",
-    //       Authorization: "Bearer " + (await account.createJWT()).jwt,
-    //     }),
-    //     body: JSON.stringify({ vote: "DOWNVOTE" }),
-    //   });
-    //   if (res.ok) {
-    //     const updatedData = [...data];
-    //     updatedData[index].downvotes++; // Increment downvotes locally
-    //     setThumbsDownClicked((prev) => {
-    //       const newThumbsDownClicked = [...prev];
-    //       newThumbsDownClicked[index] = true;
-    //       return newThumbsDownClicked;
-    //     });
-    //     mutate(bookInfo.id, updatedData, false);
-    //   } else {
-    //     // Handle error
-    //   }
-    // } catch (error) {
-    //   console.error("Error casting vote:", error);
-    // }
   };
 
   const renderReviewDescription = (desc) => {
