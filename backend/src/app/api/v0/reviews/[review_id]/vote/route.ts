@@ -149,3 +149,57 @@ export async function POST(
     });
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { review_id: string } },
+) {
+  const authToken = getOrFailAuthTokens();
+  if (authToken instanceof NextResponse) return authToken;
+
+  const user_id = await checkUserToken(authToken);
+  if (user_id instanceof NextResponse) return user_id;
+
+  const { userDB } = getUserContextDBAccount(authToken);
+
+  const review_id = params.review_id;
+
+  if (!checkReviewExists(review_id)) {
+    return construct_development_api_response({
+      message: `The specified review does not exist!`,
+      status_code: 400,
+    });
+  }
+
+  let db_query: any;
+  try {
+    db_query = await userDB.listDocuments(
+      Constants.MAIN_DB_ID,
+      Constants.REVIEW_VOTES_COL_ID,
+      [Query.equal("user_id", user_id), Query.equal("review_id", review_id)],
+    );
+  } catch (error) {
+    return handle_error(error);
+  }
+
+  if (db_query.total == 0) {
+    return construct_development_api_response({
+      message: `The specified review does not have a vote cast!`,
+      status_code: 404,
+    });
+  } else {
+    try {
+      await userDB.deleteDocument(
+        Constants.MAIN_DB_ID,
+        Constants.REVIEW_VOTES_COL_ID,
+        db_query.documents[0].$id,
+      );
+    } catch (error) {
+      handle_error(error);
+    }
+
+    return construct_development_api_response({
+      message: `The review vote was rescinded.`,
+    });
+  }
+}
