@@ -347,6 +347,57 @@ function ChallengesTab() {
         bounces={false}
         contentContainerStyle={styles.scrollViewStyle}
       >
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: 15,
+          }}
+        >
+          <TouchableOpacity>
+            <Image
+              source={require("../../assets/wrapped-banner.png")}
+              style={{
+                width: "90%",
+                height: undefined,
+                aspectRatio: 5 / 2,
+                borderRadius: 15,
+                overflow: "hidden",
+              }}
+            />
+            <View
+              style={{
+                position: "absolute",
+                top: "15%",
+                width: 300,
+                justifyContent: "center",
+                alignSelf: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontWeight: "500",
+                }}
+              >
+                April's Challenge
+              </Text>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 16,
+                  textAlign: "center",
+                  fontWeight: "500",
+                  marginTop: 10,
+                }}
+              >
+                For April's Challenge, read three self-help books.
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity activeOpacity={1}>
           <Text style={{ margin: 10 }}>Hello</Text>
         </TouchableOpacity>
