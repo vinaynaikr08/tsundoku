@@ -103,3 +103,16 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 - `400` - if the specified review ID does not correspond to a book review entry
 - `401` - if the auth token was not supplied or is invalid, or if the required parameter is not supplied
 - `404` - if the user did not cast a vote for the specified review ID
+
+## Rescind vote for review by ID
+
+### Method
+
+`DELETE`
+
+### Returns
+
+- `200` - request was successful
+- `400` - if the specified review ID does not correspond to a book review entry
+- `401` - if the auth token was not supplied or is invalid
+- `404` - if the user did not cast a vote for the specified review ID
