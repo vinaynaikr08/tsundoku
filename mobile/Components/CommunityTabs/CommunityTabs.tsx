@@ -20,6 +20,7 @@ import {
   View,
 } from "react-native";
 import BookSearchButton from "../BookSearchButton";
+import ReadingChallenges from "../ReadingChallenges/ReadingChallenges";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -340,18 +341,15 @@ function BookClubsTab({}) {
 }
 
 function ChallengesTab() {
+  const navigation = useNavigation();
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        bounces={false}
-        contentContainerStyle={styles.scrollViewStyle}
-      >
+    <ScrollView style={{ flex: 1 }}>
         <View
           style={{
             justifyContent: "center",
             alignItems: "center",
             marginBottom: 15,
+            marginTop: 10
           }}
         >
           <TouchableOpacity>
@@ -398,11 +396,10 @@ function ChallengesTab() {
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10 }}>Hello</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
+        <Pressable onPress={() => {navigation.navigate("createReadingChallenge")}} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>New Reading Challenge</Text>
+        </Pressable>
+    </ScrollView>
   );
 }
 
@@ -469,5 +466,20 @@ const styles = StyleSheet.create({
     margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
     resizeMode: "cover",
     borderRadius: 5,
+  },
+  saveButton: {
+    backgroundColor: Colors.BUTTON_PURPLE,
+    padding: 10,
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    width: "60%",
+    alignSelf: "center"
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "600",
+    fontSize: 16,
+    textAlign: "center"
   },
 });

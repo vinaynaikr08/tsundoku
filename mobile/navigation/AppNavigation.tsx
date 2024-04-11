@@ -26,6 +26,7 @@ import { CreateAccount } from "../Screens/CreateAccount";
 import ManageProfile from "@/Components/ManageProfile";
 import NavBar from "./NavBar/NavBar";
 import AddManualBook from "@/Components/AddManualBook/AddManualBook";
+import CreateReadingChallenge from "@/Components/CreateReadingChallenge/CreateReadingChallenge";
 
 export interface AppNavigationStackParamList {
   // Workaround for interfaces not being indexed by Typescript
@@ -101,6 +102,10 @@ function AppNavigation() {
               name="addManualBook"
               options={{ gestureEnabled: false }}
               component={AddManualBook}
+            />
+            <Stack.Screen
+              name="createReadingChallenge"
+              component={CreateReadingChallenge}
             />
           </Stack.Group>
           <Stack.Screen
