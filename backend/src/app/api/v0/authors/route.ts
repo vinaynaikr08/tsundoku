@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Create new object
-  createAuthor({
+  const author_id = createAuthor({
     database,
     name,
   });
@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
     response_name: "results",
     response_data: {
       name,
+      author_id,
     },
   });
 }
