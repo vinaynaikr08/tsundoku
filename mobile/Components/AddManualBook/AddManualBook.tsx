@@ -10,6 +10,9 @@ import {
   Alert,
   Pressable,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
@@ -20,6 +23,12 @@ function AddManualBook({ navigation }) {
   const [title, setTitle] = React.useState("");
   const [author, setAuthor] = React.useState("");
   const [genre, setGenre] = React.useState("");
+  const [description, setDescription] = React.useState("");
+  const [pageCount, setPageCount] = React.useState("");
+  const [publisher, setPublisher] = React.useState("");
+  const [isbn10, setISBN10] = React.useState("");
+  const [isbn13, setISBN13] = React.useState("");
+  const [coverURL, setCoverURL] = React.useState("");
   function dismiss() {
     Alert.alert("Discard new book?", "You have not saved this book.", [
       { text: "Don't leave", style: "cancel", onPress: () => {} },
@@ -34,78 +43,130 @@ function AddManualBook({ navigation }) {
   function saveBook() {}
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          display: "flex",
-          flex: 1,
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: "white",
-          width: "100%",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-        }}
-      >
-        <TouchableOpacity
-          style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
-          onPress={dismiss}
+    <ScrollView style={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "white",
+            width: "100%",
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          }}
         >
-          <Icon name={"close"} color="black" size={25} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Add New Book</Text>
-        <TextInput
-          style={styles.nameInput}
-          onChangeText={setTitle}
-          value={title}
-          placeholder="Title"
-          placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-        />
-        <TextInput
-          style={styles.nameInput}
-          onChangeText={setAuthor}
-          value={author}
-          placeholder="Author"
-          placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-        />
-        <SelectDropdown
-          data={genres}
-          onSelect={(selectedItem) => {
-            setGenre(selectedItem);
-          }}
-          dropdownOverlayColor={"transparent"}
-          renderButton={(selectedItem, isOpen) => {
-            return (
-              <View style={styles.dropdown4BtnStyle}>
-                <Icon
-                  name={
-                    isOpen
-                      ? "chevron-up-circle-outline"
-                      : "chevron-down-circle-outline"
-                  }
-                  color={Colors.BUTTON_PURPLE}
-                  size={25}
-                />
-                <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
-                  {selectedItem || "Select genre"}
-                </Text>
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View style={styles.dropdownItemStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
-              </View>
-            );
-          }}
-        />
-
-        <Pressable onPress={saveBook} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </Pressable>
-      </View>
-    </TouchableWithoutFeedback>
+          <TouchableOpacity
+            style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
+            onPress={dismiss}
+          >
+            <Icon name={"close"} color="black" size={25} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Add New Book</Text>
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setTitle}
+            value={title}
+            placeholder="Title"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setAuthor}
+            value={author}
+            placeholder="Author"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+      
+          <SelectDropdown
+            data={genres}
+            onSelect={(selectedItem) => {
+              setGenre(selectedItem);
+            }}
+            dropdownOverlayColor={"transparent"}
+            renderButton={(selectedItem, isOpen) => {
+              return (
+                <View style={styles.dropdown4BtnStyle}>
+                  <Icon
+                    name={
+                      isOpen
+                        ? "chevron-up-circle-outline"
+                        : "chevron-down-circle-outline"
+                    }
+                    color={Colors.BUTTON_PURPLE}
+                    size={25}
+                  />
+                  <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
+                    {selectedItem || "Select genre"}
+                  </Text>
+                </View>
+              );
+            }}
+            renderItem={(item, index, isSelected) => {
+              return (
+                <View style={styles.dropdownItemStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
+                </View>
+              );
+            }}
+          />
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setPublisher}
+            value={publisher}
+            placeholder="Publisher"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setPageCount}
+            value={pageCount}
+            placeholder="Page Count"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setISBN10}
+            value={isbn10}
+            placeholder="ISBN 10"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setISBN13}
+            value={isbn13}
+            placeholder="ISBN 13"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+          <TextInput
+            style={styles.nameInput}
+            onChangeText={setCoverURL}
+            value={coverURL}
+            placeholder="Cover URL"
+            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1, width: "86%" }}
+          >
+            <TextInput
+              style={styles.reviewInput}
+              onChangeText={setDescription}
+              value={description}
+              editable
+              multiline
+              numberOfLines={4}
+              placeholder="Description"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+          </KeyboardAvoidingView>
+          <Pressable onPress={saveBook} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
+          </Pressable>
+        </View>
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 }
 
@@ -145,8 +206,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BUTTON_PURPLE,
     padding: 10,
     paddingHorizontal: 20,
-    marginBottom: 100,
     borderRadius: 10,
+    marginBottom: 20
   },
   saveButtonText: {
     color: "white",
@@ -160,7 +221,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
-    marginBottom: 20,
+    marginBottom: 10,
     alignSelf: "center",
     alignItems: "center",
     flexDirection: "row",
@@ -180,6 +241,16 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "black",
     textAlign: "center",
+  },
+  reviewInput: {
+    height: 200,
+    margin: 12,
+    marginTop: 0,
+    borderWidth: 1,
+    padding: 12,
+    paddingTop: 17,
+    borderColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
+    borderRadius: 15,
   },
 });
 
