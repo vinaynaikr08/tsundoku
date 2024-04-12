@@ -1,0 +1,27 @@
+name: Feature Request (Mobile)
+description: Suggest an idea for mobile
+title: "feature-request: mobile: "
+labels: ["enhancement"]
+assignees:
+  - ericswpark
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing a feature request for mobile!
+  - type: textarea
+    id: feature-request-description
+    attributes:
+      label: Description
+      description: What do you want to see implemented for mobile?
+      placeholder: I wish mobile supported feature X...
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Any other context you wish to provide?
+      placeholder: Mockups, screenshots, details...
+    validations:
+      required: false
