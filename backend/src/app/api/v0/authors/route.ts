@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Create new object
-  const author_id = createAuthor({
+  const author_id = await createAuthor({
     database,
     name,
   });

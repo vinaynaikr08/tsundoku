@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Create new object
-  const edition_id = createEdition({
+  const edition_id = await createEdition({
     database,
     isbn_10,
     isbn_13,
