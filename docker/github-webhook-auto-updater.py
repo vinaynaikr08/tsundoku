@@ -20,7 +20,7 @@ config = dotenv_values(".env.webhooks")
 
 
 PORT = config["PORT"]
-GITHUB_SECRET_TOKEN = config["SECRET_TOKEN"]
+GITHUB_SECRET_TOKEN = config["GITHUB_SECRET_TOKEN"]
 DISCORD_WEBHOOK_URL = config["DISCORD_WEBHOOK_URL"]
 
 
