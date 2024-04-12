@@ -19,7 +19,7 @@ from dotenv import dotenv_values
 config = dotenv_values(".env.webhooks")
 
 
-PORT = config["PORT"]
+PORT = int(config["PORT"])
 GITHUB_SECRET_TOKEN = config["GITHUB_SECRET_TOKEN"]
 DISCORD_WEBHOOK_URL = config["DISCORD_WEBHOOK_URL"]
 
