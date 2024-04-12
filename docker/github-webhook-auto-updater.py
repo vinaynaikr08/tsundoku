@@ -1,7 +1,7 @@
 """
 Script to auto-update backend with GitHub webhooks and Discord webhooks
 
-You must install python-dotenv for this script to work properly!
+You must install python-dotenv and requests for this script to work properly!
 
 Also set required environment variables. See `.env.webhooks.sample` for more.
 """
