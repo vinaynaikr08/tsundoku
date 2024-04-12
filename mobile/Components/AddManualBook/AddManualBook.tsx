@@ -29,6 +29,7 @@ function AddManualBook({ navigation }) {
   const [isbn10, setISBN10] = React.useState("");
   const [isbn13, setISBN13] = React.useState("");
   const [coverURL, setCoverURL] = React.useState("");
+
   function dismiss() {
     Alert.alert("Discard new book?", "You have not saved this book.", [
       { text: "Don't leave", style: "cancel", onPress: () => {} },
@@ -146,11 +147,7 @@ function AddManualBook({ navigation }) {
             placeholder="Cover URL"
             placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
           />
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1, width: "86%" }}
-          >
-            <TextInput
+          <TextInput
               style={styles.reviewInput}
               onChangeText={setDescription}
               value={description}
@@ -160,7 +157,6 @@ function AddManualBook({ navigation }) {
               placeholder="Description"
               placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
             />
-          </KeyboardAvoidingView>
           <Pressable onPress={saveBook} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Save</Text>
           </Pressable>
@@ -251,6 +247,7 @@ const styles = StyleSheet.create({
     paddingTop: 17,
     borderColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
     borderRadius: 15,
+    width: "80%"
   },
 });
 
