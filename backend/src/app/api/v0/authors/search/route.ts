@@ -18,12 +18,18 @@ export async function GET(request: NextRequest) {
   const name = getRequiredSearchParamOrFail(request, "name");
   if (name instanceof NextResponse) return name;
 
+  const exact = request.nextUrl.searchParams.get("exact") as string;
+
   let db_query;
   try {
     db_query = await databases.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.AUTHOR_COL_ID,
-      [Query.search("name", name as string)],
+      [
+        exact && exact == "true"
+          ? Query.equal("name", name as string)
+          : Query.search("name", name as string),
+      ],
     );
   } catch (error: any) {
     return handle_error(error);

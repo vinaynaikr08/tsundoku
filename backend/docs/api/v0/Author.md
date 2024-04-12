@@ -16,6 +16,10 @@
 
 `name`
 
+### Search query parameters (**optional**)
+
+`exact` - when set to `true`, will disable fuzzy-searching. Defaults to `false`
+
 ### Returns
 
 - `200` - request was successful
