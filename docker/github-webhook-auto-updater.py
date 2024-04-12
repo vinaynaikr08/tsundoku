@@ -1,3 +1,11 @@
+"""
+Script to auto-update backend with GitHub webhooks and Discord webhooks
+
+You must install python-dotenv for this script to work properly!
+
+Also set required environment variables. See `.env.webhooks.sample` for more.
+"""
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import subprocess
@@ -6,11 +14,14 @@ import hmac
 import requests
 import atexit
 import threading
+from dotenv import dotenv_values
+
+config = dotenv_values(".env.webhooks")
 
 
-PORT = 8987
-SECRET_TOKEN = ""
-DISCORD_WEBHOOK_URL = ""
+PORT = config.PORT
+GITHUB_SECRET_TOKEN = config.SECRET_TOKEN
+DISCORD_WEBHOOK_URL = config.DISCORD_WEBHOOK_URL
 
 
 def verify_signature(payload_body, signature_header):
