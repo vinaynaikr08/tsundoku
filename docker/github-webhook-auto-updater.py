@@ -19,9 +19,9 @@ from dotenv import dotenv_values
 config = dotenv_values(".env.webhooks")
 
 
-PORT = config.PORT
-GITHUB_SECRET_TOKEN = config.SECRET_TOKEN
-DISCORD_WEBHOOK_URL = config.DISCORD_WEBHOOK_URL
+PORT = config["PORT"]
+GITHUB_SECRET_TOKEN = config["SECRET_TOKEN"]
+DISCORD_WEBHOOK_URL = config["DISCORD_WEBHOOK_URL"]
 
 
 def verify_signature(payload_body, signature_header):
