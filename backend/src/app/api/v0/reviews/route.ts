@@ -56,11 +56,7 @@ export async function POST(request: NextRequest) {
     book_id = data.book_id;
     star_rating = data.star_rating;
 
-    try {
-      description = data.description;
-    } catch (error) {
-      // Description is optional
-    }
+    description = "description" in data ? data.description : null;
   } catch (error) {
     return construct_development_api_response({
       message: "Bad request supplied.",
