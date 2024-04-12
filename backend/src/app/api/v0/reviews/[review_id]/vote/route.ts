@@ -26,8 +26,6 @@ export async function GET(
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
 
-  const { userDB } = getUserContextDBAccount(authToken);
-
   const review_id = params.review_id;
 
   if (!checkReviewExists(review_id)) {
@@ -92,8 +90,6 @@ export async function POST(
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
 
-  const { userDB } = getUserContextDBAccount(authToken);
-
   const data = await request.json();
   const review_id = params.review_id;
 
@@ -115,7 +111,7 @@ export async function POST(
 
   let db_query: any;
   try {
-    db_query = await userDB.listDocuments(
+    db_query = await database.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.REVIEW_VOTES_COL_ID,
       [Query.equal("user_id", user_id), Query.equal("review_id", review_id)],
@@ -132,7 +128,7 @@ export async function POST(
     });
   } else {
     try {
-      await userDB.updateDocument(
+      await database.updateDocument(
         Constants.MAIN_DB_ID,
         Constants.REVIEW_VOTES_COL_ID,
         db_query.documents[0].$id,
@@ -160,8 +156,6 @@ export async function DELETE(
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
 
-  const { userDB } = getUserContextDBAccount(authToken);
-
   const review_id = params.review_id;
 
   if (!checkReviewExists(review_id)) {
@@ -173,7 +167,7 @@ export async function DELETE(
 
   let db_query: any;
   try {
-    db_query = await userDB.listDocuments(
+    db_query = await database.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.REVIEW_VOTES_COL_ID,
       [Query.equal("user_id", user_id), Query.equal("review_id", review_id)],
@@ -189,7 +183,7 @@ export async function DELETE(
     });
   } else {
     try {
-      await userDB.deleteDocument(
+      await database.deleteDocument(
         Constants.MAIN_DB_ID,
         Constants.REVIEW_VOTES_COL_ID,
         db_query.documents[0].$id,
