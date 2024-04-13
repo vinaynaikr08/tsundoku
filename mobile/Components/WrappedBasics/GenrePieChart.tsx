@@ -216,7 +216,7 @@ export function genrePieChart(unprocessedData: any) {
           absolute
         />
       </View>
-      <View style={{ height: height / 3 }}>
+      <View style={{ height: height / 3, marginTop: -20 }}>
         {data.map((genre, index) => {
           return (
             <View key={index} style={{ flexDirection: "row" }}>
