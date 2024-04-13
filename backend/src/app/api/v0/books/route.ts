@@ -28,13 +28,13 @@ export async function POST(request: NextRequest) {
     authors =
       "authors" in data &&
       Array.isArray(data.authors) &&
-      data.authors.length() > 0
+      data.authors.length > 0
         ? data.authors
         : null;
     editions =
       "editions" in data &&
       Array.isArray(data.editions) &&
-      data.editions.length() > 0
+      data.editions.length > 0
         ? data.editions
         : null;
     google_books_id = "google_books_id" in data ? data.google_books_id : null;
