@@ -1,4 +1,5 @@
 import Colors from "@/Constants/Colors";
+import { BACKEND_API_READING_CHALLENGES } from "@/Constants/URLs";
 import * as React from "react";
 import {
   View,
@@ -10,17 +11,63 @@ import {
   StyleSheet,
   Keyboard,
 } from "react-native";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
+import Toast from "react-native-toast-message";
 
-function CreateReadingChallenge() {
-  function saveChallenge() {}
+const account = new Account(client);
+
+function CreateReadingChallenge({navigation}) {
   const [name, setName] = React.useState("");
   const [bookNum, setBookNum] = React.useState("");
-  const [startMonth, setStartMonth] = React.useState("");
-  const [startDay, setStartDay] = React.useState("");
-  const [startYear, setStartYear] = React.useState("");
-  const [endMonth, setEndMonth] = React.useState("");
-  const [endDay, setEndDay] = React.useState("");
-  const [endYear, setEndYear] = React.useState("");
+  const [startMonth, setStartMonth] = React.useState(0);
+  const [startDay, setStartDay] = React.useState(0);
+  const [startYear, setStartYear] = React.useState(0);
+  const [endMonth, setEndMonth] = React.useState(0);
+  const [endDay, setEndDay] = React.useState(0);
+  const [endYear, setEndYear] = React.useState(0);
+
+  async function saveChallenge() {
+    const startDate = new Date(startYear, startMonth - 1, startDay).toISOString();
+    const endDate = new Date(endYear, endMonth - 1, endDay).toISOString();
+
+    try {
+      const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({
+          name: name,
+          book_count: bookNum,
+          start: startDate,
+          end: endDate
+        }),
+      });
+
+      const res_json = await res.json();
+      if (res.ok) {
+        console.log("reading challenge created: " + JSON.stringify(res_json));
+      } else {
+        console.log(
+          "error creating reading challenge: " + JSON.stringify(res_json),
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      // setErrorMessage("An error occurred fetching the books.");
+      // setErrorModalVisible(true);
+    }
+    Toast.show({
+      type: "success",
+      text1: "Reading challenge successfully created!",
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+    navigation.pop();
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View

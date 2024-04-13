@@ -19,3 +19,4 @@ export const BACKEND_API_USERNAME_URL = `${BACKEND_API_URL}/v0/users/username`;
 export const BACKEND_API_USER_ABOUT_ME = `${BACKEND_API_URL}/v0/users/about_me_bio`;
 export const BACKEND_API_PRIVATE_NOTES = `${BACKEND_API_URL}/v0/private_notes`;
 export const BACKEND_API_EDITIONS = `${BACKEND_API_URL}/v0/editions`;
+export const BACKEND_API_READING_CHALLENGES = `${BACKEND_API_URL}/v0/reading_challenges`;
