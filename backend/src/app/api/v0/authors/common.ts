@@ -9,7 +9,7 @@ export async function createAuthor({
   name: string;
   database: any;
 }) {
-  let res = await database.createDocument(
+  const res = await database.createDocument(
     Constants.MAIN_DB_ID,
     Constants.AUTHOR_COL_ID,
     ID.unique(),

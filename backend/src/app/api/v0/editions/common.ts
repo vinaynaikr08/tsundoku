@@ -36,7 +36,7 @@ export async function createEdition({
     thumbnail_url ? { thumbnail_url } : null,
   );
 
-  let res = await database.createDocument(
+  const res = await database.createDocument(
     Constants.MAIN_DB_ID,
     Constants.EDITION_COL_ID,
     ID.unique(),
