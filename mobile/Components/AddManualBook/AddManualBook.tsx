@@ -77,15 +77,14 @@ function AddManualBook({ navigation }) {
             }),
           });
     
-          //const author_res_json = await author_res.json();
+          const author_res_json = await author_res.json();
           if (author_res.ok) {
-            //console.log("author created: " + JSON.stringify(author_res_json));
-            //return author_res_json.results.author_id;
+            console.log("author created: " + JSON.stringify(author_res_json));
+            return author_res_json.results.author_id;
           } else {
-            // console.log(
-            //   "error creating author: " + JSON.stringify(author_res_json),
-            // );
-            console.log("error creating new author: " + author_res.status)
+            console.log(
+              "error creating author: " + JSON.stringify(author_res_json),
+            );
           }
         } else {
           return res_json.results.documents[0].$id;
@@ -168,7 +167,14 @@ function AddManualBook({ navigation }) {
       // setErrorMessage("An error occurred fetching the books.");
       // setErrorModalVisible(true);
     }
-  }
+    Toast.show({
+      type: "success",
+      text1: "Book successfully created!",
+      position: "bottom",
+      visibilityTime: 2000,
+    });
+    navigation.navigate("navbar");
+  };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={50}>
