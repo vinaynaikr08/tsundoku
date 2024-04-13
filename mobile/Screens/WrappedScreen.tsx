@@ -2,6 +2,7 @@ import Backend from "@/Backend";
 import { favoriteGenre } from "@/Components/WrappedBasics/FavoriteGenre";
 import { genrePieChart } from "@/Components/WrappedBasics/GenrePieChart";
 import { pagesRead } from "@/Components/WrappedBasics/PagesRead";
+import { summary } from "@/Components/WrappedBasics/Summary";
 import { Icon } from "@rneui/base";
 import React from "react";
 import {
@@ -51,6 +52,11 @@ export const WrappedScreen = ({ navigation, route }: any) => {
       name: "number4",
       screen: data !== undefined && genrePieChart(data.genre_arr),
       index: 4,
+    },
+    {
+      name: "number5",
+      screen: data !== undefined && summary(data),
+      index: 5,
     },
   ];
   const scrollX = React.useRef(new Animated.Value(0)).current;
