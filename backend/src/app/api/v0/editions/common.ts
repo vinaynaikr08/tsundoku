@@ -38,7 +38,7 @@ export async function createEdition({
 
   let res = await database.createDocument(
     Constants.MAIN_DB_ID,
-    Constants.AUTHOR_COL_ID,
+    Constants.EDITION_COL_ID,
     ID.unique(),
     edition_data,
   );
