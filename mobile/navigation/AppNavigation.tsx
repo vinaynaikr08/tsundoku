@@ -100,7 +100,7 @@ function AppNavigation() {
             />
             <Stack.Screen
               name="addManualBook"
-              options={{ gestureEnabled: false }}
+              // options={{ gestureEnabled: false }}
               component={AddManualBook}
             />
             <Stack.Screen

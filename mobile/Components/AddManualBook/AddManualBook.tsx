@@ -1,4 +1,5 @@
 import Colors from "@/Constants/Colors";
+import { BACKEND_API_AUTHOR_SEARCH_URL, BACKEND_API_EDITIONS } from "@/Constants/URLs";
 import * as React from "react";
 import {
   View,
@@ -17,6 +18,10 @@ import {
 import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { client } from "@/appwrite";
+import { Account } from "appwrite";
+
+const account = new Account(client);
 
 const genres: String[] = ["Religion", "Fiction", "Juvenile Nonfiction"];
 function AddManualBook({ navigation }) {
@@ -41,128 +46,201 @@ function AddManualBook({ navigation }) {
     ]);
   }
 
-  function saveBook() {}
+  async function getAuthor() {
+    try {
+      const res = await fetch(
+        `${BACKEND_API_AUTHOR_SEARCH_URL}?` +
+          new URLSearchParams({
+            name: author,
+          }),
+        {
+          method: "get",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        },
+      );
+
+      const res_json = await res.json();
+      if (res.ok) {
+        console.log("author: " + JSON.stringify(res_json));
+        if (res_json.results.documents.length == 0) {
+          // create new author
+        } else {
+          return res_json.results.documents[0].$id;
+        }
+      } else {
+        console.log(
+          "error getting raw author: " + JSON.stringify(res_json),
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      // setErrorMessage("An error occurred fetching the books.");
+      // setErrorModalVisible(true);
+    }
+  }
+
+  async function createEdition() {
+    try {
+      const res = await fetch(`${BACKEND_API_EDITIONS}`, {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({
+          isbn_10: isbn10,
+          isbn_13: isbn13,
+          page_count: pageCount,
+          publisher: publisher,
+          thumbnail_url: coverURL
+        }),
+      });
+
+      const res_json = await res.json();
+      if (res.ok) {
+        console.log("edition: " + JSON.stringify(res_json));
+        // return res_json.results.documents[0].$id;
+      } else {
+        console.log(
+          "error creating edition: " + JSON.stringify(res_json),
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      // setErrorMessage("An error occurred fetching the books.");
+      // setErrorModalVisible(true);
+    }
+  }
+
+  async function saveBook() {
+    const author_id: string = await getAuthor();
+  }
 
   return (
-    <ScrollView style={{flex: 1}}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View
-          style={{
-            display: "flex",
-            flex: 1,
-            flexDirection: "column",
-            alignItems: "center",
-            backgroundColor: "white",
-            width: "100%",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-          }}
-        >
-          <TouchableOpacity
-            style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
-            onPress={dismiss}
+    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={50}>
+      <ScrollView style={{flex: 1}}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "white",
+              width: "100%",
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
           >
-            <Icon name={"close"} color="black" size={25} />
-          </TouchableOpacity>
-          <Text style={styles.title}>Add New Book</Text>
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setTitle}
-            value={title}
-            placeholder="Title"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setAuthor}
-            value={author}
-            placeholder="Author"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-      
-          <SelectDropdown
-            data={genres}
-            onSelect={(selectedItem) => {
-              setGenre(selectedItem);
-            }}
-            dropdownOverlayColor={"transparent"}
-            renderButton={(selectedItem, isOpen) => {
-              return (
-                <View style={styles.dropdown4BtnStyle}>
-                  <Icon
-                    name={
-                      isOpen
-                        ? "chevron-up-circle-outline"
-                        : "chevron-down-circle-outline"
-                    }
-                    color={Colors.BUTTON_PURPLE}
-                    size={25}
-                  />
-                  <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
-                    {selectedItem || "Select genre"}
-                  </Text>
-                </View>
-              );
-            }}
-            renderItem={(item, index, isSelected) => {
-              return (
-                <View style={styles.dropdownItemStyle}>
-                  <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
-                </View>
-              );
-            }}
-          />
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setPublisher}
-            value={publisher}
-            placeholder="Publisher"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setPageCount}
-            value={pageCount}
-            placeholder="Page Count"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setISBN10}
-            value={isbn10}
-            placeholder="ISBN 10"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setISBN13}
-            value={isbn13}
-            placeholder="ISBN 13"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.nameInput}
-            onChangeText={setCoverURL}
-            value={coverURL}
-            placeholder="Cover URL"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-              style={styles.reviewInput}
-              onChangeText={setDescription}
-              value={description}
-              editable
-              multiline
-              numberOfLines={4}
-              placeholder="Description"
+            <TouchableOpacity
+              style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
+              onPress={dismiss}
+            >
+              <Icon name={"close"} color="black" size={25} />
+            </TouchableOpacity>
+            <Text style={styles.title}>Add New Book</Text>
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setTitle}
+              value={title}
+              placeholder="Title"
               placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
             />
-          <Pressable onPress={saveBook} style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </Pressable>
-        </View>
-      </TouchableWithoutFeedback>
-    </ScrollView>
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setAuthor}
+              value={author}
+              placeholder="Author"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+      
+            <SelectDropdown
+              data={genres}
+              onSelect={(selectedItem) => {
+                setGenre(selectedItem);
+              }}
+              dropdownOverlayColor={"transparent"}
+              renderButton={(selectedItem, isOpen) => {
+                return (
+                  <View style={styles.dropdown4BtnStyle}>
+                    <Icon
+                      name={
+                        isOpen
+                          ? "chevron-up-circle-outline"
+                          : "chevron-down-circle-outline"
+                      }
+                      color={Colors.BUTTON_PURPLE}
+                      size={25}
+                    />
+                    <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
+                      {selectedItem || "Select genre"}
+                    </Text>
+                  </View>
+                );
+              }}
+              renderItem={(item, index, isSelected) => {
+                return (
+                  <View style={styles.dropdownItemStyle}>
+                    <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
+                  </View>
+                );
+              }}
+            />
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setPublisher}
+              value={publisher}
+              placeholder="Publisher"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setPageCount}
+              value={pageCount}
+              placeholder="Page Count"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setISBN10}
+              value={isbn10}
+              placeholder="ISBN 10"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setISBN13}
+              value={isbn13}
+              placeholder="ISBN 13"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setCoverURL}
+              value={coverURL}
+              placeholder="Cover URL"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            <TextInput
+                style={styles.reviewInput}
+                onChangeText={setDescription}
+                value={description}
+                editable
+                multiline
+                numberOfLines={4}
+                placeholder="Description"
+                placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+              />
+            <Pressable onPress={createEdition} style={styles.saveButton}>
+              <Text style={styles.saveButtonText}>Save</Text>
+            </Pressable>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
