@@ -25,8 +25,18 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
     title = data.title;
 
-    authors = "authors" in data ? data.authors : null;
-    editions = "editions" in data ? data.editions : null;
+    authors =
+      "authors" in data &&
+      Array.isArray(data.authors) &&
+      data.authors.length() > 0
+        ? data.authors
+        : null;
+    editions =
+      "editions" in data &&
+      Array.isArray(data.editions) &&
+      data.editions.length() > 0
+        ? data.editions
+        : null;
     google_books_id = "google_books_id" in data ? data.google_books_id : null;
     description = "description" in data ? data.description : null;
     genre = "genre" in data ? data.genre : null;
