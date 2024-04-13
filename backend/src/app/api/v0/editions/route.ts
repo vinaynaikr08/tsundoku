@@ -5,7 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/app/appwrite";
 import { getOrFailAuthTokens } from "../helpers";
 import { checkUserToken } from "../userContext";
-import { construct_development_api_response } from "../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../dev_api_response";
 import { createEdition } from "./common";
 
 const database = new sdk.Databases(client);
@@ -49,22 +52,26 @@ export async function POST(request: NextRequest) {
   }
 
   // Create new object
-  const edition_id = await createEdition({
-    database,
-    isbn_10,
-    isbn_13,
-    page_count,
-    publish_date,
-    publisher,
-    format,
-    thumbnail_url,
-  });
+  try {
+    const edition_id = await createEdition({
+      database,
+      isbn_10,
+      isbn_13,
+      page_count,
+      publish_date,
+      publisher,
+      format,
+      thumbnail_url,
+    });
 
-  return construct_development_api_response({
-    message: `The edition was created.`,
-    response_name: "results",
-    response_data: {
-      edition_id,
-    },
-  });
+    return construct_development_api_response({
+      message: `The edition was created.`,
+      response_name: "results",
+      response_data: {
+        edition_id,
+      },
+    });
+  } catch (error) {
+    handle_error(error);
+  }
 }

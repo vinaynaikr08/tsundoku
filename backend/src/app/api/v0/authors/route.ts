@@ -5,7 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/app/appwrite";
 import { getOrFailAuthTokens } from "../helpers";
 import { checkUserToken } from "../userContext";
-import { construct_development_api_response } from "../dev_api_response";
+import {
+  construct_development_api_response,
+  handle_error,
+} from "../dev_api_response";
 import { createAuthor } from "./common";
 
 const database = new sdk.Databases(client);
@@ -36,17 +39,21 @@ export async function POST(request: NextRequest) {
   }
 
   // Create new object
-  const author_id = await createAuthor({
-    database,
-    name,
-  });
-
-  return construct_development_api_response({
-    message: `The author ${name} was created.`,
-    response_name: "results",
-    response_data: {
+  try {
+    const author_id = await createAuthor({
+      database,
       name,
-      author_id,
-    },
-  });
+    });
+
+    return construct_development_api_response({
+      message: `The author ${name} was created.`,
+      response_name: "results",
+      response_data: {
+        name,
+        author_id,
+      },
+    });
+  } catch (error) {
+    handle_error(error);
+  }
 }
