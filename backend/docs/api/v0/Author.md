@@ -6,7 +6,7 @@
 
 ## Search
 
-`host/api/v0/author/search`
+`host/api/v0/authors/search`
 
 ### Method
 
@@ -27,11 +27,11 @@
 
 ### Example
 
-`host/api/v0/author/search?name=john+green`
+`host/api/v0/authors/search?name=john+green`
 
 ## Create
 
-`host/api/v0/author`
+`host/api/v0/authors`
 
 All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
 
