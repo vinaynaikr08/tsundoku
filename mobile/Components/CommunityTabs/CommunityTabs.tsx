@@ -1,12 +1,12 @@
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
 import ID from "@/Constants/ID";
-import { BACKEND_API_URL } from "@/Constants/URLs";
+import { BACKEND_API_READING_CHALLENGES, BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Account, Databases, Query } from "appwrite";
-import React from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -342,6 +342,60 @@ function BookClubsTab({}) {
 
 function ChallengesTab() {
   const navigation = useNavigation();
+  const account = new Account(client);
+  const [readingChallenges, setReadingChallenges] = useState([]);
+  const [loading, setLoading] = useState(false)
+
+  React.useEffect(() => {
+    async function getReadingChallenges() {
+      try {
+        const res = await fetch(
+          `${BACKEND_API_READING_CHALLENGES}`,
+          {
+            method: "get",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+          },
+        );
+
+        const res_json = await res.json();
+        if (res.ok) {
+          console.log("reading challenges: " + JSON.stringify(res_json));
+          return res_json.results.documents.map((challenge: { name: any; book_count: any; start: any; end: any; }) => {
+            return {
+              name: challenge.name,
+              bookCount: challenge.book_count,
+              startDate: challenge.start,
+              endDate: challenge.end
+            };
+          });
+        } else {
+          console.log(
+            "error getting reading challenges: " + JSON.stringify(res_json),
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the books.");
+        // setErrorModalVisible(true);
+      }
+    }
+
+      getReadingChallenges()
+      .then((data) => {
+        setReadingChallenges(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+        // setErrorMessage("An error occurred fetching the recommended books.");
+        // setErrorModalVisible(true);
+      });
+  }, []);
+
   return (
     <ScrollView style={{ flex: 1 }}>
         <View
