@@ -4,6 +4,34 @@
 
 # Book
 
+## Create
+
+`host/api/v0/books`
+
+All requests to this endpoint require the JWT token to be supplied in the `Authorization` header, in the `Bearer <token>` format.
+
+### Method
+
+`POST`
+
+### Body parameters (**required**)
+
+- `title`
+
+### Body parameters (optional)
+
+- `authors`
+- `editions`
+- `google_books_id`
+- `description`
+- `genre`
+
+### Returns
+
+- `200` - request was successful
+- `400` - if the required parameters are not supplied
+- `401` - if the auth token was not supplied or is invalid
+
 ## Search
 
 `host/api/v0/books/search`
