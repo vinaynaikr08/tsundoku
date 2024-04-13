@@ -17,7 +17,7 @@ All requests to this endpoint require the JWT token to be supplied in the `Autho
 ### Body parameters (**required**)
 
 - `isbn_10`
-- `1sbn_13`
+- `isbn_13`
 
 ### Body parameters (optional)
 
