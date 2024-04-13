@@ -2,6 +2,8 @@ export const BACKEND_BASE_URL = "https://backend.tsundoku.ericswpark.com";
 
 export const BACKEND_API_URL = `${BACKEND_BASE_URL}/api`;
 
+export const BACKEND_API_BOOKS = `${BACKEND_API_URL}/v0/books`;
+export const BACKEND_API_AUTHORS = `${BACKEND_API_URL}/v0/author`;
 export const BACKEND_API_BOOK_SEARCH_URL = `${BACKEND_API_URL}/v0/books/search`;
 export const BACKEND_API_AUTHOR_SEARCH_URL = `${BACKEND_API_URL}/v0/authors/search`;
 export const BACKEND_API_REVIEW_URL = `${BACKEND_API_URL}/v0/reviews`;

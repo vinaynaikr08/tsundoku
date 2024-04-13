@@ -1,5 +1,5 @@
 import Colors from "@/Constants/Colors";
-import { BACKEND_API_AUTHOR_SEARCH_URL, BACKEND_API_EDITIONS } from "@/Constants/URLs";
+import { BACKEND_API_AUTHORS, BACKEND_API_AUTHOR_SEARCH_URL, BACKEND_API_BOOKS, BACKEND_API_EDITIONS } from "@/Constants/URLs";
 import * as React from "react";
 import {
   View,
@@ -66,7 +66,27 @@ function AddManualBook({ navigation }) {
       if (res.ok) {
         console.log("author: " + JSON.stringify(res_json));
         if (res_json.results.documents.length == 0) {
-          // create new author
+          const author_res = await fetch(`${BACKEND_API_AUTHORS}`, {
+            method: "post",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + (await account.createJWT()).jwt,
+            }),
+            body: JSON.stringify({
+              name: author
+            }),
+          });
+    
+          //const author_res_json = await author_res.json();
+          if (author_res.ok) {
+            //console.log("author created: " + JSON.stringify(author_res_json));
+            //return author_res_json.results.author_id;
+          } else {
+            // console.log(
+            //   "error creating author: " + JSON.stringify(author_res_json),
+            // );
+            console.log("error creating new author: " + author_res.status)
+          }
         } else {
           return res_json.results.documents[0].$id;
         }
@@ -102,7 +122,7 @@ function AddManualBook({ navigation }) {
       const res_json = await res.json();
       if (res.ok) {
         console.log("edition: " + JSON.stringify(res_json));
-        // return res_json.results.documents[0].$id;
+        return res_json.results.edition_id;
       } else {
         console.log(
           "error creating edition: " + JSON.stringify(res_json),
@@ -117,6 +137,37 @@ function AddManualBook({ navigation }) {
 
   async function saveBook() {
     const author_id: string = await getAuthor();
+    const edition_id: string = await createEdition();
+
+    try {
+      const res = await fetch(`${BACKEND_API_BOOKS}`, {
+        method: "post",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({
+          title: title,
+          authors: [author_id],
+          editions: [edition_id],
+          description: description,
+          genre: genre
+        }),
+      });
+
+      const res_json = await res.json();
+      if (res.ok) {
+        console.log("new book: " + JSON.stringify(res_json));
+      } else {
+        console.log(
+          "error creating book: " + JSON.stringify(res_json),
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      // setErrorMessage("An error occurred fetching the books.");
+      // setErrorModalVisible(true);
+    }
   }
 
   return (
@@ -234,7 +285,7 @@ function AddManualBook({ navigation }) {
                 placeholder="Description"
                 placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
               />
-            <Pressable onPress={createEdition} style={styles.saveButton}>
+            <Pressable onPress={saveBook} style={styles.saveButton}>
               <Text style={styles.saveButtonText}>Save</Text>
             </Pressable>
           </View>
