@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     isbn_10 = data.isbn_10;
     isbn_13 = data.isbn_13;
 
-    page_count = "page_count" in data ? data.page_count : null;
+    page_count = "page_count" in data ? Number(data.page_count) : null;
     publish_date = "publish_date" in data ? data.publish_date : null;
     publisher = "publisher" in data ? data.publisher : null;
     format = "format" in data ? data.format : null;
