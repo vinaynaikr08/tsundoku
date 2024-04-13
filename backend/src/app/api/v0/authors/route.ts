@@ -54,6 +54,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    handle_error(error);
+    return handle_error(error);
   }
 }
