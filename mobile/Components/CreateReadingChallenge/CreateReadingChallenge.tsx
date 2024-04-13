@@ -20,16 +20,16 @@ const account = new Account(client);
 function CreateReadingChallenge({navigation}) {
   const [name, setName] = React.useState("");
   const [bookNum, setBookNum] = React.useState("");
-  const [startMonth, setStartMonth] = React.useState(0);
-  const [startDay, setStartDay] = React.useState(0);
-  const [startYear, setStartYear] = React.useState(0);
-  const [endMonth, setEndMonth] = React.useState(0);
-  const [endDay, setEndDay] = React.useState(0);
-  const [endYear, setEndYear] = React.useState(0);
+  const [startMonth, setStartMonth] = React.useState("");
+  const [startDay, setStartDay] = React.useState("");
+  const [startYear, setStartYear] = React.useState("");
+  const [endMonth, setEndMonth] = React.useState("");
+  const [endDay, setEndDay] = React.useState("");
+  const [endYear, setEndYear] = React.useState("");
 
   async function saveChallenge() {
-    const startDate = new Date(startYear, startMonth - 1, startDay).toISOString();
-    const endDate = new Date(endYear, endMonth - 1, endDay).toISOString();
+    const startDate = new Date(parseInt(startYear), parseInt(startMonth) - 1, parseInt(startDay)).toISOString();
+    const endDate = new Date(parseInt(endYear), parseInt(endMonth) - 1, parseInt(endDay)).toISOString();
 
     try {
       const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
