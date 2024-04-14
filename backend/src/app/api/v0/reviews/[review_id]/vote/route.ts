@@ -10,7 +10,7 @@ import {
   handle_error,
 } from "../../../dev_api_response";
 import { getOrFailAuthTokens } from "../../../helpers";
-import { checkUserToken, getUserContextDBAccount } from "../../../userContext";
+import { checkUserToken } from "../../../userContext";
 import { createReviewVote } from "./common";
 import { checkReviewExists } from "../../Reviews";
 
