@@ -40,7 +40,7 @@ export async function GET(
     db_query = await database.listDocuments(
       Constants.MAIN_DB_ID,
       Constants.REVIEW_VOTES_COL_ID,
-      [Query.equal("user_id", user_id), Query.equal("review_id", review_id)],
+      [Query.equal("review_id", review_id)],
     );
   } catch (error) {
     return handle_error(error);
