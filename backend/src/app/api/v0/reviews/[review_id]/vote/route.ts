@@ -121,7 +121,7 @@ export async function POST(
   }
 
   if (db_query.total == 0) {
-    createReviewVote({ user_id, review_id, vote, database });
+    await createReviewVote({ user_id, review_id, vote, database });
 
     return construct_development_api_response({
       message: `The review vote was successfully cast.`,
