@@ -3,19 +3,10 @@ import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { Account, Databases, Query } from "appwrite";
 import React from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import useSWR from "swr";
 import Colors from "../../Constants/Colors";
-import Dimensions from "../../Constants/Dimensions";
 import BookInfoReviewItem from "../BookInfoReviewItem";
 
 const account = new Account(client);
@@ -55,7 +46,6 @@ async function getReviews(book_id: string): Promise<Review[]> {
       const name: string = (response.name as string) || "Anonymous";
       const upvotes: number = votesData.upvotes || 0;
       const downvotes: number = votesData.downvotes || 0;
-      // console.log(upvotes);
       const review = {
         rating: review_data.star_rating as number,
         desc: review_data.description as string,
@@ -97,7 +87,6 @@ async function fetchVotesData(reviewId: string) {
         }),
       },
     );
-    // console.log(votesResponse.json);
     if (!votesResponse.ok) {
       if (votesResponse.status == 404) return 0;
       console.error(await votesResponse.json());
@@ -124,126 +113,6 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
       setAverageRating(avgRating);
     }
   }, [data, isLoading]);
-
-  const handleVote = async (reviewId: string, vote: string) => {
-    try {
-      const jwt = (await account.createJWT()).jwt;
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/reviews/${reviewId}/vote`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
-          },
-          body: JSON.stringify({ vote }),
-        },
-      );
-
-      if (!response.ok) {
-        console.error("Voting failed:", await response.json());
-        return;
-      }
-
-      // If vote was successful, update the state or trigger a re-fetch of reviews
-    } catch (error) {
-      console.error("Error voting:", error);
-    }
-  };
-
-  const [thumbsUpClicked, setThumbsUpClicked] = React.useState([]);
-  const [thumbsDownClicked, setThumbsDownClicked] = React.useState([]);
-
-  const handleThumbsUpClick = async (reviewId: string, index: number) => {
-    const newThumbsUpClicked = [...thumbsUpClicked];
-    newThumbsUpClicked[index] = !newThumbsUpClicked[index];
-    setThumbsUpClicked(newThumbsUpClicked);
-
-    if (newThumbsUpClicked[index]) {
-      await handleVote(reviewId, "UPVOTE");
-    } else {
-      await handleUnvote(reviewId, "UPVOTE");
-    }
-
-    if (thumbsDownClicked[index]) {
-      const newThumbsDownClicked = [...thumbsDownClicked];
-      newThumbsDownClicked[index] = false;
-      setThumbsDownClicked(newThumbsDownClicked);
-      await handleUnvote(reviewId, "DOWNVOTE");
-    }
-  };
-
-  const handleThumbsDownClick = async (reviewId: string, index: number) => {
-    const newThumbsDownClicked = [...thumbsDownClicked];
-    newThumbsDownClicked[index] = !newThumbsDownClicked[index];
-    setThumbsDownClicked(newThumbsDownClicked);
-
-    if (newThumbsDownClicked[index]) {
-      await handleVote(reviewId, "DOWNVOTE");
-    } else {
-      await handleUnvote(reviewId, "DOWNVOTE");
-    }
-
-    if (thumbsUpClicked[index]) {
-      const newThumbsUpClicked = [...thumbsUpClicked];
-      newThumbsUpClicked[index] = false;
-      setThumbsUpClicked(newThumbsUpClicked);
-      await handleUnvote(reviewId, "UPVOTE");
-    }
-  };
-
-  const handleUnvote = async (reviewId: string, vote: string) => {
-    try {
-      const jwt = (await account.createJWT()).jwt;
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/reviews/${reviewId}/vote`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
-          },
-        },
-      );
-      if (!response.ok) {
-        console.error("unvote failed:", await response.json());
-        return;
-      }
-
-      console.log(`Unvoting ${vote} for review ${reviewId}`);
-    } catch (error) {
-      console.error("Error unvoting:", error);
-    }
-  };
-
-  const renderReviewDescription = (desc: string) => {
-    if (desc.length > 200) {
-      return (
-        <>
-          <Text
-            style={{
-              fontSize: 15,
-              margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-            }}
-          >
-            {desc.substring(0, 200)}...
-            <Text style={{ color: "#a3a3a3" }}> Read more</Text>
-          </Text>
-        </>
-      );
-    } else {
-      return (
-        <Text
-          style={{
-            fontSize: 15,
-            margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-          }}
-        >
-          {desc}
-        </Text>
-      );
-    }
-  };
 
   if (isLoading || !data) {
     return (
@@ -299,97 +168,6 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                 item={item}
                 index={index}
               />
-              // <View style={{ flex: 1 }}>
-              //   <TouchableOpacity
-              //     activeOpacity={1}
-              //     onPress={() =>
-              //       navigation.navigate("bookInfoFullReview", { review: item })
-              //     }
-              //   >
-              //     <View style={{ flexDirection: "row", alignItems: "center" }}>
-              //       <View style={{ marginRight: 10 }}>
-              //         <Ionicons
-              //           name={"person-circle"}
-              //           color={"grey"}
-              //           size={60}
-              //         />
-              //       </View>
-              //       <View style={{ marginRight: 10 }}>
-              //         <Text style={{ fontSize: 20, marginBottom: 5 }}>
-              //           {item.username}
-              //         </Text>
-              //         <View
-              //           style={{ flexDirection: "row", alignItems: "center" }}
-              //         >
-              //           {createStars(item.rating / 4, 30)}
-              //         </View>
-              //       </View>
-              //     </View>
-              //     {renderReviewDescription(item.desc)}
-              //     <View
-              //       style={{
-              //         flexDirection: "row",
-              //         alignItems: "center",
-              //         marginBottom: 30,
-              //       }}
-              //     >
-              //       <TouchableOpacity
-              //         onPress={() => handleThumbsUpClick(item.id, index)}
-              //       >
-              //         <View
-              //           style={{
-              //             flexDirection: "row",
-              //             alignItems: "center",
-              //             marginLeft: 10,
-              //           }}
-              //         >
-              //           <FontAwesome
-              //             name={
-              //               thumbsUpClicked[index] ? "thumbs-up" : "thumbs-o-up"
-              //             }
-              //             color={
-              //               thumbsUpClicked[index]
-              //                 ? Colors.BUTTON_PURPLE
-              //                 : "grey"
-              //             }
-              //             size={30}
-              //           />
-              //           <Text style={{ marginLeft: 5 }}>
-              //             {item.upvotes || 0}
-              //           </Text>
-              //         </View>
-              //       </TouchableOpacity>
-              //       <TouchableOpacity
-              //         onPress={() => handleThumbsDownClick(item.id, index)}
-              //       >
-              //         <View
-              //           style={{
-              //             flexDirection: "row",
-              //             alignItems: "center",
-              //             marginLeft: 20,
-              //           }}
-              //         >
-              //           <FontAwesome
-              //             name={
-              //               thumbsDownClicked[index]
-              //                 ? "thumbs-down"
-              //                 : "thumbs-o-down"
-              //             }
-              //             color={
-              //               thumbsDownClicked[index]
-              //                 ? Colors.BUTTON_PURPLE
-              //                 : "grey"
-              //             }
-              //             size={30}
-              //           />
-              //           <Text style={{ marginLeft: 5 }}>
-              //             {item.downvotes || 0}
-              //           </Text>
-              //         </View>
-              //       </TouchableOpacity>
-              //     </View>
-              //   </TouchableOpacity>
-              // </View>
             )}
           />
         </View>
@@ -398,34 +176,4 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
   );
 };
 
-function createStars(rating: number, size: number) {
-  const stars = [];
-
-  for (let i = 0; i < 5; i++) {
-    stars.push(
-      <View key={i} style={{ marginRight: 3 }}>
-        {i < rating ? (
-          <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={size} />
-        ) : (
-          <FontAwesome
-            name={"star-o"}
-            color={Colors.BUTTON_PURPLE}
-            size={size}
-          />
-        )}
-      </View>,
-    );
-  }
-  return stars;
-}
-
 export default BookInfoModalReview;
-
-const styles = StyleSheet.create({
-  scrollViewStyle: {
-    paddingBottom: 330,
-    marginBottom: 100,
-    paddingHorizontal: 5,
-    backgroundColor: "white",
-  },
-});

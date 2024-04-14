@@ -14,19 +14,6 @@ const databases = new Databases(client);
 
 export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
   const { data, error, isLoading } = useSWR(bookInfo.id);
-  const [averageRating, setAverageRating] = React.useState(0);
-
-  //   React.useEffect(() => {
-  //     if (!isLoading && data) {
-  //       let totalRating = 0;
-  //       data.forEach((review) => {
-  //         totalRating += review.rating;
-  //       });
-  //       const avgRating = totalRating / data.length;
-  //       setAverageRating(avgRating);
-  //     }
-  //   }, [data, isLoading]);
-
   const handleVote = async (reviewId: string, vote: string) => {
     try {
       const jwt = (await account.createJWT()).jwt;
@@ -46,8 +33,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
         console.error("Voting failed:", await response.json());
         return;
       }
-
-      // If vote was successful, update the state or trigger a re-fetch of reviews
+      // if vote successful, update state or re-fetch reviews
     } catch (error) {
       console.error("Error voting:", error);
     }
