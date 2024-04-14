@@ -13,7 +13,7 @@ export async function createReviewVote({
   vote: string;
   database: any;
 }) {
-  let res = await database.createDocument(
+  const res = await database.createDocument(
     Constants.MAIN_DB_ID,
     Constants.REVIEW_VOTES_COL_ID,
     ID.unique(),
