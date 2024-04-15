@@ -10,4 +10,5 @@ export default {
   userDataCollectionID: "65fdc51412724c49c0d3",
   notificationDataCenterCollectionID: "6605f045065f55f96bca",
   wrappedsCollectionID: "661192d60003b3158d4a",
+  reviewVotesCollectionID: "660eb2410020cd786f6a",
 };

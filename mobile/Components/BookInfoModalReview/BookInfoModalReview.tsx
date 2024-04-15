@@ -20,6 +20,7 @@ interface Review {
   user_id: string;
   upvotes: number;
   downvotes: number;
+  userVote: string;
 }
 
 async function getReviews(book_id: string): Promise<Review[]> {
@@ -44,8 +45,9 @@ async function getReviews(book_id: string): Promise<Review[]> {
       const response = await fetchUserData(review_data.user_id as string);
 
       const name: string = (response.name as string) || "Anonymous";
-      const upvotes: number = votesData.upvotes || 0;
-      const downvotes: number = votesData.downvotes || 0;
+      const upvotes: number = votesData ? votesData.results.upvotes : 0;
+      const downvotes: number = votesData ? votesData.results.downvotes : 0;
+      const userVote: string = votesData ? votesData.results.user_voted : "";
       const review = {
         rating: review_data.star_rating as number,
         desc: review_data.description as string,
@@ -54,6 +56,7 @@ async function getReviews(book_id: string): Promise<Review[]> {
         user_id: review_data.user_id as string,
         upvotes,
         downvotes,
+        userVote,
       };
 
       reviews.push(review);
@@ -87,15 +90,16 @@ async function fetchVotesData(reviewId: string) {
         }),
       },
     );
+
     if (!votesResponse.ok) {
-      if (votesResponse.status == 404) return 0;
+      if (votesResponse.status == 404) return null;
       console.error(await votesResponse.json());
     }
 
     return votesResponse.json();
   } catch (error) {
     console.error("Error fetching votes data:", error);
-    return [];
+    return null;
   }
 }
 
