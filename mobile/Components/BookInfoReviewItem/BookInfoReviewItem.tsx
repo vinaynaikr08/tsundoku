@@ -114,12 +114,13 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
     const newThumbsUpClicked = !thumbsUpClicked;
     setThumbsUpClicked(newThumbsUpClicked);
 
+    if (thumbsDownClicked) {
+      setThumbsDownClicked(false);
+      await handleUnvote(reviewId, "DOWNVOTE");
+    }
+
     if (newThumbsUpClicked) {
       await handleVote(reviewId, "UPVOTE");
-      if (thumbsDownClicked) {
-        setThumbsDownClicked(false);
-        await handleUnvote(reviewId, "DOWNVOTE");
-      }
     } else {
       await handleUnvote(reviewId, "UPVOTE");
     }
@@ -129,17 +130,17 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
     const newThumbsDownClicked = !thumbsDownClicked;
     setThumbsDownClicked(newThumbsDownClicked);
 
+    if (thumbsUpClicked) {
+      setThumbsUpClicked(false);
+      await handleUnvote(reviewId, "UPVOTE");
+    }
+
     if (newThumbsDownClicked) {
       await handleVote(reviewId, "DOWNVOTE");
-      if (thumbsUpClicked) {
-        setThumbsUpClicked(false);
-        await handleUnvote(reviewId, "UPVOTE");
-      }
     } else {
       await handleUnvote(reviewId, "DOWNVOTE");
     }
   };
-
   const renderReviewDescription = (desc: string) => {
     if (desc.length > 200) {
       return (
