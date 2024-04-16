@@ -351,15 +351,11 @@ function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
   const [readingChallenges, setReadingChallenges] = useState([]);
-  const user_id = undefined;
   const { data, error, isLoading, mutate } = useSWR(
-    { status: "READ", user_id },
-    backend.getBookStatusDocs,
+    { func: backend.getBookStatusDocs, arg: { status: "READ" } },
+    backend.swrFetcher,
   );
   const [loading, setLoading] = useState(false);
-
-  console.log("data array: " + JSON.stringify(data))
-  console.log("data: " + data[0]["$updatedAt"])
 
   useFocusEffect(() => {
     mutate();

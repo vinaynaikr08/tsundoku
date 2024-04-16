@@ -134,6 +134,10 @@ interface BookStatusDocument {
 }
 
 export default class Backend {
+  public swrFetcher = ({ func, arg }: { func: any; arg: any }) => {
+    return func(arg);
+  };
+
   public totalSearch = async (param: string): Promise<Book[]> => {
     const books = [
       ...(await this.bookSearch(param)),
