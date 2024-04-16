@@ -24,7 +24,6 @@ import {
   View,
 } from "react-native";
 import BookSearchButton from "../BookSearchButton";
-import ReadingChallenges from "../ReadingChallenges/ReadingChallenges";
 import useSWR from "swr";
 import Backend from "@/Backend";
 
