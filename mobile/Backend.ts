@@ -464,7 +464,7 @@ export default class Backend {
     user_id,
   }: {
     status: string;
-    user_id: string | undefined;
+    user_id?: string | undefined;
   }): Promise<BookStatusDocument[]> => {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
