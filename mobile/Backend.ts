@@ -107,6 +107,32 @@ interface ISBNSearchAppwriteResponseDocumentAuthor {
   name: string;
 }
 
+interface BookDocument {
+  $id: string;
+  $collectionId: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $databaseId: string;
+  $permissions: string[];
+  //authors: array of authordocs // TODO: implement interface
+  description: string;
+  //editions: Array of editiondocs // TODO: implement interface
+  google_books_id: string;
+  title: string;
+}
+
+interface BookStatusDocument {
+  $collectionId: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $databaseId: string;
+  $id: string;
+  $permissions: string[];
+  status: string;
+  user_id: string;
+  book: BookDocument;
+}
+
 export default class Backend {
   public totalSearch = async (param: string): Promise<Book[]> => {
     const books = [
@@ -410,7 +436,7 @@ export default class Backend {
   }: {
     status: string;
     user_id: string | undefined;
-  }): Promise<unknown> => {
+  }): Promise<BookStatusDocument[]> => {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
@@ -420,7 +446,9 @@ export default class Backend {
         Query.equal("user_id", user_id),
         Query.equal("status", status),
       ])
-    ).documents;
+    ).documents as unknown as BookStatusDocument[];
+    // We do the double-cast here because the `Document` type is missing some fields that we
+    // know we *do* have in the Appwrite database.
   };
 
   public getBookData = async (id: string) => {
