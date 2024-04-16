@@ -10,7 +10,7 @@ import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Account, Databases, Query } from "appwrite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -25,6 +25,10 @@ import {
 } from "react-native";
 import BookSearchButton from "../BookSearchButton";
 import ReadingChallenges from "../ReadingChallenges/ReadingChallenges";
+import useSWR from "swr";
+import Backend from "@/Backend";
+
+const backend = new Backend();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -348,10 +352,40 @@ function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
   const [readingChallenges, setReadingChallenges] = useState([]);
-  const [bookStatuses, setBookStatuses] = useState([]);
+  const user_id = undefined;
+  const { data, error, isLoading, mutate } = useSWR(
+    { status: "READ", user_id },
+    backend.getBookStatusDocs,
+  );
   const [loading, setLoading] = useState(false);
 
+  console.log("data array: " + JSON.stringify(data))
+  console.log("data: " + data[0].$updatedAt)
+
+  useFocusEffect(() => {
+    mutate();
+  });
+
   function Challenge({ info }) {
+    const start = new Date(info.startDate);
+    const end = new Date(info.endDate);
+    const [completed, setCompleted] = useState(0);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+      let count = 0;
+      for (let i = 0; i < data.length; i++) {
+        const bookDate = new Date(data[i].$createdAt);
+        if (bookDate <= end && bookDate >= start) {
+          count++;
+        }
+      }
+      setCompleted(count);
+      setProgress((count / info.bookCount) * 100);
+    }, [data]);
+
+    console.log("completed: " + completed);
+
     return (
       <View
         style={{
@@ -367,10 +401,42 @@ function ChallengesTab() {
           shadowRadius: 5,
           borderRadius: 10,
           width: "90%",
-          marginBottom: 10
+          marginBottom: 10,
         }}
       >
-        <Text style={{textAlign: "center"}}>{info.name}</Text>
+        <Text style={{ textAlign: "center" }}>{info.name}</Text>
+        <View
+          style={{
+            width: "85%",
+            paddingVertical: 15,
+            backgroundColor: Colors.BUTTON_GRAY,
+            borderRadius: 15,
+            alignSelf: "center",
+            marginVertical: 10,
+          }}
+        >
+          <View
+            style={{
+              width: `${progress}%`,
+              backgroundColor: Colors.BUTTON_PURPLE,
+              paddingVertical: 15,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              borderRadius: 15,
+            }}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginHorizontal: 22,
+          }}
+        >
+          <Text>{completed}</Text>
+          <Text>{info.bookCount}</Text>
+        </View>
       </View>
     );
   }
@@ -416,38 +482,6 @@ function ChallengesTab() {
       }
     }
 
-    async function getBookStatuses() {
-      try {
-        const res = await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
-          method: "get",
-          headers: new Headers({
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (await account.createJWT()).jwt,
-          }),
-        });
-
-        const res_json = await res.json();
-        if (res.ok) {
-          console.log("BOOK STATUSES: " + JSON.stringify(res_json));
-          // return res_json.results.documents.map(
-          //   (book) => {
-          //     return {
-
-          //     };
-          //   },
-          // );
-        } else {
-          console.log(
-            "error getting book statuses: " + JSON.stringify(res_json),
-          );
-        }
-      } catch (error) {
-        console.error(error);
-        // setErrorMessage("An error occurred fetching the books.");
-        // setErrorModalVisible(true);
-      }
-    }
-
     getReadingChallenges()
       .then((data) => {
         setReadingChallenges(data);
@@ -459,18 +493,6 @@ function ChallengesTab() {
         // setErrorMessage("An error occurred fetching the recommended books.");
         // setErrorModalVisible(true);
       });
-
-    // getBookStatuses()
-    //   .then((data) => {
-    //     //setReadingChallenges(data);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     setLoading(false);
-    //     // setErrorMessage("An error occurred fetching the recommended books.");
-    //     // setErrorModalVisible(true);
-    //   });
   }, []);
 
   return (
@@ -509,7 +531,7 @@ function ChallengesTab() {
                 fontSize: 20,
                 textAlign: "center",
                 fontWeight: "500",
-                marginTop: 5
+                marginTop: 5,
               }}
             >
               April's Challenge
