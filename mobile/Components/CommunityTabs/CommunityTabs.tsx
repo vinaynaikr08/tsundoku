@@ -351,14 +351,19 @@ function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
   const [readingChallenges, setReadingChallenges] = useState([]);
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data: statusData, error: statusError, isLoading: statusIsLoading, mutate: statusMutate } = useSWR(
     { func: backend.getBookStatusDocs, arg: { status: "READ" } },
+    backend.swrFetcher,
+  );
+  const { data: challengeData, error: challengeError, isLoading: challengeIsLoading, mutate: challengeMutate } = useSWR(
+    { func: backend.getReadingChallenges, arg: {}},
     backend.swrFetcher,
   );
   const [loading, setLoading] = useState(false);
 
   useFocusEffect(() => {
-    mutate();
+    statusMutate();
+    challengeMutate();
   });
 
   function Challenge({ info }) {
@@ -369,9 +374,9 @@ function ChallengesTab() {
 
     useEffect(() => {
       let count = 0;
-      if (!isLoading) {
-        for (let i = 0; i < data.length; i++) {
-          const bookDate = new Date(data[i]["$updatedAt"]);
+      if (!statusIsLoading) {
+        for (let i = 0; i < statusData.length; i++) {
+          const bookDate = new Date(statusData[i]["$updatedAt"]);
           if (bookDate <= end && bookDate >= start) {
             count++;
           }
@@ -383,7 +388,7 @@ function ChallengesTab() {
           setProgress((count / info.bookCount) * 100);
         }
       }
-    }, [data]);
+    }, [statusData]);
 
     return (
       <View
@@ -439,60 +444,6 @@ function ChallengesTab() {
       </View>
     );
   }
-
-  React.useEffect(() => {
-    async function getReadingChallenges() {
-      try {
-        const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
-          method: "get",
-          headers: new Headers({
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (await account.createJWT()).jwt,
-          }),
-        });
-
-        const res_json = await res.json();
-        if (res.ok) {
-          //console.log("reading challenges: " + JSON.stringify(res_json));
-          return res_json.results.documents.map(
-            (challenge: {
-              name: any;
-              book_count: any;
-              start: any;
-              end: any;
-            }) => {
-              return {
-                name: challenge.name,
-                bookCount: challenge.book_count,
-                startDate: challenge.start,
-                endDate: challenge.end,
-              };
-            },
-          );
-        } else {
-          console.log(
-            "error getting reading challenges: " + JSON.stringify(res_json),
-          );
-        }
-      } catch (error) {
-        console.error(error);
-        // setErrorMessage("An error occurred fetching the books.");
-        // setErrorModalVisible(true);
-      }
-    }
-
-    getReadingChallenges()
-      .then((data) => {
-        setReadingChallenges(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-        // setErrorMessage("An error occurred fetching the recommended books.");
-        // setErrorModalVisible(true);
-      });
-  }, []);
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -557,7 +508,7 @@ function ChallengesTab() {
       >
         <Text style={styles.saveButtonText}>New Reading Challenge</Text>
       </Pressable>
-      {readingChallenges.map((challenge, index) => (
+      {!challengeIsLoading && challengeData.map((challenge, index) => (
         <Challenge key={index} info={challenge} />
       ))}
     </ScrollView>

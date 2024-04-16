@@ -1,7 +1,7 @@
 import { Account, Databases, Query } from "appwrite";
 
 import { client } from "@/appwrite";
-import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_URL } from "./Constants/URLs";
+import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_READING_CHALLENGES, BACKEND_API_URL } from "./Constants/URLs";
 import ID from "./Constants/ID";
 import { ID as AID } from "appwrite";
 import axios from "axios";
@@ -498,6 +498,33 @@ export default class Backend {
       pages: book_data.editions[0].page_count,
     };
   };
+
+  public getReadingChallenges = async () => {
+    const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
+      method: "get",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+    });
+    const res_json = await res.json();
+
+    return res_json.results.documents.map(
+      (challenge: {
+        name: any;
+        book_count: any;
+        start: any;
+        end: any;
+      }) => {
+        return {
+          name: challenge.name,
+          bookCount: challenge.book_count,
+          startDate: challenge.start,
+          endDate: challenge.end,
+        };
+      },
+    );
+  }
 
   public getUsername = async ({ user_id }: { user_id: string | undefined }) => {
     if (user_id === undefined) {
