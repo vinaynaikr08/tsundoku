@@ -1,7 +1,11 @@
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
 import ID from "@/Constants/ID";
-import { BACKEND_API_READING_CHALLENGES, BACKEND_API_URL } from "@/Constants/URLs";
+import {
+  BACKEND_API_BOOK_STATUS_URL,
+  BACKEND_API_READING_CHALLENGES,
+  BACKEND_API_URL,
+} from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -344,33 +348,62 @@ function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
   const [readingChallenges, setReadingChallenges] = useState([]);
-  const [loading, setLoading] = useState(false)
+  const [bookStatuses, setBookStatuses] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  function Challenge({ info }) {
+    return (
+      <View
+        style={{
+          backgroundColor: "white",
+          padding: 20,
+          alignSelf: "center",
+          shadowColor: "black",
+          shadowOffset: {
+            width: 3,
+            height: 4,
+          },
+          shadowOpacity: 0.15,
+          shadowRadius: 5,
+          borderRadius: 10,
+          width: "90%",
+          marginBottom: 10
+        }}
+      >
+        <Text style={{textAlign: "center"}}>{info.name}</Text>
+      </View>
+    );
+  }
 
   React.useEffect(() => {
     async function getReadingChallenges() {
       try {
-        const res = await fetch(
-          `${BACKEND_API_READING_CHALLENGES}`,
-          {
-            method: "get",
-            headers: new Headers({
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + (await account.createJWT()).jwt,
-            }),
-          },
-        );
+        const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
+          method: "get",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        });
 
         const res_json = await res.json();
         if (res.ok) {
-          console.log("reading challenges: " + JSON.stringify(res_json));
-          return res_json.results.documents.map((challenge: { name: any; book_count: any; start: any; end: any; }) => {
-            return {
-              name: challenge.name,
-              bookCount: challenge.book_count,
-              startDate: challenge.start,
-              endDate: challenge.end
-            };
-          });
+          //console.log("reading challenges: " + JSON.stringify(res_json));
+          return res_json.results.documents.map(
+            (challenge: {
+              name: any;
+              book_count: any;
+              start: any;
+              end: any;
+            }) => {
+              return {
+                name: challenge.name,
+                bookCount: challenge.book_count,
+                startDate: challenge.start,
+                endDate: challenge.end,
+              };
+            },
+          );
         } else {
           console.log(
             "error getting reading challenges: " + JSON.stringify(res_json),
@@ -383,7 +416,39 @@ function ChallengesTab() {
       }
     }
 
-      getReadingChallenges()
+    async function getBookStatuses() {
+      try {
+        const res = await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
+          method: "get",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+        });
+
+        const res_json = await res.json();
+        if (res.ok) {
+          console.log("BOOK STATUSES: " + JSON.stringify(res_json));
+          // return res_json.results.documents.map(
+          //   (book) => {
+          //     return {
+
+          //     };
+          //   },
+          // );
+        } else {
+          console.log(
+            "error getting book statuses: " + JSON.stringify(res_json),
+          );
+        }
+      } catch (error) {
+        console.error(error);
+        // setErrorMessage("An error occurred fetching the books.");
+        // setErrorModalVisible(true);
+      }
+    }
+
+    getReadingChallenges()
       .then((data) => {
         setReadingChallenges(data);
         setLoading(false);
@@ -394,65 +459,86 @@ function ChallengesTab() {
         // setErrorMessage("An error occurred fetching the recommended books.");
         // setErrorModalVisible(true);
       });
+
+    // getBookStatuses()
+    //   .then((data) => {
+    //     //setReadingChallenges(data);
+    //     setLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     setLoading(false);
+    //     // setErrorMessage("An error occurred fetching the recommended books.");
+    //     // setErrorModalVisible(true);
+    //   });
   }, []);
 
   return (
     <ScrollView style={{ flex: 1 }}>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 15,
-            marginTop: 10
-          }}
-        >
-          <TouchableOpacity>
-            <Image
-              source={require("../../assets/wrapped-banner.png")}
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: 15,
+          marginTop: 10,
+        }}
+      >
+        <TouchableOpacity>
+          <Image
+            source={require("../../assets/wrapped-banner.png")}
+            style={{
+              width: "90%",
+              height: undefined,
+              aspectRatio: 5 / 2,
+              borderRadius: 15,
+              overflow: "hidden",
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              top: "15%",
+              width: 300,
+              justifyContent: "center",
+              alignSelf: "center",
+            }}
+          >
+            <Text
               style={{
-                width: "90%",
-                height: undefined,
-                aspectRatio: 5 / 2,
-                borderRadius: 15,
-                overflow: "hidden",
-              }}
-            />
-            <View
-              style={{
-                position: "absolute",
-                top: "15%",
-                width: 300,
-                justifyContent: "center",
-                alignSelf: "center",
+                color: "white",
+                fontSize: 20,
+                textAlign: "center",
+                fontWeight: "500",
+                marginTop: 5
               }}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  textAlign: "center",
-                  fontWeight: "500",
-                }}
-              >
-                April's Challenge
-              </Text>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 16,
-                  textAlign: "center",
-                  fontWeight: "500",
-                  marginTop: 10,
-                }}
-              >
-                For April's Challenge, read three self-help books.
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <Pressable onPress={() => {navigation.navigate("createReadingChallenge")}} style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>New Reading Challenge</Text>
-        </Pressable>
+              April's Challenge
+            </Text>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 16,
+                textAlign: "center",
+                fontWeight: "500",
+                marginTop: 15,
+              }}
+            >
+              For April's Challenge, read three self-help books.
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      {readingChallenges.map((challenge, index) => (
+        <Challenge key={index} info={challenge} />
+      ))}
+      <Pressable
+        onPress={() => {
+          navigation.navigate("createReadingChallenge");
+        }}
+        style={styles.saveButton}
+      >
+        <Text style={styles.saveButtonText}>New Reading Challenge</Text>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -527,13 +613,14 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     marginBottom: 20,
+    marginTop: 10,
     width: "60%",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   saveButtonText: {
     color: "white",
     fontWeight: "600",
     fontSize: 16,
-    textAlign: "center"
+    textAlign: "center",
   },
 });
