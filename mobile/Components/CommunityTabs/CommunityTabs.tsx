@@ -377,7 +377,11 @@ function ChallengesTab() {
           }
         }
         setCompleted(count);
-        setProgress((count / info.bookCount) * 100);
+        if (count > info.bookCount) {
+          setProgress(100);
+        } else {
+          setProgress((count / info.bookCount) * 100);
+        }
       }
     }, [data]);
 
