@@ -3,7 +3,7 @@ import { Account, Databases, Query } from "appwrite";
 import { client } from "@/appwrite";
 import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_URL } from "./Constants/URLs";
 import ID from "./Constants/ID";
-import { ID as UID } from "appwrite";
+import { ID as AID } from "appwrite";
 import axios from "axios";
 import Genres from "./Constants/Genres";
 
@@ -304,7 +304,7 @@ export default class Backend {
       await databases.createDocument(
         ID.mainDBID,
         ID.wrappedsCollectionID,
-        UID.unique(),
+        AID.unique(),
         {
           user_id: user_id,
           year: year,
@@ -335,7 +335,7 @@ export default class Backend {
       const res = await databases.createDocument(
         ID.mainDBID,
         ID.wrappedsCollectionID,
-        UID.unique(),
+        AID.unique(),
         {
           user_id: user_id,
           year: year,
@@ -528,7 +528,7 @@ export default class Backend {
       await databases.createDocument(
         ID.mainDBID,
         ID.notificationDataCenterCollectionID,
-        UID.unique(),
+        AID.unique(),
         {
           user_id: user_id,
           type: type,
