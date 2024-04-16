@@ -549,9 +549,6 @@ function ChallengesTab() {
           </View>
         </TouchableOpacity>
       </View>
-      {readingChallenges.map((challenge, index) => (
-        <Challenge key={index} info={challenge} />
-      ))}
       <Pressable
         onPress={() => {
           navigation.navigate("createReadingChallenge");
@@ -560,6 +557,9 @@ function ChallengesTab() {
       >
         <Text style={styles.saveButtonText}>New Reading Challenge</Text>
       </Pressable>
+      {readingChallenges.map((challenge, index) => (
+        <Challenge key={index} info={challenge} />
+      ))}
     </ScrollView>
   );
 }
@@ -634,7 +634,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     marginBottom: 20,
-    marginTop: 10,
     width: "60%",
     alignSelf: "center",
   },
