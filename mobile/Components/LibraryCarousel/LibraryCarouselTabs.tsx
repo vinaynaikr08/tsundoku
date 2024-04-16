@@ -119,7 +119,7 @@ function ReadingStatusCarousel({ status, shelf, user_id }) {
   );
 }
 
-function LibraryCarouselTabs({ user_id }) {
+function LibraryCarouselTabs({ user_id }: { user_id: string }) {
   const [shelf, setShelf] = React.useState("Currently Reading");
 
   return (
