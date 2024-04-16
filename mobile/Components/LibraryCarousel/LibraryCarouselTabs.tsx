@@ -75,7 +75,15 @@ function MyTabBar({ state, descriptors, navigation }) {
   );
 }
 
-function ReadingStatusCarousel({ status, shelf, user_id }) {
+function ReadingStatusCarousel({
+  status,
+  shelf,
+  user_id,
+}: {
+  status: string;
+  shelf: any;
+  user_id: string | undefined;
+}) {
   const { data, error, isLoading, mutate } = useSWR(
     { status, user_id },
     backend.getBookStatuses,
@@ -119,7 +127,7 @@ function ReadingStatusCarousel({ status, shelf, user_id }) {
   );
 }
 
-function LibraryCarouselTabs({ user_id }: { user_id: string }) {
+function LibraryCarouselTabs({ user_id }: { user_id?: string | undefined }) {
   const [shelf, setShelf] = React.useState("Currently Reading");
 
   return (
