@@ -53,7 +53,7 @@ export const Discover = ({ navigation }) => {
           }}
         >
           <TouchableOpacity
-            onPress={() => navigation.navigate("wrappedScreen")}
+            onPress={() => navigation.navigate("wrappedScreen", {year: new Date().getFullYear()})}
           >
             <Image
               source={require("../assets/wrapped-banner.png")}

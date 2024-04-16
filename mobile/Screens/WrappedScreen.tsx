@@ -4,7 +4,7 @@ import { genrePieChart } from "@/Components/WrappedBasics/GenrePieChart";
 import { pagesRead } from "@/Components/WrappedBasics/PagesRead";
 import { summary } from "@/Components/WrappedBasics/Summary";
 import { Icon } from "@rneui/base";
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import * as MediaLibrary from 'expo-media-library';
 import {
   Animated,
@@ -29,6 +29,7 @@ function getData(year: number) {
 export const WrappedScreen = ({ navigation, route }: any) => {
   const { year } = route.params;
   const { width, height } = Dimensions.get("screen");
+  const [isOverlayVisible, setOverlayVisible] = useState(false);
   const imageRef:any = useRef();
   const [status, requestPermission] = MediaLibrary.usePermissions();
   if (status === null) {
@@ -60,7 +61,7 @@ export const WrappedScreen = ({ navigation, route }: any) => {
     },
     {
       name: "number5",
-      screen: data !== undefined && summary(data, imageRef, status, requestPermission),
+      screen: data !== undefined && summary(data, imageRef, isOverlayVisible, setOverlayVisible),
       index: 5,
     },
   ];
