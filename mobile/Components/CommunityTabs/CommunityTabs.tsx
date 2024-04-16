@@ -359,7 +359,7 @@ function ChallengesTab() {
   const [loading, setLoading] = useState(false);
 
   console.log("data array: " + JSON.stringify(data))
-  console.log("data: " + data[0].$updatedAt)
+  console.log("data: " + data[0]["$updatedAt"])
 
   useFocusEffect(() => {
     mutate();
