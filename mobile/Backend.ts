@@ -277,30 +277,28 @@ export default class Backend {
     return books;
   };
 
-  
   public getWrapped = async ({
     user_id,
     year,
-  } : {
+  }: {
     user_id: string | undefined;
     year: number;
   }) => {
-
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
     const wrapped_docs = (
       await databases.listDocuments(ID.mainDBID, ID.wrappedsCollectionID, [
-        Query.and([
-          Query.equal("user_id", user_id),
-          Query.equal("year", year),
-        ]),
+        Query.and([Query.equal("user_id", user_id), Query.equal("year", year)]),
       ])
     ).documents;
     if (wrapped_docs === undefined) {
-      const book_data = this.getBooksOfStatusFromDate({status: "READ", user_id: user_id});
-      const data : any = this.processGenreData(book_data);      
-      const ret = {year: year, pages: data.pages, genre_arr: data.genres};
+      const book_data = this.getBooksOfStatusFromDate({
+        status: "READ",
+        user_id: user_id,
+      });
+      const data: any = this.processGenreData(book_data);
+      const ret = { year: year, pages: data.pages, genre_arr: data.genres };
 
       // create document
       await databases.createDocument(
@@ -326,9 +324,12 @@ export default class Backend {
       );
       return ret;
     } else if (wrapped_docs.length == 0) {
-      const book_data = await this.getBooksOfStatusFromDate({status: "READ", user_id: user_id});
-      const data : any = this.processGenreData(book_data);
-      const ret = {year: year, pages: data.pages, genre_arr: data.genres};
+      const book_data = await this.getBooksOfStatusFromDate({
+        status: "READ",
+        user_id: user_id,
+      });
+      const data: any = this.processGenreData(book_data);
+      const ret = { year: year, pages: data.pages, genre_arr: data.genres };
 
       // create document
       const res = await databases.createDocument(
@@ -354,13 +355,37 @@ export default class Backend {
       );
       return ret;
     } else {
-      const genre_arr = [{index: wrapped_docs[0].genre_one, population: wrapped_docs[0].genre_one_count}, {index: wrapped_docs[0].genre_two, population: wrapped_docs[0].genre_two_count},
-      {index: wrapped_docs[0].genre_three, population: wrapped_docs[0].genre_three_count}, {index: wrapped_docs[0].genre_four, population: wrapped_docs[0].genre_four_count},
-      {index: wrapped_docs[0].genre_five, population: wrapped_docs[0].genre_five_count}, {name: "Other", population: wrapped_docs[0].genre_other_count}, ];
-      return {year: year, pages: wrapped_docs[0].pages_read, genre_arr: genre_arr};
+      const genre_arr = [
+        {
+          index: wrapped_docs[0].genre_one,
+          population: wrapped_docs[0].genre_one_count,
+        },
+        {
+          index: wrapped_docs[0].genre_two,
+          population: wrapped_docs[0].genre_two_count,
+        },
+        {
+          index: wrapped_docs[0].genre_three,
+          population: wrapped_docs[0].genre_three_count,
+        },
+        {
+          index: wrapped_docs[0].genre_four,
+          population: wrapped_docs[0].genre_four_count,
+        },
+        {
+          index: wrapped_docs[0].genre_five,
+          population: wrapped_docs[0].genre_five_count,
+        },
+        { name: "Other", population: wrapped_docs[0].genre_other_count },
+      ];
+      return {
+        year: year,
+        pages: wrapped_docs[0].pages_read,
+        genre_arr: genre_arr,
+      };
     }
-  }
-  
+  };
+
   private processGenreData(data: any) {
     if (data == undefined) {
       return [];
@@ -379,9 +404,9 @@ export default class Backend {
     });
 
     const new_data = Array(6);
-  
+
     let head = new ListNode({ name: Genres.genres[0], count: counter[0] });
-  
+
     for (let i = 1; i < 53; i++) {
       const temp = new ListNode({ index: i, count: counter[i] });
       let temp1 = head;
@@ -404,9 +429,9 @@ export default class Backend {
       }
     }
     let temp = head;
-  
+
     let i = 0;
-  
+
     for (i = 0; i < 5; i++) {
       new_data[i] = {
         index: temp.data.index,
@@ -414,7 +439,7 @@ export default class Backend {
       };
       temp = temp.next;
     }
-  
+
     let count = 0;
     while (temp != null) {
       count += temp.data.count;
@@ -425,8 +450,8 @@ export default class Backend {
       population: count,
     };
 
-    const thing = {pages: pages, genres: new_data};
-  
+    const thing = { pages: pages, genres: new_data };
+
     return thing;
   }
 
@@ -493,7 +518,12 @@ export default class Backend {
     return (await account.get()).name;
   };
 
-  public sendNotification = async (user_id: string, type: any, title: string, message: string) => {
+  public sendNotification = async (
+    user_id: string,
+    type: any,
+    title: string,
+    message: string,
+  ) => {
     try {
       await databases.createDocument(
         ID.mainDBID,
