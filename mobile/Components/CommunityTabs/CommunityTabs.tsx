@@ -369,17 +369,17 @@ function ChallengesTab() {
 
     useEffect(() => {
       let count = 0;
-      for (let i = 0; i < data.length; i++) {
-        const bookDate = new Date(data[i].$createdAt);
-        if (bookDate <= end && bookDate >= start) {
-          count++;
+      if (!isLoading) {
+        for (let i = 0; i < data.length; i++) {
+          const bookDate = new Date(data[i]["$updatedAt"]);
+          if (bookDate <= end && bookDate >= start) {
+            count++;
+          }
         }
+        setCompleted(count);
+        setProgress((count / info.bookCount) * 100);
       }
-      setCompleted(count);
-      setProgress((count / info.bookCount) * 100);
     }, [data]);
-
-    console.log("completed: " + completed);
 
     return (
       <View
