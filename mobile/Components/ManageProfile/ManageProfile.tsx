@@ -1,5 +1,5 @@
 import Colors from "@/Constants/Colors";
-import { BACKEND_API_URL, BACKEND_API_USER_ABOUT_ME } from "@/Constants/URLs";
+import { BACKEND_API_SOCIAL_URLS, BACKEND_API_URL, BACKEND_API_USER_ABOUT_ME } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { useFocusEffect } from "@react-navigation/native";
 import { Account } from "appwrite";
@@ -14,6 +14,7 @@ function ManageProfile({ navigation }) {
   const [username, setUsername] = useState(null);
   const [bio, setBio] = useState(null);
   const [email, setEmail] = useState(null);
+  const [social, setSocial] = useState(null);
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
@@ -26,6 +27,8 @@ function ManageProfile({ navigation }) {
           setUsername(fetchedUsername);
           const fetchedBio = await getBio();
           setBio(fetchedBio);
+          const fetchedSocial = await getSocial();
+          setSocial(fetchedSocial);
         } catch (error) {
           console.error("Error fetching user ID or username:", error);
         }
@@ -72,6 +75,23 @@ function ManageProfile({ navigation }) {
     }
   }
 
+  async function getSocial() {
+    try {
+      const res = await fetch(`${BACKEND_API_SOCIAL_URLS}`, {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      });
+      const res_json = await res.json();
+      console.log(res_json);
+      return res_json.social_url;
+    } catch (error) {
+      console.error("Error fetching socials:", error);
+    }
+  }
+
   return (
     <ProfileContext.Provider value={navigation}>
       <View style={styles.userInfoRow}>
@@ -111,6 +131,22 @@ function ManageProfile({ navigation }) {
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("AboutMeEditing");
+          }}
+        >
+          <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.userInfoRow}>
+        <Text
+          style={styles.userInfoText}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Social Url: {social ? social : <Text style={{ color: "grey" }}>none</Text>}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("SocialEditing");
           }}
         >
           <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />

@@ -110,7 +110,7 @@ function ProfileTab(props) {
 
   return (
     <ProfileContext.Provider value={navigation}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <ScrollView
           testID="profile-tab-scroll-view"
           style={{ flex: 1 }}
@@ -290,7 +290,7 @@ function ProfileTab(props) {
             </Button>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </ProfileContext.Provider>
   );
 }

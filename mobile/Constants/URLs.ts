@@ -20,3 +20,4 @@ export const BACKEND_API_USER_ABOUT_ME = `${BACKEND_API_URL}/v0/users/about_me_b
 export const BACKEND_API_PRIVATE_NOTES = `${BACKEND_API_URL}/v0/private_notes`;
 export const BACKEND_API_EDITIONS = `${BACKEND_API_URL}/v0/editions`;
 export const BACKEND_API_READING_CHALLENGES = `${BACKEND_API_URL}/v0/reading_challenges`;
+export const BACKEND_API_SOCIAL_URLS = `${BACKEND_API_URL}/v0/users/social_url`;

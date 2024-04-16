@@ -26,7 +26,7 @@ function getData(year: number) {
   return data;
 }
 
-export const WrappedScreen = ({ navigation, route }: any) => {
+export const WrappedScreen = ({ navigation, route }) => {
   const { year } = route.params;
   const { width, height } = Dimensions.get("screen");
   const [isOverlayVisible, setOverlayVisible] = useState(false);
@@ -36,7 +36,7 @@ export const WrappedScreen = ({ navigation, route }: any) => {
     requestPermission().catch(e => console.log(e));
   }
 
-  const data : any = getData(year);
+  const data : { year: number; pages: any; genre_arr: any; } | undefined = getData(year);
 
   const items = [
     {

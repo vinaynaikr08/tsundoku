@@ -20,6 +20,7 @@ import Review from "../Components/Review/Review";
 import ShelfModal from "../Components/ShelfModal/ShelfModal";
 import TextReview from "../Components/TextReview/TextReview";
 import AboutMeEditing from "@/Components/AboutMeEditing";
+import SocialEditing from "@/Components/SocialEditing";
 import InitialLaunchScreen from "../Screens/InitialLaunchScreen";
 import { SignIn } from "../Screens/SignIn";
 import { CreateAccount } from "../Screens/CreateAccount";
@@ -53,6 +54,7 @@ export interface AppNavigationStackParamList {
   UsernameEditing: undefined;
   EmailEditing: undefined;
   AboutMeEditing: undefined;
+  SocialEditing: undefined;
   DeleteAccount: undefined;
 }
 
@@ -131,6 +133,7 @@ function AppNavigation() {
           <Stack.Screen name="UsernameEditing" component={UsernameEditing} />
           <Stack.Screen name="EmailEditing" component={EmailEditing} />
           <Stack.Screen name="AboutMeEditing" component={AboutMeEditing} />
+          <Stack.Screen name="SocialEditing" component={SocialEditing} />
           <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
         </>
       )}
