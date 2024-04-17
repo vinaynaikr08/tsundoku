@@ -350,7 +350,6 @@ function BookClubsTab({}) {
 function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
-  const [readingChallenges, setReadingChallenges] = useState([]);
   const { data: statusData, error: statusError, isLoading: statusIsLoading, mutate: statusMutate } = useSWR(
     { func: backend.getBookStatusDocs, arg: { status: "READ" } },
     backend.swrFetcher,

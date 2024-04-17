@@ -266,6 +266,7 @@ function AddManualBook({ navigation }) {
               value={isbn10}
               placeholder="ISBN 10"
               placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+              maxLength={10}
             />
             <TextInput
               style={styles.nameInput}
@@ -273,6 +274,7 @@ function AddManualBook({ navigation }) {
               value={isbn13}
               placeholder="ISBN 13"
               placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+              maxLength={13}
             />
             <TextInput
               style={styles.nameInput}

@@ -14,6 +14,7 @@ import {
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
 import Toast from "react-native-toast-message";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const account = new Account(client);
 
@@ -26,10 +27,20 @@ function CreateReadingChallenge({navigation}) {
   const [endMonth, setEndMonth] = React.useState("");
   const [endDay, setEndDay] = React.useState("");
   const [endYear, setEndYear] = React.useState("");
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
+
+  const onStartChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setStartDate(currentDate);
+  };
+
+  const onEndChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setEndDate(currentDate);
+  };
 
   async function saveChallenge() {
-    const startDate = new Date(parseInt(startYear), parseInt(startMonth) - 1, parseInt(startDay)).toISOString();
-    const endDate = new Date(parseInt(endYear), parseInt(endMonth) - 1, parseInt(endDay)).toISOString();
 
     try {
       const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
@@ -41,8 +52,8 @@ function CreateReadingChallenge({navigation}) {
         body: JSON.stringify({
           name: name,
           book_count: bookNum,
-          start: startDate,
-          end: endDate
+          start: startDate.toISOString(),
+          end: endDate.toISOString()
         }),
       });
 
@@ -99,54 +110,21 @@ function CreateReadingChallenge({navigation}) {
         />
 
         <Text style={styles.dateTitle}>Start Date</Text>
-        <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
-          <TextInput
-            style={styles.dateInput}
-            onChangeText={setStartMonth}
-            value={startMonth}
-            placeholder="Month"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.dateInput}
-            onChangeText={setStartDay}
-            value={startDay}
-            placeholder="Day"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.dateInput}
-            onChangeText={setStartYear}
-            value={startYear}
-            placeholder="Year"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-        </View>
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={startDate}
+          is24Hour={true}
+          onChange={onStartChange}
+          style={styles.datePicker}
+        />
         <Text style={styles.dateTitle}>End Date</Text>
-        <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
-          <TextInput
-            style={styles.dateInput}
-            onChangeText={setEndMonth}
-            value={endMonth}
-            placeholder="Month"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.dateInput}
-            onChangeText={setEndDay}
-            value={endDay}
-            placeholder="Day"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-          <TextInput
-            style={styles.dateInput}
-            onChangeText={setEndYear}
-            value={endYear}
-            placeholder="Year"
-            placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-          />
-        </View>
-
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={endDate}
+          is24Hour={true}
+          onChange={onEndChange}
+          style={styles.datePicker}
+        />
         <Pressable onPress={saveChallenge} style={styles.saveButton}>
           <Text style={styles.saveButtonText}>Create</Text>
         </Pressable>
@@ -203,5 +181,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
+  datePicker: {
+    marginVertical: 10
+  }
 });
 export default CreateReadingChallenge;

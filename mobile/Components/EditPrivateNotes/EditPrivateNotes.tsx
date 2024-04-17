@@ -178,6 +178,7 @@ function EditPrivateNotes({ route }) {
             editable
             multiline
             numberOfLines={4}
+            maxLength={1700}
           />
         </KeyboardAvoidingView>
         <Pressable onPress={savePrivateNote} style={styles.saveButton}>
