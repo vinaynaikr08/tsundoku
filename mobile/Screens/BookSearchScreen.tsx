@@ -14,7 +14,7 @@ import { DATA } from "@/Components/BookSearchBar/Genres";
 import { debounce } from "lodash";
 import { Divider } from "react-native-paper";
 
-import Backend from "@/Backend";
+import Backend, { Book } from "@/Backend";
 import ErrorModal from "@/Components/ErrorModal";
 import { Icon } from "@rneui/base";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,7 +24,7 @@ const backend = new Backend();
 
 function BookSearchScreen(props) {
   const [loading, setLoading] = React.useState(false);
-  const [books, setBooks] = React.useState([]);
+  const [books, setBooks] = React.useState<Book[]>([]);
   const [search, setSearch] = React.useState("");
   const GENRES = DATA();
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
@@ -35,7 +35,7 @@ function BookSearchScreen(props) {
     [],
   );
 
-  function performSearch(query) {
+  function performSearch(query: string) {
     if (query.length > 0) {
       setLoading(true);
 
