@@ -150,7 +150,15 @@ export const BookInfoModal = ({ route, navigation }) => {
       return;
     }
     if (newStatus === BookState.Read) {
-      navigation.navigate("review", { bookInfo: bookInfo });
+      // Only God knows why we need to wait an arbitrary 500 ms in order for the review modal to open
+      // every single time we invoke the navigate function. It's probably because the dropdown library
+      // we use messes with the state of the react-navigation library, which makes it cancel the navigate
+      // call until we exit out of the current modal. 500 ms is a perfectly acceptable compromise in order
+      // for us to not wear straitjackets debugging God knows what's going on in the library calls of the
+      // horror that is React Native.
+      setTimeout(() => {
+        navigation.navigate("review", { bookInfo: bookInfo });
+      }, 500);
     }
 
     await fetch(`${BACKEND_API_BOOK_STATUS_URL}`, {
@@ -166,17 +174,19 @@ export const BookInfoModal = ({ route, navigation }) => {
     });
   };
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (status === BookState.None) {
-      navigation.navigate("review", { bookInfo: bookInfo });
+      //navigation.navigate("review", { bookInfo: bookInfo });
       setStatus(BookState.Read);
-      saveStatus(BookState.Read);
+      await saveStatus(BookState.Read);
     }
   };
 
   const handleOptionSelect = (state: any, title: any) => {
     setStatus(BookStateLookup(state));
-    saveStatus(BookStateLookup(state));
+    (async () => {
+      await saveStatus(BookStateLookup(state));
+    })();
     sendNotificationToFriends(state, title);
   };
 
