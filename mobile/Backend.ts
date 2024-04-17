@@ -155,6 +155,14 @@ export default class Backend {
     );
     const res_json = (await res.json()) as BookSearchAPIResponse;
 
+    if (!("results" in res_json)) {
+      console.log(
+        "Got no results from server while searching for books. Response: ",
+        res_json,
+      );
+      return [];
+    }
+
     const books = res_json.results.documents.map(
       (doc: BookSearchAPIResponseDocument) => ({
         id: doc.$id,
