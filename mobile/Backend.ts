@@ -417,7 +417,7 @@ export default class Backend {
 
     const new_data = Array(6);
 
-    let head = new ListNode({ name: Genres.genres[0], count: counter[0] });
+    let head = new ListNode({ index: 0, count: counter[0] });
 
     for (let i = 1; i < 53; i++) {
       const temp = new ListNode({ index: i, count: counter[i] });
