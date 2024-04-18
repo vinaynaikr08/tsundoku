@@ -35,14 +35,7 @@ export async function PATCH(request: NextRequest) {
       status_code: 400,
     });
   }
-
-  if (!social_url) {
-    return construct_development_api_response({
-      message: `You're trying to update the social URL, but didn't supply the new social URL as a parameter.`,
-      status_code: 400,
-    });
-  }
-
+  
   let userdata_id = null;
   try {
     const db_query = await databases.listDocuments(

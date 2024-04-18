@@ -36,13 +36,6 @@ export async function PATCH(request: NextRequest) {
     });
   }
 
-  if (typeof about_me_bio != "string") {
-    return construct_development_api_response({
-      message: `You're trying to update the about me bio, but didn't supply the new about me bio as a parameter.`,
-      status_code: 400,
-    });
-  }
-
   let userdata_id = null;
   try {
     const db_query = await databases.listDocuments(
