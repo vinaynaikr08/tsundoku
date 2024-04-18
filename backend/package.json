@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@sentry/nextjs": "^7.110.1",
-    "appwrite": "^14.0.0",
+    "appwrite": "^14.0.1",
     "next": "14.2.1",
     "node-appwrite": "^12.0.1",
     "react": "^18",
