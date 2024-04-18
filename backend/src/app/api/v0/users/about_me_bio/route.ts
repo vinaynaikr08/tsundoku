@@ -25,7 +25,7 @@ export async function PATCH(request: NextRequest) {
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
 
-  let about_me_bio;
+  let about_me_bio: string;
   try {
     const data = await request.json();
     about_me_bio = data.about_me_bio;
@@ -36,7 +36,7 @@ export async function PATCH(request: NextRequest) {
     });
   }
 
-  if (!about_me_bio) {
+  if (typeof about_me_bio != "string") {
     return construct_development_api_response({
       message: `You're trying to update the about me bio, but didn't supply the new about me bio as a parameter.`,
       status_code: 400,

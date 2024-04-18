@@ -25,7 +25,7 @@ export async function PATCH(request: NextRequest) {
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
 
-  let social_url;
+  let social_url: string;
   try {
     const data = await request.json();
     social_url = data.social_url;
