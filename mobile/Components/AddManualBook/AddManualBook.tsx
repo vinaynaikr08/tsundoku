@@ -23,7 +23,7 @@ import { Account } from "appwrite";
 
 const account = new Account(client);
 
-const genres: String[] = ["Religion", "Fiction", "Juvenile Nonfiction"];
+const genres: String[] = ["Religion", "Fiction", "Juvenile Nonfiction", "Young Adult Fiction", "History", "Science"];
 function AddManualBook({ navigation }) {
   const [title, setTitle] = React.useState("");
   const [author, setAuthor] = React.useState("");
