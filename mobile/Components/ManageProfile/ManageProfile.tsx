@@ -4,7 +4,7 @@ import { client } from "@/appwrite";
 import { useFocusEffect } from "@react-navigation/native";
 import { Account } from "appwrite";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Linking } from "react-native";
 import { Divider } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ProfileContext } from "../../Contexts";
@@ -88,7 +88,7 @@ function ManageProfile({ navigation }) {
       console.log(res_json);
       return res_json.social_url;
     } catch (error) {
-      console.error("Error fetching socials:", error);
+      console.log("Error fetching socials:", error);
     }
   }
 
@@ -138,12 +138,23 @@ function ManageProfile({ navigation }) {
       </View>
       <View style={styles.userInfoRow}>
         <Text
-          style={styles.userInfoText}
+          style={styles.socialText}
+        >
+          Social Url:{" "}
+        </Text>
+        <Text
+          style={styles.socialUrlText}
           numberOfLines={1}
           ellipsizeMode="tail"
+          onPress={async () => {
+            if (social) {
+              await Linking.openURL(social);
+            }
+          }}
         >
-          Social Url: {social ? social : <Text style={{ color: "grey" }}>none</Text>}
+          {social ? social : <Text style={{ color: "grey" }}>none</Text>}
         </Text>
+        
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("SocialEditing");
@@ -177,5 +188,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     margin: 12,
+  },
+  socialText: {
+    fontSize: 20,
+    marginLeft: 20,
+    marginVertical: 12,
+  },
+  socialUrlText: {
+    fontSize: 20,
   },
 });

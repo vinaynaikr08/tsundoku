@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Linking,
 } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,7 +26,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ID from "../Constants/ID";
 import { NavigationContext } from "../Contexts";
 import { client } from "../appwrite";
-import { BACKEND_API_USER_ABOUT_ME } from "@/Constants/URLs";
+import { BACKEND_API_USER_ABOUT_ME, BACKEND_API_SOCIAL_URLS } from "@/Constants/URLs";
 
 const databases = new Databases(client);
 const backend = new Backend();
@@ -389,6 +390,26 @@ async function getBio(userId) {
   }
 }
 
+async function getSocial(userId : string) {
+  try {
+    const res = await fetch(`${BACKEND_API_SOCIAL_URLS}` + '?' +
+      new URLSearchParams({
+        user_id: userId,
+      }),
+    {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        // Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+    });
+    const res_json = await res.json();
+    return res_json.social_url;
+  } catch (error) {
+    console.log("Error fetching socials:", error);
+  }
+}
+
 export const UserProfile = ({ navigation, route }) => {
   const [update, forceUpdate] = useReducer((x) => x + 1, 0);
   const { username, user_id } = route.params;
@@ -396,6 +417,7 @@ export const UserProfile = ({ navigation, route }) => {
   const [status, setStatus] = useState(0);
   const [button, setButton] = useState("");
   const [bio, setBio] = useState("");
+  const [social, setSocial] = useState("");
   const [friend, setFriend] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteOption, setShowDeleteOption] = useState(false);
@@ -403,7 +425,7 @@ export const UserProfile = ({ navigation, route }) => {
   React.useEffect(() => {
     console.log("updated");
     const account = new Account(client);
-    let status_1;
+    let status_1 : number;
     account.get().then((response) => {
       const current_user_id = response.$id;
       const promise = databases.listDocuments(
@@ -472,6 +494,7 @@ export const UserProfile = ({ navigation, route }) => {
       if (fetchedBio !== null) {
         setBio(fetchedBio);
       }
+      setSocial(await getSocial(user_id));
       setLoading(false);
     })();
   }, [user_id]);
@@ -555,6 +578,18 @@ export const UserProfile = ({ navigation, route }) => {
                     About Me:{" "}
                     {bio ? bio : <Text style={{ color: "grey" }}>none</Text>}
                   </Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={{ marginLeft: 20, marginBottom: 10 }}>
+                      Social Url:{" "}
+                    </Text>
+                    <Text style={{ marginBottom: 10 }} onPress={async () => {
+                      if (social) {
+                        await Linking.openURL(social);
+                      }
+                    }}>
+                      {social ? <Text style={{ color: "blue" }}>{social}</Text> : <Text style={{ color: "grey" }}>none</Text>}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
