@@ -25,7 +25,7 @@ export async function PATCH(request: NextRequest) {
   const user_id = await checkUserToken(authToken);
   if (user_id instanceof NextResponse) return user_id;
 
-  let social_url: string;
+  let social_url: string | null;
   try {
     const data = await request.json();
     social_url = data.social_url;
@@ -35,7 +35,11 @@ export async function PATCH(request: NextRequest) {
       status_code: 400,
     });
   }
-  
+
+  if (social_url === "") {
+    social_url = null;
+  }
+
   let userdata_id = null;
   try {
     const db_query = await databases.listDocuments(
