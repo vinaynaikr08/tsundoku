@@ -1,6 +1,6 @@
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
-import { Account, Databases } from "appwrite";
+import { Account } from "appwrite";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -10,7 +10,6 @@ import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 
 const account = new Account(client);
-const databases = new Databases(client);
 
 export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
   const { data, error, isLoading } = useSWR(bookInfo.id);
