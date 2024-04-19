@@ -207,7 +207,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
             marginBottom: 30,
           }}
         >
-          <TouchableOpacity onPress={() => handleThumbsUpClick(item.id)}>
+          <TouchableOpacity onPress={() => void handleThumbsUpClick(item.id)}>
             <View
               style={{
                 flexDirection: "row",
@@ -224,7 +224,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => handleThumbsDownClick(item.id)}
+            onPress={() => void handleThumbsDownClick(item.id)}
           >
             <View
               style={{
