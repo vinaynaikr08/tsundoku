@@ -36,6 +36,7 @@ export async function PATCH(request: NextRequest) {
     });
   }
 
+  // Appwrite doesn't like empty strings to unset an attribute, rewrite to null instead
   if (social_url === "") {
     social_url = null;
   }
