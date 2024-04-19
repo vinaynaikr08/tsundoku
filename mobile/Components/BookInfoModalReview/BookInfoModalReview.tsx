@@ -44,7 +44,7 @@ async function getReviews(book_id: string): Promise<Review[]> {
 
       const response = await fetchUserData(review_data.user_id as string);
 
-      const name: string = (response.name as string) || "Anonymous";
+      const name: string = response.name ?? "Anonymous";
       const upvotes: number = votesData ? votesData.results.upvotes : 0;
       const downvotes: number = votesData ? votesData.results.downvotes : 0;
       const userVote: string = votesData ? votesData.results.user_voted : "";
@@ -67,7 +67,11 @@ async function getReviews(book_id: string): Promise<Review[]> {
   return reviews;
 }
 
-async function fetchUserData(userId: string): Promise<unknown> {
+interface UserDataResponse {
+  name: string | undefined;
+}
+
+async function fetchUserData(userId: string): Promise<UserDataResponse> {
   const response = await fetch(`${BACKEND_API_URL}/v0/users/${userId}/name`, {
     method: "GET",
     headers: new Headers({
@@ -75,7 +79,7 @@ async function fetchUserData(userId: string): Promise<unknown> {
       Authorization: "Bearer " + (await account.createJWT()).jwt,
     }),
   });
-  return response.json();
+  return response.json() as unknown as UserDataResponse;
 }
 
 async function fetchVotesData(reviewId: string) {
