@@ -110,7 +110,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
     }
   };
 
-  const handleThumbsUpClick = async (reviewId: string, index: number) => {
+  const handleThumbsUpClick = async (reviewId: string) => {
     const newThumbsUpClicked = !thumbsUpClicked;
     setThumbsUpClicked(newThumbsUpClicked);
 
@@ -126,7 +126,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
     }
   };
 
-  const handleThumbsDownClick = async (reviewId: string, index: number) => {
+  const handleThumbsDownClick = async (reviewId: string) => {
     const newThumbsDownClicked = !thumbsDownClicked;
     setThumbsDownClicked(newThumbsDownClicked);
 
@@ -207,7 +207,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
             marginBottom: 30,
           }}
         >
-          <TouchableOpacity onPress={() => handleThumbsUpClick(item.id, index)}>
+          <TouchableOpacity onPress={() => handleThumbsUpClick(item.id)}>
             <View
               style={{
                 flexDirection: "row",
@@ -224,7 +224,7 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => handleThumbsDownClick(item.id, index)}
+            onPress={() => handleThumbsDownClick(item.id)}
           >
             <View
               style={{
