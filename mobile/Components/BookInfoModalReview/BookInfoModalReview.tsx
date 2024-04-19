@@ -169,12 +169,11 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
                 />
               </View>
             )}
-            renderItem={({ item, index }) => (
+            renderItem={({ item }) => (
               <BookInfoReviewItem
                 bookInfo={bookInfo}
                 navigation={navigation}
                 item={item}
-                index={index}
               />
             )}
           />

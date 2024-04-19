@@ -11,7 +11,7 @@ import Dimensions from "../../Constants/Dimensions";
 
 const account = new Account(client);
 
-export const BookInfoReviewItem = ({ bookInfo, navigation, item, index }) => {
+export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
   const { data, error, isLoading } = useSWR(bookInfo.id);
   const initialThumbsUpClicked = item.userVote === "UPVOTE";
   const initialThumbsDownClicked = item.userVote === "DOWNVOTE";
