@@ -138,22 +138,15 @@ const StatisticsTab = () => {
   };
 
   return (
-    <View style={{ alignItems: "center", paddingTop: 20 }}>
-      <Text style={{ fontSize: 25 }}>Your Stats</Text>
-      <View
-        style={{
-          flexDirection: "row",
-          paddingTop: 10,
-          paddingBottom: 10,
-          width: "100%",
-        }}
-      >
+    <View style={styles.container}>
+      <Text style={styles.title}>Your Stats</Text>
+      <View style={styles.content}>
         <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10, fontSize: 22 }}>Books Read by Month:</Text>
+          <Text style={styles.readByMonthTitle}>Books Read by Month:</Text>
           <View>
             {LABELS.map((month, index) => (
               <Text
-                style={{ margin: 10, marginBottom: -4, fontSize: 15 }}
+                style={styles.readByMonthEntries}
                 key={month}
               >{`${month}: ${bookCounts[index]} books`}</Text>
             ))}
@@ -169,7 +162,7 @@ const StatisticsTab = () => {
         }}
       >
         <TouchableOpacity activeOpacity={1}>
-          <Text style={{ margin: 10, fontSize: 20 }}>
+          <Text style={styles.mostReadAuthor}>
             Most Read Author: {mostReadAuthor}
           </Text>
         </TouchableOpacity>
@@ -206,6 +199,24 @@ const StatisticsTab = () => {
 export default StatisticsTab;
 
 const styles = StyleSheet.create({
+  container: { alignItems: "center", paddingTop: 20 },
+  title: { fontSize: 25 },
+  content: {
+    flexDirection: "row",
+    paddingTop: 10,
+    paddingBottom: 10,
+    width: "100%",
+  },
+  readByMonthTitle: { margin: 10, fontSize: 22 },
+  readByMonthEntries: {
+    margin: 10,
+    marginBottom: -4,
+    fontSize: 15,
+  },
+  mostReadAuthor: {
+    margin: 10,
+    fontSize: 20,
+  },
   barChart: {
     marginTop: 20,
     marginLeft: -30,
