@@ -6,8 +6,8 @@ import { Account } from "appwrite";
 const account = new Account(client);
 
 export interface LoginStateContextType {
-  loggedIn: boolean;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  loggedIn: boolean | null;
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>;
   refreshLoginState: () => void;
 }
 
@@ -15,7 +15,7 @@ export const LoginStateContext =
   React.createContext<LoginStateContextType | null>(null);
 
 function checkLoggedIn(
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>,
 ) {
   account
     .get()
@@ -28,7 +28,7 @@ function checkLoggedIn(
 }
 
 function LoginStateProvider({ children }: { children: React.ReactNode }) {
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState<boolean | null>(null);
 
   function refreshLoginState() {
     checkLoggedIn(setLoggedIn);

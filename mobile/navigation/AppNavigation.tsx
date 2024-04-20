@@ -1,11 +1,16 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
+import AboutMeEditing from "@/Components/AboutMeEditing";
+import AddManualBook from "@/Components/AddManualBook/AddManualBook";
 import BookInfoWrapper from "@/Components/BookInfoWrapper/BookInfoWrapper";
 import CreateCustomProperty from "@/Components/CreateCustomProperty/CreateCustomProperty";
+import CreateReadingChallenge from "@/Components/CreateReadingChallenge/CreateReadingChallenge";
 import EmailEditing from "@/Components/EmailEditing";
 import ManageFriendsModal from "@/Components/ManageFriends/ManageFriendsModal";
+import ManageProfile from "@/Components/ManageProfile";
 import PastWrappeds from "@/Components/PastWrappeds";
+import SocialEditing from "@/Components/SocialEditing";
 import UsernameEditing from "@/Components/UsernameEditing";
 import ViewCustomPropertiesWrapper from "@/Components/ViewCustomPropertiesWrapper/ViewCustomPropertiesWrapper";
 import { LoginStateContext } from "@/Providers/LoginStateProvider";
@@ -15,19 +20,15 @@ import { Profile } from "@/Screens/ProfileScreen";
 import { UserProfile } from "@/Screens/UserProfileScreen";
 import UserSearchScreen from "@/Screens/UserSearchScreen";
 import { WrappedScreen } from "@/Screens/WrappedScreen";
+import { ActivityIndicator, View } from "react-native";
 import NotificationsModal from "../Components/Notifications/NotificationsModal";
 import Review from "../Components/Review/Review";
 import ShelfModal from "../Components/ShelfModal/ShelfModal";
 import TextReview from "../Components/TextReview/TextReview";
-import AboutMeEditing from "@/Components/AboutMeEditing";
-import SocialEditing from "@/Components/SocialEditing";
+import { CreateAccount } from "../Screens/CreateAccount";
 import InitialLaunchScreen from "../Screens/InitialLaunchScreen";
 import { SignIn } from "../Screens/SignIn";
-import { CreateAccount } from "../Screens/CreateAccount";
-import ManageProfile from "@/Components/ManageProfile";
 import NavBar from "./NavBar/NavBar";
-import AddManualBook from "@/Components/AddManualBook/AddManualBook";
-import CreateReadingChallenge from "@/Components/CreateReadingChallenge/CreateReadingChallenge";
 
 export interface AppNavigationStackParamList {
   // Workaround for interfaces not being indexed by Typescript
@@ -62,6 +63,14 @@ const Stack = createNativeStackNavigator<AppNavigationStackParamList>();
 
 function AppNavigation() {
   const { loggedIn } = React.useContext(LoginStateContext)!;
+
+  if (loggedIn === null) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
