@@ -8,6 +8,7 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import useSWR from "swr";
 import BookInfoReviewItem from "../BookInfoReviewItem";
+import { useFocusEffect } from "@react-navigation/native";
 
 const account = new Account(client);
 const databases = new Databases(client);
@@ -110,6 +111,12 @@ async function fetchVotesData(reviewId: string) {
 export const BookInfoModalReview = ({ bookInfo, navigation }) => {
   const { data, error, isLoading, mutate } = useSWR(bookInfo.id, getReviews);
   const [averageRating, setAverageRating] = React.useState(0);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      mutate();
+    }, [mutate]),
+  );
 
   React.useEffect(() => {
     if (!isLoading && data) {
