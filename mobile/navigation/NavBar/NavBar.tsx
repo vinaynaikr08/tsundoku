@@ -21,10 +21,7 @@ function NavBar() {
         headerShown: false,
         tabBarActiveTintColor: Colors.BUTTON_PURPLE,
         tabBarStyle: {
-          height: 90,
-        },
-        tabBarIconStyle: {
-          marginTop: 10,
+          height: 60,
         },
       })}
     >
