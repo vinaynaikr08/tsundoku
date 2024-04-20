@@ -1,6 +1,6 @@
 import { BookInfoContext } from "@/Contexts";
 import { Account } from "appwrite";
-import * as React from "react";
+import React from "react";
 import { useContext, useState } from "react";
 import {
   ActivityIndicator,
