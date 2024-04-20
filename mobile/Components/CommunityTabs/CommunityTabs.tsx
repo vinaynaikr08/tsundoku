@@ -339,14 +339,6 @@ function FriendsTab(bookInfo) {
   );
 }
 
-function BookClubsTab({}) {
-  return (
-    <View style={{ flex: 1 }}>
-      {/* <BookInfoModalReview bookInfo={bookInfo} /> */}
-    </View>
-  );
-}
-
 function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
@@ -522,7 +514,6 @@ function CommunityTabs() {
       sceneContainerStyle={{ backgroundColor: "transparent" }}
     >
       <Tab.Screen name="Friends" children={(props) => <FriendsTab />} />
-      <Tab.Screen name="Book Clubs" children={(props) => <BookClubsTab />} />
       <Tab.Screen name="Challenges" component={ChallengesTab} />
     </Tab.Navigator>
   );
