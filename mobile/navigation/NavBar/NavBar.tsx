@@ -14,10 +14,6 @@ import { Discover } from "../../Screens/Discover";
 
 const BottomBar = createBottomTabNavigator();
 
-function TrackScreen() {
-  return null;
-}
-
 function NavBar() {
   const [isTrackModalVisible, setIsTrackModalVisible] = useState(false);
   const toggleTrackModal = () => {
@@ -62,19 +58,6 @@ function NavBar() {
               color={color}
             />
           ),
-        }}
-      />
-      <BottomBar.Screen
-        name="+"
-        component={TrackScreen}
-        listeners={() => ({
-          tabPress: (e) => {
-            e.preventDefault();
-            toggleTrackModal();
-          },
-        })}
-        options={{
-          tabBarIcon: () => <PlusIcon />,
         }}
       />
       <BottomBar.Screen
