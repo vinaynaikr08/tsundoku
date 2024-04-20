@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import React from "react";
-import { useState } from "react";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
 import { Library } from "../../Screens/Library";
@@ -15,11 +14,6 @@ import { Discover } from "../../Screens/Discover";
 const BottomBar = createBottomTabNavigator();
 
 function NavBar() {
-  const [isTrackModalVisible, setIsTrackModalVisible] = useState(false);
-  const toggleTrackModal = () => {
-    setIsTrackModalVisible(!isTrackModalVisible);
-  };
-
   return (
     <BottomBar.Navigator
       screenOptions={() => ({
@@ -88,24 +82,6 @@ function NavBar() {
         }}
       />
     </BottomBar.Navigator>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <View style={{ justifyContent: "center", alignItems: "center" }}>
-      <View
-        style={{
-          backgroundColor: "white",
-          borderRadius: 50,
-          width: 80,
-          height: 80,
-          marginBottom: 20,
-        }}
-      >
-        <Icon name="add-circle" size={80} color={Colors.BUTTON_PURPLE} />
-      </View>
-    </View>
   );
 }
 
