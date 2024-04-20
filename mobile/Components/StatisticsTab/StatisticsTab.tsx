@@ -1,6 +1,6 @@
 import Colors from "@/Constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
-import { Account, Databases, Query } from "appwrite";
+import { Databases, Query } from "appwrite";
 import React from "react";
 import {
   ActivityIndicator,
