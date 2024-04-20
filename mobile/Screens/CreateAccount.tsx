@@ -92,7 +92,11 @@ export const CreateAccount = (props) => {
       await account.createEmailPasswordSession(email, password);
       const userResponse = await account.get();
       setLoggedIn(true);
-      const check = await registerIndieID(userResponse.$id, 20878, 'sMBFDEdTPOzXb6A2bqP169');
+      const check = await registerIndieID(
+        userResponse.$id,
+        20878,
+        "sMBFDEdTPOzXb6A2bqP169",
+      );
       console.log(check);
       await handleSaveUsername();
     } catch (error) {
