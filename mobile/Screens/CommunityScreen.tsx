@@ -3,7 +3,7 @@ import ID from "@/Constants/ID";
 import { client } from "@/appwrite";
 import { Icon, Overlay } from "@rneui/base";
 import { Account, Databases, Query } from "appwrite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   FlatList,
   Keyboard,
@@ -23,10 +23,10 @@ const databases = new Databases(client);
 export const Community = (props) => {
   const { navigation } = props;
 
-  const [notifs, setNotifs] = useState([]);
-  const [isOverlayVisible, setOverlayVisible] = useState(false);
+  const [notifs, setNotifs] = React.useState([]);
+  const [isOverlayVisible, setOverlayVisible] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     account.get().then((response) => {
       const user_id = response.$id;
       const promise = databases.listDocuments(
