@@ -1,3 +1,4 @@
+import Colors from "@/Constants/Colors";
 import ID from "@/Constants/ID";
 import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
@@ -6,7 +7,6 @@ import React from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import useSWR from "swr";
-import Colors from "../../Constants/Colors";
 import BookInfoReviewItem from "../BookInfoReviewItem";
 
 const account = new Account(client);
