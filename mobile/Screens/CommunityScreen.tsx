@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  Keyboard,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import { Databases, Query, Account } from "appwrite";
-import { client } from "@/appwrite";
-import CommunityTabs from "../Components/CommunityTabs/CommunityTabs";
-import { NavigationContext } from "../Contexts";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Icon } from "@rneui/base";
 import Colors from "@/Constants/Colors";
 import ID from "@/Constants/ID";
-import { Overlay } from "@rneui/base";
+import { client } from "@/appwrite";
+import { Icon, Overlay } from "@rneui/base";
+import { Account, Databases, Query } from "appwrite";
+import React, { useEffect, useState } from "react";
+import {
+  FlatList,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CommunityTabs from "../Components/CommunityTabs/CommunityTabs";
+import { NavigationContext } from "../Contexts";
 
 const account = new Account(client);
 const databases = new Databases(client);
