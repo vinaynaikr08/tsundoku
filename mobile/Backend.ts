@@ -245,8 +245,8 @@ export default class Backend {
     status,
     user_id,
   }: {
-    status: string;
-    user_id: string | undefined;
+    status?: string | undefined;
+    user_id?: string | undefined;
   }) => {
     const books = [];
     if (user_id === undefined) {
