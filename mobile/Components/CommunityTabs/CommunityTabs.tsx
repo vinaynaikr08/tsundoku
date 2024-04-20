@@ -7,7 +7,7 @@ import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Account, Databases, Query } from "appwrite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -356,7 +356,7 @@ function ChallengesTab() {
     { func: backend.getReadingChallenges, arg: {} },
     backend.swrFetcher,
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   useFocusEffect(() => {
     statusMutate();
@@ -366,10 +366,10 @@ function ChallengesTab() {
   function Challenge({ info }) {
     const start = new Date(info.startDate);
     const end = new Date(info.endDate);
-    const [completed, setCompleted] = useState(0);
-    const [progress, setProgress] = useState(0);
+    const [completed, setCompleted] = React.useState(0);
+    const [progress, setProgress] = React.useState(0);
 
-    useEffect(() => {
+    React.useEffect(() => {
       let count = 0;
       if (!statusIsLoading) {
         for (let i = 0; i < statusData.length; i++) {
