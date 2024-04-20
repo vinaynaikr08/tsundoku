@@ -12,6 +12,7 @@ import {
   Pressable,
   Alert,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { client } from "@/appwrite";
@@ -64,16 +65,14 @@ function EditPrivateNotes({ route }) {
 
     if (noteId != "null") {
       getPrivateNote()
-      .then((data) => {
-        setText(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-        // setErrorMessage("An error occurred fetching the recommended books.");
-        // setErrorModalVisible(true);
-      });
+        .then((data) => {
+          setText(data);
+        })
+        .catch((error) => {
+          console.error(error);
+          // setErrorMessage("An error occurred fetching the recommended books.");
+          // setErrorModalVisible(true);
+        });
     }
   }, []);
 
@@ -90,6 +89,7 @@ function EditPrivateNotes({ route }) {
 
   const savePrivateNote = async () => {
     const account = new Account(client);
+    setLoading(true);
     if (noteId != "null") {
       const res = await fetch(`${BACKEND_API_PRIVATE_NOTES}/${noteId}`, {
         method: "patch",
@@ -181,9 +181,16 @@ function EditPrivateNotes({ route }) {
             maxLength={1700}
           />
         </KeyboardAvoidingView>
-        <Pressable onPress={savePrivateNote} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </Pressable>
+        {loading ? (
+          <ActivityIndicator
+            color={Colors.BUTTON_PURPLE}
+            style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }}
+          />
+        ) : (
+          <Pressable onPress={savePrivateNote} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
+          </Pressable>
+        )}
         <Pressable onPress={() => dismiss()} style={styles.backButton}>
           <Text style={styles.backButtonText}>Back</Text>
         </Pressable>
