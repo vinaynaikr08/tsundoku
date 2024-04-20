@@ -1,7 +1,7 @@
 name: Bug Report (Mobile)
 description: Report a problem with the mobile
 title: "bug: mobile: "
-labels: ["bug"]
+labels: ["bug", "mobile"]
 body:
   - type: markdown
     attributes:

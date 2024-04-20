@@ -1,7 +1,7 @@
 name: Feature Request (Backend)
 description: Suggest an idea for the backend
 title: "feature-request: backend: "
-labels: ["enhancement"]
+labels: ["enhancement", "backend"]
 assignees:
   - ericswpark
 body:

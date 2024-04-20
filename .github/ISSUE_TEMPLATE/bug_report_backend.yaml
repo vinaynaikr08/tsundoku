@@ -1,7 +1,7 @@
 name: Bug Report (Backend)
 description: Report a problem with the backend
 title: "bug: backend: "
-labels: ["bug"]
+labels: ["bug", "backend"]
 assignees:
   - ericswpark
 body:

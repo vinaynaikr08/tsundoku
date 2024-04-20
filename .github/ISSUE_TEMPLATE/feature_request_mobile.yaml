@@ -1,7 +1,7 @@
 name: Feature Request (Mobile)
 description: Suggest an idea for mobile
 title: "feature-request: mobile: "
-labels: ["enhancement"]
+labels: ["enhancement", "mobile"]
 assignees:
   - ericswpark
 body:
