@@ -19,6 +19,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ProfileContext } from "../../Contexts";
 import ManageProfile from "../ManageProfile";
 import StatisticsTab from "../StatisticsTab";
+import Backend from "@/Backend";
+
+const backend = new Backend();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -89,23 +92,20 @@ function ProfileTab(props) {
     navigation.navigate("DeleteAccount");
   };
 
-  function signOut() {
-    (async () => {
-      try {
-        console.log("here sign out");
-        await account.deleteSessions();
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+  async function signOut() {
     try {
-      account.get().then((response) => {
-        unregisterIndieDevice(response.$id, 20878, 'sMBFDEdTPOzXb6A2bqP169');
-      });
+      // Unregister notifications
+      await unregisterIndieDevice(
+        await backend.getUserId(),
+        20878,
+        "sMBFDEdTPOzXb6A2bqP169",
+      );
+
+      await account.deleteSessions();
+      refreshLoginState();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
-    refreshLoginState();
   }
 
   return (
@@ -176,11 +176,9 @@ function ProfileTab(props) {
             </Text>
           </Button>
 
-          <Divider style={{marginTop: 10}}/>
+          <Divider style={{ marginTop: 10 }} />
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("pastWrappeds")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("pastWrappeds")}>
             <View
               style={{
                 flexDirection: "row",
@@ -193,7 +191,11 @@ function ProfileTab(props) {
                 Past Wrappeds
               </Text>
               <View style={{ flex: 2 }}>
-                <Icon name="event-repeat" color={Colors.BUTTON_PURPLE} size={30} />
+                <Icon
+                  name="event-repeat"
+                  color={Colors.BUTTON_PURPLE}
+                  size={30}
+                />
               </View>
             </View>
           </TouchableOpacity>
@@ -246,7 +248,7 @@ function ProfileTab(props) {
 
           <Divider />
 
-          <TouchableOpacity onPress={() => signOut()}>
+          <TouchableOpacity onPress={signOut}>
             <View
               style={{
                 flexDirection: "row",
