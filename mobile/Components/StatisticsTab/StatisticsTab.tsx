@@ -1,3 +1,4 @@
+import Backend from "@/Backend";
 import Colors from "@/Constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
 import { Databases, Query } from "appwrite";
@@ -5,17 +6,16 @@ import React from "react";
 import {
   ActivityIndicator,
   Dimensions,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
   View,
 } from "react-native";
 import { BarChart } from "react-native-chart-kit";
+import useSWR from "swr";
 import ID from "../../Constants/ID";
 import { client } from "../../appwrite";
 import BookStatusCount from "../BookStatusCount";
-import Backend from "@/Backend";
-import useSWR from "swr";
 
 const databases = new Databases(client);
 const backend = new Backend();
