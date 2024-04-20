@@ -7,7 +7,6 @@ import React from "react";
 import {
   FlatList,
   Keyboard,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -138,27 +137,3 @@ export const Community = (props) => {
     </NavigationContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    elevation: 5,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  modalButton: {
-    fontSize: 16,
-    color: "blue",
-    textAlign: "center",
-  },
-});
