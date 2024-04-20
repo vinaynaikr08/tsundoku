@@ -11,7 +11,9 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
+  KeyboardAvoidingView,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -128,108 +130,121 @@ function CreateCustomProperty({ navigation }) {
     navigation.navigate("navbar");
   };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View
-        style={{
-          display: "flex",
-          flex: 1,
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: "white",
-          width: "100%",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-        }}
-      >
-        <TouchableOpacity
-          style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
-          onPress={dismiss}
-        >
-          <Icon name={"close"} color="black" size={25} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Create Custom Property</Text>
-        <TextInput
-          style={styles.nameInput}
-          onChangeText={setName}
-          value={name}
-          placeholder="Custom Property Name"
-          placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
-        />
-        <SelectDropdown
-          data={propertyTypes}
-          onSelect={(selectedItem) => {
-            setType(selectedItem);
-          }}
-          dropdownOverlayColor={"transparent"}
-          renderButton={(selectedItem, isOpen) => {
-            return (
-              <View style={styles.dropdown4BtnStyle}>
-                <Icon
-                  name={
-                    isOpen
-                      ? "chevron-up-circle-outline"
-                      : "chevron-down-circle-outline"
-                  }
-                  color={Colors.BUTTON_PURPLE}
-                  size={25}
-                />
-                <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
-                  {selectedItem || "Select property type"}
-                </Text>
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View style={styles.dropdownItemStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
-              </View>
-            );
-          }}
-        />
+    <KeyboardAvoidingView
+      style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+      behavior="padding"
+      enabled
+      keyboardVerticalOffset={50}
+    >
+      <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "white",
+              width: "100%",
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
+          >
+            <TouchableOpacity
+              style={{ margin: 20, marginBottom: 10, alignSelf: "flex-end" }}
+              onPress={dismiss}
+            >
+              <Icon name={"close"} color="black" size={25} />
+            </TouchableOpacity>
+            <Text style={styles.title}>Create Custom Property</Text>
+            <TextInput
+              style={styles.nameInput}
+              onChangeText={setName}
+              value={name}
+              placeholder="Custom Property Name"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            <SelectDropdown
+              data={propertyTypes}
+              onSelect={(selectedItem) => {
+                setType(selectedItem);
+              }}
+              dropdownOverlayColor={"transparent"}
+              renderButton={(selectedItem, isOpen) => {
+                return (
+                  <View style={styles.dropdown4BtnStyle}>
+                    <Icon
+                      name={
+                        isOpen
+                          ? "chevron-up-circle-outline"
+                          : "chevron-down-circle-outline"
+                      }
+                      color={Colors.BUTTON_PURPLE}
+                      size={25}
+                    />
+                    <Text
+                      style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}
+                    >
+                      {selectedItem || "Select property type"}
+                    </Text>
+                  </View>
+                );
+              }}
+              renderItem={(item, index, isSelected) => {
+                return (
+                  <View style={styles.dropdownItemStyle}>
+                    <Text style={styles.dropdownButtonTxtStyle}>{item}</Text>
+                  </View>
+                );
+              }}
+            />
 
-        <View>
-          {type == "CATEGORICAL" && (
             <View>
-              <Text style={styles.title}>
-                Number of Categories: {numCategories}{" "}
-              </Text>
-              <Slider
-                style={{
-                  display: "flex",
-                  width: 315,
-                  height: 40,
-                  alignSelf: "center",
-                }}
-                onValueChange={setNumCategories}
-                minimumValue={1}
-                maximumValue={5}
-                step={1}
-                thumbTintColor={Colors.BUTTON_PURPLE}
-                minimumTrackTintColor="black"
-                maximumTrackTintColor={Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR}
-              />
-              <CategoryInputs
-                numCategories={numCategories}
-                categories={categories}
-                setCategories={setCategories}
-              />
+              {type == "CATEGORICAL" && (
+                <View>
+                  <Text style={styles.title}>
+                    Number of Categories: {numCategories}{" "}
+                  </Text>
+                  <Slider
+                    style={{
+                      display: "flex",
+                      width: 315,
+                      height: 40,
+                      alignSelf: "center",
+                    }}
+                    onValueChange={setNumCategories}
+                    minimumValue={1}
+                    maximumValue={5}
+                    step={1}
+                    thumbTintColor={Colors.BUTTON_PURPLE}
+                    minimumTrackTintColor="black"
+                    maximumTrackTintColor={
+                      Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR
+                    }
+                  />
+                  <CategoryInputs
+                    numCategories={numCategories}
+                    categories={categories}
+                    setCategories={setCategories}
+                  />
+                </View>
+              )}
             </View>
-          )}
-        </View>
 
-        {loading ? (
-          <ActivityIndicator
-            color={Colors.BUTTON_PURPLE}
-            style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
-          />
-        ) : (
-          <Pressable onPress={saveCustomProperty} style={styles.saveButton}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </Pressable>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
+            {loading ? (
+              <ActivityIndicator
+                color={Colors.BUTTON_PURPLE}
+                style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
+              />
+            ) : (
+              <Pressable onPress={saveCustomProperty} style={styles.saveButton}>
+                <Text style={styles.saveButtonText}>Save</Text>
+              </Pressable>
+            )}
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
