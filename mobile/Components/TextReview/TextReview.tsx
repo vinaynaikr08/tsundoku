@@ -3,6 +3,7 @@ import { Account } from "appwrite";
 import * as React from "react";
 import { useContext, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Keyboard,
   KeyboardAvoidingView,
@@ -28,6 +29,7 @@ function TextReview({ route, navigation }) {
   const { rating, propertyData } = route.params;
   const bookInfo = useContext(BookInfoContext);
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function dismiss() {
     Alert.alert("Discard review?", "You have an unsaved review.", [
@@ -42,6 +44,7 @@ function TextReview({ route, navigation }) {
 
   const saveReview = async () => {
     const account = new Account(client);
+    setLoading(true);
 
     const res = await fetch(`${BACKEND_API_REVIEW_URL}`, {
       method: "post",
@@ -65,18 +68,21 @@ function TextReview({ route, navigation }) {
     }
 
     for (const property of propertyData) {
-      const custom_res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`, {
-        method: "post",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + (await account.createJWT()).jwt,
-        }),
-        body: JSON.stringify({
-          book_id: bookInfo.id,
-          template_id: property.template_id,
-          value: property.value,
-        }),
-      });
+      const custom_res = await fetch(
+        `${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}`,
+        {
+          method: "post",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + (await account.createJWT()).jwt,
+          }),
+          body: JSON.stringify({
+            book_id: bookInfo.id,
+            template_id: property.template_id,
+            value: property.value,
+          }),
+        },
+      );
       const custom_res_json = await custom_res.json();
 
       if (custom_res.ok) {
@@ -133,9 +139,17 @@ function TextReview({ route, navigation }) {
             numberOfLines={4}
           />
         </KeyboardAvoidingView>
-        <Pressable onPress={saveReview} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </Pressable>
+        {loading ? (
+          <ActivityIndicator
+            color={Colors.BUTTON_PURPLE}
+            style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }}
+          />
+        ) : (
+          <Pressable onPress={saveReview} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
+          </Pressable>
+        )}
+
         <Pressable onPress={() => navigation.pop()} style={styles.backButton}>
           <Text style={styles.backButtonText}>Back</Text>
         </Pressable>

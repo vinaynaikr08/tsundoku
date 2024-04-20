@@ -10,15 +10,16 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
 import Toast from "react-native-toast-message";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const account = new Account(client);
 
-function CreateReadingChallenge({navigation}) {
+function CreateReadingChallenge({ navigation }) {
   const [name, setName] = React.useState("");
   const [bookNum, setBookNum] = React.useState("");
   const [startMonth, setStartMonth] = React.useState("");
@@ -29,6 +30,7 @@ function CreateReadingChallenge({navigation}) {
   const [endYear, setEndYear] = React.useState("");
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
+  const [loading, setLoading] = React.useState(false);
 
   const onStartChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -41,7 +43,7 @@ function CreateReadingChallenge({navigation}) {
   };
 
   async function saveChallenge() {
-
+    setLoading(true);
     try {
       const res = await fetch(`${BACKEND_API_READING_CHALLENGES}`, {
         method: "post",
@@ -53,7 +55,7 @@ function CreateReadingChallenge({navigation}) {
           name: name,
           book_count: bookNum,
           start: startDate.toISOString(),
-          end: endDate.toISOString()
+          end: endDate.toISOString(),
         }),
       });
 
@@ -125,9 +127,16 @@ function CreateReadingChallenge({navigation}) {
           onChange={onEndChange}
           style={styles.datePicker}
         />
-        <Pressable onPress={saveChallenge} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Create</Text>
-        </Pressable>
+        {loading ? (
+          <ActivityIndicator
+            color={Colors.BUTTON_PURPLE}
+            style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
+          />
+        ) : (
+          <Pressable onPress={saveChallenge} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Create</Text>
+          </Pressable>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -182,7 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   datePicker: {
-    marginVertical: 10
-  }
+    marginVertical: 10,
+  },
 });
 export default CreateReadingChallenge;

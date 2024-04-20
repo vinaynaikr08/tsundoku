@@ -8,6 +8,7 @@ import { Account } from "appwrite";
 import React from "react";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Keyboard,
   Pressable,
@@ -54,6 +55,7 @@ function CreateCustomProperty({ navigation }) {
   const [numCategories, setNumCategories] = useState(1);
   const [categories, setCategories] = useState(Array(numCategories).fill(""));
   const propertyTypes = ["NUMERICAL", "CATEGORICAL", "BOOLEAN"];
+  const [loading, setLoading] = useState(false);
 
   function dismiss() {
     Alert.alert("Discard property?", "You have an unsaved custom property.", [
@@ -70,6 +72,7 @@ function CreateCustomProperty({ navigation }) {
     if (name.length == 0 || type.length == 0) {
       return;
     }
+    setLoading(true);
     const account = new Account(client);
 
     const res = await fetch(`${BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL}`, {
@@ -116,7 +119,6 @@ function CreateCustomProperty({ navigation }) {
     } else {
       console.log("error number: " + res.status);
     }
-
     Toast.show({
       type: "success",
       text1: "New custom property successfully saved!",
@@ -216,9 +218,16 @@ function CreateCustomProperty({ navigation }) {
           )}
         </View>
 
-        <Pressable onPress={saveCustomProperty} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </Pressable>
+        {loading ? (
+          <ActivityIndicator
+            color={Colors.BUTTON_PURPLE}
+            style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
+          />
+        ) : (
+          <Pressable onPress={saveCustomProperty} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Save</Text>
+          </Pressable>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );

@@ -1,5 +1,10 @@
 import Colors from "@/Constants/Colors";
-import { BACKEND_API_AUTHORS, BACKEND_API_AUTHOR_SEARCH_URL, BACKEND_API_BOOKS, BACKEND_API_EDITIONS } from "@/Constants/URLs";
+import {
+  BACKEND_API_AUTHORS,
+  BACKEND_API_AUTHOR_SEARCH_URL,
+  BACKEND_API_BOOKS,
+  BACKEND_API_EDITIONS,
+} from "@/Constants/URLs";
 import * as React from "react";
 import {
   View,
@@ -14,6 +19,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Toast from "react-native-toast-message";
@@ -23,7 +29,14 @@ import { Account } from "appwrite";
 
 const account = new Account(client);
 
-const genres: String[] = ["Religion", "Fiction", "Juvenile Nonfiction", "Young Adult Fiction", "History", "Science"];
+const genres: String[] = [
+  "Religion",
+  "Fiction",
+  "Juvenile Nonfiction",
+  "Young Adult Fiction",
+  "History",
+  "Science",
+];
 function AddManualBook({ navigation }) {
   const [title, setTitle] = React.useState("");
   const [author, setAuthor] = React.useState("");
@@ -34,6 +47,7 @@ function AddManualBook({ navigation }) {
   const [isbn10, setISBN10] = React.useState("");
   const [isbn13, setISBN13] = React.useState("");
   const [coverURL, setCoverURL] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   function dismiss() {
     Alert.alert("Discard new book?", "You have not saved this book.", [
@@ -73,10 +87,10 @@ function AddManualBook({ navigation }) {
               Authorization: "Bearer " + (await account.createJWT()).jwt,
             }),
             body: JSON.stringify({
-              name: author
+              name: author,
             }),
           });
-    
+
           const author_res_json = await author_res.json();
           if (author_res.ok) {
             console.log("author created: " + JSON.stringify(author_res_json));
@@ -90,9 +104,7 @@ function AddManualBook({ navigation }) {
           return res_json.results.documents[0].$id;
         }
       } else {
-        console.log(
-          "error getting raw author: " + JSON.stringify(res_json),
-        );
+        console.log("error getting raw author: " + JSON.stringify(res_json));
       }
     } catch (error) {
       console.error(error);
@@ -114,7 +126,7 @@ function AddManualBook({ navigation }) {
           isbn_13: isbn13,
           page_count: pageCount,
           publisher: publisher,
-          thumbnail_url: coverURL
+          thumbnail_url: coverURL,
         }),
       });
 
@@ -123,9 +135,7 @@ function AddManualBook({ navigation }) {
         console.log("edition: " + JSON.stringify(res_json));
         return res_json.results.edition_id;
       } else {
-        console.log(
-          "error creating edition: " + JSON.stringify(res_json),
-        );
+        console.log("error creating edition: " + JSON.stringify(res_json));
       }
     } catch (error) {
       console.error(error);
@@ -135,6 +145,7 @@ function AddManualBook({ navigation }) {
   }
 
   async function saveBook() {
+    setLoading(true);
     const author_id: string = await getAuthor();
     const edition_id: string = await createEdition();
 
@@ -150,7 +161,7 @@ function AddManualBook({ navigation }) {
           authors: [author_id],
           editions: [edition_id],
           description: description,
-          genre: genre
+          genre: genre,
         }),
       });
 
@@ -158,9 +169,7 @@ function AddManualBook({ navigation }) {
       if (res.ok) {
         console.log("new book: " + JSON.stringify(res_json));
       } else {
-        console.log(
-          "error creating book: " + JSON.stringify(res_json),
-        );
+        console.log("error creating book: " + JSON.stringify(res_json));
       }
     } catch (error) {
       console.error(error);
@@ -174,11 +183,16 @@ function AddManualBook({ navigation }) {
       visibilityTime: 2000,
     });
     navigation.navigate("navbar");
-  };
+  }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={50}>
-      <ScrollView style={{flex: 1}}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}
+      behavior="padding"
+      enabled
+      keyboardVerticalOffset={50}
+    >
+      <ScrollView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
             style={{
@@ -213,7 +227,7 @@ function AddManualBook({ navigation }) {
               placeholder="Author"
               placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
             />
-      
+
             <SelectDropdown
               data={genres}
               onSelect={(selectedItem) => {
@@ -232,7 +246,9 @@ function AddManualBook({ navigation }) {
                       color={Colors.BUTTON_PURPLE}
                       size={25}
                     />
-                    <Text style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}>
+                    <Text
+                      style={{ fontSize: 14, color: Colors.BUTTON_TEXT_GRAY }}
+                    >
                       {selectedItem || "Select genre"}
                     </Text>
                   </View>
@@ -284,18 +300,25 @@ function AddManualBook({ navigation }) {
               placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
             />
             <TextInput
-                style={styles.reviewInput}
-                onChangeText={setDescription}
-                value={description}
-                editable
-                multiline
-                numberOfLines={4}
-                placeholder="Description"
-                placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+              style={styles.reviewInput}
+              onChangeText={setDescription}
+              value={description}
+              editable
+              multiline
+              numberOfLines={4}
+              placeholder="Description"
+              placeholderTextColor={Colors.BUTTON_TEXT_GRAY}
+            />
+            {loading ? (
+              <ActivityIndicator
+                color={Colors.BUTTON_PURPLE}
+                style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
               />
-            <Pressable onPress={saveBook} style={styles.saveButton}>
-              <Text style={styles.saveButtonText}>Save</Text>
-            </Pressable>
+            ) : (
+              <Pressable onPress={saveBook} style={styles.saveButton}>
+                <Text style={styles.saveButtonText}>Save</Text>
+              </Pressable>
+            )}
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>
@@ -340,7 +363,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
   saveButtonText: {
     color: "white",
@@ -384,7 +407,7 @@ const styles = StyleSheet.create({
     paddingTop: 17,
     borderColor: Colors.BOOK_INFO_MODAL_GREY_LINE_COLOR,
     borderRadius: 15,
-    width: "80%"
+    width: "80%",
   },
 });
 
