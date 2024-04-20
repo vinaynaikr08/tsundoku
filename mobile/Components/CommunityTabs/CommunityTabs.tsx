@@ -1,11 +1,8 @@
+import Backend from "@/Backend";
 import Colors from "@/Constants/Colors";
 import Dimensions from "@/Constants/Dimensions";
 import ID from "@/Constants/ID";
-import {
-  BACKEND_API_BOOK_STATUS_URL,
-  BACKEND_API_READING_CHALLENGES,
-  BACKEND_API_URL,
-} from "@/Constants/URLs";
+import { BACKEND_API_URL } from "@/Constants/URLs";
 import { client } from "@/appwrite";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -23,9 +20,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import BookSearchButton from "../BookSearchButton";
 import useSWR from "swr";
-import Backend from "@/Backend";
+import BookSearchButton from "../BookSearchButton";
 
 const backend = new Backend();
 
@@ -342,12 +338,22 @@ function FriendsTab(bookInfo) {
 function ChallengesTab() {
   const navigation = useNavigation();
   const account = new Account(client);
-  const { data: statusData, error: statusError, isLoading: statusIsLoading, mutate: statusMutate } = useSWR(
+  const {
+    data: statusData,
+    error: statusError,
+    isLoading: statusIsLoading,
+    mutate: statusMutate,
+  } = useSWR(
     { func: backend.getBookStatusDocs, arg: { status: "READ" } },
     backend.swrFetcher,
   );
-  const { data: challengeData, error: challengeError, isLoading: challengeIsLoading, mutate: challengeMutate } = useSWR(
-    { func: backend.getReadingChallenges, arg: {}},
+  const {
+    data: challengeData,
+    error: challengeError,
+    isLoading: challengeIsLoading,
+    mutate: challengeMutate,
+  } = useSWR(
+    { func: backend.getReadingChallenges, arg: {} },
     backend.swrFetcher,
   );
   const [loading, setLoading] = useState(false);
@@ -499,9 +505,10 @@ function ChallengesTab() {
       >
         <Text style={styles.saveButtonText}>New Reading Challenge</Text>
       </Pressable>
-      {!challengeIsLoading && challengeData.map((challenge, index) => (
-        <Challenge key={index} info={challenge} />
-      ))}
+      {!challengeIsLoading &&
+        challengeData.map((challenge, index) => (
+          <Challenge key={index} info={challenge} />
+        ))}
     </ScrollView>
   );
 }
