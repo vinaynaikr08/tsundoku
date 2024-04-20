@@ -100,11 +100,7 @@ function AppNavigation() {
               name="viewCustomProperties"
               component={ViewCustomPropertiesWrapper}
             />
-            <Stack.Screen
-              name="addManualBook"
-              // options={{ gestureEnabled: false }}
-              component={AddManualBook}
-            />
+            <Stack.Screen name="addManualBook" component={AddManualBook} />
             <Stack.Screen
               name="createReadingChallenge"
               component={CreateReadingChallenge}
