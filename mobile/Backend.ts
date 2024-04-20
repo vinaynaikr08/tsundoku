@@ -413,7 +413,6 @@ export default class Backend {
       pages += element.pages;
 
       for (let i = 0; i < 53; i++) {
-
         if (Genres.genres[i] == element.genre) {
           counter[i]++;
         }
@@ -530,12 +529,7 @@ export default class Backend {
     const res_json = await res.json();
 
     return res_json.results.documents.map(
-      (challenge: {
-        name: any;
-        book_count: any;
-        start: any;
-        end: any;
-      }) => {
+      (challenge: { name: any; book_count: any; start: any; end: any }) => {
         return {
           name: challenge.name,
           bookCount: challenge.book_count,
@@ -544,7 +538,7 @@ export default class Backend {
         };
       },
     );
-  }
+  };
 
   public getUsername = async ({ user_id }: { user_id: string | undefined }) => {
     if (user_id === undefined) {
@@ -594,7 +588,7 @@ export default class Backend {
     await axios.post(`https://app.nativenotify.com/api/indie/notification`, {
       subID: user_id,
       appId: 20878,
-      appToken: 'sMBFDEdTPOzXb6A2bqP169',
+      appToken: "sMBFDEdTPOzXb6A2bqP169",
       title: title,
       message: message,
     });
