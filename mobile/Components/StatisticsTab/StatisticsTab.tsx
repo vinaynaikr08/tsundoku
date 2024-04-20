@@ -27,6 +27,14 @@ interface BookInfo {
   image_url: string;
 }
 
+interface ActivityData {
+  key: string;
+  status: string;
+  username: string;
+  book: BookInfo;
+  timestamp: string;
+}
+
 const LABELS = [
   "January",
   "February",
@@ -127,8 +135,8 @@ const StatisticsTab = () => {
 
   const bookCounts = Array(12).fill(0);
 
-  data.forEach((cur) => {
-    const monthIndex = new Date(cur.timestamp).getMonth();
+  data.forEach((activity: ActivityData) => {
+    const monthIndex = new Date(activity.timestamp).getMonth();
     bookCounts[monthIndex]++;
   });
 
