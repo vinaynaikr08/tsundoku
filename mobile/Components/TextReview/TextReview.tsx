@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Colors from "../../Constants/Colors";
+import Colors from "@/Constants/Colors";
 import {
   BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
   BACKEND_API_REVIEW_URL,
