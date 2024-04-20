@@ -1,7 +1,7 @@
 import { BookInfoContext } from "@/Contexts";
+import { client } from "@/appwrite";
 import { Account } from "appwrite";
-import React from "react";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -23,7 +23,6 @@ import {
   BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
   BACKEND_API_REVIEW_URL,
 } from "../../Constants/URLs";
-import { client } from "../../appwrite";
 
 function TextReview({ route, navigation }) {
   const { rating, propertyData } = route.params;
