@@ -295,14 +295,6 @@ function ProfileTab(props) {
   );
 }
 
-function ActivityTab({}) {
-  return (
-    <View style={{ flex: 1 }}>
-      {/* <BookInfoModalReview bookInfo={bookInfo} /> */}
-    </View>
-  );
-}
-
 function StatsTab() {
   return (
     <View style={{ flex: 1 }}>
@@ -325,7 +317,6 @@ function ProfileTabs() {
       sceneContainerStyle={{ backgroundColor: "transparent" }}
     >
       <Tab.Screen name="Profile" children={(props) => <ProfileTab />} />
-      <Tab.Screen name="Activity" children={(props) => <ActivityTab />} />
       <Tab.Screen name="Statistics" component={StatsTab} />
     </Tab.Navigator>
   );
