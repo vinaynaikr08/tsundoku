@@ -13,8 +13,7 @@ import Toast from "react-native-toast-message";
 const account = new Account(client);
 
 function DeleteAccount() {
-  const { loggedIn, setLoggedIn, refreshLoginState } =
-    React.useContext(LoginStateContext);
+  const { loggedIn, refreshLoginState } = React.useContext(LoginStateContext)!;
   const [confirmed, setConfirmed] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
 
@@ -46,7 +45,7 @@ function DeleteAccount() {
 
       if (res.ok) {
         account.deleteSessions();
-        setLoggedIn(false);
+        refreshLoginState();
         Toast.show({
           type: "success",
           text1: "Your account was successfully deleted! See you again soon!",

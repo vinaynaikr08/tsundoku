@@ -34,7 +34,7 @@ export const SignIn = ({ navigation }: Props) => {
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { setLoggedIn } = React.useContext(LoginStateContext)!;
+  const { refreshLoginState } = React.useContext(LoginStateContext)!;
 
   const handleCreateAccount = () => {
     navigation.navigate("create_account");
@@ -48,7 +48,7 @@ export const SignIn = ({ navigation }: Props) => {
     try {
       await account.createEmailPasswordSession(email, password);
       const account_res = await account.get();
-      setLoggedIn(true);
+      refreshLoginState();
       const yep = await registerIndieID(account_res.$id, 20878, 'sMBFDEdTPOzXb6A2bqP169');
       console.log(yep);
     } catch (error) {

@@ -34,7 +34,7 @@ export const CreateAccount = (props) => {
   const [errorModalVisible, setErrorModalVisible] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { setLoggedIn } = React.useContext(LoginStateContext);
+  const { refreshLoginState } = React.useContext(LoginStateContext)!;
 
   const handleSwitch = () => {
     navigation.navigate("sign_in");
@@ -91,7 +91,7 @@ export const CreateAccount = (props) => {
       const response = await account.create(ID.unique(), email, password, name);
       await account.createEmailPasswordSession(email, password);
       const userResponse = await account.get();
-      setLoggedIn(true);
+      refreshLoginState();
       const check = await registerIndieID(
         userResponse.$id,
         20878,

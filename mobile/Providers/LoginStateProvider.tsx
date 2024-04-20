@@ -7,7 +7,6 @@ const account = new Account(client);
 
 export interface LoginStateContextType {
   loggedIn: boolean | null;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>;
   refreshLoginState: () => void;
 }
 
@@ -39,9 +38,7 @@ function LoginStateProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <LoginStateContext.Provider
-      value={{ loggedIn, setLoggedIn, refreshLoginState }}
-    >
+    <LoginStateContext.Provider value={{ loggedIn, refreshLoginState }}>
       {children}
     </LoginStateContext.Provider>
   );
