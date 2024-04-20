@@ -92,20 +92,6 @@ const StatisticsTab = () => {
     }, []),
   );
 
-  const booksReadByMonth = activity.reduce((acc, cur) => {
-    const monthYear = cur.timestamp.substr(0, 7); // timestamp format YYYY-MM-DDTHH:MM:SS
-    acc[monthYear] = (acc[monthYear] || 0) + 1;
-    return acc;
-  }, {});
-
-  const sortedBooksByMonth = Object.entries(booksReadByMonth).sort(
-    (a, b) => new Date(a[0]).getMonth() - new Date(b[0]).getMonth(),
-  );
-  //   const mostReadMonth =
-  //     sortedBooksByMonth.length > 0
-  //       ? sortedBooksByMonth[sortedBooksByMonth.length - 1][0]
-  //       : null;
-
   const authorsRead = activity.reduce((acc, cur) => {
     const author = cur.book.author;
     acc[author] = (acc[author] || 0) + 1;
