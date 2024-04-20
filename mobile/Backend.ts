@@ -1,7 +1,11 @@
 import { Account, Databases, Query } from "appwrite";
 
 import { client } from "@/appwrite";
-import { BACKEND_API_BOOK_SEARCH_URL, BACKEND_API_READING_CHALLENGES, BACKEND_API_URL } from "./Constants/URLs";
+import {
+  BACKEND_API_BOOK_SEARCH_URL,
+  BACKEND_API_READING_CHALLENGES,
+  BACKEND_API_URL,
+} from "./Constants/URLs";
 import ID from "./Constants/ID";
 import { ID as AID } from "appwrite";
 import axios from "axios";
@@ -472,18 +476,25 @@ export default class Backend {
     status,
     user_id,
   }: {
-    status: string;
+    status?: string | undefined;
     user_id?: string | undefined;
   }): Promise<BookStatusDocument[]> => {
     if (user_id === undefined) {
       user_id = (await account.get()).$id;
     }
 
+    const queries = [Query.equal("user_id", user_id)];
+
+    if (status !== undefined) {
+      queries.push(Query.equal("status", status));
+    }
+
     return (
-      await databases.listDocuments(ID.mainDBID, ID.bookStatusCollectionID, [
-        Query.equal("user_id", user_id),
-        Query.equal("status", status),
-      ])
+      await databases.listDocuments(
+        ID.mainDBID,
+        ID.bookStatusCollectionID,
+        queries,
+      )
     ).documents as unknown as BookStatusDocument[];
     // We do the double-cast here because the `Document` type is missing some fields that we
     // know we *do* have in the Appwrite database.
