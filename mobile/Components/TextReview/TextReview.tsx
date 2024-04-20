@@ -1,7 +1,7 @@
 import { BookInfoContext } from "@/Contexts";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
-import React, { useContext, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -26,9 +26,9 @@ import {
 
 function TextReview({ route, navigation }) {
   const { rating, propertyData } = route.params;
-  const bookInfo = useContext(BookInfoContext);
-  const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const bookInfo = React.useContext(BookInfoContext);
+  const [text, setText] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   function dismiss() {
     Alert.alert("Discard review?", "You have an unsaved review.", [
