@@ -49,7 +49,8 @@ export const SignIn = ({ navigation }: Props) => {
       await account.createEmailPasswordSession(email, password);
       const account_res = await account.get();
       setLoggedIn(true);
-      await registerIndieID(account_res.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
+      const yep = await registerIndieID(account_res.$id, 20878, 'sMBFDEdTPOzXb6A2bqP169');
+      console.log(yep);
     } catch (error) {
       if (error instanceof AppwriteException && error.code === 429) {
         setErrorMessage(

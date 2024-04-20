@@ -10,18 +10,18 @@ import axios from "axios";
 // LogBox.ignoreAllLogs();
 
 export default function App() {
-  registerNNPushToken(20437, "yoXi9lQ377rDWZeu0R8IdW");
+  registerNNPushToken(20878, "sMBFDEdTPOzXb6A2bqP169");
 
   const here = axios.get(
-    `https://app.nativenotify.com/api/expo/indie/subs/20437/yoXi9lQ377rDWZeu0R8IdW`,
+    `https://app.nativenotify.com/api/expo/indie/subs/20878/sMBFDEdTPOzXb6A2bqP169`,
   );
-  // here.then((response) => {
-  //   for (const here in response.data) {
-  //   }
-  //   response.data.forEach((element) => {
-  //     console.log(element.sub_id);
-  //   });
-  // });
+  here.then((response) => {
+    //   for (const here in response.data) {
+    //   }
+    response.data.forEach((element) => {
+      console.log(element.sub_id);
+    });
+  });
 
   return (
     <>

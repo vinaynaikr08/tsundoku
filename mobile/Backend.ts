@@ -406,8 +406,9 @@ export default class Backend {
     let pages = 0;
 
     data.forEach((element: any) => {
+      pages += element.pages;
+
       for (let i = 0; i < 53; i++) {
-        pages += element.pages;
 
         if (Genres.genres[i] == element.genre) {
           counter[i]++;
@@ -581,8 +582,8 @@ export default class Backend {
 
     await axios.post(`https://app.nativenotify.com/api/indie/notification`, {
       subID: user_id,
-      appId: 20437,
-      appToken: "yoXi9lQ377rDWZeu0R8IdW",
+      appId: 20878,
+      appToken: 'sMBFDEdTPOzXb6A2bqP169',
       title: title,
       message: message,
     });

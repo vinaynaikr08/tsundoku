@@ -100,7 +100,7 @@ function ProfileTab(props) {
     })();
     try {
       account.get().then((response) => {
-        unregisterIndieDevice(response.$id, 20437, "yoXi9lQ377rDWZeu0R8IdW");
+        unregisterIndieDevice(response.$id, 20878, 'sMBFDEdTPOzXb6A2bqP169');
       });
     } catch (error) {
       console.log(error);
