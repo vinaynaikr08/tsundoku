@@ -7,6 +7,7 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  StyleSheet,
   View,
 } from "react-native";
 import { BarChart } from "react-native-chart-kit";
@@ -174,7 +175,7 @@ const StatisticsTab = () => {
         </TouchableOpacity>
       </View>
       <BarChart
-        style={{ marginTop: 20, marginLeft: -30 }}
+        style={styles.barChart}
         width={Dimensions.get("window").width - 50}
         height={400}
         yAxisLabel=""
@@ -203,3 +204,10 @@ const StatisticsTab = () => {
 };
 
 export default StatisticsTab;
+
+const styles = StyleSheet.create({
+  barChart: {
+    marginTop: 20,
+    marginLeft: -30,
+  },
+});
