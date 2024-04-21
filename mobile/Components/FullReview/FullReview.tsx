@@ -84,8 +84,15 @@ function FullReview({ route, navigation }) {
   );
 }
 
+interface CustomPropertyEntry {
+  propertyName: string;
+  value: string;
+}
+
 function CustomProperties({ book_id }: { book_id: string }) {
-  const [properties, setProperties] = React.useState([]);
+  const [properties, setProperties] = React.useState<
+    CustomPropertyEntry[] | null
+  >(null);
 
   React.useEffect(() => {
     async function getCustomPropertyData() {
@@ -124,7 +131,16 @@ function CustomProperties({ book_id }: { book_id: string }) {
     });
   }, []);
 
-  console.log(properties);
+  if (properties == null) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "white", margin: 30, alignItems: "center" }}>
+        <View style={{ flexDirection: "row" }}>
+          <Text>Loading custom properties... </Text>
+          <ActivityIndicator />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View>
