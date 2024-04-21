@@ -92,12 +92,16 @@ export async function POST(request: NextRequest) {
 
   if (db_query.total == 0) {
     // Create new object
-    createPrivateNote({
-      database,
-      user_id,
-      book_id,
-      notes,
-    });
+    try {
+      await createPrivateNote({
+        database,
+        user_id,
+        book_id,
+        notes,
+      });
+    } catch (error) {
+      return handle_error(error);
+    }
   } else {
     const private_note_id = db_query.documents[0].$id;
 
