@@ -44,8 +44,11 @@ export const BookInfoReviewItem = ({ navigation, review_id }) => {
 
   if (reviewSWR.isLoading || reviewVoteSWR.isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <ActivityIndicator />
+      <View style={{ flex: 1, backgroundColor: "white", margin: 30, alignItems: "center" }}>
+        <View style={{ flexDirection: "row" }}>
+          <Text>Loading review... </Text>
+          <ActivityIndicator />
+        </View>
       </View>
     );
   }
