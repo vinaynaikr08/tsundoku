@@ -97,7 +97,7 @@ async function get_or_create_author_id(name: string) {
   );
 
   if (query.total == 0) {
-    return createAuthor({ name: name });
+    return await createAuthor({ name: name });
   } else {
     return query.documents[0].$id;
   }
