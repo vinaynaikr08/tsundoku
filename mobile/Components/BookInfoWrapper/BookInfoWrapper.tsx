@@ -1,5 +1,5 @@
 import { BookInfoWrapperContext } from "@/Contexts";
-import * as React from "react";
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { BookInfoModal } from "../BookInfoModal";
 import FullReview from "../FullReview/FullReview";
