@@ -16,11 +16,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const account = new Account(client);
 
-const fakeData = [
-  { propertyName: "How many times I cried", value: "2" },
-  { propertyName: "Favorite", value: "True" },
-];
-
 function FullReview({ route, navigation }) {
   const bookInfo = useContext(BookInfoWrapperContext);
   const { review } = route.params;
