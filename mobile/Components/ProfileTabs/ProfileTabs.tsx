@@ -119,7 +119,6 @@ function ProfileTab(props) {
           showsVerticalScrollIndicator={false}
         >
           <ManageProfile navigation={navigation} />
-          <Divider />
 
           <Button
             onPress={() => navigation.navigate("createCustomProperty")}

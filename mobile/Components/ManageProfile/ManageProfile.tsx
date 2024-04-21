@@ -136,7 +136,7 @@ function ManageProfile({ navigation }) {
           <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
         </TouchableOpacity>
       </View>
-      <View style={styles.userInfoRow}>
+      <View style={styles.socialInfoRow}>
         <Text
           style={styles.socialText}
         >
@@ -163,7 +163,7 @@ function ManageProfile({ navigation }) {
           <MaterialIcons name="edit" size={22} color={Colors.BUTTON_PURPLE} />
         </TouchableOpacity>
       </View>
-      <Divider />
+      <Divider style={{marginBottom: 10}}/>
     </ProfileContext.Provider>
   );
 }
@@ -189,6 +189,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     margin: 12,
   },
+  socialInfoRow: {
+    width: "60%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
   socialText: {
     fontSize: 20,
     marginLeft: 20,
@@ -197,6 +202,5 @@ const styles = StyleSheet.create({
   },
   socialUrlText: {
     fontSize: 20,
-    width: '75%',
   },
 });
