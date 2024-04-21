@@ -193,8 +193,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 20,
     marginVertical: 12,
+    
   },
   socialUrlText: {
     fontSize: 20,
+    width: '75%',
   },
 });
