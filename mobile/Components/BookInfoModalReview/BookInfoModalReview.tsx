@@ -59,7 +59,7 @@ export const BookInfoModalReview = ({ bookInfo, navigation }) => {
           <FlatList
             data={data}
             showsVerticalScrollIndicator={false}
-            keyExtractor={(item) => item.username}
+            keyExtractor={(item) => item.user_id}
             ListHeaderComponent={() => (
               <View
                 style={{
