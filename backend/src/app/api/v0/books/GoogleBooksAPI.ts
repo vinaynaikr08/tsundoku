@@ -1,6 +1,6 @@
 function googleBooksAPIUnavailableError(res_json: any) {
   console.error(
-    `The Google Books API returned the following response: ${res_json}`,
+    `The Google Books API returned the following response: ${JSON.stringify(res_json)}`,
   );
   throw new Error("google-books-api-unavailable");
 }
