@@ -1,69 +1,95 @@
+import Backend from "@/Backend";
 import Colors from "@/Constants/Colors";
-import {
-  BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
-  BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL,
-} from "@/Constants/URLs";
+import { BACKEND_API_CUSTOM_PROPERTY_TEMPLATE_URL } from "@/Constants/URLs";
 import { BookInfoWrapperContext } from "@/Contexts";
 import { client } from "@/appwrite";
 import { Account } from "appwrite";
-import * as React from "react";
-import { useContext } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Divider } from "react-native-paper";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import useSWR from "swr";
 
 const account = new Account(client);
+const backend = new Backend();
 
 function FullReview({ route, navigation }) {
-  const bookInfo = useContext(BookInfoWrapperContext);
-  const { review } = route.params;
-  const rating = review.rating / 4;
-  const [properties, setProperties] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const bookInfo = React.useContext(BookInfoWrapperContext);
+  const { review_id } = route.params;
+  const [isSelfReview, setIsSelfReview] = React.useState<boolean>(false);
+
+  const reviewSWR = useSWR(
+    { func: backend.getReview, arg: review_id },
+    backend.swrFetcher,
+  );
 
   React.useEffect(() => {
-    async function getCustomPropertiesRaw() {
-      try {
-        const user_id = (await account.get()).$id;
-        if (user_id != review.user_id) {
-          return [];
-        }
-        const res = await fetch(
-          `${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}?` +
-            new URLSearchParams({
-              book_id: bookInfo.id,
-            }),
-          {
-            method: "get",
-            headers: new Headers({
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + (await account.createJWT()).jwt,
-            }),
-          },
-        );
-
-        const res_json = await res.json();
-        if (res.ok) {
-          return res_json.results.documents.map((property) => {
-            return {
-              template_id: property.template_id,
-              value: property.value,
-            };
-          });
-        } else {
-          console.log("error getting raw property data: " + JSON.stringify(res_json));
-        }
-      } catch (error) {
-        console.error(error);
-        // setErrorMessage("An error occurred fetching the books.");
-        // setErrorModalVisible(true);
+    (async () => {
+      if (reviewSWR.data) {
+        const user_id = await backend.getUserId();
+        setIsSelfReview(reviewSWR.data.user_id === user_id);
       }
-    }
+    })();
+  }, [reviewSWR.data]);
 
-    async function getCustomProperties() {
-      const rawData = await getCustomPropertiesRaw();
+  if (reviewSWR.isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "white" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={{ backgroundColor: "white" }}>
+      <TouchableOpacity
+        style={{
+          margin: 15,
+          marginBottom: 10,
+          marginLeft: 10,
+          alignSelf: "flex-start",
+        }}
+        onPress={() => navigation.pop()}
+      >
+        <Ionicons name={"chevron-back"} color="black" size={25} />
+      </TouchableOpacity>
+      <Text style={styles.title}>Review by {reviewSWR.data.username}</Text>
+      <Text style={styles.bookTitle}>{bookInfo!.title}</Text>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          gap: 5,
+          marginVertical: 10,
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>{reviewSWR.data.star_rating / 4}</Text>
+        <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={25} />
+      </View>
+      {isSelfReview && <CustomProperties book_id={bookInfo.id} />}
+      <Divider bold={true} horizontalInset={true} />
+      <Text style={{ margin: 15, marginTop: 10 }}>
+        {reviewSWR.data.description}
+      </Text>
+    </ScrollView>
+  );
+}
+
+function CustomProperties({ book_id }: { book_id: string }) {
+  const [properties, setProperties] = React.useState([]);
+
+  React.useEffect(() => {
+    async function getCustomPropertyData() {
+      const rawData = await backend.getCustomProperties(book_id);
       const processedData = [];
       for (let i = 0; i < rawData.length; i++) {
         const rawProperty = rawData[i];
@@ -81,86 +107,46 @@ function FullReview({ route, navigation }) {
         const res_json = await res.json();
 
         if (res.ok) {
-          processedData[i] = { propertyName: res_json.result.name, value: rawProperty.value };
+          processedData[i] = {
+            propertyName: res_json.result.name,
+            value: rawProperty.value,
+          };
         } else {
           console.log("did not updated: " + JSON.stringify(res_json));
         }
       }
+
       return processedData;
     }
 
-    getCustomProperties()
-      .then((data) => {
-        setProperties(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-        // setErrorMessage("An error occurred fetching the recommended books.");
-        // setErrorModalVisible(true);
-      });
+    getCustomPropertyData().then((data) => {
+      setProperties(data);
+    });
   }, []);
 
+  console.log(properties);
+
   return (
-    <ScrollView style={{ backgroundColor: "white" }}>
-      <TouchableOpacity
-        style={{
-          margin: 15,
-          marginBottom: 10,
-          marginLeft: 10,
-          alignSelf: "flex-start",
-        }}
-        onPress={() => navigation.pop()}
-      >
-        <Ionicons name={"chevron-back"} color="black" size={25} />
-      </TouchableOpacity>
-      <Text style={styles.title}>Review by {review.username}</Text>
-      <Text style={styles.bookTitle}>{bookInfo.title}</Text>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          gap: 5,
-          marginVertical: 10,
-        }}
-      >
-        <Text style={{ fontSize: 20 }}>{rating}</Text>
-        <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={25} />
-      </View>
-      {loading && (
-        <ActivityIndicator
-          size="large"
-          color={Colors.BUTTON_PURPLE}
-          style={{ marginTop: 5 }}
-        />
-      )}
-      {properties.length != 0 && (
-        <View>
-          <Divider bold={true} horizontalInset={true} />
-          <View style={{ marginBottom: 10 }}>
-            {properties.map((item, index) => (
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  margin: 10,
-                  marginBottom: 0,
-                  marginLeft: 15,
-                }}
-                key={index}
-              >
-                <Text style={styles.propertyName}>{item.propertyName}</Text>
-                <Text style={styles.value}>: {item.value}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      )}
+    <View>
       <Divider bold={true} horizontalInset={true} />
-      <Text style={{ margin: 15, marginTop: 10 }}>{review.desc}</Text>
-    </ScrollView>
+      <View style={{ marginBottom: 10 }}>
+        {properties.map((item, index) => (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              margin: 10,
+              marginBottom: 0,
+              marginLeft: 15,
+            }}
+            key={index}
+          >
+            <Text style={styles.propertyName}>{item.propertyName}</Text>
+            <Text style={styles.value}>: {item.value}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
   );
 }
 

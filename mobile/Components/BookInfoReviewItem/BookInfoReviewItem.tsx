@@ -1,175 +1,48 @@
-import { BACKEND_API_URL } from "@/Constants/URLs";
-import { client } from "@/appwrite";
-import { Account } from "appwrite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import useSWR from "swr";
-import Colors from "../../Constants/Colors";
-import Dimensions from "../../Constants/Dimensions";
+import Colors from "@/Constants/Colors";
+import Dimensions from "@/Constants/Dimensions";
+import Backend from "@/Backend";
 
-const account = new Account(client);
+const backend = new Backend();
 
-export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
-  const { data, error, isLoading } = useSWR(bookInfo.id);
-  const initialThumbsUpClicked = item.userVote === "UPVOTE";
-  const initialThumbsDownClicked = item.userVote === "DOWNVOTE";
-  const [thumbsUpClicked, setThumbsUpClicked] = useState(
-    initialThumbsUpClicked,
+enum Vote {
+  UPVOTE = "UPVOTE",
+  DOWNVOTE = "DOWNVOTE",
+  NONE = "NONE",
+}
+
+export const BookInfoReviewItem = ({ navigation, review_id }) => {
+  const reviewSWR = useSWR(
+    { func: backend.getReview, arg: review_id },
+    backend.swrFetcher,
   );
-  const [thumbsDownClicked, setThumbsDownClicked] = useState(
-    initialThumbsDownClicked,
+  const reviewVoteSWR = useSWR(
+    { func: backend.getReviewVotes, arg: review_id },
+    backend.swrFetcher,
   );
 
-  const [upvotes, setUpvotes] = useState(item.upvotes || 0);
-  const [downvotes, setDownvotes] = useState(item.downvotes || 0);
+  const [userVote, setUserVote] = React.useState<Vote>(Vote.NONE);
+  const [upvotes, setUpvotes] = React.useState<number | null>(null);
+  const [downvotes, setDownvotes] = React.useState<number | null>(null);
 
-  const handleVote = async (reviewId: string, vote: string) => {
-    try {
-      const jwt = (await account.createJWT()).jwt;
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/reviews/${reviewId}/vote`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
-          },
-          body: JSON.stringify({ vote }),
-        },
-      );
-
-      if (!response.ok) {
-        if (response.status != 404)
-          console.error("Voting failed:", await response.json());
-        if (vote === "UPVOTE") {
-          setUpvotes(upvotes + 1);
-        } else if (vote === "DOWNVOTE") {
-          setDownvotes(downvotes + 1);
-        }
-        return;
+  React.useEffect(() => {
+    if (reviewVoteSWR.data) {
+      if ("user_voted" in reviewVoteSWR.data) {
+        setUserVote(reviewVoteSWR.data.user_voted);
+      } else {
+        setUserVote(Vote.NONE);
       }
-      if (vote === "UPVOTE") {
-        setUpvotes(upvotes + 1);
-      } else if (vote === "DOWNVOTE") {
-        setDownvotes(downvotes + 1);
-      }
-    } catch (error) {
-      console.error("Error voting:", error);
+
+      setUpvotes(reviewVoteSWR.data.upvotes);
+      setDownvotes(reviewVoteSWR.data.downvotes);
     }
-  };
+  }, [reviewVoteSWR.data]);
 
-  useEffect(() => {
-    setUpvotes(item.upvotes || 0);
-    setDownvotes(item.downvotes || 0);
-
-    if (item.userVote === "UPVOTE") {
-      setThumbsUpClicked(true);
-      setThumbsDownClicked(false);
-    } else if (item.userVote === "DOWNVOTE") {
-      setThumbsUpClicked(false);
-      setThumbsDownClicked(true);
-    } else {
-      setThumbsUpClicked(false);
-      setThumbsDownClicked(false);
-    }
-  }, [item]);
-
-  const handleUnvote = async (reviewId: string, vote: string) => {
-    try {
-      const jwt = (await account.createJWT()).jwt;
-      const response = await fetch(
-        `${BACKEND_API_URL}/v0/reviews/${reviewId}/vote`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jwt}`,
-          },
-        },
-      );
-      if (!response.ok) {
-        if (response.status != 404)
-          console.error("unvote failed:", await response.json());
-        if (vote === "UPVOTE") {
-          setUpvotes(upvotes - 1);
-        } else if (vote === "DOWNVOTE") {
-          setDownvotes(downvotes - 1);
-        }
-        return;
-      }
-      if (vote === "UPVOTE") {
-        setUpvotes(upvotes - 1);
-      } else if (vote === "DOWNVOTE") {
-        setDownvotes(downvotes - 1);
-      }
-    } catch (error) {
-      console.error("Error unvoting:", error);
-    }
-  };
-
-  const handleThumbsUpClick = async (reviewId: string) => {
-    const newThumbsUpClicked = !thumbsUpClicked;
-    setThumbsUpClicked(newThumbsUpClicked);
-
-    if (thumbsDownClicked) {
-      setThumbsDownClicked(false);
-      await handleUnvote(reviewId, "DOWNVOTE");
-    }
-
-    if (newThumbsUpClicked) {
-      await handleVote(reviewId, "UPVOTE");
-    } else {
-      await handleUnvote(reviewId, "UPVOTE");
-    }
-  };
-
-  const handleThumbsDownClick = async (reviewId: string) => {
-    const newThumbsDownClicked = !thumbsDownClicked;
-    setThumbsDownClicked(newThumbsDownClicked);
-
-    if (thumbsUpClicked) {
-      setThumbsUpClicked(false);
-      await handleUnvote(reviewId, "UPVOTE");
-    }
-
-    if (newThumbsDownClicked) {
-      await handleVote(reviewId, "DOWNVOTE");
-    } else {
-      await handleUnvote(reviewId, "DOWNVOTE");
-    }
-  };
-  const renderReviewDescription = (desc: string) => {
-    if (desc.length > 200) {
-      return (
-        <>
-          <Text
-            style={{
-              fontSize: 15,
-              margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-            }}
-          >
-            {desc.substring(0, 200)}...
-            <Text style={{ color: "#a3a3a3" }}> Read more</Text>
-          </Text>
-        </>
-      );
-    } else {
-      return (
-        <Text
-          style={{
-            fontSize: 15,
-            margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
-          }}
-        >
-          {desc}
-        </Text>
-      );
-    }
-  };
-
-  if (isLoading || !data) {
+  if (reviewSWR.isLoading || reviewVoteSWR.isLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <ActivityIndicator />
@@ -177,13 +50,40 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
     );
   }
 
+  const voteReview = async (type: Vote) => {
+    if (type === Vote.UPVOTE) {
+      if (userVote === Vote.DOWNVOTE) {
+        setDownvotes(downvotes! - 1);
+      }
+      setUpvotes(upvotes! + 1);
+    } else if (type === Vote.DOWNVOTE) {
+      if (userVote === Vote.UPVOTE) {
+        setUpvotes(upvotes! - 1);
+      }
+      setDownvotes(downvotes! + 1);
+    } else if (type === Vote.NONE) {
+      if (userVote === Vote.UPVOTE) {
+        setUpvotes(upvotes! - 1);
+      } else if (userVote === Vote.DOWNVOTE) {
+        setDownvotes(downvotes! - 1);
+      }
+    }
+
+    setUserVote(type);
+
+    try {
+      await backend.voteOnReview({ review_id, vote: type });
+      reviewVoteSWR.mutate();
+    } catch (error) {
+      console.error("Error voting: ", error);
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() =>
-          navigation.navigate("bookInfoFullReview", { review: item })
-        }
+        onPress={() => navigation.navigate("bookInfoFullReview", { review_id })}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ marginRight: 10 }}>
@@ -191,14 +91,14 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
           </View>
           <View style={{ marginRight: 10 }}>
             <Text style={{ fontSize: 20, marginBottom: 5 }}>
-              {item.username}
+              {reviewSWR.data.username}
             </Text>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {createStars(item.rating / 4, 30)}
+              {createStars(reviewSWR.data.star_rating / 4, 30)}
             </View>
           </View>
         </View>
-        {renderReviewDescription(item.desc)}
+        <ReviewTextBlurb text={reviewSWR.data.description} />
         <View
           style={{
             flexDirection: "row",
@@ -206,7 +106,13 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
             marginBottom: 30,
           }}
         >
-          <TouchableOpacity onPress={() => void handleThumbsUpClick(item.id)}>
+          <TouchableOpacity
+            onPress={async () => {
+              await voteReview(
+                userVote === Vote.UPVOTE ? Vote.NONE : Vote.UPVOTE,
+              );
+            }}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -215,15 +121,19 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
               }}
             >
               <FontAwesome
-                name={thumbsUpClicked ? "thumbs-up" : "thumbs-o-up"}
-                color={thumbsUpClicked ? Colors.BUTTON_PURPLE : "grey"}
+                name={userVote === Vote.UPVOTE ? "thumbs-up" : "thumbs-o-up"}
+                color={userVote === Vote.UPVOTE ? Colors.BUTTON_PURPLE : "grey"}
                 size={30}
               />
               <Text style={{ marginLeft: 5 }}>{upvotes || 0}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => void handleThumbsDownClick(item.id)}
+            onPress={async () => {
+              await voteReview(
+                userVote === Vote.DOWNVOTE ? Vote.NONE : Vote.DOWNVOTE,
+              );
+            }}
           >
             <View
               style={{
@@ -233,8 +143,12 @@ export const BookInfoReviewItem = ({ bookInfo, navigation, item }) => {
               }}
             >
               <FontAwesome
-                name={thumbsDownClicked ? "thumbs-down" : "thumbs-o-down"}
-                color={thumbsDownClicked ? Colors.BUTTON_PURPLE : "grey"}
+                name={
+                  userVote === Vote.DOWNVOTE ? "thumbs-down" : "thumbs-o-down"
+                }
+                color={
+                  userVote === Vote.DOWNVOTE ? Colors.BUTTON_PURPLE : "grey"
+                }
                 size={30}
               />
               <Text style={{ marginLeft: 5 }}>{downvotes || 0}</Text>
@@ -265,6 +179,35 @@ function createStars(rating: number, size: number) {
     );
   }
   return stars;
+}
+
+function ReviewTextBlurb({ text }: { text: string }) {
+  if (text.length > 200) {
+    return (
+      <>
+        <Text
+          style={{
+            fontSize: 15,
+            margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+          }}
+        >
+          {text.substring(0, 200)}...
+          <Text style={{ color: "#a3a3a3" }}> Read more</Text>
+        </Text>
+      </>
+    );
+  } else {
+    return (
+      <Text
+        style={{
+          fontSize: 15,
+          margin: Dimensions.BOOK_INFO_MODAL_SUMMARY_MARGIN,
+        }}
+      >
+        {text}
+      </Text>
+    );
+  }
 }
 
 export default BookInfoReviewItem;

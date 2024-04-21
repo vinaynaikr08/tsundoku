@@ -7,7 +7,9 @@ import Genres from "./Constants/Genres";
 import ID from "./Constants/ID";
 import {
   BACKEND_API_BOOK_SEARCH_URL,
+  BACKEND_API_CUSTOM_PROPERTY_DATA_URL,
   BACKEND_API_READING_CHALLENGES,
+  BACKEND_API_REVIEW_URL,
   BACKEND_API_URL,
 } from "./Constants/URLs";
 
@@ -561,6 +563,102 @@ export default class Backend {
 
   public getAccountName = async () => {
     return (await account.get()).name;
+  };
+
+  public getReviews = async (book_id: string) => {
+    const review_docs = (
+      await databases.listDocuments(ID.mainDBID, ID.reviewsCollectionID, [
+        Query.equal("book", book_id),
+      ])
+    ).documents;
+
+    return review_docs;
+  };
+
+  public getReviewDoc = async (review_id: string) => {
+    const review_doc = await databases.getDocument(
+      ID.mainDBID,
+      ID.reviewsCollectionID,
+      review_id,
+    );
+
+    return review_doc;
+  };
+
+  public getReview = async (review_id: string) => {
+    const review_doc = await this.getReviewDoc(review_id);
+
+    const username: string | undefined = await this.getUsername({
+      user_id: review_doc.user_id,
+    });
+
+    return {
+      username: username ?? "Anonymous",
+      ...review_doc,
+    };
+  };
+
+  public getReviewVotes = async (review_id: string) => {
+    const res = await fetch(`${BACKEND_API_REVIEW_URL}/${review_id}/vote`, {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + (await account.createJWT()).jwt,
+      }),
+    });
+    const res_json = await res.json();
+
+    return res_json.results;
+  };
+
+  public voteOnReview = async ({
+    review_id,
+    vote,
+  }: {
+    review_id: string;
+    vote: string;
+  }) => {
+    if (vote === "UPVOTE" || vote === "DOWNVOTE") {
+      const res = await fetch(`${BACKEND_API_REVIEW_URL}/${review_id}/vote`, {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+        body: JSON.stringify({ vote }),
+      });
+      const res_json = await res.json();
+      return res_json;
+    } else {
+      const res = await fetch(`${BACKEND_API_REVIEW_URL}/${review_id}/vote`, {
+        method: "DELETE",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      });
+      const res_json = await res.json();
+      return res_json;
+    }
+  };
+
+  public getCustomProperties = async (book_id: string) => {
+    const res = await fetch(
+      `${BACKEND_API_CUSTOM_PROPERTY_DATA_URL}?` +
+        new URLSearchParams({
+          book_id,
+        }),
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + (await account.createJWT()).jwt,
+        }),
+      },
+    );
+    const res_json = await res.json();
+
+    return res_json.results.documents;
   };
 
   public sendNotification = async (
