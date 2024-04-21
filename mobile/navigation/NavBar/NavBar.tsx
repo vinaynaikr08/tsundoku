@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import React from "react";
 import Colors from "../../Constants/Colors";
 import Dimensions from "../../Constants/Dimensions";
@@ -21,7 +21,7 @@ function NavBar() {
         headerShown: false,
         tabBarActiveTintColor: Colors.BUTTON_PURPLE,
         tabBarStyle: {
-          height: 60,
+          height: Platform.OS === "ios" ? 90 : 60,
         },
       })}
     >
