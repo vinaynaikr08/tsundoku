@@ -7,6 +7,7 @@ import { client } from "@/appwrite";
 import { Account } from "appwrite";
 import React from "react";
 import {
+  ActivityIndicator,
   Alert,
   Pressable,
   StyleSheet,
@@ -173,6 +174,7 @@ function CustomPropertyReview({ navigation, route }) {
   const { rating } = route.params;
   const [properties, setProperties] = React.useState([]);
   const [propertyData, setPropertyData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   function dismiss() {
     Alert.alert("Discard review?", "You have an unsaved review.", [
@@ -224,6 +226,7 @@ function CustomPropertyReview({ navigation, route }) {
 
     getCustomProperty()
       .then((data) => {
+        setLoading(false);
         setProperties(data);
       })
       .catch((error) => {
@@ -242,24 +245,28 @@ function CustomPropertyReview({ navigation, route }) {
         <Icon name={"close"} color="black" size={25} />
       </TouchableOpacity>
       <Text style={styles.title}>Custom Properties</Text>
-      {properties.length == 0 && (
-        <View>
-          <Text style={styles.propertyInput}>
-            You have no custom properties!
-          </Text>
-        </View>
-      )}
-      {properties &&
-        properties.map((item, index) => (
-          <View key={index}>
-            <PropertyInput
-              property={item}
-              propertyData={propertyData}
-              setPropertyData={setPropertyData}
-              index={index}
-            />
-          </View>
-        ))}
+      {loading ? (
+          <ActivityIndicator
+            color={Colors.BUTTON_TEXT_GRAY}
+            style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}
+          />
+        ) : (
+          properties.length == 0 ? (
+            <View>
+              <Text style={styles.propertyInput}>
+                You have no custom properties!
+              </Text>
+            </View>
+          ) : (properties.map((item, index) => (
+            <View key={index}>
+              <PropertyInput
+                property={item}
+                propertyData={propertyData}
+                setPropertyData={setPropertyData}
+                index={index}
+              />
+            </View>
+        ))))}
       <Pressable
         onPress={() =>
           navigation.navigate("textReviewModal", {
