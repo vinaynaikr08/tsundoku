@@ -77,9 +77,13 @@ function FullReview({ route, navigation }) {
       </View>
       {isSelfReview && <CustomProperties book_id={bookInfo.id} />}
       <Divider bold={true} horizontalInset={true} />
-      <Text style={{ margin: 15, marginTop: 10 }}>
-        {reviewSWR.data.description}
-      </Text>
+      {reviewSWR.data.description ? (
+        <Text style={{ margin: 15, marginTop: 10 }}>
+          {reviewSWR.data.description}
+        </Text>
+      ) : (
+        <Text style={{margin: 15, color: "gray"}}>This review has no description.</Text>
+      )}
     </ScrollView>
   );
 }
@@ -133,7 +137,14 @@ function CustomProperties({ book_id }: { book_id: string }) {
 
   if (properties == null) {
     return (
-      <View style={{ flex: 1, backgroundColor: "white", margin: 30, alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          margin: 30,
+          alignItems: "center",
+        }}
+      >
         <View style={{ flexDirection: "row" }}>
           <Text>Loading custom properties... </Text>
           <ActivityIndicator />
