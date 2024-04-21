@@ -22,7 +22,6 @@ const account = new Account(client);
 const backend = new Backend();
 
 function FullReview({ route, navigation }) {
-  const bookInfo = React.useContext(BookInfoWrapperContext);
   const { review_id } = route.params;
   const [isSelfReview, setIsSelfReview] = React.useState<boolean>(false);
 
@@ -48,6 +47,8 @@ function FullReview({ route, navigation }) {
     );
   }
 
+  console.log(reviewSWR.data);
+
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
       <TouchableOpacity
@@ -62,7 +63,7 @@ function FullReview({ route, navigation }) {
         <Ionicons name={"chevron-back"} color="black" size={25} />
       </TouchableOpacity>
       <Text style={styles.title}>Review by {reviewSWR.data.username}</Text>
-      <Text style={styles.bookTitle}>{bookInfo!.title}</Text>
+      <Text style={styles.bookTitle}>{reviewSWR.data.book.title}</Text>
       <View
         style={{
           display: "flex",
@@ -75,7 +76,7 @@ function FullReview({ route, navigation }) {
         <Text style={{ fontSize: 20 }}>{reviewSWR.data.star_rating / 4}</Text>
         <FontAwesome name={"star"} color={Colors.BUTTON_PURPLE} size={25} />
       </View>
-      {isSelfReview && <CustomProperties book_id={bookInfo.id} />}
+      {isSelfReview && <CustomProperties book_id={reviewSWR.data.book.$id} />}
       <Divider bold={true} horizontalInset={true} />
       {reviewSWR.data.description ? (
         <Text style={{ margin: 15, marginTop: 10 }}>
