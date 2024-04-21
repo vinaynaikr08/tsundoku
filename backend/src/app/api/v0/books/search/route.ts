@@ -149,12 +149,8 @@ export async function GET(request: NextRequest) {
             gbooks_target_book.volumeInfo.authors[0],
           );
         } catch (error) {
-          if (error instanceof TypeError) {
-            // This book doesn't have an author, skip
-            continue;
-          } else {
-            throw error;
-          }
+          // This book probably doesn't have an author, skip
+          continue;
         }
 
         // Check if book already exists in the database
