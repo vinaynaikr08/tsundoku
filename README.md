@@ -8,6 +8,11 @@
 
 Full-stack book review platform
 
+## Notice
+
+Don't worry! This repository will be temporarily read-only until May 1st for grading.
+
+
 ## Warning
 
 Please do not use `npm` commands at the root of the repository. Run them in the respective project folders instead.
