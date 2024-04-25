@@ -32,6 +32,8 @@ export function construct_development_api_response({
     return NextResponse.json(
       {
         message,
+        warning:
+          "You are calling a development API! The schema may change without warning.",
         [response_name]: response_data,
       },
       { status: status_code },
@@ -40,6 +42,8 @@ export function construct_development_api_response({
   return NextResponse.json(
     {
       message,
+      warning:
+        "You are calling a development API! The schema may change without warning.",
     },
     { status: status_code },
   );
