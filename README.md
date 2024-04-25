@@ -8,11 +8,12 @@
 
 Full-stack book review platform
 
-## Notice
 
-Don't worry! This repository will be temporarily read-only until May 1st for grading.
+## Screenshots
 
-
-## Warning
-
-Please do not use `npm` commands at the root of the repository. Run them in the respective project folders instead.
+<img src="images/discover.PNG" width=200>
+<img src="images/reviews.PNG" width=200>
+<img src="images/reading-challenges.PNG" width=200>
+<img src="images/book-search.PNG" width=200>
+<img src="images/library-shelves.PNG" width=200>
+<img src="images/star-rating.PNG" width=200>
