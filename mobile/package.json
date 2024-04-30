@@ -52,7 +52,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.4",
+    "@babel/core": "^7.24.5",
     "@config-plugins/detox": "^7.0.0",
     "@types/eslint__js": "^8.42.3",
     "detox": "^20.20.2",
