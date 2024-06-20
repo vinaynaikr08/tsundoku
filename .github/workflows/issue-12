@@ -1,0 +1,46 @@
+name: Mobile iOS Tests
+
+on:
+  push
+  
+
+jobs:
+  build:
+    name: iOS Test
+    runs-on: macos-13
+    defaults:
+      run:
+        working-directory: ./mobile
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Set up CocoaPods
+        uses: maxim-lobanov/setup-cocoapods@v1
+        with:
+          version: latest
+      - name: Set up applesimutils
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+      - name: Install dependencies
+        run: npm ci
+      - name: Install CocoaPods
+        run: cd ios && pod install
+      - name: Run Detox build
+        run: npx detox build --configuration ios.sim.debug
+      - name: Run Detox Test
+        run: |
+          npx expo start &
+          sleep 5 && npx detox test --configuration ios.sim.debug --headless
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: test-results
+          path: ./mobile/artifacts/
