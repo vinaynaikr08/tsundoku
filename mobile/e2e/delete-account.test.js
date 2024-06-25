@@ -3,6 +3,7 @@ describe("Delete screen", () => {
     //await device.uninstallApp();
     //await device.installApp();
     await device.launchApp();
+  }, 60000)
 
     // Navigate to sign-in screen
     await element(by.id("initial-launch-screen-launch-start-arrow")).tap();
