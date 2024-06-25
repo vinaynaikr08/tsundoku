@@ -1,8 +1,7 @@
 name: Mobile iOS Tests
 
 on:
-  push
-  
+  workflow_dispatch:
 
 jobs:
   build:
