@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: iOS Test
+    name: Macos-12
     runs-on: macos-12
     defaults:
       run:
