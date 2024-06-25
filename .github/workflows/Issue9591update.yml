@@ -20,6 +20,17 @@ jobs:
         with:
           node-version: 18
           npm-version: 10.8.1
+
+      - name: Install Node.js
+        run: |
+              brew install node
+
+      - name: Verify Node.js and npm installation
+        run: |
+          node-version:7
+          npm-version: 7   
+
+          
       - name: Set up CocoaPods
         uses: maxim-lobanov/setup-cocoapods@v1
         with:
